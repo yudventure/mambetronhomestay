@@ -35,14 +35,14 @@ export const POSE_INFO = [
   ['snorkel', 'Snorkeling', 'Kegiatan laut, tips menjaga karang'],
   ['perahu', 'Nelayan', 'Antar jemput, jadwal kapal'],
   ['tidur', 'Tidur', 'Gantungan pintu, ucapan selamat malam'],
-  ['santai', 'Santai', 'Promo, hari libur, sore di dermaga'],
+  ['santai', 'Santai di dahan', 'Promo, hari libur, sore di dermaga'],
   ['papan', 'Bawa papan', 'Pengumuman, harga, selamat datang'],
 ];
 export const WAJAH_INFO = [['senang', 'Senang'], ['kedip', 'Kedip'], ['tidur', 'Ngantuk'], ['kaget', 'Kaget'], ['cinta', 'Suka'], ['tawa', 'Tertawa']];
 export const ATURAN_MASKOT = [
-  ['Warna tetap', 'Tubuh hitam, perut dan moncong pasir, pipi jingga. Jangan diberi warna lain.'],
+  ['Warna tetap', 'Bulu krem dengan bercak gelap, lingkar mata jingga, hidung dan tangan merah muda. Jangan diberi warna lain.'],
   ['Bentuk tetap', 'Boleh diperbesar atau diperkecil, jangan ditarik, dimiringkan, atau diubah proporsi wajahnya.'],
-  ['Satu Mambe saja', 'Jangan menempatkan Mambe berdampingan dengan logo kuskus dalam ukuran yang sama, pilih salah satu yang menonjol.'],
+  ['Satu kuskus yang menonjol', 'Logo kuskus hitam dan Mambe boleh tampil bersama, tapi salah satunya kecil. Jangan dua-duanya besar di satu bidang.'],
   ['Pakai di tempat yang ramah', 'Media sosial, stiker, kartu tamu, papan kamar, kaos anak. Untuk kop surat dan nota resmi cukup logo.'],
 ];
 export const SOROTAN = ['kamar', 'makan', 'snorkel', 'jemput', 'lokasi', 'ulasan'];
@@ -352,7 +352,7 @@ body { font-family: var(--mb-font-teks); }</pre></div>
   <div class="kepala">
     <span class="label">Maskot</span>
     <h2>Kenalkan, Mambe</h2>
-    <p>Mambe adalah kuskus kecil yang diturunkan dari logo. Matanya, telinganya, dan ekornya sama, tapi badannya utuh dan ekspresinya banyak. Ia yang menyapa tamu di WhatsApp, menjaga pintu kamar, dan mengingatkan untuk tidak menginjak karang. Nama Mambe hanya usulan dan bisa diganti.</p>
+    <p>Mambe digambar dari kuskus Waigeo (<i>Spilocuscus papuensis</i>), kuskus berbintik yang hanya hidup di Raja Ampat. Cirinya ikut dibawa: bulu krem dengan bercak gelap, telinga mungil yang hampir tersembunyi di bulu, mata bulat besar berlingkar jingga, hidung dan tangan merah muda berjari panjang untuk mencengkeram dahan, serta ekor panjang yang menggulung dengan ujung tanpa bulu. Ia menyapa tamu di WhatsApp, menjaga pintu kamar, dan mengingatkan untuk tidak menginjak karang. Nama Mambe hanya usulan dan bisa diganti.</p>
   </div>
   <div class="kisi k3">
     ${POSE_INFO.map(([k, t, d]) => `<figure><div class="ubin" style="background:var(--surface-2);aspect-ratio:1">${fig(`maskot/pose/mambe-${k}.png`, t)}</div><figcaption><b>${t}</b><span class="redup">${d}</span></figcaption></figure>`).join('\n    ')}

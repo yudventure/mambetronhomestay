@@ -22,7 +22,7 @@ export function lembar() {
   const w = 2400, h = 1300;
   let s = rect(0, 0, w, h, W.buih);
   s += text(`${NAMA}, maskot Mambetron Homestay`, { x: 80, y: 110, family: 'fredoka', weight: 700, size: 64, fill: W.laut });
-  s += text('Kuskus kecil yang menyambut tamu. Enam pose dan enam ekspresi.', { x: 80, y: 160, size: 28, weight: 500, fill: W.toskaTua });
+  s += text('Digambar dari kuskus Waigeo, kuskus berbintik yang hanya ada di Raja Ampat. Enam pose dan enam ekspresi.', { x: 80, y: 160, size: 28, weight: 500, fill: W.toskaTua });
   Object.entries(POSE).forEach(([k, v], i) => {
     const x = 80 + i * 380;
     s += rect(x, 210, 340, 480, W.putih, 28);

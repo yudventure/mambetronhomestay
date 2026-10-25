@@ -36,7 +36,7 @@ Ruang kosong di sekitar logo paling sedikit setinggi huruf M pada tulisan Mambet
 
 ## Maskot Mambe
 
-Mambe diturunkan dari kuskus di logo, dengan badan utuh dan banyak ekspresi. Pakai di media sosial, stiker WhatsApp, kartu tamu, gantungan pintu, dan kaos anak. Untuk kop surat dan nota resmi cukup logo. Warna dan proporsi wajahnya tidak diubah. Nama Mambe hanya usulan.
+Mambe digambar dari kuskus Waigeo (*Spilocuscus papuensis*), kuskus berbintik yang hanya hidup di Raja Ampat: bulu krem berbercak gelap, telinga mungil, mata bulat besar berlingkar jingga, hidung dan tangan merah muda, ekor panjang menggulung. Pakai di media sosial, stiker WhatsApp, kartu tamu, gantungan pintu, dan kaos anak. Untuk kop surat dan nota resmi cukup logo. Warna dan proporsi wajahnya tidak diubah. Nama Mambe hanya usulan.
 
 Stiker WhatsApp ada di `brand/maskot/stiker-whatsapp` (WebP 512 × 512 px, masing-masing di bawah 100 KB, ikon paket 96 px). Masukkan ke aplikasi pembuat stiker seperti Sticker Maker lalu bagikan ke tamu.
 

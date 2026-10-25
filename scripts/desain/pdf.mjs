@@ -184,7 +184,7 @@ ${hal('Elemen grafis', 'Pulau karst, ekor ombak, ikon garis', `<p>Ilustrasi pula
   ${fig('panduan/elemen-ikon.png', 'Ikon garis', 'Kamar, makan, snorkel, perahu, lokasi, WiFi')}
 </div>`)}
 
-${hal('Maskot', 'Kenalkan, Mambe', `<p>Mambe adalah kuskus kecil yang diturunkan dari logo. Matanya, telinganya, dan ekornya sama, tapi badannya utuh dan ekspresinya banyak. Ia menyapa tamu di WhatsApp, menjaga pintu kamar, dan mengingatkan untuk tidak menginjak karang. Nama Mambe hanya usulan.</p>
+${hal('Maskot', 'Kenalkan, Mambe', `<p>Mambe digambar dari kuskus Waigeo (<i>Spilocuscus papuensis</i>), kuskus berbintik yang hanya hidup di Raja Ampat. Cirinya ikut dibawa: bulu krem dengan bercak gelap, telinga mungil yang hampir tersembunyi, mata bulat besar berlingkar jingga, hidung dan tangan merah muda berjari panjang, serta ekor panjang yang menggulung dengan ujung tanpa bulu. Nama Mambe hanya usulan.</p>
 <div class="kisi k6">${POSE_INFO.map(([k, t, d]) => `<figure><div class="ubin" style="background:${W.buih};aspect-ratio:1">${img(`maskot/pose/mambe-${k}.png`)}</div><figcaption><b>${t}</b><span>${d}</span></figcaption></figure>`).join('')}</div>
 <div class="kisi k4">${ATURAN_MASKOT.map(([t, d]) => `<div class="kartu"><h3>${t}</h3><p>${d}</p></div>`).join('')}</div>`)}
 
