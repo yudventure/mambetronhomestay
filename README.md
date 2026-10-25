@@ -2,7 +2,7 @@
 
 Identitas merek Mambetron Homestay di Raja Ampat. Isinya logo dalam bentuk vektor, warna, font website, template media sosial, dan berkas cetak siap kirim ke percetakan untuk kaos, jaket, amenities, papan nama, serta banner di pelabuhan.
 
-Buka `brand/panduan-merek.html` di browser untuk melihat semuanya dalam satu halaman.
+Buka `brand/panduan-merek.html` di browser untuk melihat semuanya dalam satu halaman, atau cetak `brand/panduan-merek.pdf`.
 
 ## Isi folder `brand`
 
@@ -11,6 +11,7 @@ Buka `brand/panduan-merek.html` di browser untuk melihat semuanya dalam satu hal
 | `logo/svg`, `logo/pdf` | 12 versi logo dalam vektor. Pakai ini untuk percetakan dan desainer. |
 | `logo/png` | Logo PNG transparan lebar 2000 px, versi kecil 500 px di `logo/png/kecil`. |
 | `logo/sumber` | Gambar logo asli dan hasil penjiplakan vektornya. |
+| `maskot` | Mambe, maskot kuskus. Enam pose dan enam ekspresi (SVG dan PNG), paket stiker WhatsApp (WebP 512 px), lembar maskot. |
 | `font/desktop` | Fredoka dan Plus Jakarta Sans dalam TTF untuk dipasang di komputer. |
 | `font/web` | Berkas font website (woff2) beserta `fonts.css`. |
 | `web` | Favicon, ikon aplikasi, gambar bagikan 1200 × 630, logo header, `tokens.css`, dan `contoh-halaman.html`. |
@@ -32,6 +33,12 @@ Buka `brand/panduan-merek.html` di browser untuk melihat semuanya dalam satu hal
 | Bordir, grafir, cap satu warna | `mambetron-ikon-stempel-hitam` atau `-putih` |
 
 Ruang kosong di sekitar logo paling sedikit setinggi huruf M pada tulisan Mambetron. Ukuran terkecil logo utama 25 mm (120 px), logo horizontal tinggi 10 mm (32 px), ikon 8 mm (16 px).
+
+## Maskot Mambe
+
+Mambe diturunkan dari kuskus di logo, dengan badan utuh dan banyak ekspresi. Pakai di media sosial, stiker WhatsApp, kartu tamu, gantungan pintu, dan kaos anak. Untuk kop surat dan nota resmi cukup logo. Warna dan proporsi wajahnya tidak diubah. Nama Mambe hanya usulan.
+
+Stiker WhatsApp ada di `brand/maskot/stiker-whatsapp` (WebP 512 × 512 px, masing-masing di bawah 100 KB, ikon paket 96 px). Masukkan ke aplikasi pembuat stiker seperti Sticker Maker lalu bagikan ke tamu.
 
 ## Warna
 
@@ -84,7 +91,7 @@ npm run build              # semua
 node scripts/build.mjs papan sosial   # hanya grup tertentu
 ```
 
-Grup yang tersedia `logo`, `web`, `sosial`, `merchandise`, `amenities`, `papan`, `panduan`. Semua teks di berkas cetak sudah diubah menjadi kurva, jadi percetakan tidak perlu memasang font.
+Grup yang tersedia `logo`, `maskot`, `web`, `sosial`, `merchandise`, `amenities`, `papan`, `panduan`, `pdf`. Semua teks di berkas cetak sudah diubah menjadi kurva, jadi percetakan tidak perlu memasang font.
 
 Logo vektor dijiplak dari gambar asli dengan `scripts/trace_logo.py` (butuh Python, `potracer`, `numpy`, `Pillow`). Langkah ini cukup sekali, hasilnya sudah tersimpan di `brand/logo/sumber/logo-traced.json`.
 

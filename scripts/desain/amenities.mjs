@@ -4,6 +4,7 @@ import * as A from '../lib/seni.mjs';
 import { W } from '../lib/palet.mjs';
 import { text, paragraph } from '../lib/huruf.mjs';
 import { shade } from '../lib/pakaian.mjs';
+import { maskot } from '../lib/maskot.mjs';
 import { doc, rect, kontak, sisip, potong, bayangan } from '../lib/tata.mjs';
 import { png, pdf, simpan } from '../lib/render.mjs';
 
@@ -65,7 +66,7 @@ export function gantunganPintu(sisi = 'depan') {
   const outline = `M6 0H84A6 6 0 0 1 90 6V224A6 6 0 0 1 84 230H6A6 6 0 0 1 0 224V6A6 6 0 0 1 6 0Z`;
   let s = rect(0, 0, w, h, bg, 6);
   if (malam) s += `<circle cx="70" cy="76" r="1.3" fill="${W.pasir}"/><circle cx="18" cy="96" r="1" fill="${W.pasir}"/><circle cx="76" cy="122" r="0.9" fill="${W.pasir}"/>`;
-  s += A.ikon(malam ? 'bulan' : 'sapu', { x: 27, y: 66, size: 36, color: malam ? W.pasir : W.laut, stroke: 1.6 });
+  s += L.taruh(maskot(malam ? 'tidur' : 'sapa', { stiker: malam }), { x: 45, y: 56, h: 60, anchor: 'middle' }).svg;
   s += text(malam ? 'Jangan' : 'Kamar siap', { x: 45, y: 128, family: 'fredoka', weight: 700, size: 12.5, fill: fg, anchor: 'middle' });
   s += text(malam ? 'diganggu' : 'dibersihkan', { x: 45, y: 142, family: 'fredoka', weight: 700, size: 12.5, fill: fg, anchor: 'middle' });
   s += text(malam ? 'DO NOT DISTURB' : 'PLEASE CLEAN MY ROOM', { x: 45, y: 154, size: 3.6, weight: 700, tracking: 0.18, fill: sub, anchor: 'middle', maxWidth: 74 });
@@ -82,6 +83,7 @@ export function kartuSelamatDatang(K) {
   s += rect(0, 0, w, 50, W.buih);
   s += `<g transform="translate(0 26)">${A.lanskap({ w, h: 24, horizon: 0.5, sun: null, seed: 3, glint: false })}</g>`;
   s += L.taruh(L.lencana(), { x: w / 2, y: 6, w: 26, anchor: 'middle' }).svg;
+  s += L.taruh(maskot('sapa', { stiker: true }), { x: 84, y: 13, h: 36, anchor: 'middle' }).svg;
   s += text('Selamat datang', { x: w / 2, y: 62, family: 'fredoka', weight: 700, size: 9, fill: W.laut, anchor: 'middle' });
   s += text('WELCOME TO MAMBETRON', { x: w / 2, y: 68.5, size: 2.9, weight: 700, tracking: 0.2, fill: W.toskaTua, anchor: 'middle' });
   // wifi block

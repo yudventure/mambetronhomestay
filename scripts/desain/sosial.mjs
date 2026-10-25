@@ -5,6 +5,7 @@ import { W } from '../lib/palet.mjs';
 import { text, paragraph } from '../lib/huruf.mjs';
 import { doc, rect, tombol, kontak, foto, bintang, klip } from '../lib/tata.mjs';
 import { png, simpan } from '../lib/render.mjs';
+import { maskot, wajah } from '../lib/maskot.mjs';
 
 export function profil(bg = W.pasir) {
   const s = 1080;
@@ -63,6 +64,36 @@ export function story(K) {
   return doc(w, h, s);
 }
 
+export function postTips(K) {
+  const w = 1080, h = 1350;
+  let s = rect(0, 0, w, h, W.pasir);
+  s += `<g transform="translate(0 ${h - 420})">${A.lanskap({ w, h: 420, horizon: 0.5, sun: null, seed: 33, sky: W.pasir, far: W.toska, near: W.laut })}</g>`;
+  s += L.taruh(L.horizontal(), { x: 80, y: 80, h: 84 }).svg;
+  s += text('TIPS DARI MAMBE', { x: 80, y: 290, size: 26, weight: 600, tracking: 0.22, fill: W.toskaTua });
+  s += text('Snorkeling yang', { x: 76, y: 390, family: 'fredoka', weight: 700, size: 92, fill: W.laut });
+  s += text('ramah karang', { x: 76, y: 490, family: 'fredoka', weight: 700, size: 92, fill: W.laut });
+  const tips = [['karang', 'Jangan injak atau pegang karang'], ['bintang', 'Pakai tabir surya yang aman untuk laut'], ['sampah', 'Bawa pulang sampah plastik Anda']];
+  tips.forEach(([ik, t], i) => {
+    const y = 560 + i * 92;
+    s += `<circle cx="${112}" cy="${y + 28}" r="32" fill="${W.laut}"/>` + A.ikon(ik, { x: 92, y: y + 8, size: 40, color: W.putih, stroke: 1.9 });
+    s += text(t, { x: 170, y: y + 40, size: 34, weight: 600, fill: W.hitam, maxWidth: 560 });
+  });
+  s += L.taruh(maskot('snorkel'), { x: w - 60, y: h - 560, h: 540, anchor: 'end' }).svg;
+  return doc(w, h, s);
+}
+
+export function storyMaskot(K) {
+  const w = 1080, h = 1920;
+  let s = A.pola({ w, h, tile: 200, bg: W.laut, swirl: '#13566A', dot: '#1D6A7E' });
+  s += L.taruh(L.horizontal({ ink: W.putih, sub: W.pasir, badge: { bg: W.toska } }), { x: w / 2, y: 120, h: 90, anchor: 'middle' }).svg;
+  s += text('SELAMAT PAGI DARI RAJA AMPAT', { x: w / 2, y: 330, size: 30, weight: 600, tracking: 0.22, fill: W.pasir, anchor: 'middle' });
+  s += text('Kopi dulu,', { x: w / 2, y: 450, family: 'fredoka', weight: 700, size: 110, fill: W.putih, anchor: 'middle' });
+  s += text('laut kemudian', { x: w / 2, y: 570, family: 'fredoka', weight: 700, size: 110, fill: W.putih, anchor: 'middle' });
+  s += L.taruh(maskot('santai', { stiker: true }), { x: w / 2, y: 700, h: 900, anchor: 'middle' }).svg;
+  s += text(K.instagram, { x: w / 2, y: 1760, size: 32, weight: 600, fill: W.pasir, anchor: 'middle' });
+  return doc(w, h, s);
+}
+
 export const SOROTAN = [
   ['kamar', 'Kamar'], ['makan', 'Makan'], ['snorkel', 'Snorkel'], ['perahu', 'Jemput'], ['lokasi', 'Lokasi'], ['bintang', 'Ulasan'],
 ];
@@ -90,6 +121,8 @@ export function semua(K) {
     ['post-foto', postFoto(K)],
     ['post-ulasan', postUlasan(K)],
     ['story', story(K)],
+    ['post-tips-maskot', postTips(K)],
+    ['story-maskot', storyMaskot(K)],
     ['sampul-facebook', sampulFb(K)],
     ...SOROTAN.map(([k, label]) => [`sorotan/sorotan-${label.toLowerCase()}`, sorotan(k)]),
   ];

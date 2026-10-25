@@ -4,6 +4,7 @@ import * as L from '../lib/logo.mjs';
 import * as A from '../lib/seni.mjs';
 import { W } from '../lib/palet.mjs';
 import { text, measure } from '../lib/huruf.mjs';
+import { maskot } from '../lib/maskot.mjs';
 import { doc, rect, qr, sisip, bayangan } from '../lib/tata.mjs';
 import { png, pdf, simpan } from '../lib/render.mjs';
 
@@ -107,7 +108,7 @@ export function papanJemput(K) {
   s += L.taruh(L.horizontal({ ink: W.putih, sub: W.pasir, badge: { bg: W.toska } }), { x: 22, y: 14, h: 36 }).svg;
   s += text('SELAMAT DATANG  ·  WELCOME', { x: w - 22, y: 37, size: 8.5, weight: 700, tracking: 0.16, fill: W.pasir, anchor: 'end' });
   s += text('Tulis nama tamu di sini dengan spidol papan tulis', { x: w / 2, y: 92, size: 7, weight: 500, fill: '#9AB3B8', anchor: 'middle' });
-  s += `<g transform="translate(${w - 40} ${h - 12})">${A.ekor({ x: -60, y: 0, R: 9, len: 4.5, color: W.toska })}</g>`;
+  s += L.taruh(maskot('sapa'), { x: w - 24, y: h - 108, h: 96, anchor: 'end' }).svg;
   s += text(K.instagram, { x: 22, y: h - 16, size: 8, weight: 600, fill: W.laut });
   return mm(w, h, s);
 }

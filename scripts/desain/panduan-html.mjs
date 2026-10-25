@@ -4,7 +4,7 @@
 
 const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;');
 
-const LOGO_INFO = {
+export const LOGO_INFO = {
   'mambetron-logo-utama-hitam': ['Logo utama', 'Versi pertama yang dipilih. Untuk latar putih dan terang.'],
   'mambetron-logo-utama-laut': ['Logo utama Laut Dalam', 'Latar terang yang ingin terasa lebih lembut dari hitam.'],
   'mambetron-logo-utama-putih': ['Logo utama putih', 'Latar gelap, kaos gelap, dan sablon satu warna putih.'],
@@ -19,24 +19,42 @@ const LOGO_INFO = {
   'mambetron-wordmark-putih': ['Tulisan saja putih', 'Lengan jaket, latar gelap.'],
 };
 
-const SOSIAL = [
+export const SOSIAL = [
   ['foto-profil-pasir', 'Foto profil', '1080 × 1080 px, Instagram, WhatsApp, Facebook'],
   ['post-info', 'Post info', '1080 × 1350 px'],
   ['post-foto', 'Post foto', '1080 × 1350 px, ganti ilustrasi dengan foto asli'],
   ['post-ulasan', 'Post ulasan tamu', '1080 × 1350 px, isi dengan ulasan asli'],
   ['story', 'Story', '1080 × 1920 px'],
   ['sampul-facebook', 'Sampul Facebook', '1640 × 624 px'],
+  ['post-tips-maskot', 'Post tips dengan Mambe', '1080 × 1350 px, ganti tips sesuai kebutuhan'],
+  ['story-maskot', 'Story dengan Mambe', '1080 × 1920 px'],
 ];
-const SOROTAN = ['kamar', 'makan', 'snorkel', 'jemput', 'lokasi', 'ulasan'];
 
-const MERCH = [
+export const POSE_INFO = [
+  ['sapa', 'Menyapa', 'Sambutan, halaman utama, pesan WhatsApp pertama'],
+  ['snorkel', 'Snorkeling', 'Kegiatan laut, tips menjaga karang'],
+  ['perahu', 'Nelayan', 'Antar jemput, jadwal kapal'],
+  ['tidur', 'Tidur', 'Gantungan pintu, ucapan selamat malam'],
+  ['santai', 'Santai', 'Promo, hari libur, sore di dermaga'],
+  ['papan', 'Bawa papan', 'Pengumuman, harga, selamat datang'],
+];
+export const WAJAH_INFO = [['senang', 'Senang'], ['kedip', 'Kedip'], ['tidur', 'Ngantuk'], ['kaget', 'Kaget'], ['cinta', 'Suka'], ['tawa', 'Tertawa']];
+export const ATURAN_MASKOT = [
+  ['Warna tetap', 'Tubuh hitam, perut dan moncong pasir, pipi jingga. Jangan diberi warna lain.'],
+  ['Bentuk tetap', 'Boleh diperbesar atau diperkecil, jangan ditarik, dimiringkan, atau diubah proporsi wajahnya.'],
+  ['Satu Mambe saja', 'Jangan menempatkan Mambe berdampingan dengan logo kuskus dalam ukuran yang sama, pilih salah satu yang menonjol.'],
+  ['Pakai di tempat yang ramah', 'Media sosial, stiker, kartu tamu, papan kamar, kaos anak. Untuk kop surat dan nota resmi cukup logo.'],
+];
+export const SOROTAN = ['kamar', 'makan', 'snorkel', 'jemput', 'lokasi', 'ulasan'];
+
+export const MERCH = [
   ['kaos-seragam-putih', 'Kaos seragam putih', 'Dada kiri ikon bulat 9 cm, sablon DTF. Punggung logo utama 28 cm, sablon plastisol hitam.'],
   ['kaos-seragam-laut', 'Kaos seragam Laut Dalam', 'Dada kiri stempel putih 9 cm. Punggung logo utama putih 28 cm. Satu warna putih, sablon plastisol.'],
   ['kaos-suvenir', 'Kaos suvenir', 'Emblem 25 cm di dada, sablon DTF penuh warna. Cocok dijual ke tamu.'],
   ['jaket', 'Jaket bomber', 'Dada kiri bordir stempel putih 8 cm. Punggung logo utama putih 26 cm, bordir atau DTF. Lengan bisa diberi tulisan Mambetron 9 cm.'],
 ];
 
-const AMEN = [
+export const AMEN = [
   ['handuk', 'Handuk', 'Bordir logo horizontal satu warna selebar 16 cm, benang Laut Dalam di handuk putih dan benang putih di handuk gelap.'],
   ['sabun', 'Pembungkus sabun', 'Pita kertas 200 × 60 mm, kertas kraft atau art paper 150 gsm.'],
   ['botol', 'Label botol isi ulang', 'Stiker vinyl tahan air 60 × 80 mm. Sampo toska, sabun cair jingga, kondisioner pasir.'],
@@ -46,7 +64,7 @@ const AMEN = [
   ['sandal', 'Sandal kamar', 'Ikon bulat dicetak di tumit alas sandal, sekitar 5 cm.'],
 ];
 
-const PAPAN = [
+export const PAPAN = [
   ['banner-pelabuhan', 'Banner berdiri di pelabuhan', 'Roll-up 80 × 200 cm dan X-banner 60 × 160 cm. Bahan albatros atau luster. Bagian bawah sekitar 15 cm tertutup kaki roll-up, jadi hanya berisi pola.'],
   ['spanduk-pelabuhan', 'Spanduk', '300 × 100 cm, flexi Korea 340 gsm, mata ayam di setiap sudut dan tiap 50 cm.'],
   ['papan-nama', 'Papan nama homestay', '120 × 80 cm. Cetak stiker vinyl dengan laminasi UV di atas ACP 3 mm supaya tahan panas dan udara laut. Tiang kayu atau besi galvanis.'],
@@ -207,7 +225,7 @@ pre { margin: 0; background: #0B3B4A; color: #EAF4F3; border-radius: 16px; paddi
 
 <nav class="bab" aria-label="Bab">
   <div class="wadah">
-    <a href="#cerita">Cerita</a><a href="#logo">Logo</a><a href="#warna">Warna</a><a href="#huruf">Huruf</a><a href="#elemen">Elemen</a><a href="#website">Website</a><a href="#sosial">Media sosial</a><a href="#kaos">Kaos dan jaket</a><a href="#amenities">Amenities</a><a href="#papan">Papan dan banner</a><a href="#lengkapi">Perlu dilengkapi</a>
+    <a href="#cerita">Cerita</a><a href="#logo">Logo</a><a href="#warna">Warna</a><a href="#huruf">Huruf</a><a href="#elemen">Elemen</a><a href="#maskot">Maskot</a><a href="#website">Website</a><a href="#sosial">Media sosial</a><a href="#kaos">Kaos dan jaket</a><a href="#amenities">Amenities</a><a href="#papan">Papan dan banner</a><a href="#lengkapi">Perlu dilengkapi</a>
   </div>
 </nav>
 
@@ -327,6 +345,24 @@ body { font-family: var(--mb-font-teks); }</pre></div>
     <figure><div class="bingkai">${fig('panduan/elemen-ekor.png', 'Motif ekor ombak')}</div><figcaption><b>Ekor ombak</b><span class="redup">Hiasan kecil di label dan kartu.</span></figcaption></figure>
     <figure><div class="bingkai">${fig('panduan/elemen-pola.png', 'Pola ekor ombak')}</div><figcaption><b>Pola</b><span class="redup">Pembungkus sabun, latar post, lapisan dalam jaket.</span></figcaption></figure>
     <figure><div class="bingkai">${fig('panduan/elemen-ikon.png', 'Ikon garis')}</div><figcaption><b>Ikon garis</b><span class="redup">Kamar, makan, snorkel, perahu, lokasi, WiFi, dan lainnya.</span></figcaption></figure>
+  </div>
+</div></section>
+
+<section id="maskot"><div class="wadah">
+  <div class="kepala">
+    <span class="label">Maskot</span>
+    <h2>Kenalkan, Mambe</h2>
+    <p>Mambe adalah kuskus kecil yang diturunkan dari logo. Matanya, telinganya, dan ekornya sama, tapi badannya utuh dan ekspresinya banyak. Ia yang menyapa tamu di WhatsApp, menjaga pintu kamar, dan mengingatkan untuk tidak menginjak karang. Nama Mambe hanya usulan dan bisa diganti.</p>
+  </div>
+  <div class="kisi k3">
+    ${POSE_INFO.map(([k, t, d]) => `<figure><div class="ubin" style="background:var(--surface-2);aspect-ratio:1">${fig(`maskot/pose/mambe-${k}.png`, t)}</div><figcaption><b>${t}</b><span class="redup">${d}</span></figcaption></figure>`).join('\n    ')}
+  </div>
+  <div class="kepala" style="margin-top:40px"><h3>Ekspresi dan stiker WhatsApp</h3><p>Dua belas stiker 512 × 512 px dalam format WebP sudah siap di folder <code>brand/maskot/stiker-whatsapp</code>. Masukkan ke aplikasi pembuat stiker, lalu bagikan ke tamu sebelum mereka berangkat.</p></div>
+  <div class="kisi k6">
+    ${WAJAH_INFO.map(([k, t]) => `<figure><div class="ubin" style="background:var(--laut);aspect-ratio:1;padding:10px">${fig(`maskot/wajah/mambe-${k}.png`, t)}</div><figcaption style="align-items:center"><b>${t}</b></figcaption></figure>`).join('\n    ')}
+  </div>
+  <div class="kisi k4" style="margin-top:32px">
+    ${ATURAN_MASKOT.map(([t, d]) => `<div class="kartu"><h3>${t}</h3><p class="redup">${d}</p></div>`).join('\n    ')}
   </div>
 </div></section>
 

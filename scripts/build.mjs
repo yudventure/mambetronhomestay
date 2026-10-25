@@ -13,7 +13,7 @@ const kontak = JSON.parse(fs.readFileSync(path.join(ROOT, 'brand/data/kontak.jso
 const lokal = path.join(ROOT, 'kontak.lokal.json');
 if (fs.existsSync(lokal)) Object.assign(kontak, JSON.parse(fs.readFileSync(lokal)));
 
-const GROUPS = ['logo', 'web', 'sosial', 'merchandise', 'amenities', 'papan', 'panduan'];
+const GROUPS = ['logo', 'maskot', 'web', 'sosial', 'merchandise', 'amenities', 'papan', 'panduan', 'pdf'];
 const want = process.argv.slice(2);
 const ctx = { ROOT, K: kontak, out: (p) => path.join(ROOT, 'brand', p) };
 
