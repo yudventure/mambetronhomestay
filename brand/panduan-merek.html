@@ -1,0 +1,419 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Panduan Merek Mambetron</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="description" content="Logo, warna, huruf, dan penerapan merek Mambetron Homestay">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&display=swap">
+<style>
+/* Layout: one reading column for words, wider frames for artwork, a chip bar
+   that keeps the chapters close. Brand colours are fixed, page colours follow
+   the viewer's theme. */
+:root {
+  --bg: #FFFFFF;
+  --surface: #E6F5F3;
+  --surface-2: #F3FAF9;
+  --fg: #161616;
+  --muted: #415C63;
+  --head: #0B3B4A;
+  --accent: #0A7A73;
+  --chip-bg: #E6F5F3;
+  --chip-fg: #0B3B4A;
+  --shadow: 0 10px 30px rgba(11, 59, 74, 0.10);
+  --display: 'Fredoka', 'Trebuchet MS', 'Segoe UI', sans-serif;
+  --body: 'Plus Jakarta Sans', 'Segoe UI', system-ui, -apple-system, sans-serif;
+  --mono: ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace;
+  --laut: #0B3B4A; --toska: #12A39A; --senja: #F27A3D; --pasir: #F7DFA8; --buih: #E6F5F3; --hitam: #161616; --putih: #FFFFFF;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #071F27; --surface: #0D3340; --surface-2: #0A2932; --fg: #EAF4F3; --muted: #A6C4C6;
+    --head: #F7DFA8; --accent: #4FD1C5; --chip-bg: #0D3340; --chip-fg: #EAF4F3;
+    --shadow: 0 10px 30px rgba(0, 0, 0, 0.35); color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #071F27; --surface: #0D3340; --surface-2: #0A2932; --fg: #EAF4F3; --muted: #A6C4C6;
+  --head: #F7DFA8; --accent: #4FD1C5; --chip-bg: #0D3340; --chip-fg: #EAF4F3;
+  --shadow: 0 10px 30px rgba(0, 0, 0, 0.35); color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--fg); font-family: var(--body); font-size: 16px; line-height: 1.65; }
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--bg); }
+.wadah { max-width: 1120px; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+h1, h2, h3 { font-family: var(--display); color: var(--head); line-height: 1.12; text-wrap: balance; margin: 0; }
+h1 { font-size: clamp(2.4rem, 1.6rem + 3.6vw, 4.4rem); font-weight: 700; }
+h2 { font-size: clamp(1.9rem, 1.4rem + 2vw, 2.8rem); font-weight: 600; }
+h3 { font-size: 1.3rem; font-weight: 600; }
+p { margin: 0; max-width: 66ch; }
+a { color: var(--accent); text-underline-offset: 0.18em; }
+:focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; border-radius: 6px; }
+.label { font-size: 0.78rem; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: var(--accent); }
+.redup { color: var(--muted); }
+img { max-width: 100%; height: auto; display: block; }
+
+.pembuka { background: var(--surface); padding-block: 56px 64px; }
+.pembuka .wadah { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 0.9fr); gap: 48px; align-items: center; }
+.pembuka .teks { display: flex; flex-direction: column; gap: 18px; min-width: 0; }
+.pembuka .logo { background: var(--putih); border-radius: 32px; padding: 36px; box-shadow: var(--shadow); }
+.slogan { display: inline-flex; align-self: flex-start; background: var(--pasir); color: var(--laut); font-family: var(--display); font-weight: 600; font-size: 1.15rem; padding: 8px 18px; border-radius: 999px; }
+
+nav.bab { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; background: var(--bg); box-shadow: 0 6px 18px rgba(11, 59, 74, 0.08); }
+nav.bab .wadah { display: flex; gap: 8px; overflow-x: auto; padding-block: 12px; scrollbar-width: none; }
+nav.bab a { flex: none; text-decoration: none; background: var(--chip-bg); color: var(--chip-fg); font-weight: 600; font-size: 0.9rem; padding: 7px 14px; border-radius: 999px; }
+nav.bab a:hover { background: var(--pasir); color: var(--laut); }
+
+section { padding-block: 72px 8px; scroll-margin-top: 64px; }
+.kepala { display: flex; flex-direction: column; gap: 12px; margin-bottom: 32px; }
+.kisi { display: grid; gap: 20px; }
+.k2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.k3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.k4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.k6 { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+figure { margin: 0; display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+figcaption { display: flex; flex-direction: column; gap: 2px; font-size: 0.92rem; }
+figcaption b { font-weight: 700; color: var(--fg); }
+.bingkai { border-radius: 20px; overflow: hidden; box-shadow: var(--shadow); }
+.ubin { border-radius: 20px; aspect-ratio: 4 / 3; display: flex; align-items: center; justify-content: center; padding: 22px; box-shadow: var(--shadow); max-width: 100%; }
+.ubin img { max-height: 100%; width: auto; object-fit: contain; }
+
+.kartu { background: var(--surface-2); border-radius: 20px; padding: 24px; display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+.kartu h3 { font-size: 1.2rem; }
+
+.contoh-salah { position: relative; }
+.contoh-salah .ubin { background: var(--putih); overflow: hidden; }
+.silang { position: absolute; top: 12px; right: 12px; width: 34px; height: 34px; border-radius: 50%; background: #D93A3A; display: grid; place-items: center; }
+.silang svg { width: 16px; height: 16px; }
+
+.warna { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; }
+.contoh-warna { border-radius: 20px; overflow: hidden; box-shadow: var(--shadow); background: var(--surface-2); display: flex; flex-direction: column; }
+.contoh-warna .cat { height: 140px; display: flex; align-items: flex-end; padding: 16px 18px; font-family: var(--display); font-weight: 600; font-size: 1.35rem; }
+.contoh-warna .isi { padding: 16px 18px 20px; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; font-size: 0.85rem; }
+.contoh-warna .isi > p { grid-column: 1 / -1; color: var(--muted); }
+.nilai { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.nilai span { font-size: 0.72rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); font-weight: 700; }
+.nilai button { all: unset; cursor: pointer; font-family: var(--mono); font-variant-numeric: tabular-nums; font-size: 0.85rem; overflow-wrap: anywhere; border-radius: 4px; }
+.nilai button:hover { color: var(--accent); }
+.nilai button:focus-visible { outline: 2px solid var(--accent); }
+.pasangan { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; margin-top: 20px; }
+.pasangan div { border-radius: 16px; padding: 18px; min-height: 96px; display: flex; flex-direction: column; justify-content: space-between; font-weight: 600; }
+.pasangan b { font-family: var(--display); font-size: 1.4rem; font-weight: 600; }
+
+.huruf { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; }
+.huruf .kartu { gap: 14px; }
+.peraga { font-size: clamp(2.2rem, 1.6rem + 2.4vw, 3.4rem); line-height: 1.05; color: var(--head); }
+.abjad { font-size: 1.25rem; overflow-wrap: anywhere; color: var(--fg); }
+.berat { display: flex; flex-wrap: wrap; gap: 8px 16px; font-size: 1.05rem; }
+.skala { display: flex; flex-direction: column; gap: 14px; margin-top: 20px; background: var(--surface-2); border-radius: 20px; padding: 24px; }
+.skala div { display: grid; grid-template-columns: 9rem minmax(0, 1fr); gap: 16px; align-items: baseline; }
+.skala small { color: var(--muted); font-size: 0.8rem; font-variant-numeric: tabular-nums; }
+pre { margin: 0; background: #0B3B4A; color: #EAF4F3; border-radius: 16px; padding: 20px; overflow-x: auto; font-family: var(--mono); font-size: 0.85rem; line-height: 1.6; }
+
+.daftar { display: flex; flex-direction: column; gap: 12px; }
+.daftar div { background: var(--surface-2); border-radius: 16px; padding: 16px 18px; display: flex; flex-direction: column; gap: 4px; }
+.daftar b { font-weight: 700; }
+.daftar code, p code { font-family: var(--mono); font-size: 0.88em; background: var(--surface); padding: 1px 6px; border-radius: 6px; overflow-wrap: anywhere; }
+
+.penutup { margin-top: 72px; background: var(--laut); color: var(--putih); padding-block: 48px; }
+.penutup .wadah { display: flex; gap: 32px; align-items: center; justify-content: space-between; flex-wrap: wrap; }
+.penutup h2 { color: var(--pasir); }
+.penutup p { color: #DCEDEB; }
+.penutup a { color: var(--pasir); font-weight: 700; }
+
+@media (max-width: 900px) {
+  .k4, .k6 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .pasangan { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .warna { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 680px) {
+  .pembuka .wadah, .huruf, .k2, .k3 { grid-template-columns: minmax(0, 1fr); }
+  .k4, .k6 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .warna { grid-template-columns: minmax(0, 1fr); }
+  .skala div { grid-template-columns: minmax(0, 1fr); gap: 2px; }
+  .pembuka .logo { padding: 22px; }
+}
+@media (prefers-reduced-motion: no-preference) { html { scroll-behavior: smooth; } }
+</style>
+
+</head>
+<body>
+<header class="pembuka">
+  <div class="wadah">
+    <div class="teks">
+      <span class="label">Panduan merek</span>
+      <h1>Mambetron Homestay</h1>
+      <p>Seekor kuskus memeluk papan nama homestay. Begitulah cara kami menyambut tamu di Raja Ampat, hangat dan tanpa terburu-buru. Halaman ini merangkum logo, warna, huruf, dan semua penerapannya, dari website sampai banner di pelabuhan.</p>
+      <span class="slogan">Pelukan hangat dari Raja Ampat</span>
+    </div>
+    <div class="logo"><img src="logo/png/mambetron-logo-utama-hitam.png" alt="Logo Mambetron Homestay" loading="lazy" class=""></div>
+  </div>
+</header>
+
+<nav class="bab" aria-label="Bab">
+  <div class="wadah">
+    <a href="#cerita">Cerita</a><a href="#logo">Logo</a><a href="#warna">Warna</a><a href="#huruf">Huruf</a><a href="#elemen">Elemen</a><a href="#website">Website</a><a href="#sosial">Media sosial</a><a href="#kaos">Kaos dan jaket</a><a href="#amenities">Amenities</a><a href="#papan">Papan dan banner</a><a href="#lengkapi">Perlu dilengkapi</a>
+  </div>
+</nav>
+
+<main>
+<section id="cerita"><div class="wadah">
+  <div class="kepala">
+    <span class="label">Cerita merek</span>
+    <h2>Kenapa kuskus</h2>
+    <p>Kuskus adalah hewan berkantung dari hutan Papua. Ia aktif di malam hari, bergerak pelan, dan memakai ekornya yang melingkar untuk berpegangan. Di logo, kuskus memeluk papan nama dan ekornya melingkar seperti ombak. Pelukan itu yang ingin dirasakan setiap tamu.</p>
+  </div>
+  <div class="kisi k3">
+    <div class="kartu"><h3>Hangat</h3><p class="redup">Bicara seperti tuan rumah yang menyambut keluarga. Sapa dengan nama, tawarkan bantuan, jangan kaku.</p></div>
+    <div class="kartu"><h3>Pelan</h3><p class="redup">Seperti kuskus, kami tidak terburu-buru. Kalimat pendek, ruang kosong yang lega, gambar yang tenang.</p></div>
+    <div class="kartu"><h3>Dekat dengan alam</h3><p class="redup">Laut, karang, dan pulau karst adalah halaman rumah kami. Warna dan ilustrasi diambil dari sana.</p></div>
+  </div>
+</div></section>
+
+<section id="logo"><div class="wadah">
+  <div class="kepala">
+    <span class="label">Logo</span>
+    <h2>Satu kuskus, beberapa bentuk</h2>
+    <p>Logo asli sudah diubah menjadi vektor sehingga tajam di ukuran berapa pun, dari favicon 16 piksel sampai spanduk 3 meter. Pilih versi sesuai latar dan cara cetaknya. Bentuk dan susunan logo tidak diubah.</p>
+  </div>
+  <div class="kisi k4">
+    <figure><div class="ubin" style="background:#FFFFFF"><img src="logo/png/kecil/mambetron-logo-utama-hitam-500.png" alt="Logo utama" loading="lazy" class=""></div><figcaption><b>Logo utama</b><span class="redup">Versi pertama yang dipilih. Untuk latar putih dan terang.</span></figcaption></figure>
+    <figure><div class="ubin" style="background:#E6F5F3"><img src="logo/png/kecil/mambetron-logo-utama-laut-500.png" alt="Logo utama Laut Dalam" loading="lazy" class=""></div><figcaption><b>Logo utama Laut Dalam</b><span class="redup">Latar terang yang ingin terasa lebih lembut dari hitam.</span></figcaption></figure>
+    <figure><div class="ubin" style="background:#0B3B4A"><img src="logo/png/kecil/mambetron-logo-utama-putih-500.png" alt="Logo utama putih" loading="lazy" class=""></div><figcaption><b>Logo utama putih</b><span class="redup">Latar gelap, kaos gelap, dan sablon satu warna putih.</span></figcaption></figure>
+    <figure><div class="ubin" style="background:#12A39A"><img src="logo/png/kecil/mambetron-logo-utama-stiker-500.png" alt="Logo stiker" loading="lazy" class=""></div><figcaption><b>Logo stiker</b><span class="redup">Di atas foto, pola, atau latar berwarna ramai.</span></figcaption></figure>
+    <figure><div class="ubin" style="background:#FFFFFF"><img src="logo/png/kecil/mambetron-logo-horizontal-500.png" alt="Logo horizontal" loading="lazy" class=""></div><figcaption><b>Logo horizontal</b><span class="redup">Header website, kop surat, dan papan yang lebar.</span></figcaption></figure>
+    <figure><div class="ubin" style="background:#0B3B4A"><img src="logo/png/kecil/mambetron-logo-horizontal-putih-500.png" alt="Logo horizontal putih" loading="lazy" class=""></div><figcaption><b>Logo horizontal putih</b><span class="redup">Footer website dan latar gelap.</span></figcaption></figure>
+    <figure><div class="ubin" style="background:#FFFFFF"><img src="logo/png/kecil/mambetron-ikon-500.png" alt="Ikon bulat" loading="lazy" class=""></div><figcaption><b>Ikon bulat</b><span class="redup">Foto profil, favicon, stiker kecil.</span></figcaption></figure>
+    <figure><div class="ubin" style="background:#0B3B4A"><img src="logo/png/kecil/mambetron-ikon-toska-500.png" alt="Ikon bulat toska" loading="lazy" class=""></div><figcaption><b>Ikon bulat toska</b><span class="redup">Ikon di atas latar Laut Dalam.</span></figcaption></figure>
+    <figure><div class="ubin" style="background:#FFFFFF"><img src="logo/png/kecil/mambetron-ikon-stempel-hitam-500.png" alt="Stempel hitam" loading="lazy" class=""></div><figcaption><b>Stempel hitam</b><span class="redup">Cap, grafir laser, cetak satu warna.</span></figcaption></figure>
+    <figure><div class="ubin" style="background:#0B3B4A"><img src="logo/png/kecil/mambetron-ikon-stempel-putih-500.png" alt="Stempel putih" loading="lazy" class=""></div><figcaption><b>Stempel putih</b><span class="redup">Bordir dan sablon putih di bahan gelap.</span></figcaption></figure>
+    <figure><div class="ubin" style="background:#FFFFFF"><img src="logo/png/kecil/mambetron-wordmark-hitam-500.png" alt="Tulisan saja" loading="lazy" class=""></div><figcaption><b>Tulisan saja</b><span class="redup">Saat kuskus sudah tampil di dekatnya.</span></figcaption></figure>
+    <figure><div class="ubin" style="background:#0B3B4A"><img src="logo/png/kecil/mambetron-wordmark-putih-500.png" alt="Tulisan saja putih" loading="lazy" class=""></div><figcaption><b>Tulisan saja putih</b><span class="redup">Lengan jaket, latar gelap.</span></figcaption></figure>
+  </div>
+
+  <div class="kepala" style="margin-top:56px">
+    <h3>Ruang kosong dan ukuran terkecil</h3>
+    <p>Beri ruang kosong di sekeliling logo paling sedikit setinggi huruf M pada tulisan Mambetron. Jangan cetak lebih kecil dari ukuran di bawah ini, nanti mata kuskus tidak terbaca.</p>
+  </div>
+  <div class="kisi k3">
+    <div class="kartu"><span class="label">Logo utama</span><h3>25 mm</h3><p class="redup">120 px di layar</p></div>
+    <div class="kartu"><span class="label">Logo horizontal</span><h3>Tinggi 10 mm</h3><p class="redup">Tinggi 32 px di layar</p></div>
+    <div class="kartu"><span class="label">Ikon bulat</span><h3>8 mm</h3><p class="redup">16 px di layar</p></div>
+  </div>
+
+  <div class="kepala" style="margin-top:56px">
+    <h3>Yang tidak boleh dilakukan</h3>
+  </div>
+  <div class="kisi k4">
+    <figure class="contoh-salah"><div class="ubin" style=""><img style="transform:scaleX(1.45)" src="logo/png/kecil/mambetron-logo-utama-hitam-500.png" alt="Ditarik atau dipampatkan" loading="lazy" class=""></div><span class="silang" aria-hidden="true"><svg viewBox="0 0 16 16"><path d="M3 3l10 10M13 3L3 13" stroke="#fff" stroke-width="2.6" stroke-linecap="round"/></svg></span><figcaption><b>Ditarik atau dipampatkan</b></figcaption></figure>
+    <figure class="contoh-salah"><div class="ubin" style=""><img style="transform:rotate(-14deg)" src="logo/png/kecil/mambetron-logo-utama-hitam-500.png" alt="Dimiringkan" loading="lazy" class=""></div><span class="silang" aria-hidden="true"><svg viewBox="0 0 16 16"><path d="M3 3l10 10M13 3L3 13" stroke="#fff" stroke-width="2.6" stroke-linecap="round"/></svg></span><figcaption><b>Dimiringkan</b></figcaption></figure>
+    <figure class="contoh-salah"><div class="ubin" style=""><img style="filter:hue-rotate(160deg) saturate(6) brightness(1.4)" src="logo/png/kecil/mambetron-logo-utama-hitam-500.png" alt="Diganti warna di luar palet" loading="lazy" class=""></div><span class="silang" aria-hidden="true"><svg viewBox="0 0 16 16"><path d="M3 3l10 10M13 3L3 13" stroke="#fff" stroke-width="2.6" stroke-linecap="round"/></svg></span><figcaption><b>Diganti warna di luar palet</b></figcaption></figure>
+    <figure class="contoh-salah"><div class="ubin" style="background:#0B3B4A"><img style="" src="logo/png/kecil/mambetron-logo-utama-hitam-500.png" alt="Logo hitam di atas latar gelap" loading="lazy" class=""></div><span class="silang" aria-hidden="true"><svg viewBox="0 0 16 16"><path d="M3 3l10 10M13 3L3 13" stroke="#fff" stroke-width="2.6" stroke-linecap="round"/></svg></span><figcaption><b>Logo hitam di atas latar gelap</b></figcaption></figure>
+  </div>
+</div></section>
+
+<section id="warna"><div class="wadah">
+  <div class="kepala">
+    <span class="label">Warna</span>
+    <h2>Diambil dari laut dan senja Raja Ampat</h2>
+    <p>Hitam kuskus tetap jadi warna utama logo. Lima warna lain datang dari laut dalam, laguna, pasir, buih, dan langit sore. Ketuk nilai warna untuk menyalinnya. Nilai CMYK adalah perkiraan, jadi minta percetakan mencetak contoh lebih dulu.</p>
+  </div>
+  <div class="warna">
+    <div class="contoh-warna"><div class="cat" style="background:#161616;color:#FFFFFF">Hitam Kuskus</div><div class="isi"><p>Warna logo utama dan teks</p><div class="nilai"><span>HEX</span><button type="button" data-salin="#161616">#161616</button></div><div class="nilai"><span>RGB</span><button type="button" data-salin="22 22 22">22 22 22</button></div><div class="nilai"><span>CMYK</span><button type="button" data-salin="0 0 0 91">0 0 0 91</button></div></div></div>
+    <div class="contoh-warna"><div class="cat" style="background:#0B3B4A;color:#FFFFFF">Laut Dalam</div><div class="isi"><p>Latar gelap, judul, seragam</p><div class="nilai"><span>HEX</span><button type="button" data-salin="#0B3B4A">#0B3B4A</button></div><div class="nilai"><span>RGB</span><button type="button" data-salin="11 59 74">11 59 74</button></div><div class="nilai"><span>CMYK</span><button type="button" data-salin="85 20 0 71">85 20 0 71</button></div></div></div>
+    <div class="contoh-warna"><div class="cat" style="background:#12A39A;color:#FFFFFF">Toska Laguna</div><div class="isi"><p>Aksen, ikon, ilustrasi laut</p><div class="nilai"><span>HEX</span><button type="button" data-salin="#12A39A">#12A39A</button></div><div class="nilai"><span>RGB</span><button type="button" data-salin="18 163 154">18 163 154</button></div><div class="nilai"><span>CMYK</span><button type="button" data-salin="89 0 6 36">89 0 6 36</button></div></div></div>
+    <div class="contoh-warna"><div class="cat" style="background:#F27A3D;color:#0B3B4A">Jingga Senja</div><div class="isi"><p>Tombol pesan dan sorotan</p><div class="nilai"><span>HEX</span><button type="button" data-salin="#F27A3D">#F27A3D</button></div><div class="nilai"><span>RGB</span><button type="button" data-salin="242 122 61">242 122 61</button></div><div class="nilai"><span>CMYK</span><button type="button" data-salin="0 50 75 5">0 50 75 5</button></div></div></div>
+    <div class="contoh-warna"><div class="cat" style="background:#F7DFA8;color:#0B3B4A">Pasir Pantai</div><div class="isi"><p>Latar hangat dan label</p><div class="nilai"><span>HEX</span><button type="button" data-salin="#F7DFA8">#F7DFA8</button></div><div class="nilai"><span>RGB</span><button type="button" data-salin="247 223 168">247 223 168</button></div><div class="nilai"><span>CMYK</span><button type="button" data-salin="0 10 32 3">0 10 32 3</button></div></div></div>
+    <div class="contoh-warna"><div class="cat" style="background:#E6F5F3;color:#0B3B4A">Buih Laut</div><div class="isi"><p>Latar lembut di layar</p><div class="nilai"><span>HEX</span><button type="button" data-salin="#E6F5F3">#E6F5F3</button></div><div class="nilai"><span>RGB</span><button type="button" data-salin="230 245 243">230 245 243</button></div><div class="nilai"><span>CMYK</span><button type="button" data-salin="6 0 1 4">6 0 1 4</button></div></div></div>
+  </div>
+  <div class="pasangan">
+    <div style="background:#0B3B4A;color:#FFFFFF"><b>Aa</b>Putih di atas Laut Dalam</div>
+    <div style="background:#F7DFA8;color:#161616"><b>Aa</b>Hitam di atas Pasir Pantai</div>
+    <div style="background:#E6F5F3;color:#0B3B4A"><b>Aa</b>Laut Dalam di atas Buih Laut</div>
+    <div style="background:#F27A3D;color:#161616"><b>Aa</b>Hitam di atas Jingga Senja</div>
+  </div>
+  <p class="redup" style="margin-top:16px">Jingga Senja khusus untuk tombol pesan dan sorotan kecil. Untuk teks dan tautan berwarna toska di latar putih, pakai toska tua <code>#0A7A73</code> supaya tetap mudah dibaca.</p>
+</div></section>
+
+<section id="huruf"><div class="wadah">
+  <div class="kepala">
+    <span class="label">Huruf</span>
+    <h2>Dua huruf untuk website dan cetakan</h2>
+    <p>Tulisan Mambetron di logo ternyata memakai bentuk Fredoka Bold. Karena itu judul memakai Fredoka, sehingga website terasa satu keluarga dengan logo. Teks panjang memakai Plus Jakarta Sans, huruf buatan studio Tokotype dari Jakarta yang jelas dibaca di layar ponsel. Keduanya gratis dan boleh dipakai untuk usaha.</p>
+  </div>
+  <div class="huruf">
+    <div class="kartu">
+      <span class="label">Judul</span>
+      <h3 style="font-size:1.6rem">Fredoka</h3>
+      <div class="peraga" style="font-family:var(--display);font-weight:700">Pelukan hangat dari Raja Ampat</div>
+      <div class="abjad" style="font-family:var(--display);font-weight:500">Aa Bb Cc Dd Ee Ff Gg Hh Ii Jj Kk Ll Mm Nn Oo Pp Qq Rr Ss Tt Uu Vv Ww Xx Yy Zz 0123456789</div>
+      <div class="berat" style="font-family:var(--display)"><span style="font-weight:500">Medium 500</span><span style="font-weight:600">SemiBold 600</span><span style="font-weight:700">Bold 700</span></div>
+    </div>
+    <div class="kartu">
+      <span class="label">Teks, menu, label</span>
+      <h3 style="font-size:1.6rem;font-family:var(--body);font-weight:700">Plus Jakarta Sans</h3>
+      <p style="font-size:1.15rem">Tidur ditemani suara ombak, makan masakan rumah tiga kali sehari, lalu snorkeling di karang depan homestay. Kami jemput Anda di pelabuhan.</p>
+      <div class="abjad" style="font-family:var(--body)">Aa Bb Cc Dd Ee Ff Gg Hh Ii Jj Kk Ll Mm Nn Oo Pp Qq Rr Ss Tt Uu Vv Ww Xx Yy Zz 0123456789</div>
+      <div class="berat" style="font-family:var(--body)"><span>Regular 400</span><span style="font-weight:600">SemiBold 600</span><span style="font-weight:800">ExtraBold 800</span><span class="label" style="color:var(--accent)">Label kapital</span></div>
+    </div>
+  </div>
+  <div class="skala">
+    <div><small>Judul 1 · 68 / 40 px</small><span style="font-family:var(--display);font-weight:700;font-size:clamp(2.2rem,1.75rem + 3.5vw,4.25rem);line-height:1.05;color:var(--head)">Selamat datang</span></div>
+    <div><small>Judul 2 · 44 / 32 px</small><span style="font-family:var(--display);font-weight:600;font-size:clamp(1.8rem,1.5rem + 2vw,2.75rem);line-height:1.1;color:var(--head)">Kamar tepi laut</span></div>
+    <div><small>Judul 3 · 32 / 24 px</small><span style="font-family:var(--display);font-weight:600;font-size:clamp(1.4rem,1.25rem + 1vw,2rem);color:var(--head)">Makan tiga kali sehari</span></div>
+    <div><small>Teks · 17 px</small><span style="font-size:1.0625rem">Perahu kami menunggu di pelabuhan sesuai jadwal kapal Anda.</span></div>
+    <div><small>Label · 13 px</small><span class="label">Homestay di Raja Ampat</span></div>
+  </div>
+  <div class="kisi k2" style="margin-top:20px">
+    <div class="kartu"><h3>Untuk website</h3><p class="redup">Berkas font sudah ada di folder <code>brand/font/web</code>, tinggal dipasang. Token warna dan ukuran huruf ada di <code>brand/web/tokens.css</code>.</p>
+<pre>&lt;link rel="stylesheet" href="/font/web/fonts.css"&gt;
+&lt;link rel="stylesheet" href="/web/tokens.css"&gt;
+
+h1 { font-family: var(--mb-font-judul); }
+body { font-family: var(--mb-font-teks); }</pre></div>
+    <div class="kartu"><h3>Untuk desain cetak dan Canva</h3><p class="redup">Pasang berkas TTF di folder <code>brand/font/desktop</code> ke komputer, lalu kedua font muncul di CorelDRAW, Photoshop, atau Illustrator. Di Canva, cari nama fontnya di daftar font. Kalau belum ada, unggah berkas TTF yang sama.</p><p class="redup">Semua berkas cetak di folder ini sudah diubah ke kurva, jadi percetakan tidak perlu memasang font.</p></div>
+  </div>
+</div></section>
+
+<section id="elemen"><div class="wadah">
+  <div class="kepala">
+    <span class="label">Elemen grafis</span>
+    <h2>Pulau karst, ekor ombak, ikon garis</h2>
+    <p>Ilustrasi pulau karst berbentuk jamur meniru pulau-pulau kecil Raja Ampat. Motif ekor ombak diambil dari ekor kuskus di logo yang melingkar seperti gulungan ombak. Ikon garis dipakai untuk layanan dan petunjuk.</p>
+  </div>
+  <div class="kisi k3">
+    <figure style="grid-column:1 / -1"><div class="bingkai"><img src="panduan/elemen-ilustrasi.png" alt="Ilustrasi pulau karst dan laut" loading="lazy" class=""></div><figcaption><b>Ilustrasi pulau karst</b><span class="redup">Latar banner, post, kartu, dan pengganti foto sementara.</span></figcaption></figure>
+    <figure><div class="bingkai"><img src="panduan/elemen-ekor.png" alt="Motif ekor ombak" loading="lazy" class=""></div><figcaption><b>Ekor ombak</b><span class="redup">Hiasan kecil di label dan kartu.</span></figcaption></figure>
+    <figure><div class="bingkai"><img src="panduan/elemen-pola.png" alt="Pola ekor ombak" loading="lazy" class=""></div><figcaption><b>Pola</b><span class="redup">Pembungkus sabun, latar post, lapisan dalam jaket.</span></figcaption></figure>
+    <figure><div class="bingkai"><img src="panduan/elemen-ikon.png" alt="Ikon garis" loading="lazy" class=""></div><figcaption><b>Ikon garis</b><span class="redup">Kamar, makan, snorkel, perahu, lokasi, WiFi, dan lainnya.</span></figcaption></figure>
+  </div>
+</div></section>
+
+<section id="website"><div class="wadah">
+  <div class="kepala">
+    <span class="label">Website</span>
+    <h2>Logo, favicon, dan contoh halaman</h2>
+    <p>Header memakai logo horizontal. Ikon kuskus muncul di tab browser, di layar utama ponsel, dan saat tautan dibagikan di WhatsApp. Contoh halaman di bawah sudah memakai font dan warna merek, tinggal diisi foto dan isi asli.</p>
+  </div>
+  <div class="kisi k3">
+    <figure style="grid-column:span 2"><div class="bingkai"><img src="panduan/contoh-website.png" alt="Contoh halaman website di desktop" loading="lazy" class=""></div><figcaption><b>Contoh halaman di desktop</b><span class="redup">brand/web/contoh-halaman.html</span></figcaption></figure>
+    <figure><div class="bingkai"><img src="panduan/contoh-website-ponsel.png" alt="Contoh halaman website di ponsel" loading="lazy" class=""></div><figcaption><b>Di ponsel</b><span class="redup">Lebar 390 px</span></figcaption></figure>
+    <figure style="grid-column:span 2"><div class="bingkai"><img src="web/og-image.png" alt="Gambar saat tautan dibagikan" loading="lazy" class=""></div><figcaption><b>Gambar bagikan</b><span class="redup">1200 × 630 px, tampil saat tautan dikirim lewat WhatsApp atau Facebook</span></figcaption></figure>
+    <figure><div class="ubin" style="background:#E6F5F3;aspect-ratio:1"><img src="web/icon-512.png" alt="Ikon aplikasi" loading="lazy" class=""></div><figcaption><b>Favicon dan ikon aplikasi</b><span class="redup">favicon.ico, favicon.svg, apple-touch-icon.png, icon-192.png, icon-512.png</span></figcaption></figure>
+  </div>
+</div></section>
+
+<section id="sosial"><div class="wadah">
+  <div class="kepala">
+    <span class="label">Media sosial</span>
+    <h2>Instagram, Facebook, WhatsApp</h2>
+    <p>Template disimpan sebagai SVG dan PNG. Bagian berilustrasi laut adalah tempat foto, ganti dengan foto asli homestay. Ulasan tamu juga harus diisi ulasan sungguhan.</p>
+  </div>
+  <div class="kisi k3">
+    <figure><div class="bingkai"><img src="sosial-media/foto-profil-pasir.png" alt="Foto profil" loading="lazy" class=""></div><figcaption><b>Foto profil</b><span class="redup">1080 × 1080 px, Instagram, WhatsApp, Facebook</span></figcaption></figure>
+    <figure><div class="bingkai"><img src="sosial-media/post-info.png" alt="Post info" loading="lazy" class=""></div><figcaption><b>Post info</b><span class="redup">1080 × 1350 px</span></figcaption></figure>
+    <figure><div class="bingkai"><img src="sosial-media/post-foto.png" alt="Post foto" loading="lazy" class=""></div><figcaption><b>Post foto</b><span class="redup">1080 × 1350 px, ganti ilustrasi dengan foto asli</span></figcaption></figure>
+    <figure><div class="bingkai"><img src="sosial-media/post-ulasan.png" alt="Post ulasan tamu" loading="lazy" class=""></div><figcaption><b>Post ulasan tamu</b><span class="redup">1080 × 1350 px, isi dengan ulasan asli</span></figcaption></figure>
+    <figure><div class="bingkai"><img src="sosial-media/story.png" alt="Story" loading="lazy" class=""></div><figcaption><b>Story</b><span class="redup">1080 × 1920 px</span></figcaption></figure>
+    <figure><div class="bingkai"><img src="sosial-media/sampul-facebook.png" alt="Sampul Facebook" loading="lazy" class=""></div><figcaption><b>Sampul Facebook</b><span class="redup">1640 × 624 px</span></figcaption></figure>
+  </div>
+  <div class="kepala" style="margin-top:40px"><h3>Sampul sorotan story</h3></div>
+  <div class="kisi k6">
+    <figure><div class="bingkai" style="border-radius:50%;aspect-ratio:1;max-width:100%"><img style="width:100%;height:100%;object-fit:cover" src="sosial-media/sorotan/sorotan-kamar.png" alt="kamar" loading="lazy" class=""></div><figcaption style="align-items:center"><b style="text-transform:capitalize">kamar</b></figcaption></figure>
+    <figure><div class="bingkai" style="border-radius:50%;aspect-ratio:1;max-width:100%"><img style="width:100%;height:100%;object-fit:cover" src="sosial-media/sorotan/sorotan-makan.png" alt="makan" loading="lazy" class=""></div><figcaption style="align-items:center"><b style="text-transform:capitalize">makan</b></figcaption></figure>
+    <figure><div class="bingkai" style="border-radius:50%;aspect-ratio:1;max-width:100%"><img style="width:100%;height:100%;object-fit:cover" src="sosial-media/sorotan/sorotan-snorkel.png" alt="snorkel" loading="lazy" class=""></div><figcaption style="align-items:center"><b style="text-transform:capitalize">snorkel</b></figcaption></figure>
+    <figure><div class="bingkai" style="border-radius:50%;aspect-ratio:1;max-width:100%"><img style="width:100%;height:100%;object-fit:cover" src="sosial-media/sorotan/sorotan-jemput.png" alt="jemput" loading="lazy" class=""></div><figcaption style="align-items:center"><b style="text-transform:capitalize">jemput</b></figcaption></figure>
+    <figure><div class="bingkai" style="border-radius:50%;aspect-ratio:1;max-width:100%"><img style="width:100%;height:100%;object-fit:cover" src="sosial-media/sorotan/sorotan-lokasi.png" alt="lokasi" loading="lazy" class=""></div><figcaption style="align-items:center"><b style="text-transform:capitalize">lokasi</b></figcaption></figure>
+    <figure><div class="bingkai" style="border-radius:50%;aspect-ratio:1;max-width:100%"><img style="width:100%;height:100%;object-fit:cover" src="sosial-media/sorotan/sorotan-ulasan.png" alt="ulasan" loading="lazy" class=""></div><figcaption style="align-items:center"><b style="text-transform:capitalize">ulasan</b></figcaption></figure>
+  </div>
+</div></section>
+
+<section id="kaos"><div class="wadah">
+  <div class="kepala">
+    <span class="label">Kaos dan jaket</span>
+    <h2>Seragam staf dan suvenir tamu</h2>
+    <p>Berkas cetak ada dalam PDF dan SVG ukuran asli, ditambah PNG 300 dpi untuk sablon DTF. Ukuran di bawah untuk kaos M dan bisa disesuaikan.</p>
+  </div>
+  <div class="kisi k2">
+    <figure><div class="bingkai"><img src="merchandise/mockup/kaos-seragam-putih.png" alt="Kaos seragam putih" loading="lazy" class=""></div><figcaption><b>Kaos seragam putih</b><span class="redup">Dada kiri ikon bulat 9 cm, sablon DTF. Punggung logo utama 28 cm, sablon plastisol hitam.</span></figcaption></figure>
+    <figure><div class="bingkai"><img src="merchandise/mockup/kaos-seragam-laut.png" alt="Kaos seragam Laut Dalam" loading="lazy" class=""></div><figcaption><b>Kaos seragam Laut Dalam</b><span class="redup">Dada kiri stempel putih 9 cm. Punggung logo utama putih 28 cm. Satu warna putih, sablon plastisol.</span></figcaption></figure>
+    <figure><div class="bingkai"><img src="merchandise/mockup/kaos-suvenir.png" alt="Kaos suvenir" loading="lazy" class=""></div><figcaption><b>Kaos suvenir</b><span class="redup">Emblem 25 cm di dada, sablon DTF penuh warna. Cocok dijual ke tamu.</span></figcaption></figure>
+    <figure><div class="bingkai"><img src="merchandise/mockup/jaket.png" alt="Jaket bomber" loading="lazy" class=""></div><figcaption><b>Jaket bomber</b><span class="redup">Dada kiri bordir stempel putih 8 cm. Punggung logo utama putih 26 cm, bordir atau DTF. Lengan bisa diberi tulisan Mambetron 9 cm.</span></figcaption></figure>
+  </div>
+</div></section>
+
+<section id="amenities"><div class="wadah">
+  <div class="kepala">
+    <span class="label">Amenities</span>
+    <h2>Yang tamu sentuh setiap hari</h2>
+    <p>Handuk, sabun, botol isi ulang, kunci, gantungan pintu, kartu selamat datang, dan sandal. Garis potong berwarna magenta di berkas cetak hanya panduan pisau potong, bukan untuk dicetak.</p>
+  </div>
+  <div class="kisi k2">
+    <figure><div class="bingkai"><img src="amenities/mockup/handuk.png" alt="Handuk" loading="lazy" class=""></div><figcaption><b>Handuk</b><span class="redup">Bordir logo horizontal satu warna selebar 16 cm, benang Laut Dalam di handuk putih dan benang putih di handuk gelap.</span></figcaption></figure>
+    <figure><div class="bingkai"><img src="amenities/mockup/sabun.png" alt="Pembungkus sabun" loading="lazy" class=""></div><figcaption><b>Pembungkus sabun</b><span class="redup">Pita kertas 200 × 60 mm, kertas kraft atau art paper 150 gsm.</span></figcaption></figure>
+    <figure><div class="bingkai"><img src="amenities/mockup/botol.png" alt="Label botol isi ulang" loading="lazy" class=""></div><figcaption><b>Label botol isi ulang</b><span class="redup">Stiker vinyl tahan air 60 × 80 mm. Sampo toska, sabun cair jingga, kondisioner pasir.</span></figcaption></figure>
+    <figure><div class="bingkai"><img src="amenities/mockup/gantungan-kunci.png" alt="Gantungan kunci kamar" loading="lazy" class=""></div><figcaption><b>Gantungan kunci kamar</b><span class="redup">Kayu bundar 50 mm, tebal 5 mm, grafir laser. Depan stempel, belakang nomor kamar.</span></figcaption></figure>
+    <figure><div class="bingkai"><img src="amenities/mockup/gantungan-pintu.png" alt="Gantungan pintu" loading="lazy" class=""></div><figcaption><b>Gantungan pintu</b><span class="redup">Art carton 310 gsm, laminasi doff, potong pola 90 × 230 mm. Dua sisi.</span></figcaption></figure>
+    <figure><div class="bingkai"><img src="amenities/mockup/kartu-selamat-datang.png" alt="Kartu selamat datang" loading="lazy" class=""></div><figcaption><b>Kartu selamat datang</b><span class="redup">A6, art carton 260 gsm. Berisi WiFi, tiga ajakan menjaga pulau, dan kontak.</span></figcaption></figure>
+    <figure style="grid-column:1 / -1"><div class="bingkai"><img src="amenities/mockup/sandal.png" alt="Sandal kamar" loading="lazy" class=""></div><figcaption><b>Sandal kamar</b><span class="redup">Ikon bulat dicetak di tumit alas sandal, sekitar 5 cm.</span></figcaption></figure>
+  </div>
+</div></section>
+
+<section id="papan"><div class="wadah">
+  <div class="kepala">
+    <span class="label">Papan dan banner</span>
+    <h2>Terlihat dari dermaga</h2>
+    <p>Banner berdiri dan spanduk dibuat untuk Pelabuhan Waisai atau dermaga tempat tamu tiba, sedangkan papan nama dipasang di homestay. Huruf dibuat besar supaya terbaca dari beberapa meter. Kirim berkas PDF ke percetakan, ukurannya sudah sesuai ukuran cetak.</p>
+  </div>
+  <div class="kisi k2">
+    <figure><div class="bingkai"><img src="papan-dan-banner/mockup/banner-pelabuhan.png" alt="Banner berdiri di pelabuhan" loading="lazy" class=""></div><figcaption><b>Banner berdiri di pelabuhan</b><span class="redup">Roll-up 80 × 200 cm dan X-banner 60 × 160 cm. Bahan albatros atau luster. Bagian bawah sekitar 15 cm tertutup kaki roll-up, jadi hanya berisi pola.</span></figcaption></figure>
+    <figure><div class="bingkai"><img src="papan-dan-banner/mockup/spanduk-pelabuhan.png" alt="Spanduk" loading="lazy" class=""></div><figcaption><b>Spanduk</b><span class="redup">300 × 100 cm, flexi Korea 340 gsm, mata ayam di setiap sudut dan tiap 50 cm.</span></figcaption></figure>
+    <figure><div class="bingkai"><img src="papan-dan-banner/mockup/papan-nama.png" alt="Papan nama homestay" loading="lazy" class=""></div><figcaption><b>Papan nama homestay</b><span class="redup">120 × 80 cm. Cetak stiker vinyl dengan laminasi UV di atas ACP 3 mm supaya tahan panas dan udara laut. Tiang kayu atau besi galvanis.</span></figcaption></figure>
+    <figure><div class="bingkai"><img src="papan-dan-banner/mockup/papan-jemput.png" alt="Papan jemput tamu" loading="lazy" class=""></div><figcaption><b>Papan jemput tamu</b><span class="redup">A3 mendatar, laminasi glossy. Tulis nama tamu dengan spidol papan tulis lalu hapus untuk tamu berikutnya.</span></figcaption></figure>
+  </div>
+</div></section>
+
+<section id="lengkapi"><div class="wadah">
+  <div class="kepala">
+    <span class="label">Sebelum cetak</span>
+    <h2>Yang perlu dilengkapi</h2>
+    <p>Beberapa isi masih contoh karena belum diketahui. Isi data asli di berkas <code>kontak.lokal.json</code> di folder utama, lalu jalankan <code>npm run build</code>. Semua desain akan dibuat ulang dengan data baru. Berkas itu tidak ikut tersimpan di GitHub, jadi nomor WhatsApp tetap pribadi.</p>
+  </div>
+  <div class="daftar">
+    <div><b>Nomor WhatsApp</b><span class="redup">Sekarang tertulis +62 8XX XXXX XXXX</span></div>
+    <div><b>Akun Instagram dan alamat website</b><span class="redup">Sekarang @mambetronhomestay dan mambetronhomestay.com. Pastikan namanya memang milik Mambetron.</span></div>
+    <div><b>Kode QR</b><span class="redup">Isi tautan tujuan, misalnya tautan WhatsApp. Selama kosong, banner menampilkan kotak bertulisan KODE QR.</span></div>
+    <div><b>Daftar layanan di banner</b><span class="redup">Kamar tepi laut, makan tiga kali, antar jemput perahu, snorkeling di karang. Ubah kalau tidak sesuai kenyataan.</span></div>
+    <div><b>Nama dan kata sandi WiFi</b><span class="redup">Untuk kartu selamat datang.</span></div>
+    <div><b>Foto asli</b><span class="redup">Ganti ilustrasi laut di template post, story, dan sampul Facebook dengan foto homestay.</span></div>
+  </div>
+</div></section>
+</main>
+
+<footer class="penutup">
+  <div class="wadah">
+    <div style="display:flex;flex-direction:column;gap:10px;min-width:0">
+      <h2>Semua berkas</h2>
+      <p>Logo, font, berkas cetak PDF, template media sosial, dan mockup tersimpan di folder <code style="background:rgba(255,255,255,0.12);color:#fff">brand</code> pada repositori <a href="https://github.com/yudventure/mambetronhomestay" target="_blank" rel="noopener">yudventure/mambetronhomestay</a>.</p>
+    </div>
+    <img src="logo/png/kecil/mambetron-logo-horizontal-putih-500.png" alt="Mambetron Homestay" style="width:260px">
+  </div>
+</footer>
+
+<script>
+document.querySelectorAll('[data-salin]').forEach(function (b) {
+  b.addEventListener('click', function () {
+    var t = b.getAttribute('data-salin'), asli = b.textContent;
+    var tandai = function (pesan) { b.textContent = pesan; setTimeout(function () { b.textContent = asli; }, 1200); };
+    var pilih = function () { var r = document.createRange(); r.selectNodeContents(b); var s = getSelection(); s.removeAllRanges(); s.addRange(r); };
+    try {
+      navigator.clipboard.writeText(t).then(function () { tandai('Tersalin'); }, pilih);
+    } catch (e) { pilih(); }
+  });
+});
+</script>
+</body>
+</html>

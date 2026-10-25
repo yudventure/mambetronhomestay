@@ -1,0 +1,74 @@
+/* Token desain Mambetron Homestay. Pakai bersama ../font/web/fonts.css */
+:root {
+  --mb-hitam: #161616; /* Hitam Kuskus */
+  --mb-laut: #0B3B4A; /* Laut Dalam */
+  --mb-toska: #12A39A; /* Toska Laguna */
+  --mb-senja: #F27A3D; /* Jingga Senja */
+  --mb-pasir: #F7DFA8; /* Pasir Pantai */
+  --mb-buih: #E6F5F3; /* Buih Laut */
+  --mb-toska-tua: #0A7A73; /* toska untuk teks dan tautan di latar putih */
+  --mb-putih: #ffffff;
+
+  --mb-font-judul: 'Fredoka', 'Nunito', 'Trebuchet MS', system-ui, sans-serif;
+  --mb-font-teks: 'Plus Jakarta Sans', 'Segoe UI', system-ui, -apple-system, sans-serif;
+
+  /* skala huruf, lentur antara layar ponsel dan desktop */
+  --mb-teks-kecil: 0.875rem;
+  --mb-teks: 1.0625rem;
+  --mb-teks-besar: clamp(1.125rem, 1rem + 0.4vw, 1.25rem);
+  --mb-judul-4: clamp(1.25rem, 1.1rem + 0.6vw, 1.5rem);
+  --mb-judul-3: clamp(1.5rem, 1.25rem + 1vw, 2rem);
+  --mb-judul-2: clamp(2rem, 1.5rem + 2vw, 2.75rem);
+  --mb-judul-1: clamp(2.5rem, 1.75rem + 3.5vw, 4.25rem);
+
+  --mb-radius: 18px;
+  --mb-radius-tombol: 999px;
+  --mb-bayangan: 0 10px 30px rgba(11, 59, 74, 0.12);
+}
+
+body {
+  font-family: var(--mb-font-teks);
+  font-size: var(--mb-teks);
+  line-height: 1.65;
+  color: var(--mb-hitam);
+  background: var(--mb-putih);
+}
+
+h1, h2, h3, h4, .mb-judul {
+  font-family: var(--mb-font-judul);
+  font-weight: 600;
+  line-height: 1.12;
+  letter-spacing: -0.01em;
+  color: var(--mb-laut);
+}
+h1 { font-size: var(--mb-judul-1); font-weight: 700; }
+h2 { font-size: var(--mb-judul-2); }
+h3 { font-size: var(--mb-judul-3); }
+h4 { font-size: var(--mb-judul-4); }
+
+/* label kecil berhuruf kapital, senada dengan tulisan HOMESTAY di logo */
+.mb-label {
+  font-family: var(--mb-font-teks);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--mb-toska-tua);
+}
+
+a { color: var(--mb-toska-tua); text-underline-offset: 0.18em; }
+
+.mb-tombol {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5em;
+  padding: 0.85em 1.6em;
+  border-radius: var(--mb-radius-tombol);
+  background: var(--mb-senja);
+  color: var(--mb-hitam);
+  font-family: var(--mb-font-teks);
+  font-weight: 700;
+  text-decoration: none;
+}
+.mb-tombol:hover { background: #f58f5c; }
+.mb-tombol--laut { background: var(--mb-laut); color: var(--mb-putih); }

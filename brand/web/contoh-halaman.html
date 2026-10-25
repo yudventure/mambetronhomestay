@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mambetron Homestay</title>
+<meta name="description" content="Homestay di Raja Ampat. Pelukan hangat dari Raja Ampat.">
+<meta property="og:title" content="Mambetron Homestay">
+<meta property="og:description" content="Pelukan hangat dari Raja Ampat">
+<meta property="og:image" content="og-image.png">
+<meta name="theme-color" content="#0B3B4A">
+<link rel="icon" href="favicon.ico" sizes="any">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="manifest" href="site.webmanifest">
+<link rel="preload" href="../font/web/fredoka-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="../font/web/plus-jakarta-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="../font/web/fonts.css">
+<link rel="stylesheet" href="tokens.css">
+<style>
+  /* Contoh pemakaian logo, font, dan warna. Bukan situs jadi. */
+  * { box-sizing: border-box; }
+  body { margin: 0; }
+  .wadah { max-width: 1120px; margin: 0 auto; padding: 0 20px; }
+  header { position: sticky; top: 0; background: rgba(255, 255, 255, 0.96); box-shadow: 0 2px 18px rgba(11, 59, 74, 0.08); z-index: 2; }
+  header .wadah { display: flex; align-items: center; justify-content: space-between; gap: 16px; height: 72px; }
+  header img { height: 46px; width: auto; display: block; }
+  nav { display: flex; gap: 22px; font-weight: 600; font-size: 0.95rem; }
+  nav a { color: var(--mb-laut); text-decoration: none; }
+  .pahlawan { background: var(--mb-buih); padding: 72px 0 0; overflow: hidden; }
+  .pahlawan .wadah { display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 40px; align-items: center; }
+  .pahlawan p { font-size: var(--mb-teks-besar); max-width: 34em; }
+  .pahlawan h1 { margin: 0.2em 0 0.35em; }
+  .pahlawan img.logo { width: 100%; max-width: 420px; justify-self: center; }
+  .laut { display: block; width: 100%; height: auto; margin-top: 40px; }
+  section { padding: 72px 0; }
+  .kisi { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-top: 28px; }
+  .kartu { background: var(--mb-putih); border-radius: var(--mb-radius); padding: 26px; box-shadow: var(--mb-bayangan); }
+  .kartu h3 { font-size: var(--mb-judul-4); margin: 0 0 0.4em; }
+  .kartu p { margin: 0; }
+  .ajak { background: var(--mb-laut); color: var(--mb-putih); border-radius: 28px; padding: 44px; display: flex; align-items: center; justify-content: space-between; gap: 24px; }
+  .ajak h2 { color: var(--mb-putih); margin: 0; }
+  .ajak .mb-label { color: var(--mb-pasir); }
+  footer { background: var(--mb-hitam); color: #fff; padding: 40px 0; font-size: var(--mb-teks-kecil); }
+  footer img { height: 40px; }
+  @media (max-width: 760px) {
+    nav { display: none; }
+    .pahlawan .wadah, .kisi { grid-template-columns: 1fr; }
+    .ajak { flex-direction: column; align-items: flex-start; padding: 32px 24px; }
+  }
+</style>
+</head>
+<body>
+<header>
+  <div class="wadah">
+    <img src="logo-header.svg" alt="Mambetron Homestay">
+    <nav><a href="#kamar">Kamar</a><a href="#kegiatan">Kegiatan</a><a href="#lokasi">Lokasi</a></nav>
+    <a class="mb-tombol" href="#pesan">Pesan</a>
+  </div>
+</header>
+
+<div class="pahlawan">
+  <div class="wadah">
+    <div>
+      <div class="mb-label">Homestay di Raja Ampat</div>
+      <h1>Pelukan hangat dari Raja Ampat</h1>
+      <p>Tidur di tepi laut, makan masakan rumah, lalu snorkeling di karang depan homestay. Kami jemput Anda di pelabuhan.</p>
+      <p><a class="mb-tombol" href="#pesan">Pesan lewat WhatsApp</a></p>
+    </div>
+    <img class="logo" src="../logo/svg/mambetron-logo-utama-hitam.svg" alt="">
+  </div>
+</div>
+
+<section id="kamar">
+  <div class="wadah">
+    <div class="mb-label">Yang kami siapkan</div>
+    <h2>Semua yang Anda butuhkan untuk singgah</h2>
+    <div class="kisi">
+      <div class="kartu"><h3>Kamar tepi laut</h3><p>Bangun pagi dengan suara ombak dan angin laut.</p></div>
+      <div class="kartu"><h3>Makan tiga kali</h3><p>Masakan rumah dengan ikan segar dan sayur kebun.</p></div>
+      <div class="kartu"><h3>Antar jemput</h3><p>Perahu kami menunggu di pelabuhan sesuai jadwal kapal Anda.</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="pesan">
+  <div class="wadah">
+    <div class="ajak">
+      <div>
+        <div class="mb-label">Tanya kamar kosong</div>
+        <h2>Kabari tanggal kedatangan Anda</h2>
+      </div>
+      <a class="mb-tombol" href="#">Chat WhatsApp</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wadah">
+    <img src="logo-header-putih.svg" alt="Mambetron Homestay">
+    <p>Raja Ampat, Papua Barat Daya</p>
+  </div>
+</footer>
+</body>
+</html>

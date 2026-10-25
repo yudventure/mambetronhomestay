@@ -1,0 +1,34 @@
+{
+  "nama": "Mambetron Homestay",
+  "lokasi": "Raja Ampat, Papua Barat Daya",
+  "whatsapp": "+62 8XX XXXX XXXX",
+  "instagram": "@mambetronhomestay",
+  "situs": "mambetronhomestay.com",
+  "qr": "",
+  "slogan": "Pelukan hangat dari Raja Ampat",
+  "sloganEn": "A warm hug from Raja Ampat",
+  "wifiNama": "Mambetron Tamu",
+  "wifiSandi": "(isi sendiri)",
+  "layanan": [
+    [
+      "kamar",
+      "Kamar tepi laut",
+      "Sea-view rooms"
+    ],
+    [
+      "makan",
+      "Makan tiga kali",
+      "Three meals a day"
+    ],
+    [
+      "perahu",
+      "Antar jemput perahu",
+      "Boat transfer"
+    ],
+    [
+      "snorkel",
+      "Snorkeling di karang",
+      "Reef snorkeling"
+    ]
+  ]
+}
