@@ -63,7 +63,7 @@ function bercak(cx, cy, rx, ry, seed = 1, rot = 0) {
 }
 
 let uid = 0;
-const HEAD_D = 'M94 160C94 98 142 66 200 66C258 66 306 98 306 160C306 196 300 222 278 240C256 258 228 262 200 262C172 262 144 258 122 240C100 222 94 196 94 160Z';
+const HEAD_D = 'M94 154C94 94 142 64 200 64C258 64 306 94 306 154C306 190 282 224 240 250C226 260 212 270 200 270C188 270 174 260 160 250C118 224 94 190 94 154Z';
 const BODY_D = 'M110 330C110 262 150 236 200 236C250 236 290 262 290 330C290 392 254 416 200 416C146 416 110 392 110 330Z';
 
 // Pink hand: palm, then long thin fingers fanned towards direction (dx, dy).
@@ -132,18 +132,19 @@ function kepala({ ekspresi = 'senang', arah = [0, 0], miring = 0 } = {}) {
   s += `<path d="${HEAD_D}" fill="${P.bulu}" ${GARIS}/>`;
   // dark patches on the crown, and a pale stripe down the face
   s += `<g clip-path="url(#${id})">${bercak(246, 84, 34, 20, 2, -12)}${bercak(140, 100, 20, 14, 5, 20)}${bercak(298, 150, 16, 22, 7)}</g>`;
-  s += `<path d="M188 72Q200 60 212 72L208 186Q200 194 192 186Z" fill="${P.stripe}"/>`;
-  // nose, mouth, whiskers
-  s += `<path d="M184 198Q200 188 216 198Q216 214 200 222Q184 214 184 198Z" fill="${P.hidung}"/><circle cx="194" cy="203" r="2.4" fill="${P.kulitTua}"/><circle cx="206" cy="203" r="2.4" fill="${P.kulitTua}"/>`;
+  // lighter muzzle narrowing to the nose, pale stripe from the forehead into it
+  s += `<path d="M168 184Q200 170 232 184Q236 232 200 262Q164 232 168 184Z" fill="${P.perut}"/>`;
+  s += `<path d="M188 70Q200 58 212 70L207 206Q200 212 193 206Z" fill="${P.stripe}"/>`;
+  s += `<path d="M185 228Q200 218 215 228Q215 246 200 254Q185 246 185 228Z" fill="${P.hidung}"/><circle cx="195" cy="233" r="2.4" fill="${P.kulitTua}"/><circle cx="205" cy="233" r="2.4" fill="${P.kulitTua}"/>`;
   const mulut = {
-    senyum: `<path d="M186 228Q193 236 200 229Q207 236 214 228" fill="none" stroke="${P.mata}" stroke-width="3.5" stroke-linecap="round"/>`,
-    kecil: `<path d="M194 230Q200 234 206 230" fill="none" stroke="${P.mata}" stroke-width="3" stroke-linecap="round"/>`,
-    o: `<ellipse cx="200" cy="233" rx="8" ry="10" fill="${P.mata}"/>`,
-    tawa: `<path d="M182 226Q200 254 218 226Z" fill="${P.mata}"/><path d="M190 236Q200 246 210 236Z" fill="${P.pipi}"/>`,
+    senyum: `<path d="M188 256Q194 263 200 257Q206 263 212 256" fill="none" stroke="${P.mata}" stroke-width="3.2" stroke-linecap="round"/>`,
+    kecil: `<path d="M195 258Q200 262 205 258" fill="none" stroke="${P.mata}" stroke-width="3" stroke-linecap="round"/>`,
+    o: `<ellipse cx="200" cy="259" rx="6" ry="7" fill="${P.mata}"/>`,
+    tawa: `<path d="M186 254Q200 274 214 254Z" fill="${P.mata}"/><path d="M192 261Q200 268 208 261Z" fill="${P.pipi}"/>`,
   }[E.mulut];
   s += mulut;
-  for (const k of [-1, 1]) s += `<path d="M${200 + 40 * k} 212L${200 + 90 * k} 200M${200 + 40 * k} 220L${200 + 92 * k} 222" fill="none" stroke="${P.kumis}" stroke-width="2.2" stroke-linecap="round"/>`;
-  s += `<ellipse cx="134" cy="206" rx="16" ry="10" fill="${P.pipi}" opacity="0.5"/><ellipse cx="266" cy="206" rx="16" ry="10" fill="${P.pipi}" opacity="0.5"/>`;
+  for (const k of [-1, 1]) s += `<path d="M${200 + 26 * k} 232L${200 + 76 * k} 218M${200 + 28 * k} 240L${200 + 80 * k} 242" fill="none" stroke="${P.kumis}" stroke-width="2.2" stroke-linecap="round"/>`;
+  s += `<ellipse cx="142" cy="206" rx="15" ry="9" fill="${P.pipi}" opacity="0.5"/><ellipse cx="258" cy="206" rx="15" ry="9" fill="${P.pipi}" opacity="0.5"/>`;
   s += mata({ x: 158, y: 160, gaya: E.kiri, arah }) + mata({ x: 242, y: 160, gaya: E.kanan, arah });
   if (ekspresi === 'kaget') s += `<path d="M132 112Q158 104 180 110M268 112Q242 104 220 110" fill="none" stroke="${P.bercak}" stroke-width="4" stroke-linecap="round"/>`;
   return s + '</g>';
@@ -275,5 +276,5 @@ export function wajah(ekspresi = 'senang', { stiker = false } = {}) {
   if (ekspresi === 'cinta') s += AKS.hati();
   if (ekspresi === 'tidur') s += AKS.zzz();
   if (stiker) s = rim(s);
-  return { svg: s, box: [60, 20, 400, 270] };
+  return { svg: s, box: [60, 20, 400, 284] };
 }
