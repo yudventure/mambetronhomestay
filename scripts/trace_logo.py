@@ -2,9 +2,18 @@
 
 Usage: python3 scripts/trace_logo.py brand/logo/sumber/mambetron-logo-asli.png brand/logo/sumber/logo-traced.json
 
-Output JSON holds every closed contour as an SVG path string together with
-its nesting depth (0 = black outer shape, 1 = white hole, 2 = black shape
-inside a hole, ...) and bounding box, in source-pixel units (cropped).
+The logo is a kuskus head peeking over a horizontal line, the word
+"mambetron" under it and HOMESTAY under that. Output JSON holds
+
+  contours      every closed contour as an SVG path with its nesting depth
+                (0 = black shape, 1 = white hole, 2 = black inside a hole...)
+                and bounding box, in source pixels of the cropped logo
+  lidah         index of the hole that is the pink tongue
+  garis         bounding box of the horizontal line
+  teksAtas      y where the lettering starts
+  kepala        bounding box of the head (ears to snout, without the line)
+  hullKepala    head outline grown by RIM, for the white rim on dark grounds
+  hull          outline around the whole logo, for die-cut stickers
 """
 import json
 import sys
@@ -15,40 +24,40 @@ import potrace
 from PIL import Image, ImageDraw, ImageFilter
 
 SCALE = 3
-PAD = 24
-# White rim around the silhouette for the sticker/negative version, in source px.
-RIM = 10
-# The oval sign is open between the left paw and the tail curl. These points
-# (cropped source px) close it so the sign's interior can be filled.
-BRIDGE = [(258, 668), (290, 690), (330, 698), (365, 694), (398, 684)]
+PAD = 30
+# white rim around the head on dark grounds, and around the sticker, in source px
+RIM = 9
+# extra closing for the sticker outline so head, line and words become one shape
+CLOSE = 26
 
 
-def load_bitmap(path):
-    img = Image.open(path).convert("L")
-    arr = np.array(img)
-    ys, xs = np.where(arr < 128)
+def load(path):
+    img = Image.open(path).convert("RGB")
+    gray = np.array(img.convert("L"))
+    ys, xs = np.where(gray < 128)
     x0, y0 = max(xs.min() - PAD, 0), max(ys.min() - PAD, 0)
-    x1, y1 = min(xs.max() + PAD, arr.shape[1]), min(ys.max() + PAD, arr.shape[0])
+    x1, y1 = min(xs.max() + PAD, gray.shape[1]), min(ys.max() + PAD, gray.shape[0])
     crop = img.crop((x0, y0, x1, y1))
-    big = crop.resize((crop.width * SCALE, crop.height * SCALE), Image.LANCZOS)
+    big = crop.convert("L").resize((crop.width * SCALE, crop.height * SCALE), Image.LANCZOS)
     big = big.filter(ImageFilter.GaussianBlur(SCALE * 0.6))
     bits = np.array(big) < 128
-    return bits, tuple(int(v) for v in (x0, y0, x1 - x0, y1 - y0))
+    rgb = np.array(crop).astype(int)
+    pink = (rgb[..., 0] > 150) & (rgb[..., 0] - rgb[..., 1] > 30) & (rgb[..., 0] - rgb[..., 2] > 20)
+    return bits, pink, tuple(int(v) for v in (x0, y0, x1 - x0, y1 - y0))
 
 
-def curve_to_d(curve):
+def curve_to_d(curve, off=0.0):
     s = 1.0 / SCALE
+    X = lambda v: f"{v * s - off:.2f}"
     p = curve.start_point
-    parts = [f"M{p.x * s:.2f} {p.y * s:.2f}"]
+    parts = [f"M{X(p.x)} {X(p.y)}"]
     for seg in curve.segments:
         if seg.is_corner:
             c, e = seg.c, seg.end_point
-            parts.append(f"L{c.x * s:.2f} {c.y * s:.2f}L{e.x * s:.2f} {e.y * s:.2f}")
+            parts.append(f"L{X(c.x)} {X(c.y)}L{X(e.x)} {X(e.y)}")
         else:
             a, b, e = seg.c1, seg.c2, seg.end_point
-            parts.append(
-                f"C{a.x * s:.2f} {a.y * s:.2f} {b.x * s:.2f} {b.y * s:.2f} {e.x * s:.2f} {e.y * s:.2f}"
-            )
+            parts.append(f"C{X(a.x)} {X(a.y)} {X(b.x)} {X(b.y)} {X(e.x)} {X(e.y)}")
     parts.append("Z")
     return "".join(parts)
 
@@ -84,17 +93,12 @@ def area(poly):
     return abs(float(np.dot(x, np.roll(y, 1)) - np.dot(y, np.roll(x, 1)))) / 2
 
 
-def bbox(curve):
-    s = 1.0 / SCALE
-    pts = [curve.start_point]
-    for seg in curve.segments:
-        pts += [seg.c, seg.end_point] if seg.is_corner else [seg.c1, seg.c2, seg.end_point]
-    xs = [p.x * s for p in pts]
-    ys = [p.y * s for p in pts]
-    return [round(min(xs), 2), round(min(ys), 2), round(max(xs), 2), round(max(ys), 2)]
+def bbox(poly):
+    return [round(float(poly[:, 0].min()), 2), round(float(poly[:, 1].min()), 2),
+            round(float(poly[:, 0].max()), 2), round(float(poly[:, 1].max()), 2)]
 
 
-def dilate(mask, r):
+def grow(mask, r):
     m = mask.copy()
     for i in range(r):
         n = m.copy()
@@ -111,43 +115,127 @@ def dilate(mask, r):
     return m
 
 
-def hull_bitmap(bits):
-    img = Image.fromarray((bits * 255).astype(np.uint8)).copy()
-    ImageDraw.Draw(img).line([(x * SCALE, y * SCALE) for x, y in BRIDGE], fill=255,
-                             width=8 * SCALE, joint="curve")
-    m = dilate(np.array(img) > 127, RIM * SCALE)
-    img = Image.fromarray((m * 255).astype(np.uint8)).copy()
+def shrink(mask, r):
+    return ~grow(~mask, r)
+
+
+def fill_holes(mask):
+    img = Image.fromarray((mask * 255).astype(np.uint8)).copy()
     ImageDraw.floodfill(img, (0, 0), 128)
     return np.array(img) != 128
 
 
-def drop_frame(plist, w, h):
-    # potracer also emits the bitmap's own border as a contour, skip it
-    return [c for c in plist if bbox(c) != [0.0, 0.0, float(w), float(h)]]
+def outline(bits, rim, close=0):
+    """Grow the black shapes by rim (and close gaps up to close) on a padded
+    canvas so nothing touches the border, then fill holes and trace. Returns
+    the outline as an SVG path in cropped source pixels."""
+    m = (rim + close) * SCALE + 12
+    big = np.pad(bits, m)
+    g = grow(big, (rim + close) * SCALE)
+    if close:
+        g = shrink(g, close * SCALE)
+    g = fill_holes(g)
+    plist = potrace.Bitmap(g).trace(turdsize=200 * SCALE, alphamax=1.2, opticurve=True, opttolerance=0.4)
+    H, W = g.shape
+    out = []
+    for c in plist:
+        if bbox(polyline(c)) == [0.0, 0.0, float(W) / SCALE, float(H) / SCALE]:
+            continue
+        out.append(curve_to_d(c, off=m / SCALE))
+    return "".join(out)
+
+
+def parts(bits):
+    """Find the line, the lettering and the head in the big bitmap."""
+    H, W = bits.shape
+    # the line reaches further left than the head; the first band of rows with
+    # black near the left edge is the line, the next one is the lettering
+    left = np.where(bits[:, : int(W * 0.22)].any(axis=1))[0]
+    brk = np.where(np.diff(left) > 1)[0]
+    line_rows = left[: brk[0] + 1] if len(brk) else left
+    l0, l1 = int(line_rows.min()), int(line_rows.max())
+    cols = np.where(bits[l0:l1 + 1].any(axis=0))[0]
+    gx0, gx1 = int(cols.min()), int(cols.max())
+    # lettering: first row under the line where black spans most of the width
+    text_top = None
+    for y in range(l1 + 1, H):
+        xs = np.where(bits[y])[0]
+        if len(xs) and xs.max() - xs.min() > W * 0.4:
+            text_top = y
+            break
+    # snout: black under the line that is connected to it (the b and t
+    # ascenders of the lettering also sit here but do not touch the line)
+    band = bits[l1 + 1:text_top].copy()
+    img = Image.fromarray((band * 255).astype(np.uint8)).copy()
+    for x in np.where(band[0])[0]:
+        if img.getpixel((int(x), 0)) == 255:
+            ImageDraw.floodfill(img, (int(x), 0), 128)
+    tag = np.array(img)
+    snout = tag == 128
+    rest = tag == 255
+    sc = np.where(snout.any(axis=0))[0]
+    sx0, sx1 = int(sc.min()), int(sc.max())
+    ry = np.where(rest.any(axis=1))[0]
+    if len(ry):
+        text_top = l1 + 1 + int(ry.min())
+    head = bits.copy()
+    head[l1 + 1:] = False
+    head[l1 + 1:l1 + 1 + snout.shape[0]] |= snout
+    head[l0:l1 + 1, :sx0] = False
+    head[l0:l1 + 1, sx1 + 1:] = False
+    # the head body stops at the line, keep only what sits above it or is the snout
+    hy = np.where(head.any(axis=1))[0]
+    hx = np.where(head[:l0].any(axis=0))[0]
+    return {
+        "garis": (gx0, l0, gx1, l1), "teksAtas": text_top, "moncong": (sx0, sx1),
+        "kepala": (int(hx.min()), int(hy.min()), int(hx.max()), int(hy.max())), "maskKepala": head,
+    }
 
 
 def main(src, out):
     t = time.time()
-    bits, crop = load_bitmap(src)
-    bm = potrace.Bitmap(bits)
-    plist = bm.trace(turdsize=20 * SCALE, turnpolicy=potrace.POTRACE_TURNPOLICY_MINORITY,
-                     alphamax=1.0, opticurve=True, opttolerance=0.2)
-    plist = drop_frame(plist, crop[2], crop[3])
+    bits, pink, crop = load(src)
+    w, h = crop[2], crop[3]
+    plist = potrace.Bitmap(bits).trace(turdsize=6 * SCALE, turnpolicy=potrace.POTRACE_TURNPOLICY_MINORITY,
+                                       alphamax=1.0, opticurve=True, opttolerance=0.2)
     polys = [polyline(c) for c in plist]
+    keep = [i for i, p in enumerate(polys) if bbox(p) != [0.0, 0.0, float(w), float(h)]]
+    plist = [plist[i] for i in keep]
+    polys = [polys[i] for i in keep]
     contours = []
     for i, curve in enumerate(plist):
         probe = tuple(polys[i][0])
         depth = sum(1 for j, q in enumerate(polys) if j != i and area(q) > area(polys[i]) and inside(probe, q))
-        contours.append({"d": curve_to_d(curve), "bbox": bbox(curve), "depth": depth,
+        contours.append({"d": curve_to_d(curve), "bbox": bbox(polys[i]), "depth": depth,
                          "area": round(area(polys[i]), 1)})
-    hull = potrace.Bitmap(hull_bitmap(bits)).trace(turdsize=200 * SCALE, alphamax=1.2,
-                                                    opticurve=True, opttolerance=0.4)
-    hull_d = "".join(curve_to_d(c) for c in drop_frame(hull, crop[2], crop[3]))
-    data = {"width": crop[2], "height": crop[3], "sourceCrop": crop, "rim": RIM,
-            "contours": contours, "hull": hull_d}
+
+    # the tongue is the hole whose box covers the pink pixels
+    ys, xs = np.where(pink)
+    lidah = None
+    if len(xs):
+        cx, cy = xs.mean(), ys.mean()
+        cands = [i for i, c in enumerate(contours) if c["depth"] % 2 == 1
+                 and c["bbox"][0] <= cx <= c["bbox"][2] and c["bbox"][1] <= cy <= c["bbox"][3]]
+        if cands:
+            lidah = min(cands, key=lambda i: contours[i]["area"])
+
+    p = parts(bits)
+    s = 1.0 / SCALE
+
+    data = {
+        "width": w, "height": h, "sourceCrop": crop, "rim": RIM,
+        "contours": contours, "lidah": lidah,
+        "garis": [round(v * s, 2) for v in p["garis"]],
+        "teksAtas": round(p["teksAtas"] * s, 2),
+        "moncong": [round(v * s, 2) for v in p["moncong"]],
+        "kepala": [round(v * s, 2) for v in p["kepala"]],
+        "hullKepala": outline(p["maskKepala"], RIM),
+        "hull": outline(bits, RIM, CLOSE),
+    }
     with open(out, "w") as f:
         json.dump(data, f)
-    print(f"{len(contours)} contours in {time.time() - t:.1f}s -> {out}")
+    print(f"{len(contours)} contours, lidah {lidah}, garis {data['garis']}, teks {data['teksAtas']}, "
+          f"kepala {data['kepala']} in {time.time() - t:.1f}s -> {out}")
 
 
 if __name__ == "__main__":

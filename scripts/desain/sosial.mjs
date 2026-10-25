@@ -106,7 +106,7 @@ export function sampulFb(K) {
   const w = 1640, h = 624;
   let s = foto('sampul', { x: 0, y: 0, w, h, seed: 41, horizon: 0.74, sun: null,
     susunan: [[0.05, 0.08, 0.2, 0], [0.13, 0.05, 0.12, 0], [0.62, 0.05, 0.08, 0], [0.74, 0.04, 0.06, 0], [0.97, 0.09, 0.22, 0], [0.1, 0.09, 0.26, 1], [0.92, 0.07, 0.18, 1]] });
-  s += L.taruh(L.utama({ varian: 'sticker' }), { x: 300, y: 70, h: 400 }).svg;
+  s += L.taruh(L.utama({ varian: 'sticker' }), { x: 170, y: 70, w: 680, h: 420 }).svg;
   s += text('Pelukan hangat', { x: 900, y: 205, family: 'fredoka', weight: 700, size: 76, fill: W.laut });
   s += text('dari Raja Ampat', { x: 900, y: 290, family: 'fredoka', weight: 700, size: 76, fill: W.laut });
   s += text(K.instagram, { x: 904, y: 350, size: 30, weight: 600, fill: W.hitam });

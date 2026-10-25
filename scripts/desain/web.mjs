@@ -13,7 +13,7 @@ export function ogImage(K) {
   const w = 1200, h = 630;
   let s = `<rect width="${w}" height="${h}" fill="${W.buih}"/>`;
   s += `<g transform="translate(0 ${h * 0.58})">${A.lanskap({ w, h: h * 0.42, horizon: 0.62, sunX: 0.88, seed: 4, sky: W.buih })}</g>`;
-  s += L.taruh(L.utama(), { x: 70, y: 60, h: 300 }).svg;
+  s += L.taruh(L.utama(), { x: 60, y: 60, w: 450, h: 300 }).svg;
   s += text('Pelukan hangat', { x: 560, y: 150, family: 'fredoka', weight: 600, size: 64, fill: W.laut });
   s += text('dari Raja Ampat', { x: 560, y: 222, family: 'fredoka', weight: 600, size: 64, fill: W.laut });
   s += text(`Homestay di ${K.lokasi}`, { x: 562, y: 282, family: 'jakarta', weight: 500, size: 26, fill: W.hitam });
@@ -129,11 +129,11 @@ export default async function ({ out, K, ROOT }) {
   execFileSync('convert', [16, 32, 48].map((s) => out(`build-tmp/fav-${s}.png`)).concat(out('web/favicon.ico')));
   fs.rmSync(out('build-tmp'), { recursive: true, force: true });
 
-  const sq = L.svgDoc(L.lencana({ bentuk: 'persegi' }));
+  const sq = L.svgDoc(L.lencana({ bentuk: 'persegi', sisi: 530, atas: -40 }));
   await png(sq, out('web/apple-touch-icon.png'), { width: 180 });
   await png(sq, out('web/icon-192.png'), { width: 192 });
   await png(sq, out('web/icon-512.png'), { width: 512 });
-  await png(L.svgDoc(L.lencana({ bentuk: 'persegi', sisi: 680, atas: -150 })), out('web/icon-maskable-512.png'), { width: 512 });
+  await png(L.svgDoc(L.lencana({ bentuk: 'persegi', sisi: 700, atas: -150 })), out('web/icon-maskable-512.png'), { width: 512 });
   simpan(out('web/site.webmanifest'), MANIFEST(K));
 
   const og = ogImage(K);

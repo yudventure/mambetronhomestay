@@ -58,7 +58,7 @@ export function bannerBerdiri(K, { tinggiMm, lebarMm }) {
   const langit = 700;
   let s = `<g>${A.lanskap({ w, h: langit + 80, horizon: 0.83, sunX: 0.82, seed: 13, susunan: [[0.06, 0.12, 0.2, 0], [0.94, 0.14, 0.24, 0], [0.18, 0.08, 0.13, 1], [0.84, 0.09, 0.16, 1]] })}</g>`;
   s += rect(0, langit + 60, w, h - langit - 60, W.laut);
-  s += L.taruh(L.utama({ varian: 'sticker' }), { x: w / 2, y: 70, w: 640, anchor: 'middle' }).svg;
+  s += L.taruh(L.utama({ varian: 'sticker' }), { x: w / 2, y: 70, w: 690, h: 520, anchor: 'middle' }).svg;
   let y = langit + 170;
   s += text('SELAMAT DATANG DI RAJA AMPAT', { x: w / 2, y, size: 25, weight: 700, tracking: 0.16, fill: W.pasir, anchor: 'middle' });
   y += 122;
@@ -82,7 +82,7 @@ export function bannerBerdiri(K, { tinggiMm, lebarMm }) {
 export function spanduk(K) {
   const w = 3000, h = 1000;
   let s = `<g>${A.lanskap({ w, h, horizon: 0.84, sun: null, seed: 17, susunan: [[0.03, 0.06, 0.2, 0], [0.98, 0.05, 0.16, 0]] })}</g>`;
-  s += L.taruh(L.utama({ varian: 'sticker' }), { x: 90, y: 90, h: 720 }).svg;
+  s += L.taruh(L.utama({ varian: 'sticker' }), { x: 70, y: 90, w: 1020, h: 720 }).svg;
   s += text('SELAMAT DATANG DI RAJA AMPAT', { x: 1180, y: 190, size: 46, weight: 700, tracking: 0.16, fill: W.toskaTua });
   s += text('Pelukan hangat', { x: 1170, y: 340, family: 'fredoka', weight: 700, size: 150, fill: W.laut });
   s += text('dari Raja Ampat', { x: 1170, y: 490, family: 'fredoka', weight: 700, size: 150, fill: W.laut });
@@ -96,7 +96,7 @@ export function papanNama(K) {
   let s = rect(0, 0, w, h, W.laut);
   s += A.pola({ w, h, tile: 150, bg: null, swirl: '#104A5B', dot: '#155468' });
   s += text('SELAMAT DATANG  ·  WELCOME', { x: w / 2, y: 112, size: 34, weight: 700, tracking: 0.2, fill: W.pasir, anchor: 'middle' });
-  s += L.taruh(L.utama({ varian: 'negative' }), { x: w / 2, y: 160, w: 760, anchor: 'middle' }).svg;
+  s += L.taruh(L.utama({ varian: 'negative' }), { x: w / 2, y: 160, w: 920, h: 500, anchor: 'middle' }).svg;
   s += text('RAJA AMPAT', { x: w / 2, y: 740, size: 40, weight: 800, tracking: 0.3, fill: W.pasir, anchor: 'middle' });
   return mm(w, h, s);
 }

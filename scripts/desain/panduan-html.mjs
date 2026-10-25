@@ -216,7 +216,7 @@ pre { margin: 0; background: #0B3B4A; color: #EAF4F3; border-radius: 16px; paddi
     <div class="teks">
       <span class="label">Panduan merek</span>
       <h1>Mambetron Homestay</h1>
-      <p>Seekor kuskus memeluk papan nama homestay. Begitulah cara kami menyambut tamu di Raja Ampat, hangat dan tanpa terburu-buru. Halaman ini merangkum logo, warna, huruf, dan semua penerapannya, dari website sampai banner di pelabuhan.</p>
+      <p>Seekor kuskus mengintip dari balik papan nama, tersenyum menyambut siapa pun yang datang. Begitulah cara kami menerima tamu di Raja Ampat, hangat dan tanpa terburu-buru. Halaman ini merangkum logo, warna, huruf, dan semua penerapannya, dari website sampai banner di pelabuhan.</p>
       <span class="slogan">${esc(K.slogan)}</span>
     </div>
     <div class="logo">${fig('logo/png/mambetron-logo-utama-hitam.png', 'Logo Mambetron Homestay')}</div>
@@ -234,7 +234,7 @@ pre { margin: 0; background: #0B3B4A; color: #EAF4F3; border-radius: 16px; paddi
   <div class="kepala">
     <span class="label">Cerita merek</span>
     <h2>Kenapa kuskus</h2>
-    <p>Kuskus adalah hewan berkantung dari hutan Papua. Ia aktif di malam hari, bergerak pelan, dan memakai ekornya yang melingkar untuk berpegangan. Di logo, kuskus memeluk papan nama dan ekornya melingkar seperti ombak. Pelukan itu yang ingin dirasakan setiap tamu.</p>
+    <p>Kuskus adalah hewan berkantung dari hutan Papua. Ia aktif di malam hari, bergerak pelan, dan memakai ekornya yang melingkar untuk berpegangan. Di logo, kuskus mengintip dari balik papan nama dengan mata bulat dan senyum kecil, seperti tuan rumah yang menengok ketika tamu tiba. Rasa disambut itu yang ingin dirasakan setiap tamu.</p>
   </div>
   <div class="kisi k3">
     <div class="kartu"><h3>Hangat</h3><p class="redup">Bicara seperti tuan rumah yang menyambut keluarga. Sapa dengan nama, tawarkan bantuan, jangan kaku.</p></div>
@@ -255,7 +255,7 @@ pre { margin: 0; background: #0B3B4A; color: #EAF4F3; border-radius: 16px; paddi
 
   <div class="kepala" style="margin-top:56px">
     <h3>Ruang kosong dan ukuran terkecil</h3>
-    <p>Beri ruang kosong di sekeliling logo paling sedikit setinggi huruf M pada tulisan Mambetron. Jangan cetak lebih kecil dari ukuran di bawah ini, nanti mata kuskus tidak terbaca.</p>
+    <p>Beri ruang kosong di sekeliling logo paling sedikit setinggi huruf m pada tulisan mambetron. Jangan cetak lebih kecil dari ukuran di bawah ini, nanti mata kuskus tidak terbaca.</p>
   </div>
   <div class="kisi k3">
     <div class="kartu"><span class="label">Logo utama</span><h3>25 mm</h3><p class="redup">120 px di layar</p></div>
@@ -298,7 +298,7 @@ pre { margin: 0; background: #0B3B4A; color: #EAF4F3; border-radius: 16px; paddi
   <div class="kepala">
     <span class="label">Huruf</span>
     <h2>Dua huruf untuk website dan cetakan</h2>
-    <p>Tulisan Mambetron di logo ternyata memakai bentuk Fredoka Bold. Karena itu judul memakai Fredoka, sehingga website terasa satu keluarga dengan logo. Teks panjang memakai Plus Jakarta Sans, huruf buatan studio Tokotype dari Jakarta yang jelas dibaca di layar ponsel. Keduanya gratis dan boleh dipakai untuk usaha.</p>
+    <p>Tulisan mambetron di logo memakai huruf bulat tebal yang sekeluarga dengan Fredoka Bold. Karena itu judul memakai Fredoka, sehingga website terasa satu keluarga dengan logo. Teks panjang memakai Plus Jakarta Sans, huruf buatan studio Tokotype dari Jakarta yang jelas dibaca di layar ponsel. Keduanya gratis dan boleh dipakai untuk usaha.</p>
   </div>
   <div class="huruf">
     <div class="kartu">
@@ -338,7 +338,7 @@ body { font-family: var(--mb-font-teks); }</pre></div>
   <div class="kepala">
     <span class="label">Elemen grafis</span>
     <h2>Pulau karst, ekor ombak, ikon garis</h2>
-    <p>Ilustrasi pulau karst berbentuk jamur meniru pulau-pulau kecil Raja Ampat. Motif ekor ombak diambil dari ekor kuskus di logo yang melingkar seperti gulungan ombak. Ikon garis dipakai untuk layanan dan petunjuk.</p>
+    <p>Ilustrasi pulau karst berbentuk jamur meniru pulau-pulau kecil Raja Ampat. Motif ekor ombak diambil dari ekor kuskus yang menggulung seperti gulungan ombak. Ikon garis dipakai untuk layanan dan petunjuk.</p>
   </div>
   <div class="kisi k3">
     <figure style="grid-column:1 / -1"><div class="bingkai">${fig('panduan/elemen-ilustrasi.png', 'Ilustrasi pulau karst dan laut')}</div><figcaption><b>Ilustrasi pulau karst</b><span class="redup">Latar banner, post, kartu, dan pengganti foto sementara.</span></figcaption></figure>

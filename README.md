@@ -32,7 +32,7 @@ Buka `brand/panduan-merek.html` di browser untuk melihat semuanya dalam satu hal
 | Foto profil, favicon | `mambetron-ikon` |
 | Bordir, grafir, cap satu warna | `mambetron-ikon-stempel-hitam` atau `-putih` |
 
-Ruang kosong di sekitar logo paling sedikit setinggi huruf M pada tulisan Mambetron. Ukuran terkecil logo utama 25 mm (120 px), logo horizontal tinggi 10 mm (32 px), ikon 8 mm (16 px).
+Logo utama adalah kepala kuskus yang mengintip dari balik garis, dengan tulisan mambetron dan HOMESTAY di bawahnya. Lidah kecilnya berwarna merah muda `#F0A0A0`, selebihnya satu warna. Ruang kosong di sekitar logo paling sedikit setinggi huruf m pada tulisan mambetron. Ukuran terkecil logo utama 25 mm (120 px), logo horizontal tinggi 10 mm (32 px), ikon 8 mm (16 px).
 
 ## Maskot Mambe
 
@@ -55,7 +55,7 @@ Nilai CMYK ada di halaman panduan. Nilainya perkiraan, jadi minta percetakan mem
 
 ## Font website
 
-Judul memakai **Fredoka**, bentuk huruf yang sama dengan tulisan Mambetron di logo. Teks memakai **Plus Jakarta Sans** buatan Tokotype, Jakarta. Keduanya berlisensi SIL Open Font License 1.1 (lihat `brand/font/OFL-*.txt`), bebas dipakai untuk usaha dan boleh di-host sendiri.
+Judul memakai **Fredoka**, huruf bulat tebal yang sekeluarga dengan tulisan mambetron di logo. Teks memakai **Plus Jakarta Sans** buatan Tokotype, Jakarta. Keduanya berlisensi SIL Open Font License 1.1 (lihat `brand/font/OFL-*.txt`), bebas dipakai untuk usaha dan boleh di-host sendiri.
 
 ```html
 <link rel="stylesheet" href="/font/web/fonts.css">

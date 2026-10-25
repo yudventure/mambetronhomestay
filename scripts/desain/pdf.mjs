@@ -38,11 +38,11 @@ export function cetak({ K, B }) {
   const pages = [];
 
   pages.push(hal('Cerita merek', 'Kenapa kuskus',
-    'Kuskus adalah hewan berkantung dari hutan Papua. Ia aktif di malam hari, bergerak pelan, dan memakai ekornya yang melingkar untuk berpegangan. Di logo, kuskus memeluk papan nama dan ekornya melingkar seperti ombak. Pelukan itu yang ingin dirasakan setiap tamu.',
+    'Kuskus adalah hewan berkantung dari hutan Papua. Ia aktif di malam hari, bergerak pelan, dan memakai ekornya yang melingkar untuk berpegangan. Di logo, kuskus mengintip dari balik papan nama dengan mata bulat dan senyum kecil, seperti tuan rumah yang menengok ketika tamu tiba.',
     kartu('Sikap', 'Hangat', 'Bicara seperti tuan rumah yang menyambut keluarga. Sapa dengan nama, tawarkan bantuan, jangan kaku.')
     + kartu('Irama', 'Pelan', 'Seperti kuskus, kami tidak terburu-buru. Kalimat pendek, ruang kosong yang lega, gambar yang tenang.')
     + kartu('Rumah', 'Dekat dengan alam', 'Laut, karang, dan pulau karst adalah halaman rumah kami. Warna dan ilustrasi diambil dari sana.')
-    + fig('logo/png/mambetron-logo-utama-hitam.png', 'Logo utama', 'Kuskus memeluk papan nama, ekornya melingkar seperti ombak', { pad: true, style: 'grid-column:span 2' })
+    + fig('logo/png/mambetron-logo-utama-hitam.png', 'Logo utama', 'Kuskus mengintip dari balik papan nama dan tersenyum menyambut tamu', { pad: true, style: 'grid-column:span 2' })
     + fig('maskot/pose/mambe-sapa.png', 'Mambe', 'Maskot yang digambar dari kuskus Waigeo', { pad: true }),
     'grid-template-columns:repeat(3,1fr);grid-template-rows:38mm 1fr'));
 
@@ -53,8 +53,8 @@ export function cetak({ K, B }) {
 
   const salah = [['transform:scaleX(1.45)', 'Ditarik atau dipampatkan'], ['transform:rotate(-14deg)', 'Dimiringkan'], ['filter:hue-rotate(160deg) saturate(6) brightness(1.4)', 'Diganti warna di luar palet'], ['', 'Logo hitam di atas latar gelap']];
   pages.push(hal('Logo', 'Ruang kosong, ukuran terkecil, larangan',
-    'Beri ruang kosong di sekeliling logo paling sedikit setinggi huruf M pada tulisan Mambetron, tanpa teks atau gambar lain di dalamnya. Lebih kecil dari ukuran terkecil, mata kuskus tidak terbaca.',
-    `<figure style="grid-row:span 2"><div class="tile" style="background:${W.buih}"><div class="ruang"><div class="ruang-dalam">${img('logo/png/kecil/mambetron-logo-utama-hitam-500.png')}</div><span class="m m1">M</span><span class="m m2">M</span></div></div><figcaption><b>Ruang kosong</b><span>Area berwarna lebih terang adalah ruang kosong setinggi huruf M</span></figcaption></figure>`
+    'Beri ruang kosong di sekeliling logo paling sedikit setinggi huruf m pada tulisan mambetron, tanpa teks atau gambar lain di dalamnya. Lebih kecil dari ukuran terkecil, mata kuskus tidak terbaca.',
+    `<figure style="grid-row:span 2"><div class="tile" style="background:${W.buih}"><div class="ruang"><div class="ruang-dalam">${img('logo/png/kecil/mambetron-logo-utama-hitam-500.png')}<span class="m m1">m</span><span class="m m2">m</span></div></div></div><figcaption><b>Ruang kosong</b><span>Area berwarna lebih terang adalah ruang kosong setinggi huruf m</span></figcaption></figure>`
     + salah.map(([st, cap], i) => `<figure class="salah"><div class="tile pad" style="background:${i === 3 ? W.laut : W.putih};border:0.3mm solid #D9E6E4"><img src="${B}/logo/png/kecil/mambetron-logo-utama-hitam-500.png" style="${st}" alt=""></div><span class="silang">×</span><figcaption><b>${cap}</b></figcaption></figure>`).join('')
     + kartu('Logo utama', '25 mm · 120 px', 'Ukuran terkecil di cetakan dan di layar. Lebih kecil dari itu, mata kuskus dan tulisan HOMESTAY tidak terbaca.', ' style="grid-column:span 2"')
     + kartu('Logo horizontal', 'Tinggi 10 mm · 32 px', 'Untuk header website, kop surat, dan papan lebar.')
@@ -68,7 +68,7 @@ export function cetak({ K, B }) {
     'grid-template-columns:repeat(6,1fr);grid-template-rows:1fr 30mm'));
 
   pages.push(hal('Huruf', 'Dua huruf untuk website dan cetakan',
-    'Tulisan Mambetron di logo memakai bentuk Fredoka Bold, karena itu judul memakai Fredoka. Teks panjang memakai Plus Jakarta Sans, huruf buatan Tokotype dari Jakarta yang jelas dibaca di layar ponsel. Keduanya berlisensi SIL Open Font License, bebas dipakai untuk usaha.',
+    'Tulisan mambetron di logo memakai huruf bulat tebal yang sekeluarga dengan Fredoka Bold, karena itu judul memakai Fredoka. Teks panjang memakai Plus Jakarta Sans, huruf buatan Tokotype dari Jakarta yang jelas dibaca di layar ponsel. Keduanya berlisensi SIL Open Font License, bebas dipakai untuk usaha.',
     `<div class="kartu"><span class="label">Judul · Fredoka</span><div class="peraga">Pelukan hangat<br>dari Raja Ampat</div><div class="abjad" style="font-family:Fredoka;font-weight:500">Aa Bb Cc Dd Ee Ff Gg Hh Ii Jj Kk Ll Mm Nn Oo Pp Qq Rr Ss Tt Uu Vv Ww Xx Yy Zz 0123456789</div><div class="berat" style="font-family:Fredoka"><span style="font-weight:500">Medium 500</span><span style="font-weight:600">SemiBold 600</span><span style="font-weight:700">Bold 700</span></div></div>`
     + `<div class="kartu"><span class="label">Teks, menu, label · Plus Jakarta Sans</span><p style="font-size:12.5pt;line-height:1.45;max-width:none">Tidur ditemani suara ombak, makan masakan rumah tiga kali sehari, lalu snorkeling di karang depan homestay. Kami jemput Anda di pelabuhan.</p><div class="abjad">Aa Bb Cc Dd Ee Ff Gg Hh Ii Jj Kk Ll Mm Nn Oo Pp Qq Rr Ss Tt Uu Vv Ww Xx Yy Zz 0123456789</div><div class="berat"><span>Regular 400</span><span style="font-weight:600">SemiBold 600</span><span style="font-weight:800">ExtraBold 800</span><span class="label">Label kapital</span></div></div>`
     + `<div class="kartu skala"><span class="label">Skala ukuran</span>
@@ -85,7 +85,7 @@ body { font-family: var(--mb-font-teks); }</pre></div>`,
     'grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr'));
 
   pages.push(hal('Elemen grafis', 'Pulau karst, ekor ombak, ikon garis',
-    'Ilustrasi pulau karst berbentuk jamur meniru pulau-pulau kecil Raja Ampat. Motif ekor ombak diambil dari ekor kuskus di logo yang menggulung seperti ombak. Ikon garis dipakai untuk layanan dan petunjuk.',
+    'Ilustrasi pulau karst berbentuk jamur meniru pulau-pulau kecil Raja Ampat. Motif ekor ombak diambil dari ekor kuskus yang menggulung seperti ombak. Ikon garis dipakai untuk layanan dan petunjuk.',
     fig('panduan/elemen-ilustrasi.png', 'Ilustrasi pulau karst', 'Latar banner, post, kartu, dan pengganti foto sementara', { cover: true, style: 'grid-column:1 / -1' })
     + fig('panduan/elemen-ekor.png', 'Ekor ombak', 'Hiasan kecil di label dan kartu', { cover: true })
     + fig('panduan/elemen-pola.png', 'Pola', 'Pembungkus sabun, latar post, lapisan dalam jaket', { cover: true })
@@ -216,10 +216,10 @@ figcaption span { color: ${MUTED}; display: -webkit-box; -webkit-line-clamp: 2; 
 .toc em { font-style: normal; color: ${MUTED}; font-variant-numeric: tabular-nums; font-size: 9pt; }
 
 .ruang { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; }
-.ruang-dalam { position: absolute; left: 12%; right: 12%; top: 9%; bottom: 9%; background: #fff; border-radius: 2mm; }
-.ruang-dalam img { position: absolute; inset: 17%; width: 66%; height: 66%; object-fit: contain; }
-.m { position: absolute; font-family: 'Fredoka', sans-serif; font-weight: 700; color: ${W.toskaTua}; font-size: 11pt; }
-.m1 { left: 50%; top: 2.5%; transform: translateX(-50%); } .m2 { left: 3%; top: 50%; transform: translateY(-50%); }
+.ruang-dalam { position: absolute; left: 14%; right: 14%; top: 50%; transform: translateY(-50%); aspect-ratio: 1.45; background: #fff; border-radius: 2mm; }
+.ruang-dalam img { position: absolute; inset: 15%; width: 70%; height: 70%; object-fit: contain; }
+.m { position: absolute; font-family: 'Fredoka', sans-serif; font-weight: 700; color: ${W.toskaTua}; font-size: 11pt; line-height: 1; }
+.m1 { left: 50%; top: 4%; transform: translateX(-50%); } .m2 { left: 4%; top: 50%; transform: translateY(-50%); }
 .salah .silang { position: absolute; top: 2mm; right: 2mm; width: 7mm; height: 7mm; border-radius: 50%; background: #D93A3A; color: #fff; display: grid; place-items: center; font-weight: 800; font-size: 9pt; line-height: 1; }
 
 .cw { border-radius: 3mm; overflow: hidden; background: ${W.buih}; display: flex; flex-direction: column; min-height: 0; }
