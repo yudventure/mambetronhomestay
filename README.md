@@ -4,6 +4,8 @@ Identitas merek Mambetron Homestay di Raja Ampat. Isinya logo dalam bentuk vekto
 
 Buka `brand/panduan-merek.html` di browser untuk melihat semuanya dalam satu halaman, atau cetak `brand/panduan-merek.pdf`.
 
+Situs pemesanan kamar ada di folder `website`. Cara deploy ke Hostinger dan cara memakainya ada di `website/README.md`.
+
 ## Isi folder `brand`
 
 | Folder | Isinya |
@@ -91,7 +93,7 @@ npm run build              # semua
 node scripts/build.mjs papan sosial   # hanya grup tertentu
 ```
 
-Grup yang tersedia `logo`, `maskot`, `web`, `sosial`, `merchandise`, `amenities`, `papan`, `panduan`, `pdf`. Semua teks di berkas cetak sudah diubah menjadi kurva, jadi percetakan tidak perlu memasang font.
+Grup yang tersedia `logo`, `maskot`, `web`, `situs`, `sosial`, `merchandise`, `amenities`, `papan`, `panduan`, `pdf`. Semua teks di berkas cetak sudah diubah menjadi kurva, jadi percetakan tidak perlu memasang font. Grup `situs` menyalin logo, maskot, ilustrasi, ikon, dan huruf ke folder `website`.
 
 Logo vektor dijiplak dari gambar asli dengan `scripts/trace_logo.py` (butuh Python, `potracer`, `numpy`, `Pillow`). Langkah ini cukup sekali, hasilnya sudah tersimpan di `brand/logo/sumber/logo-traced.json`.
 

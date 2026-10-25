@@ -1,0 +1,126 @@
+@import "tailwindcss";
+
+/* Mambetron brand tokens. Colours follow the brand guide in brand/web/tokens.css. */
+@theme {
+  --color-hitam: #161616;
+  --color-laut: #0b3b4a;
+  --color-laut-2: #13566a;
+  --color-laut-3: #082a35;
+  --color-toska: #12a39a;
+  --color-toska-tua: #0a7a73;
+  --color-senja: #f27a3d;
+  --color-senja-tua: #d9622a;
+  --color-pasir: #f7dfa8;
+  --color-buih: #e6f5f3;
+  --color-buih-2: #d3eeea;
+  --color-abu: #5b6b70;
+  --color-merah: #c2412d;
+
+  --font-judul: var(--font-fredoka), "Nunito", "Trebuchet MS", system-ui, sans-serif;
+  --font-teks: var(--font-jakarta), "Segoe UI", system-ui, -apple-system, sans-serif;
+
+  --shadow-lembut: 0 8px 28px rgb(11 59 74 / 0.09);
+  --shadow-angkat: 0 18px 44px rgb(11 59 74 / 0.16);
+  --shadow-tipis: 0 2px 10px rgb(11 59 74 / 0.07);
+}
+
+@layer base {
+  html {
+    color: var(--color-hitam);
+    background: #fff;
+    -webkit-tap-highlight-color: transparent;
+    scroll-padding-top: 5.5rem;
+  }
+  body {
+    font-family: var(--font-teks);
+    font-size: 1.0625rem;
+    line-height: 1.65;
+    background: #fff;
+    -webkit-font-smoothing: antialiased;
+  }
+  h1, h2, h3, h4 {
+    font-family: var(--font-judul);
+    color: var(--color-laut);
+    font-weight: 600;
+    line-height: 1.12;
+    letter-spacing: -0.01em;
+    text-wrap: balance;
+  }
+  p { text-wrap: pretty; }
+  :focus-visible {
+    outline: 3px solid var(--color-toska);
+    outline-offset: 2px;
+    border-radius: 6px;
+  }
+  ::selection { background: var(--color-pasir); }
+}
+
+@layer components {
+  .tombol {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5em;
+    min-height: 3rem;
+    padding: 0.7em 1.5em;
+    border-radius: 999px;
+    background: var(--color-senja);
+    color: var(--color-hitam);
+    font-weight: 700;
+    line-height: 1.2;
+    text-align: center;
+    text-decoration: none;
+    transition: background-color 0.15s, box-shadow 0.15s, color 0.15s;
+    cursor: pointer;
+  }
+  .tombol:hover { background: #f58f5c; box-shadow: var(--shadow-tipis); }
+  .tombol:disabled { opacity: 0.55; cursor: not-allowed; box-shadow: none; }
+  .tombol-laut { background: var(--color-laut); color: #fff; }
+  .tombol-laut:hover { background: var(--color-laut-2); }
+  .tombol-putih { background: #fff; color: var(--color-laut); box-shadow: inset 0 0 0 2px var(--color-buih-2); }
+  .tombol-putih:hover { background: var(--color-buih); }
+  .tombol-toska { background: var(--color-toska-tua); color: #fff; }
+  .tombol-toska:hover { background: var(--color-toska); }
+  .tombol-kecil { min-height: 2.5rem; padding: 0.45em 1.1em; font-size: 0.9375rem; }
+  .tombol-merah { background: #fbe4df; color: var(--color-merah); }
+  .tombol-merah:hover { background: #f7d2ca; }
+
+  .label-kecil {
+    font-size: 0.8125rem;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--color-toska-tua);
+  }
+
+  .isian {
+    display: block;
+    width: 100%;
+    min-height: 3rem;
+    padding: 0.65rem 0.9rem;
+    border-radius: 0.85rem;
+    border: 1.5px solid #c9dcdc;
+    background: #fff;
+    color: var(--color-hitam);
+    font: inherit;
+    font-size: 1rem;
+    transition: border-color 0.15s, box-shadow 0.15s;
+  }
+  .isian:focus { outline: none; border-color: var(--color-toska); box-shadow: 0 0 0 3px rgb(18 163 154 / 0.18); }
+  textarea.isian { min-height: 6.5rem; resize: vertical; }
+  select.isian { appearance: none; padding-right: 2.5rem; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%230b3b4a' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 0.8rem center; background-size: 1.1rem; }
+  .label-isian { display: block; margin-bottom: 0.35rem; font-weight: 600; font-size: 0.9375rem; color: var(--color-laut); }
+  .bantuan { margin-top: 0.3rem; font-size: 0.875rem; color: var(--color-abu); }
+
+  .kartu { background: #fff; border-radius: 1.25rem; box-shadow: var(--shadow-lembut); }
+
+  .prosa p + p { margin-top: 1em; }
+}
+
+/* Sheets pinned to the bottom of phone screens. svh keeps them above the
+   browser toolbar, vh is the fallback for older browsers. */
+.tinggi-lembar { max-height: 88vh; max-height: 88svh; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { transition: none !important; animation: none !important; }
+}

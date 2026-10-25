@@ -1,4 +1,4 @@
-// Builds every brand file under brand/.
+// Builds every brand file under brand/ and the brand assets of website/.
 //   node scripts/build.mjs              build everything
 //   node scripts/build.mjs logo sosial  build only the named groups
 // Contact details come from brand/data/kontak.json, overridden by
@@ -13,7 +13,7 @@ const kontak = JSON.parse(fs.readFileSync(path.join(ROOT, 'brand/data/kontak.jso
 const lokal = path.join(ROOT, 'kontak.lokal.json');
 if (fs.existsSync(lokal)) Object.assign(kontak, JSON.parse(fs.readFileSync(lokal)));
 
-const GROUPS = ['logo', 'maskot', 'web', 'sosial', 'merchandise', 'amenities', 'papan', 'panduan', 'pdf'];
+const GROUPS = ['logo', 'maskot', 'web', 'situs', 'sosial', 'merchandise', 'amenities', 'papan', 'panduan', 'pdf'];
 const want = process.argv.slice(2);
 const ctx = { ROOT, K: kontak, out: (p) => path.join(ROOT, 'brand', p) };
 
