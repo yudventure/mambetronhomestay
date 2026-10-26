@@ -56,6 +56,8 @@ Port diatur Hostinger sendiri lewat variabel `PORT`, tidak perlu diisi.
 
 Next.js sengaja dikunci di versi 16.2.12. Mulai versi 16.3, mesin kompilasi Next.js butuh pustaka sistem glibc 2.30, sedangkan server build Hostinger memakai versi yang lebih lama, sehingga build gagal dengan pesan tentang `GLIBC_2.29` atau `@next/swc-linux-x64-gnu`. Jangan menaikkan versi Next.js sebelum memastikan server Hostinger sudah mendukungnya.
 
+Perintah build juga sengaja memakai webpack (`next build --webpack`), bukan Turbopack bawaan Next.js 16. Turbopack memanggil perintah `node` dari PATH sistem untuk memproses CSS, dan di server build Hostinger perintah itu tidak menjalankan Node yang sama, sehingga build gagal dengan pesan `node process exited before we could connect to it` pada `/icon.svg/route`. Webpack memproses CSS di dalam proses Node yang sedang berjalan, jadi tidak terkena masalah ini. Saat mencoba di komputer sendiri, `npm run dev` tetap memakai Turbopack.
+
 ### Environment variables
 
 Semua nilai dibaca saat aplikasi berjalan. Bila nilai diubah di hPanel, mulai ulang aplikasi supaya terbaca.
