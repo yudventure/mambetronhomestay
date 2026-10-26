@@ -62,8 +62,8 @@ export const PENGATURAN = [
       },
       {
         k: 'heroTeks', label: 'Teks di bawah judul', jenis: 'duaPanjang', bawaan: dua(
-          'Pondok kayu beratap rumbia di tepi pantai, dengan makan tiga kali sehari dan jemputan dari Waisai.',
-          'Thatched wooden huts on the beach, with three meals a day and pickup from Waisai.'),
+          'Keramahtamahan khas Raja Ampat dan pemandangan yang luar biasa, dinikmati dengan cara yang masih autentik.',
+          'Genuine Raja Ampat hospitality and extraordinary scenery, enjoyed the authentic way.'),
       },
       {
         k: 'heroKata', label: 'Kata kesan di pojok foto utama', jenis: 'daftar', tambah: 'Tambah kata',
@@ -256,6 +256,9 @@ const BAWAAN_LAMA = {
     dua(
       'Pondok kayu di atas laut paling biru, karang selangkah dari dermaga, dan tuan rumah yang hangat.',
       'Wooden huts above the bluest sea, a reef a step from the jetty and warm hosts.'),
+    dua(
+      'Pondok kayu beratap rumbia di tepi pantai, dengan makan tiga kali sehari dan jemputan dari Waisai.',
+      'Thatched wooden huts on the beach, with three meals a day and pickup from Waisai.'),
   ],
   heroKata: [[
     { ikon: 'air', teks: dua('Tenang', 'Calm') },

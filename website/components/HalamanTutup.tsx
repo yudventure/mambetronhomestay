@@ -17,8 +17,8 @@ export default function HalamanTutup({ b, situs, foto }: { b: Bahasa; situs: Sit
     <main id="isi" className="situs flex min-h-svh flex-col p-3 sm:p-4">
       <div className="bingkai relative isolate flex flex-1 flex-col overflow-hidden bg-laut-3">
         <LatarPahlawan foto={foto} />
-        <div aria-hidden className="absolute inset-0 -z-10 bg-gradient-to-b from-black/45 via-black/0 to-black/45" />
-        <div aria-hidden className="absolute inset-0 -z-10 bg-black/35 lg:bg-transparent lg:bg-gradient-to-r lg:from-black/75 lg:via-black/40 lg:via-45% lg:to-transparent lg:to-80%" />
+        <div aria-hidden className="absolute inset-0 -z-10 bg-gradient-to-b from-black/30 via-black/0 via-25% to-black/20" />
+        <div aria-hidden className="absolute inset-0 -z-10 bg-black/30 lg:bg-transparent lg:bg-gradient-to-r lg:from-black/70 lg:via-black/35 lg:via-35% lg:to-transparent lg:to-60%" />
 
         <div className="mx-auto flex w-full max-w-6xl flex-1 flex-col px-5 py-5 sm:px-8 sm:py-7">
           <div className="flex items-center justify-between gap-4">

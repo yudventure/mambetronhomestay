@@ -10,6 +10,6 @@ export default function LatarPahlawan({ foto }: { foto?: Foto }) {
   return (
     // eslint-disable-next-line @next/next/no-img-element
     <img src="/foto/beranda.jpg" srcSet="/foto/beranda-1000.jpg 1000w, /foto/beranda.jpg 2000w" sizes="100vw" alt="" aria-hidden
-      width={2000} height={1125} fetchPriority="high" className="absolute inset-0 -z-10 size-full object-cover object-[62%_50%]" />
+      width={2000} height={1125} fetchPriority="high" className="absolute inset-0 -z-10 size-full object-cover object-[62%_50%] brightness-110 saturate-[1.08]" />
   );
 }
