@@ -7,6 +7,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
+    "start:node": "node server.js",
     "db:migrasi": "node scripts/migrasi.mjs",
     "db:sql": "node scripts/migrasi.mjs --sql > database/skema.sql",
     "cek": "tsc --noEmit"
@@ -26,5 +27,6 @@
     "react-dom": "19.3.0",
     "tailwindcss": "4.3.3",
     "typescript": "5.9.3"
-  }
+  },
+  "main": "server.js"
 }

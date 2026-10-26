@@ -35,13 +35,20 @@ Langkahnya sebagai berikut. Nama menu di hPanel bisa sedikit berbeda karena Host
 5. Jalankan deploy. Setelah selesai, buka `https://domainmu/api/sehat`. Bila tertulis `"database":"terhubung"` dan `"panelPengelola":"siap"`, situs sudah siap.
 6. Buka `https://domainmu/admin`, masuk dengan `ADMIN_PASSWORD`, lalu ikuti daftar di dasbor. Isi nomor WhatsApp, rekening, foto pondok, dan periksa semua teks bawaan.
 
-| Pengaturan | Nilai |
+| Isian di hPanel | Nilai |
 | --- | --- |
-| Root directory | `website` |
-| Versi Node.js | 20 atau 22 |
-| Install command | `npm install` |
+| Preset framework | Next.js. Bila tidak ada di daftar, biarkan Other |
+| Branch | Branch yang berisi kode ini |
+| Versi node | 22.x atau 20.x |
+| Root directory | `./website` |
 | Build command | `npm run build` |
-| Start command | `npm start` |
+| Package manager | npm |
+| Direktori output | `.next` |
+| Entry file | `server.js` |
+
+Root directory wajib diubah ke `./website`. Bila dibiarkan `./`, Hostinger akan membangun alat pembuat berkas merek di akar repo, bukan situsnya.
+
+Berkas `server.js` menjalankan hasil build sama seperti `npm start`. Berkas ini dipakai bila Hostinger menjalankan aplikasi dengan `node server.js`, misalnya saat preset Other dipilih.
 
 Port diatur Hostinger sendiri lewat variabel `PORT`, tidak perlu diisi.
 
@@ -79,6 +86,7 @@ Perintah lain yang tersedia sebagai berikut.
 | Perintah | Guna |
 | --- | --- |
 | `npm run build` lalu `npm start` | Menjalankan versi produksi |
+| `npm run start:node` | Sama dengan `npm start`, lewat `server.js` |
 | `npm run db:migrasi` | Membuat tabel dan isi awal dengan nilai dari `.env` |
 | `npm run db:sql` | Menulis ulang `database/skema.sql` dari `lib/skema.mjs` |
 | `npm run cek` | Memeriksa tipe TypeScript |
