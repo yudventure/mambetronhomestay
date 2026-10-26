@@ -131,18 +131,21 @@ const MANIFEST = (K) => JSON.stringify({
 }, null, 2);
 
 export default async function ({ out, K, ROOT }) {
-  const fav = L.monogram({ sudut: 0.24, isi: 0.62 });
-  const favSvg = L.svgDoc(fav);
+  // the man in the hammock, lines thickened so he still reads in a browser tab
+  const favSvg = L.svgDoc(L.favikon({ tebal: 12, lebar: 1.1 }));
   simpan(out('web/favicon.svg'), favSvg);
-  for (const s of [16, 32, 48]) await png(favSvg, out(`build-tmp/fav-${s}.png`), { width: s });
+  await png(favSvg, out('build-tmp/fav-16.png'), { width: 16 });
+  await png(favSvg, out('build-tmp/fav-32.png'), { width: 32 });
+  await png(L.svgDoc(L.favikon({ tebal: 8, lebar: 1.0 })), out('build-tmp/fav-48.png'), { width: 48 });
   execFileSync('convert', [16, 32, 48].map((s) => out(`build-tmp/fav-${s}.png`)).concat(out('web/favicon.ico')));
   fs.rmSync(out('build-tmp'), { recursive: true, force: true });
 
-  const sq = L.svgDoc(L.monogram({ sudut: 0, isi: 0.5 }));
+  // app icons are large enough for the original lines, square for iOS to round
+  const sq = L.svgDoc(L.favikon({ tebal: 3, lebar: 0.9, sudut: 0 }));
   await png(sq, out('web/apple-touch-icon.png'), { width: 180 });
   await png(sq, out('web/icon-192.png'), { width: 192 });
   await png(sq, out('web/icon-512.png'), { width: 512 });
-  await png(L.svgDoc(L.monogram({ sudut: 0, isi: 0.4 })), out('web/icon-maskable-512.png'), { width: 512 });
+  await png(L.svgDoc(L.favikon({ tebal: 2, lebar: 0.64, sudut: 0 })), out('web/icon-maskable-512.png'), { width: 512 });
   simpan(out('web/site.webmanifest'), MANIFEST(K));
 
   const og = ogImage(K);

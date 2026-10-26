@@ -16,7 +16,9 @@ export const LOGO_INFO = {
   'mambetron-ikon-pasir': ['Ikon bulat pasir', 'Ikon di atas latar Laut Dalam.'],
   'mambetron-ikon-stempel-biru': ['Stempel biru', 'Cap, grafir laser, cetak satu warna.'],
   'mambetron-ikon-stempel-putih': ['Stempel putih', 'Sablon putih di bahan gelap.'],
-  'mambetron-monogram': ['Monogram M', 'Favicon, ikon aplikasi, dan benda yang sangat kecil.'],
+  'mambetron-hammock': ['Orang di hammock', 'Bagian paling khas dari logo, untuk ikon dan hiasan kecil.'],
+  'mambetron-favikon': ['Ikon aplikasi', 'Favicon, ikon di layar utama ponsel, dan foto profil kecil.'],
+  'mambetron-monogram': ['Monogram M', 'Benda yang sangat kecil seperti sandal dan gantungan kunci.'],
   'mambetron-wordmark-biru': ['Tulisan saja', 'Bordir, label kecil, dan header website.'],
   'mambetron-wordmark-putih': ['Tulisan saja putih', 'Lengan jaket, footer website, latar gelap.'],
 };
@@ -263,7 +265,7 @@ pre { margin: 0; background: #0B3B4A; color: #EAF4F3; border-radius: 16px; paddi
     <div class="kartu"><span class="label">Logo utama</span><h3>Lebar 35 mm</h3><p class="redup">160 px di layar</p></div>
     <div class="kartu"><span class="label">Ikon bulat</span><h3>20 mm</h3><p class="redup">96 px di layar</p></div>
     <div class="kartu"><span class="label">Tulisan saja</span><h3>Lebar 20 mm</h3><p class="redup">Bordir tanpa HOMESTAY bila di bawah 60 mm</p></div>
-    <div class="kartu"><span class="label">Monogram M</span><h3>5 mm</h3><p class="redup">16 px di layar</p></div>
+    <div class="kartu"><span class="label">Monogram M</span><h3>5 mm</h3><p class="redup">Sandal, gantungan kunci, dan benda sangat kecil</p></div>
   </div>
 
   <div class="kepala" style="margin-top:56px">
@@ -373,7 +375,7 @@ body { font-family: var(--mb-font-teks); }</pre></div>
   <div class="kepala">
     <span class="label">Website</span>
     <h2>Logo, favicon, dan contoh halaman</h2>
-    <p>Header memakai logo horizontal atau tulisan Mambetron saja. Monogram M muncul di tab browser dan di layar utama ponsel, karena gambar hammock terlalu halus di ukuran sekecil itu. Logo lengkap tampil saat tautan dibagikan di WhatsApp. Contoh halaman di bawah sudah memakai font dan warna merek, tinggal diisi foto dan isi asli.</p>
+    <p>Header memakai logo horizontal atau tulisan Mambetron saja. Favicon dan ikon di layar utama ponsel memakai orang yang bersantai di hammock. Untuk tab browser garisnya ditebalkan supaya tetap terbaca di ukuran 16 sampai 48 piksel. Logo lengkap tampil saat tautan dibagikan di WhatsApp. Contoh halaman di bawah sudah memakai font dan warna merek, tinggal diisi foto dan isi asli.</p>
   </div>
   <div class="kisi k3">
     <figure style="grid-column:span 2"><div class="bingkai">${fig('panduan/contoh-website.png', 'Contoh halaman website di desktop')}</div><figcaption><b>Contoh halaman di desktop</b><span class="redup">brand/web/contoh-halaman.html</span></figcaption></figure>

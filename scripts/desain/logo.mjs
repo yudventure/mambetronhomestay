@@ -16,6 +16,8 @@ export function varian() {
     ['mambetron-ikon-pasir', L.lencana({ bg: W.pasir, ink: W.laut }), W.laut],
     ['mambetron-ikon-stempel-biru', L.stempel(), W.putih],
     ['mambetron-ikon-stempel-putih', L.stempel({ ink: W.putih }), W.laut],
+    ['mambetron-hammock', L.hammock(), W.putih],
+    ['mambetron-favikon', L.favikon({ tebal: 3, lebar: 0.9 }), W.putih],
     ['mambetron-monogram', L.monogram(), W.putih],
     ['mambetron-wordmark-biru', L.wordmark(), W.putih],
     ['mambetron-wordmark-putih', L.wordmark({ ink: W.putih, sub: W.pasir }), W.laut],

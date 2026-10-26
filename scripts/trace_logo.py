@@ -14,6 +14,8 @@ it is converted to sRGB first. Output JSON holds
   warna         ink colour of the lettering and of the drawing, in sRGB
   hull          outline around the whole logo grown by RIM, for stickers
   hullIlustrasi outline around the drawing alone, for badges on busy grounds
+  hammock       the man in the hammock alone, without palms and island, for
+                favicons and app icons, with its bounding box kotakHammock
 """
 import io
 import json
@@ -154,6 +156,35 @@ def outline(bits, rim, close=0):
     return "".join(out)
 
 
+# Where the hammock ropes are tied to the trunks, in pixels of the cropped
+# logo. Cutting here frees the man and the hammock from the palms.
+SIMPUL = [(140, 175, 212, 240), (588, 175, 650, 240)]
+# a point on the man's hair, inside the area searched for the seed
+RAMBUT = (245, 185, 290, 215)
+
+
+def hammock(bits):
+    """The man in the hammock: cut the ropes at the knots, flood from the
+    hair, then keep every detail enclosed by that shape (face, shirt print,
+    folds of the cloth)."""
+    m = bits.copy()
+    for x0, y0, x1, y1 in SIMPUL:
+        m[int(y0 * SCALE):int(y1 * SCALE), int(x0 * SCALE):int(x1 * SCALE)] = False
+    x0, y0, x1, y1 = [int(v * SCALE) for v in RAMBUT]
+    ys, xs = np.where(m[y0:y1, x0:x1])
+    img = Image.fromarray((m * 255).astype(np.uint8)).copy()
+    ImageDraw.floodfill(img, (int(x0 + xs[0]), int(y0 + ys[0])), 128)
+    isi = fill_holes(np.array(img) == 128) & bits
+    plist = potrace.Bitmap(isi).trace(turdsize=6 * SCALE, turnpolicy=potrace.POTRACE_TURNPOLICY_MINORITY,
+                                      alphamax=1.0, opticurve=True, opttolerance=0.2)
+    yy, xx = np.where(isi)
+    s = 1.0 / SCALE
+    box = [round(float(xx.min()) * s, 2), round(float(yy.min()) * s, 2), round(float(xx.max()) * s, 2), round(float(yy.max()) * s, 2)]
+    # potrace also returns the frame of the whole bitmap, drop it
+    frame = [0.0, 0.0, float(isi.shape[1]) * s, float(isi.shape[0]) * s]
+    return "".join(curve_to_d(c) for c in plist if bbox(polyline(c)) != frame), box
+
+
 def bands(bits):
     """Split the logo into its three horizontal bands at the empty rows."""
     rows = np.where(bits.any(axis=1))[0]
@@ -205,6 +236,7 @@ def main(src, out):
         "hull": outline(bits, RIM, CLOSE),
         "hullIlustrasi": outline(ilu_bits, RIM, CLOSE),
     }
+    data["hammock"], data["kotakHammock"] = hammock(bits)
     with open(out, "w") as f:
         json.dump(data, f)
     print(f"{len(contours)} contours, bagian {data['bagian']}, warna {data['warna']} in {time.time() - t:.1f}s -> {out}")

@@ -10,7 +10,7 @@ Situs pemesanan kamar ada di folder `website`. Cara deploy ke Hostinger dan cara
 
 | Folder | Isinya |
 |---|---|
-| `logo/svg`, `logo/pdf` | 14 versi logo dalam vektor. Pakai ini untuk percetakan dan desainer. |
+| `logo/svg`, `logo/pdf` | 16 versi logo dalam vektor. Pakai ini untuk percetakan dan desainer. |
 | `logo/png` | Logo PNG transparan lebar 2000 px, versi kecil 500 px di `logo/png/kecil`. |
 | `logo/sumber` | Gambar logo asli dan hasil penjiplakan vektornya. |
 | `maskot` | Mambe, maskot kuskus. Enam pose dan enam ekspresi (SVG dan PNG), paket stiker WhatsApp (WebP 512 px), lembar maskot. |
@@ -33,7 +33,8 @@ Situs pemesanan kamar ada di folder `website`. Cara deploy ke Hostinger dan cara
 | Kop surat, papan lebar | `mambetron-logo-horizontal` |
 | Foto profil, stiker, cap | `mambetron-ikon` atau `mambetron-ikon-stempel-biru` |
 | Bordir, label kecil, header website | `mambetron-wordmark-biru` atau `-putih` |
-| Favicon, ikon aplikasi, benda sangat kecil | `mambetron-monogram` |
+| Favicon dan ikon aplikasi | `mambetron-favikon`, orang yang bersantai di hammock |
+| Benda sangat kecil seperti sandal dan gantungan kunci | `mambetron-monogram` |
 
 Logo utama menggambar seorang tamu yang tidur di hammock di antara dua pohon kelapa di atas pulau pasir kecil, dengan tulisan MAMBETRON dan HOMESTAY di bawahnya. Logo ini satu warna, Biru Mambetron `#0497B2`. Gambar asli adalah tangkapan layar Mac dengan profil warna layar, jadi warnanya dibaca setelah diubah ke sRGB supaya sama dengan yang terlihat di layar.
 

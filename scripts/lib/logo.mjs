@@ -113,6 +113,32 @@ export function monogram({ bg = W.biru, ink = W.putih, bentuk = 'persegi', sudut
   return mk(svg, [bx, by, bx + sz, by + sz]);
 }
 
+// The man in the hammock alone, without the palms and the island.
+// tebal thickens every line by that many logo units so the drawing still
+// reads when it is shrunk to a browser tab.
+const HB = T.kotakHammock;
+export function hammock({ ink = W.biru, tebal = 0 } = {}) {
+  const garis = tebal ? ` stroke="${ink}" stroke-width="${tebal}" stroke-linejoin="round"` : '';
+  const p = tebal / 2;
+  return mk(`<path d="${T.hammock}" fill="${ink}" fill-rule="evenodd"${garis}/>`, [HB[0] - p, HB[1] - p, HB[2] + p, HB[3] + p]);
+}
+
+// Favicon and app icon: the man in the hammock on a tile. lebar is the
+// drawing's width as a share of the tile, above 1 the hammock ends run off
+// the edges so the man can be bigger at tiny sizes.
+export function favikon({ bg = W.biru, ink = W.putih, tebal = 0, lebar = 0.86, sudut = 0.22, turun = 0.04 } = {}) {
+  const g = hammock({ ink, tebal });
+  const sz = g.box[2] / lebar;
+  const cx = g.box[0] + g.box[2] / 2, cy = g.box[1] + g.box[3] / 2 - sz * turun;
+  const bx = cx - sz / 2, by = cy - sz / 2;
+  const cid = id('f');
+  const tile = `<rect x="${bx}" y="${by}" width="${sz}" height="${sz}" rx="${sz * sudut}"/>`;
+  let svg = `<defs><clipPath id="${cid}">${tile}</clipPath></defs>`;
+  if (bg) svg += tile.replace('/>', ` fill="${bg}"/>`);
+  svg += `<g clip-path="url(#${cid})">${g.svg}</g>`;
+  return mk(svg, [bx, by, bx + sz, by + sz]);
+}
+
 // Wordmark: the traced MAMBETRON with HOMESTAY under it.
 // sub       colour of HOMESTAY (defaults to ink)
 // homestay  false drops HOMESTAY

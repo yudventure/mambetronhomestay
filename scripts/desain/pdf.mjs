@@ -62,7 +62,7 @@ export function cetak({ K, B }) {
     + kartu('Logo utama', 'Lebar 35 mm · 160 px', 'Ukuran terkecil di cetakan dan di layar. Lebih kecil dari itu, wajah dan tali hammock tidak terbaca.')
     + kartu('Ikon bulat', '20 mm · 96 px', 'Foto profil, stiker, dan cap.')
     + kartu('Tulisan saja', 'Lebar 20 mm', 'Bordir dan label kecil. Di bawah 60 mm, bordir tanpa HOMESTAY.')
-    + kartu('Monogram M', '5 mm · 16 px', 'Favicon, ikon aplikasi, dan benda sangat kecil.'),
+    + kartu('Monogram M', '5 mm', 'Sandal, gantungan kunci, dan benda sangat kecil.'),
     'grid-template-columns:1.6fr 1fr 1fr 1fr 1fr;grid-template-rows:1.4fr 1fr'));
 
   pages.push(hal('Warna', 'Diambil dari laut dan senja Raja Ampat',
@@ -112,7 +112,7 @@ body { font-family: var(--mb-font-teks); }</pre></div>`,
     'grid-template-columns:repeat(6,1fr);grid-template-rows:1fr 1.3fr'));
 
   pages.push(hal('Website', 'Logo, favicon, dan contoh halaman',
-    'Header memakai logo horizontal atau tulisan Mambetron saja. Monogram M muncul di tab browser dan layar utama ponsel, karena gambar hammock terlalu halus di ukuran sekecil itu. Logo lengkap tampil saat tautan dibagikan di WhatsApp. Berkas ada di brand/web, contoh halaman di contoh-halaman.html.',
+    'Header memakai logo horizontal atau tulisan Mambetron saja. Favicon dan ikon di layar utama ponsel memakai orang yang bersantai di hammock, dengan garis ditebalkan untuk tab browser. Logo lengkap tampil saat tautan dibagikan di WhatsApp. Berkas ada di brand/web, contoh halaman di contoh-halaman.html.',
     fig('panduan/contoh-website.png', 'Contoh halaman di desktop', 'brand/web/contoh-halaman.html, lebar 1280 px', { cover: true, style: 'grid-column:span 3' }).replace('class="tile cover"', 'class="tile cover atas"')
     + fig('panduan/contoh-website-ponsel.png', 'Di ponsel', 'Lebar 390 px', { cover: true, style: 'grid-row:span 2' }).replace('class="tile cover"', 'class="tile cover atas"')
     + fig('web/og-image.png', 'Gambar bagikan', '1200 × 630 px, tampil saat tautan dikirim lewat WhatsApp atau Facebook')
