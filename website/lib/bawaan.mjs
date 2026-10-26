@@ -55,15 +55,15 @@ export const PENGATURAN = [
     judul: 'Halaman utama',
     keterangan: 'Semua judul dan teks di halaman utama, urut dari atas ke bawah.',
     isian: [
-      { k: 'heroLabel', label: 'Label kecil di atas judul', jenis: 'dua', bawaan: dua('Homestay keluarga di Raja Ampat', 'Family homestay in Raja Ampat') },
+      { k: 'heroLabel', label: 'Label kecil di atas judul', jenis: 'dua', bawaan: dua('', ''), bantuan: 'Kosongkan bila tidak ingin ditampilkan.' },
       {
         k: 'heroJudul', label: 'Judul besar', jenis: 'duaPanjang', bawaan: dua('Laut.\nPulau.\nKamu.', 'Sea.\nIslands.\nYou.'),
         bantuan: 'Tiap baris tampil sebagai baris sendiri. Baris terakhir berwarna pasir. Judul pendek tiga baris terlihat paling baik.',
       },
       {
         k: 'heroTeks', label: 'Teks di bawah judul', jenis: 'duaPanjang', bawaan: dua(
-          'Pondok kayu di atas laut paling biru, karang selangkah dari dermaga, dan tuan rumah yang hangat.',
-          'Wooden huts above the bluest sea, a reef a step from the jetty and warm hosts.'),
+          'Pondok kayu beratap rumbia di tepi pantai, dengan makan tiga kali sehari dan jemputan dari Waisai.',
+          'Thatched wooden huts on the beach, with three meals a day and pickup from Waisai.'),
       },
       {
         k: 'heroKata', label: 'Kata kesan di pojok foto utama', jenis: 'daftar', tambah: 'Tambah kata',
@@ -72,11 +72,7 @@ export const PENGATURAN = [
           { k: 'ikon', label: 'Ikon', jenis: 'ikon' },
           { k: 'teks', label: 'Kata', jenis: 'dua' },
         ],
-        bawaan: [
-          { ikon: 'air', teks: dua('Tenang', 'Calm') },
-          { ikon: 'daun', teks: dua('Alami', 'Natural') },
-          { ikon: 'hati', teks: dua('Hangat', 'Warm') },
-        ],
+        bawaan: [],
       },
       { k: 'heroVideo', label: 'Tautan video', jenis: 'teks', bawaan: '', bantuan: 'Tautan video YouTube atau Instagram, diawali https://. Bila diisi, tombol putar muncul di foto utama. Kosongkan bila belum ada.' },
       { k: 'kamarJudul', label: 'Judul di samping kartu pondok', jenis: 'dua', bantuan: 'Juga dipakai sebagai judul halaman semua pondok.', bawaan: dua('Pilih pondokmu', 'Choose your hut') },
@@ -236,19 +232,30 @@ export function rapikan(f, v) {
 // field, so an untouched default stays in the database. A stored value that
 // still equals an old default is treated as unset and takes the current one.
 const BAWAAN_LAMA = {
+  heroLabel: [dua('Homestay keluarga di Raja Ampat', 'Family homestay in Raja Ampat')],
   heroJudul: [dua('Bangun pagi di atas laut paling biru', 'Wake up above the bluest sea')],
-  heroTeks: [dua(
-    'Pondok kayu di tepi laut, ikan segar dari nelayan kampung, dan terumbu karang beberapa langkah dari dermaga. Pesan langsung tanpa perantara.',
-    'Wooden huts by the water, fresh fish from village fishermen and coral a few steps from the jetty. Book direct with no middleman.')],
+  heroTeks: [
+    dua(
+      'Pondok kayu di tepi laut, ikan segar dari nelayan kampung, dan terumbu karang beberapa langkah dari dermaga. Pesan langsung tanpa perantara.',
+      'Wooden huts by the water, fresh fish from village fishermen and coral a few steps from the jetty. Book direct with no middleman.'),
+    dua(
+      'Pondok kayu di atas laut paling biru, karang selangkah dari dermaga, dan tuan rumah yang hangat.',
+      'Wooden huts above the bluest sea, a reef a step from the jetty and warm hosts.'),
+  ],
+  heroKata: [[
+    { ikon: 'air', teks: dua('Tenang', 'Calm') },
+    { ikon: 'daun', teks: dua('Alami', 'Natural') },
+    { ikon: 'hati', teks: dua('Hangat', 'Warm') },
+  ]],
 };
-const samaDua = (a, b) => a && typeof a === 'object' && a.id === b.id && a.en === b.en;
+const sama = (a, b) => JSON.stringify(a) === JSON.stringify(b);
 
 export function gabungSitus(simpanan) {
   const o = {};
   for (const g of PENGATURAN) {
     for (const f of g.isian) {
       const v = simpanan?.[f.k];
-      o[f.k] = rapikan(f, BAWAAN_LAMA[f.k]?.some((x) => samaDua(v, x)) ? undefined : v);
+      o[f.k] = rapikan(f, BAWAAN_LAMA[f.k]?.some((x) => sama(v, x)) ? undefined : v);
     }
   }
   return o;

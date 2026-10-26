@@ -17,8 +17,8 @@ export default function Pahlawan({ b, s, foto }: { b: Bahasa; s: Situs; foto?: F
     <section className="px-3 pt-3 sm:px-4 sm:pt-4">
       <div className="bingkai relative isolate overflow-hidden bg-laut-3">
         <LatarPahlawan foto={foto} />
-        <div aria-hidden className="absolute inset-0 -z-10 bg-gradient-to-b from-laut-3/60 via-laut-3/5 to-laut-3/70" />
-        <div aria-hidden className="absolute inset-0 -z-10 bg-gradient-to-r from-laut-3/55 via-laut-3/10 to-transparent" />
+        <div aria-hidden className="absolute inset-0 -z-10 bg-gradient-to-b from-black/45 via-black/0 to-black/45" />
+        <div aria-hidden className="absolute inset-0 -z-10 bg-black/35 lg:bg-transparent lg:bg-gradient-to-r lg:from-black/75 lg:via-black/40 lg:via-45% lg:to-transparent lg:to-80%" />
 
         <div className="mx-auto flex min-h-[38rem] max-w-6xl flex-col px-5 pt-28 pb-24 sm:min-h-[44rem] sm:px-8 sm:pt-36 sm:pb-36 lg:min-h-[47rem]">
           {dwi(s.heroLabel, b) && <p className="label-kecil !text-sorot">{dwi(s.heroLabel, b)}</p>}
@@ -27,7 +27,7 @@ export default function Pahlawan({ b, s, foto }: { b: Bahasa; s: Situs; foto?: F
               <span key={i} className={`block ${baris.length > 1 && i === baris.length - 1 ? 'text-sorot' : ''}`}>{x}</span>
             ))}
           </h1>
-          {dwi(s.heroTeks, b) && <p className="mt-6 max-w-md text-lg text-white/90 [text-shadow:0_1px_12px_rgb(8_42_53/0.6)]">{dwi(s.heroTeks, b)}</p>}
+          {dwi(s.heroTeks, b) && <p className="mt-6 max-w-md text-lg text-white/90 [text-shadow:0_1px_12px_rgb(0_0_0/0.5)]">{dwi(s.heroTeks, b)}</p>}
           <div className="mt-8 flex flex-wrap items-center gap-4">
             <Link href="/kamar" className="tombol">{k.lihatPondok} <Ikon nama="panah" className="size-4" /></Link>
             {video && (
@@ -38,7 +38,7 @@ export default function Pahlawan({ b, s, foto }: { b: Bahasa; s: Situs; foto?: F
             )}
           </div>
           {kata.length > 0 && (
-            <ul className="mt-auto flex flex-wrap gap-x-7 gap-y-3 pt-12 text-[0.9375rem] font-medium text-white [text-shadow:0_1px_10px_rgb(8_42_53/0.7)] lg:justify-end">
+            <ul className="mt-auto flex flex-wrap gap-x-7 gap-y-3 pt-12 text-[0.9375rem] font-medium text-white [text-shadow:0_1px_10px_rgb(0_0_0/0.6)] lg:justify-end">
               {kata.map((x, i) => (
                 <li key={i} className="inline-flex items-center gap-2.5">
                   <span className="inline-flex size-8 items-center justify-center rounded-full ring-1 ring-white/55"><Ikon nama={x.ikon} className="size-4" /></span>

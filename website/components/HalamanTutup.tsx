@@ -17,8 +17,8 @@ export default function HalamanTutup({ b, situs, foto }: { b: Bahasa; situs: Sit
     <main id="isi" className="situs flex min-h-svh flex-col p-3 sm:p-4">
       <div className="bingkai relative isolate flex flex-1 flex-col overflow-hidden bg-laut-3">
         <LatarPahlawan foto={foto} />
-        <div aria-hidden className="absolute inset-0 -z-10 bg-gradient-to-b from-laut-3/60 via-laut-3/10 to-laut-3/70" />
-        <div aria-hidden className="absolute inset-0 -z-10 bg-gradient-to-r from-laut-3/60 via-laut-3/15 to-transparent" />
+        <div aria-hidden className="absolute inset-0 -z-10 bg-gradient-to-b from-black/45 via-black/0 to-black/45" />
+        <div aria-hidden className="absolute inset-0 -z-10 bg-black/35 lg:bg-transparent lg:bg-gradient-to-r lg:from-black/75 lg:via-black/40 lg:via-45% lg:to-transparent lg:to-80%" />
 
         <div className="mx-auto flex w-full max-w-6xl flex-1 flex-col px-5 py-5 sm:px-8 sm:py-7">
           <div className="flex items-center justify-between gap-4">
@@ -37,7 +37,7 @@ export default function HalamanTutup({ b, situs, foto }: { b: Bahasa; situs: Sit
               ))}
             </h1>
             {dwi(situs.tutupTeks, b) && (
-              <p className="mt-6 max-w-lg text-lg text-white/90 [text-shadow:0_1px_12px_rgb(8_42_53/0.6)]">{dwi(situs.tutupTeks, b)}</p>
+              <p className="mt-6 max-w-lg text-lg text-white/90 [text-shadow:0_1px_12px_rgb(0_0_0/0.5)]">{dwi(situs.tutupTeks, b)}</p>
             )}
             <div className="mt-8 flex flex-wrap gap-3">
               {wa && <a href={wa} target="_blank" rel="noopener" className="tombol"><Ikon nama="chat" className="size-4" /> {k.tanyaWa}</a>}
