@@ -102,7 +102,7 @@ export default async function Dasbor() {
           {terbaru.length ? (
             <div className="grid gap-2">{terbaru.map((p) => <BarisPesanan key={p.id} p={p} />)}</div>
           ) : <p className="rounded-2xl bg-white px-4 py-3 text-abu">Belum ada pesanan.</p>}
-          <Link href="/admin/pesanan" className="mt-3 inline-flex items-center gap-1 font-semibold text-toska-tua hover:underline">Semua pesanan <Ikon nama="panah" className="size-4" /></Link>
+          <Link href="/admin/pesanan" className="mt-3 inline-flex items-center gap-1 font-semibold text-biru-tua hover:underline">Semua pesanan <Ikon nama="panah" className="size-4" /></Link>
         </section>
       </div>
     </>

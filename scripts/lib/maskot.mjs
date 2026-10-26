@@ -16,7 +16,7 @@ const f = (n) => +n.toFixed(2);
 export const P = {
   bulu: '#F3EDDF', perut: '#FBF7EE', garis: '#B9AC98', bercak: '#2B2522',
   mata: W.hitam, lingkar: W.senja, kilau: W.putih, hidung: '#E6938B', kulit: '#F2BCB0', kulitTua: '#D98C80',
-  pipi: '#F3A694', kumis: '#C9BDAD', stripe: '#DCD2C2', dahan: '#9C6A3C', daun: W.toska,
+  pipi: '#F3A694', kumis: '#C9BDAD', stripe: '#DCD2C2', dahan: '#9C6A3C', daun: W.biru,
 };
 const TEBAL = 7; // outline drawn under the fill, so 3.5 shows outside
 
@@ -200,12 +200,12 @@ const AKS = {
   },
   masker() {
     return `<rect x="110" y="120" width="180" height="80" rx="38" fill="${W.buih}" opacity="0.25"/>`
-      + `<rect x="110" y="120" width="180" height="80" rx="38" fill="none" stroke="${W.toska}" stroke-width="11"/>`
+      + `<rect x="110" y="120" width="180" height="80" rx="38" fill="none" stroke="${W.biru}" stroke-width="11"/>`
       + `<path d="M291 158C308 158 310 128 312 98C314 74 324 62 338 60" fill="none" stroke="${W.senja}" stroke-width="12" stroke-linecap="round"/>`
-      + `<path d="M110 150C94 150 88 156 86 166" fill="none" stroke="${W.toska}" stroke-width="9" stroke-linecap="round"/>`;
+      + `<path d="M110 150C94 150 88 156 86 166" fill="none" stroke="${W.biru}" stroke-width="9" stroke-linecap="round"/>`;
   },
   kelapa(x, y) {
-    return `<path d="M${x - 6} ${y - 30}C${x - 24} ${y - 56} ${x - 40} ${y - 70} ${x - 56} ${y - 74}C${x - 30} ${y - 76} ${x - 10} ${y - 60} ${x - 6} ${y - 30}Z" fill="${W.toska}"/>`
+    return `<path d="M${x - 6} ${y - 30}C${x - 24} ${y - 56} ${x - 40} ${y - 70} ${x - 56} ${y - 74}C${x - 30} ${y - 76} ${x - 10} ${y - 60} ${x - 6} ${y - 30}Z" fill="${W.biru}"/>`
       + `<circle cx="${x}" cy="${y}" r="38" fill="#6B8E3A"/><ellipse cx="${x}" cy="${y - 24}" rx="22" ry="9" fill="#F4EBD0"/><circle cx="${x + 14}" cy="${y + 8}" r="9" fill="#86A94E"/>`
       + `<path d="M${x + 8} ${y - 26}L${x + 20} ${y - 70}" stroke="${W.putih}" stroke-width="8" stroke-linecap="round"/><path d="M${x + 8} ${y - 26}L${x + 20} ${y - 70}" stroke="${W.senja}" stroke-width="8" stroke-linecap="round" stroke-dasharray="7 7"/>`;
   },
@@ -220,8 +220,8 @@ const AKS = {
   },
   papan(label) {
     let s = `<rect x="104" y="296" width="192" height="88" rx="16" fill="${W.pasir}" stroke="${W.laut}" stroke-width="6"/>`;
-    s += text(label[0], { x: 200, y: 334, family: 'fredoka', weight: 700, size: 30, fill: W.laut, anchor: 'middle', maxWidth: 150 });
-    if (label[1]) s += text(label[1], { x: 200, y: 364, family: 'jakarta', weight: 700, size: 15, tracking: 0.12, fill: W.toskaTua, anchor: 'middle', maxWidth: 150 });
+    s += text(label[0], { x: 200, y: 334, family: 'judul', weight: 700, size: 30, fill: W.laut, anchor: 'middle', maxWidth: 150 });
+    if (label[1]) s += text(label[1], { x: 200, y: 364, family: 'jakarta', weight: 700, size: 15, tracking: 0.12, fill: W.biruTua, anchor: 'middle', maxWidth: 150 });
     return s;
   },
   dayung() {
@@ -231,13 +231,13 @@ const AKS = {
   dahan() {
     let s = `<path d="M24 414C120 400 280 400 376 414" fill="none" stroke="${P.dahan}" stroke-width="22" stroke-linecap="round"/>`;
     s += `<path d="M44 411C120 402 280 402 356 411" fill="none" stroke="#B8824C" stroke-width="6" stroke-linecap="round" opacity="0.6"/>`;
-    const daun = (x, y, rot, sc = 1) => `<g transform="translate(${x} ${y}) rotate(${rot}) scale(${sc})"><path d="M0 0C14 -22 44 -30 62 -18C50 4 22 14 0 0Z" fill="${P.daun}"/><path d="M4 -1C22 -10 40 -16 58 -18" fill="none" stroke="${W.toskaTua}" stroke-width="2"/></g>`;
+    const daun = (x, y, rot, sc = 1) => `<g transform="translate(${x} ${y}) rotate(${rot}) scale(${sc})"><path d="M0 0C14 -22 44 -30 62 -18C50 4 22 14 0 0Z" fill="${P.daun}"/><path d="M4 -1C22 -10 40 -16 58 -18" fill="none" stroke="${W.biruTua}" stroke-width="2"/></g>`;
     return s + daun(30, 406, -40) + daun(46, 422, 20, 0.9) + daun(344, 406, -150) + daun(352, 420, 170, 0.85) + daun(322, 428, 140, 0.7);
   },
   zzz() {
-    return text('z', { x: 292, y: 110, family: 'fredoka', weight: 700, size: 34, fill: W.toska })
-      + text('z', { x: 316, y: 80, family: 'fredoka', weight: 700, size: 46, fill: W.toska })
-      + text('z', { x: 348, y: 44, family: 'fredoka', weight: 700, size: 58, fill: W.toska });
+    return text('z', { x: 292, y: 110, family: 'judul', weight: 700, size: 34, fill: W.biru })
+      + text('z', { x: 316, y: 80, family: 'judul', weight: 700, size: 46, fill: W.biru })
+      + text('z', { x: 348, y: 44, family: 'judul', weight: 700, size: 58, fill: W.biru });
   },
   hati() {
     return `<path transform="translate(322 92) rotate(14)" d="M0 26C-14 12 -34 0 -34 -14A16 16 0 0 1 0 -14A16 16 0 0 1 34 -14C34 0 14 12 0 26Z" fill="${W.senja}"/>`;

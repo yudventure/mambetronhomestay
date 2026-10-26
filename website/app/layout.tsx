@@ -5,10 +5,14 @@ import { ambilSitus } from '@/lib/data';
 import { alamatSitus } from '@/lib/env';
 import './globals.css';
 
-const fredoka = localFont({
-  src: './fonts/fredoka-latin.woff2',
-  weight: '300 700',
-  variable: '--font-fredoka',
+// Londrina Solid for headings, it shares the tall, heavy, hand cut letters
+// of MAMBETRON in the logo.
+const londrina = localFont({
+  src: [
+    { path: './fonts/londrina-solid-400-latin.woff2', weight: '400', style: 'normal' },
+    { path: './fonts/londrina-solid-900-latin.woff2', weight: '900', style: 'normal' },
+  ],
+  variable: '--font-londrina',
   display: 'swap',
 });
 
@@ -55,7 +59,7 @@ export const dynamic = 'force-dynamic';
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const b = await bahasaAktif();
   return (
-    <html lang={b} className={`${fredoka.variable} ${jakarta.variable}`}>
+    <html lang={b} className={`${londrina.variable} ${jakarta.variable}`}>
       <body>{children}</body>
     </html>
   );

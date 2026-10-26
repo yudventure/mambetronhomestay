@@ -10,11 +10,11 @@ Situs pemesanan kamar ada di folder `website`. Cara deploy ke Hostinger dan cara
 
 | Folder | Isinya |
 |---|---|
-| `logo/svg`, `logo/pdf` | 12 versi logo dalam vektor. Pakai ini untuk percetakan dan desainer. |
+| `logo/svg`, `logo/pdf` | 14 versi logo dalam vektor. Pakai ini untuk percetakan dan desainer. |
 | `logo/png` | Logo PNG transparan lebar 2000 px, versi kecil 500 px di `logo/png/kecil`. |
 | `logo/sumber` | Gambar logo asli dan hasil penjiplakan vektornya. |
 | `maskot` | Mambe, maskot kuskus. Enam pose dan enam ekspresi (SVG dan PNG), paket stiker WhatsApp (WebP 512 px), lembar maskot. |
-| `font/desktop` | Fredoka dan Plus Jakarta Sans dalam TTF untuk dipasang di komputer. |
+| `font/desktop` | Londrina Solid dan Plus Jakarta Sans dalam TTF untuk dipasang di komputer. |
 | `font/web` | Berkas font website (woff2) beserta `fonts.css`. |
 | `web` | Favicon, ikon aplikasi, gambar bagikan 1200 × 630, logo header, `tokens.css`, dan `contoh-halaman.html`. |
 | `sosial-media` | Foto profil, template post, story, sampul sorotan, sampul Facebook. SVG ada di `sosial-media/svg`. |
@@ -27,18 +27,21 @@ Situs pemesanan kamar ada di folder `website`. Cara deploy ke Hostinger dan cara
 
 | Keperluan | Berkas |
 |---|---|
-| Latar putih atau terang | `mambetron-logo-utama-hitam` |
+| Latar putih atau terang | `mambetron-logo-utama-biru` |
 | Latar gelap, kaos gelap, sablon satu warna putih | `mambetron-logo-utama-putih` |
 | Di atas foto atau latar ramai | `mambetron-logo-utama-stiker` |
-| Header website, kop surat | `mambetron-logo-horizontal` |
-| Foto profil, favicon | `mambetron-ikon` |
-| Bordir, grafir, cap satu warna | `mambetron-ikon-stempel-hitam` atau `-putih` |
+| Kop surat, papan lebar | `mambetron-logo-horizontal` |
+| Foto profil, stiker, cap | `mambetron-ikon` atau `mambetron-ikon-stempel-biru` |
+| Bordir, label kecil, header website | `mambetron-wordmark-biru` atau `-putih` |
+| Favicon, ikon aplikasi, benda sangat kecil | `mambetron-monogram` |
 
-Logo utama adalah kepala kuskus yang mengintip dari balik garis, dengan tulisan mambetron dan HOMESTAY di bawahnya. Lidah kecilnya berwarna merah muda `#F0A0A0`, selebihnya satu warna. Ruang kosong di sekitar logo paling sedikit setinggi huruf m pada tulisan mambetron. Ukuran terkecil logo utama 25 mm (120 px), logo horizontal tinggi 10 mm (32 px), ikon 8 mm (16 px).
+Logo utama menggambar seorang tamu yang tidur di hammock di antara dua pohon kelapa di atas pulau pasir kecil, dengan tulisan MAMBETRON dan HOMESTAY di bawahnya. Logo ini satu warna, Biru Mambetron `#0497B2`. Gambar asli adalah tangkapan layar Mac dengan profil warna layar, jadi warnanya dibaca setelah diubah ke sRGB supaya sama dengan yang terlihat di layar.
+
+Ruang kosong di sekitar logo paling sedikit setinggi huruf M pada tulisan MAMBETRON. Garis gambarnya sangat halus, jadi ukuran terkecil logo utama lebar 35 mm (160 px) dan ikon bulat 20 mm (96 px). Untuk bordir dan benda kecil seperti label botol, sandal, dan gantungan kunci, pakai tulisan MAMBETRON (paling kecil lebar 20 mm) atau monogram M (paling kecil 5 mm atau 16 px).
 
 ## Maskot Mambe
 
-Mambe digambar dari kuskus Waigeo (*Spilocuscus papuensis*), kuskus berbintik yang hanya hidup di Raja Ampat: bulu krem berbercak gelap, telinga mungil, mata bulat besar berlingkar jingga, hidung dan tangan merah muda, ekor panjang menggulung. Pakai di media sosial, stiker WhatsApp, kartu tamu, gantungan pintu, dan kaos anak. Untuk kop surat dan nota resmi cukup logo. Warna dan proporsi wajahnya tidak diubah. Nama Mambe hanya usulan.
+Mambe digambar dari kuskus Waigeo (*Spilocuscus papuensis*), kuskus berbintik yang hanya hidup di Raja Ampat. Cirinya bulu krem berbercak gelap, telinga mungil, mata bulat besar berlingkar jingga, hidung dan tangan merah muda, serta ekor panjang menggulung. Maskot ini tetap dipakai walau logonya berganti, sebagai tetangga dari hutan pulau. Pakai di media sosial, stiker WhatsApp, kartu tamu, gantungan pintu, dan kaos anak. Untuk kop surat dan nota resmi cukup logo. Warna dan proporsi wajahnya tidak diubah. Nama Mambe hanya usulan.
 
 Stiker WhatsApp ada di `brand/maskot/stiker-whatsapp` (WebP 512 × 512 px, masing-masing di bawah 100 KB, ikon paket 96 px). Masukkan ke aplikasi pembuat stiker seperti Sticker Maker lalu bagikan ke tamu.
 
@@ -46,18 +49,18 @@ Stiker WhatsApp ada di `brand/maskot/stiker-whatsapp` (WebP 512 × 512 px, masin
 
 | Nama | HEX | Peran |
 |---|---|---|
-| Hitam Kuskus | `#161616` | Logo dan teks |
-| Laut Dalam | `#0B3B4A` | Latar gelap, judul, seragam |
-| Toska Laguna | `#12A39A` | Aksen dan ilustrasi. Untuk teks di latar putih pakai `#0A7A73` |
+| Biru Mambetron | `#0497B2` | Warna logo, aksen, ikon. Untuk teks di latar putih pakai biru tua `#036F87` |
+| Laut Dalam | `#0B3B4A` | Judul, latar gelap, seragam |
 | Jingga Senja | `#F27A3D` | Tombol pesan dan sorotan |
-| Pasir Pantai | `#F7DFA8` | Latar hangat dan label |
-| Buih Laut | `#E6F5F3` | Latar lembut di layar |
+| Pasir Pulau | `#F7DFA8` | Latar hangat dan label |
+| Buih Laut | `#E3F4F7` | Latar lembut di layar |
+| Hitam Malam | `#161616` | Teks panjang |
 
 Nilai CMYK ada di halaman panduan. Nilainya perkiraan, jadi minta percetakan membuat contoh cetak dulu.
 
 ## Font website
 
-Judul memakai **Fredoka**, huruf bulat tebal yang sekeluarga dengan tulisan mambetron di logo. Teks memakai **Plus Jakarta Sans** buatan Tokotype, Jakarta. Keduanya berlisensi SIL Open Font License 1.1 (lihat `brand/font/OFL-*.txt`), bebas dipakai untuk usaha dan boleh di-host sendiri.
+Judul memakai **Londrina Solid**, huruf tinggi dan tebal dengan tepi seperti dipotong tangan, senada dengan tulisan MAMBETRON di logo. Teks memakai **Plus Jakarta Sans** buatan Tokotype, Jakarta, senada dengan tulisan HOMESTAY. Keduanya berlisensi SIL Open Font License 1.1 (lihat `brand/font/OFL-*.txt`), bebas dipakai untuk usaha dan boleh di-host sendiri.
 
 ```html
 <link rel="stylesheet" href="/font/web/fonts.css">

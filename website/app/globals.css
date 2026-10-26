@@ -6,17 +6,17 @@
   --color-laut: #0b3b4a;
   --color-laut-2: #13566a;
   --color-laut-3: #082a35;
-  --color-toska: #12a39a;
-  --color-toska-tua: #0a7a73;
+  --color-biru: #0497b2;
+  --color-biru-tua: #036f87;
   --color-senja: #f27a3d;
   --color-senja-tua: #d9622a;
   --color-pasir: #f7dfa8;
-  --color-buih: #e6f5f3;
-  --color-buih-2: #d3eeea;
+  --color-buih: #e3f4f7;
+  --color-buih-2: #cbe9ef;
   --color-abu: #5b6b70;
   --color-merah: #c2412d;
 
-  --font-judul: var(--font-fredoka), "Nunito", "Trebuchet MS", system-ui, sans-serif;
+  --font-judul: var(--font-londrina), "Arial Narrow", "Trebuchet MS", system-ui, sans-serif;
   --font-teks: var(--font-jakarta), "Segoe UI", system-ui, -apple-system, sans-serif;
 
   --shadow-lembut: 0 8px 28px rgb(11 59 74 / 0.09);
@@ -41,14 +41,14 @@
   h1, h2, h3, h4 {
     font-family: var(--font-judul);
     color: var(--color-laut);
-    font-weight: 600;
-    line-height: 1.12;
-    letter-spacing: -0.01em;
+    font-weight: 900;
+    line-height: 1.06;
+    letter-spacing: 0.005em;
     text-wrap: balance;
   }
   p { text-wrap: pretty; }
   :focus-visible {
-    outline: 3px solid var(--color-toska);
+    outline: 3px solid var(--color-biru);
     outline-offset: 2px;
     border-radius: 6px;
   }
@@ -79,8 +79,8 @@
   .tombol-laut:hover { background: var(--color-laut-2); }
   .tombol-putih { background: #fff; color: var(--color-laut); box-shadow: inset 0 0 0 2px var(--color-buih-2); }
   .tombol-putih:hover { background: var(--color-buih); }
-  .tombol-toska { background: var(--color-toska-tua); color: #fff; }
-  .tombol-toska:hover { background: var(--color-toska); }
+  .tombol-biru { background: var(--color-biru-tua); color: #fff; }
+  .tombol-biru:hover { background: var(--color-biru); }
   .tombol-kecil { min-height: 2.5rem; padding: 0.45em 1.1em; font-size: 0.9375rem; }
   .tombol-merah { background: #fbe4df; color: var(--color-merah); }
   .tombol-merah:hover { background: #f7d2ca; }
@@ -90,7 +90,7 @@
     font-weight: 700;
     letter-spacing: 0.2em;
     text-transform: uppercase;
-    color: var(--color-toska-tua);
+    color: var(--color-biru-tua);
   }
 
   .isian {
@@ -106,7 +106,7 @@
     font-size: 1rem;
     transition: border-color 0.15s, box-shadow 0.15s;
   }
-  .isian:focus { outline: none; border-color: var(--color-toska); box-shadow: 0 0 0 3px rgb(18 163 154 / 0.18); }
+  .isian:focus { outline: none; border-color: var(--color-biru); box-shadow: 0 0 0 3px rgb(4 151 178 / 0.2); }
   textarea.isian { min-height: 6.5rem; resize: vertical; }
   select.isian { appearance: none; padding-right: 2.5rem; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%230b3b4a' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 0.8rem center; background-size: 1.1rem; }
   .label-isian { display: block; margin-bottom: 0.35rem; font-weight: 600; font-size: 0.9375rem; color: var(--color-laut); }

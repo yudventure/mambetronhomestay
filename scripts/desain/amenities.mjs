@@ -9,7 +9,8 @@ import { doc, rect, kontak, sisip, potong, bayangan } from '../lib/tata.mjs';
 import { png, pdf, simpan } from '../lib/render.mjs';
 
 const mm = (w, h, body) => doc(w, h, body, 'mm');
-const satuWarna = (ink) => L.horizontal({ ink, badge: { bg: null, plate: null, ring: ink, ink } });
+// embroidery and small prints use the lettering, the drawing is too fine below 30 mm
+const satuWarna = (ink) => L.wordmark({ ink });
 
 // ---------- print artwork ----------
 
@@ -20,24 +21,24 @@ export function bordirHanduk(ink = W.laut) {
 
 export function labelSabun() {
   const w = 200, h = 60;
-  let s = A.pola({ w, h, tile: 22, bg: W.laut, swirl: W.toska, dot: W.pasir });
+  let s = A.pola({ w, h, tile: 22, bg: W.laut, swirl: W.biru, dot: W.pasir });
   s += rect(w / 2 - 32, 4, 64, h - 8, W.putih, 4);
-  s += L.taruh(L.lencana(), { x: w / 2, y: 8, w: 24, anchor: 'middle' }).svg;
-  s += text('Sabun Mandi', { x: w / 2, y: 42, family: 'fredoka', weight: 700, size: 7.2, fill: W.laut, anchor: 'middle' });
-  s += text('BATH SOAP', { x: w / 2, y: 49.5, size: 3.6, weight: 600, tracking: 0.2, fill: W.toskaTua, anchor: 'middle' });
+  s += L.taruh(L.wordmark(), { x: w / 2, y: 11, w: 44, anchor: 'middle' }).svg;
+  s += text('Sabun Mandi', { x: w / 2, y: 42, family: 'judul', weight: 700, size: 7.2, fill: W.laut, anchor: 'middle' });
+  s += text('BATH SOAP', { x: w / 2, y: 49.5, size: 3.6, weight: 600, tracking: 0.2, fill: W.biruTua, anchor: 'middle' });
   return mm(w, h, s);
 }
 
 export const BOTOL = [
-  ['sampo', 'Sampo', 'SHAMPOO', W.toska, W.putih, W.laut],
+  ['sampo', 'Sampo', 'SHAMPOO', W.biru, W.putih, W.laut],
   ['sabun-cair', 'Sabun Cair', 'BODY WASH', W.senja, W.hitam, W.hitam],
   ['kondisioner', 'Kondisioner', 'CONDITIONER', W.pasir, W.laut, W.laut],
 ];
 export function labelBotol([, nama, en, bg, fg, sub]) {
   const w = 60, h = 80;
   let s = rect(0, 0, w, h, bg);
-  s += L.taruh(L.lencana({ bg: W.putih, ring: W.putih }), { x: w / 2, y: 7, w: 22, anchor: 'middle' }).svg;
-  s += text(nama, { x: w / 2, y: 42, family: 'fredoka', weight: 700, size: 9.5, fill: fg, anchor: 'middle', maxWidth: 52 });
+  s += L.taruh(L.wordmark({ ink: fg, sub: fg }), { x: w / 2, y: 12, w: 44, anchor: 'middle' }).svg;
+  s += text(nama, { x: w / 2, y: 42, family: 'judul', weight: 700, size: 9.5, fill: fg, anchor: 'middle', maxWidth: 52 });
   s += text(en, { x: w / 2, y: 49, size: 3.4, weight: 700, tracking: 0.24, fill: fg, anchor: 'middle' });
   s += A.ekor({ x: w / 2 - 8, y: 59, R: 2.6, len: 4.2, color: fg, width: 0.36 });
   s += text('Mambetron Homestay', { x: w / 2, y: 72, size: 3.2, weight: 600, fill: fg, anchor: 'middle', opacity: 0.85 });
@@ -48,10 +49,10 @@ export function gantunganKunci(sisi = 'depan', nomor = '01') {
   const d = 50;
   const kayu = '#D9A86C', bakar = '#5A3A1E';
   let s = `<circle cx="25" cy="25" r="25" fill="${kayu}"/>`;
-  if (sisi === 'depan') s += L.taruh(L.stempel({ ink: bakar, ringWidth: 0.07 }), { x: 25, y: 11, w: 28, anchor: 'middle' }).svg;
+  if (sisi === 'depan') s += `<circle cx="25" cy="26.5" r="14.5" fill="none" stroke="${bakar}" stroke-width="1.3"/>` + L.taruh(L.monogram({ bg: null, ink: bakar }), { x: 25, y: 14, w: 25, anchor: 'middle' }).svg;
   else {
     s += text('KAMAR', { x: 25, y: 22, size: 4.2, weight: 700, tracking: 0.28, fill: bakar, anchor: 'middle' });
-    s += text(nomor, { x: 25, y: 39, family: 'fredoka', weight: 700, size: 16, fill: bakar, anchor: 'middle' });
+    s += text(nomor, { x: 25, y: 39, family: 'judul', weight: 700, size: 16, fill: bakar, anchor: 'middle' });
   }
   s += `<circle cx="25" cy="5.5" r="2.4" fill="#FFFFFF"/>`;
   s += potong('M50 25A25 25 0 1 1 0 25A25 25 0 1 1 50 25ZM27.4 5.5A2.4 2.4 0 1 1 22.6 5.5A2.4 2.4 0 1 1 27.4 5.5Z');
@@ -61,17 +62,17 @@ export function gantunganKunci(sisi = 'depan', nomor = '01') {
 export function gantunganPintu(sisi = 'depan') {
   const w = 90, h = 230;
   const malam = sisi === 'depan';
-  const bg = malam ? W.laut : W.pasir, fg = malam ? W.putih : W.laut, sub = malam ? W.pasir : W.toskaTua;
+  const bg = malam ? W.laut : W.pasir, fg = malam ? W.putih : W.laut, sub = malam ? W.pasir : W.biruTua;
   const hole = 'M45 18A16 16 0 1 1 45 50A16 16 0 1 1 45 18Z';
   const outline = `M6 0H84A6 6 0 0 1 90 6V224A6 6 0 0 1 84 230H6A6 6 0 0 1 0 224V6A6 6 0 0 1 6 0Z`;
   let s = rect(0, 0, w, h, bg, 6);
   if (malam) s += `<circle cx="70" cy="76" r="1.3" fill="${W.pasir}"/><circle cx="18" cy="96" r="1" fill="${W.pasir}"/><circle cx="76" cy="122" r="0.9" fill="${W.pasir}"/>`;
   s += L.taruh(maskot(malam ? 'tidur' : 'sapa', { stiker: malam }), { x: 45, y: 56, h: 60, anchor: 'middle' }).svg;
-  s += text(malam ? 'Jangan' : 'Kamar siap', { x: 45, y: 128, family: 'fredoka', weight: 700, size: 12.5, fill: fg, anchor: 'middle' });
-  s += text(malam ? 'diganggu' : 'dibersihkan', { x: 45, y: 142, family: 'fredoka', weight: 700, size: 12.5, fill: fg, anchor: 'middle' });
+  s += text(malam ? 'Jangan' : 'Kamar siap', { x: 45, y: 128, family: 'judul', weight: 700, size: 12.5, fill: fg, anchor: 'middle' });
+  s += text(malam ? 'diganggu' : 'dibersihkan', { x: 45, y: 142, family: 'judul', weight: 700, size: 12.5, fill: fg, anchor: 'middle' });
   s += text(malam ? 'DO NOT DISTURB' : 'PLEASE CLEAN MY ROOM', { x: 45, y: 154, size: 3.6, weight: 700, tracking: 0.18, fill: sub, anchor: 'middle', maxWidth: 74 });
   s += text(malam ? 'Kuskus juga butuh istirahat' : 'Terima kasih, kami rapikan segera', { x: 45, y: 166, size: 3.6, weight: 500, fill: fg, anchor: 'middle', opacity: 0.9, maxWidth: 76 });
-  s += L.taruh(malam ? L.stempel({ ink: W.putih }) : L.lencana({ bg: W.putih, ring: W.putih }), { x: 45, y: 186, w: 28, anchor: 'middle' }).svg;
+  s += L.taruh(malam ? L.wordmark({ ink: W.putih, sub: W.pasir }) : L.wordmark({ ink: W.laut }), { x: 45, y: 188, w: 46, anchor: 'middle' }).svg;
   s += `<path d="${hole}" fill="#FFFFFF"/><path d="M45 50V64" stroke="#FFFFFF" stroke-width="0.6"/>`;
   s += potong(`${outline}${hole}M45 50V64`);
   return mm(w, h, s);
@@ -82,22 +83,22 @@ export function kartuSelamatDatang(K) {
   let s = rect(0, 0, w, h, W.putih);
   s += rect(0, 0, w, 50, W.buih);
   s += `<g transform="translate(0 26)">${A.lanskap({ w, h: 24, horizon: 0.5, sun: null, seed: 3, glint: false })}</g>`;
-  s += L.taruh(L.lencana(), { x: w / 2, y: 6, w: 26, anchor: 'middle' }).svg;
+  s += L.taruh(L.wordmark(), { x: 40, y: 9, w: 44, anchor: 'middle' }).svg;
   s += L.taruh(maskot('sapa', { stiker: true }), { x: 84, y: 13, h: 36, anchor: 'middle' }).svg;
-  s += text('Selamat datang', { x: w / 2, y: 62, family: 'fredoka', weight: 700, size: 9, fill: W.laut, anchor: 'middle' });
-  s += text('WELCOME TO MAMBETRON', { x: w / 2, y: 68.5, size: 2.9, weight: 700, tracking: 0.2, fill: W.toskaTua, anchor: 'middle' });
+  s += text('Selamat datang', { x: w / 2, y: 62, family: 'judul', weight: 700, size: 9, fill: W.laut, anchor: 'middle' });
+  s += text('WELCOME TO MAMBETRON', { x: w / 2, y: 68.5, size: 2.9, weight: 700, tracking: 0.2, fill: W.biruTua, anchor: 'middle' });
   // wifi block
   s += rect(10, 74, 85, 22, W.buih, 3);
   s += A.ikon('wifi', { x: 14, y: 78, size: 8, color: W.laut, stroke: 2 });
-  s += text('Nama jaringan', { x: 26, y: 80.5, size: 2.6, weight: 500, fill: W.toskaTua });
+  s += text('Nama jaringan', { x: 26, y: 80.5, size: 2.6, weight: 500, fill: W.biruTua });
   s += text(K.wifiNama, { x: 26, y: 84.6, size: 3.4, weight: 700, fill: W.hitam });
-  s += text('Kata sandi', { x: 26, y: 89.5, size: 2.6, weight: 500, fill: W.toskaTua });
+  s += text('Kata sandi', { x: 26, y: 89.5, size: 2.6, weight: 500, fill: W.biruTua });
   s += text(K.wifiSandi, { x: 26, y: 93.6, size: 3.4, weight: 700, fill: W.hitam });
   // three gentle requests
   s += text('Bantu kami menjaga pulau ini', { x: 10, y: 104, size: 3.3, weight: 700, fill: W.laut });
   const butir = [['air', 'Hemat air tawar, persediaannya terbatas'], ['sampah', 'Bawa pulang sampah plastik Anda'], ['karang', 'Jangan injak atau sentuh karang']];
   butir.forEach(([ik, t], i) => {
-    s += A.ikon(ik, { x: 10, y: 107.5 + i * 7.4, size: 5, color: W.toskaTua, stroke: 2 });
+    s += A.ikon(ik, { x: 10, y: 107.5 + i * 7.4, size: 5, color: W.biruTua, stroke: 2 });
     s += text(t, { x: 17.5, y: 111.4 + i * 7.4, size: 2.9, weight: 500, fill: W.hitam });
   });
   s += rect(0, 133, w, 15, W.laut);
@@ -184,8 +185,8 @@ export function mockSandal() {
   const sol = 'M0 -300C70 -300 112 -250 112 -170C112 -90 92 -30 92 40C92 120 120 180 110 240C100 300 60 330 0 330C-60 330 -100 300 -110 240C-120 180 -92 120 -92 40C-92 -30 -112 -90 -112 -170C-112 -250 -70 -300 0 -300Z';
   const satu = (cx, flip) => {
     let g = `<path d="${sol}" fill="#2B2B2B" transform="translate(0 8)"/><path d="${sol}" fill="${W.putih}"/>`;
-    g += L.taruh(L.lencana(), { x: 0, y: 150, w: 120, anchor: 'middle' }).svg;
-    g += `<path d="M-118 -110Q0 -40 118 -110L112 -40Q0 10 -112 -40Z" fill="${W.toska}"/>`;
+    g += L.taruh(L.monogram(), { x: 0, y: 150, w: 92, anchor: 'middle' }).svg;
+    g += `<path d="M-118 -110Q0 -40 118 -110L112 -40Q0 10 -112 -40Z" fill="${W.biru}"/>`;
     return `<g transform="translate(${cx} 460) scale(${flip} 1) rotate(${flip * -4})">${bayangan(g)}</g>`;
   };
   s += satu(470, 1) + satu(730, -1);

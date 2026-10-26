@@ -52,7 +52,7 @@ export default async function RincianPesanan({ params, searchParams }: {
 
   return (
     <>
-      <Link href="/admin/pesanan" className="mb-4 inline-flex items-center gap-1 text-sm font-semibold text-toska-tua hover:underline">
+      <Link href="/admin/pesanan" className="mb-4 inline-flex items-center gap-1 text-sm font-semibold text-biru-tua hover:underline">
         <Ikon nama="kiri" className="size-4" /> Semua pesanan
       </Link>
       <JudulAdmin judul={`Pesanan ${p.kode}`} teks={`Masuk ${waktu(p.dibuat)} lewat ${p.sumber === 'admin' ? 'panel pengelola' : 'situs'}.`}>
@@ -83,7 +83,7 @@ export default async function RincianPesanan({ params, searchParams }: {
               </div>
             )}
             <div className="mt-5 flex flex-wrap gap-2">
-              {waTamu && <a href={waTamu} target="_blank" rel="noopener" className="tombol tombol-toska tombol-kecil"><Ikon nama="chat" className="size-4" /> Kirim WhatsApp ke tamu</a>}
+              {waTamu && <a href={waTamu} target="_blank" rel="noopener" className="tombol tombol-biru tombol-kecil"><Ikon nama="chat" className="size-4" /> Kirim WhatsApp ke tamu</a>}
               <a href={tautanTamu} target="_blank" rel="noopener" className="tombol tombol-putih tombol-kecil"><Ikon nama="luar" className="size-4" /> Halaman tamu</a>
             </div>
           </section>
@@ -139,7 +139,7 @@ export default async function RincianPesanan({ params, searchParams }: {
             <div className="mt-4 grid gap-2">
               {p.status === 'menunggu' && (
                 <form action={tandaiPesanan}><input type="hidden" name="id" value={p.id} /><input type="hidden" name="apa" value="dp" />
-                  <button className="tombol tombol-toska w-full">Uang muka diterima</button></form>
+                  <button className="tombol tombol-biru w-full">Uang muka diterima</button></form>
               )}
               {(p.status === 'menunggu' || p.status === 'dikonfirmasi') && (
                 <form action={tandaiPesanan}><input type="hidden" name="id" value={p.id} /><input type="hidden" name="apa" value="lunas" />

@@ -23,7 +23,7 @@ export default function Kepala({ b, situs }: { b: Bahasa; situs: Situs }) {
       <div className="mx-auto flex h-[4.5rem] max-w-6xl items-center gap-3 px-4 sm:px-6">
         <Link href="/" className="mr-auto shrink-0" aria-label={situs.nama}>
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/merek/logo-horizontal.svg" alt={situs.nama} width={213} height={44} className="h-9 w-auto sm:h-11" />
+          <img src="/merek/logo-horizontal.svg" alt={situs.nama} width={198} height={44} className="h-9 w-auto sm:h-11" />
         </Link>
         <nav className="hidden items-center gap-1 lg:flex">
           {tautan.map((t) => (
@@ -32,7 +32,7 @@ export default function Kepala({ b, situs }: { b: Bahasa; situs: Situs }) {
             </Link>
           ))}
         </nav>
-        <a href={`/bahasa?ke=${lain}`} hrefLang={lain} className="hidden rounded-full px-3 py-2 text-sm font-bold text-toska-tua hover:bg-buih lg:inline-flex" title={k.gantiBahasa}>
+        <a href={`/bahasa?ke=${lain}`} hrefLang={lain} className="hidden rounded-full px-3 py-2 text-sm font-bold text-biru-tua hover:bg-buih lg:inline-flex" title={k.gantiBahasa}>
           {k.kodeBahasaLain}
         </a>
         <Link href="/pesan" className="tombol tombol-kecil whitespace-nowrap max-[339px]:hidden">

@@ -24,7 +24,7 @@ function FormUlasan({ u }: { u?: Ulasan }) {
       </div>
       <div><label className="label-isian" htmlFor={k('urutan')}>Urutan tampil</label><input id={k('urutan')} name="urutan" type="number" defaultValue={u?.urutan ?? 0} className="isian" /></div>
       <label className="flex items-center gap-3 rounded-2xl bg-buih px-4 py-3 font-semibold text-laut sm:col-span-2">
-        <input type="checkbox" name="tampil" value="ya" defaultChecked={u?.tampil ?? true} className="size-5 accent-[#0a7a73]" /> Tampilkan di halaman utama
+        <input type="checkbox" name="tampil" value="ya" defaultChecked={u?.tampil ?? true} className="size-5 accent-[#036f87]" /> Tampilkan di halaman utama
       </label>
       <div className="sm:col-span-2"><button className="tombol tombol-laut tombol-kecil">{u ? 'Simpan' : 'Tambah ulasan'}</button></div>
     </form>

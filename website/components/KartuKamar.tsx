@@ -18,7 +18,7 @@ export default function KartuKamar({ kamar, b, i, className = '' }: { kamar: Kam
       </Link>
       <div className="flex flex-1 flex-col p-5 sm:p-6">
         <h3 className="text-2xl">
-          <Link href={`/kamar/${kamar.slug}`} className="hover:text-toska-tua">{nama}</Link>
+          <Link href={`/kamar/${kamar.slug}`} className="hover:text-biru-tua">{nama}</Link>
         </h3>
         <p className="mt-2 text-abu">{pilih(b, kamar.ringkas, kamar.ringkas_en)}</p>
         <ul className="mt-4 flex flex-wrap gap-2 text-sm font-semibold text-laut">

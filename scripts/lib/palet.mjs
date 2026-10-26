@@ -3,21 +3,21 @@
 export const W = {
   hitam: '#161616',
   laut: '#0B3B4A',
-  toska: '#12A39A',
-  toskaTua: '#0A7A73',
+  biru: '#0497B2',
+  biruTua: '#036F87',
   senja: '#F27A3D',
   pasir: '#F7DFA8',
-  buih: '#E6F5F3',
+  buih: '#E3F4F7',
   putih: '#FFFFFF',
 };
 
 export const PALET = [
-  { kunci: 'hitam', nama: 'Hitam Kuskus', hex: W.hitam, peran: 'Warna logo utama dan teks' },
-  { kunci: 'laut', nama: 'Laut Dalam', hex: W.laut, peran: 'Latar gelap, judul, seragam' },
-  { kunci: 'toska', nama: 'Toska Laguna', hex: W.toska, peran: 'Aksen, ikon, ilustrasi laut' },
+  { kunci: 'biru', nama: 'Biru Mambetron', hex: W.biru, peran: 'Warna logo, aksen, ikon' },
+  { kunci: 'laut', nama: 'Laut Dalam', hex: W.laut, peran: 'Judul, latar gelap, seragam' },
   { kunci: 'senja', nama: 'Jingga Senja', hex: W.senja, peran: 'Tombol pesan dan sorotan' },
-  { kunci: 'pasir', nama: 'Pasir Pantai', hex: W.pasir, peran: 'Latar hangat dan label' },
+  { kunci: 'pasir', nama: 'Pasir Pulau', hex: W.pasir, peran: 'Latar hangat dan label' },
   { kunci: 'buih', nama: 'Buih Laut', hex: W.buih, peran: 'Latar lembut di layar' },
+  { kunci: 'hitam', nama: 'Hitam Malam', hex: W.hitam, peran: 'Teks panjang' },
 ];
 
 export function rgb(hex) {

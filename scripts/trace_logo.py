@@ -1,49 +1,58 @@
-"""Trace the raster logo into layered vector paths.
+"""Trace the raster logo into vector paths.
 
 Usage: python3 scripts/trace_logo.py brand/logo/sumber/mambetron-logo-asli.png brand/logo/sumber/logo-traced.json
 
-The logo is a kuskus head peeking over a horizontal line, the word
-"mambetron" under it and HOMESTAY under that. Output JSON holds
+The logo is one colour: a man resting in a hammock between two coconut
+palms on a small sand island, the word MAMBETRON under it and HOMESTAY
+under that. The source is a screenshot with a display colour profile, so
+it is converted to sRGB first. Output JSON holds
 
   contours      every closed contour as an SVG path with its nesting depth
-                (0 = black shape, 1 = white hole, 2 = black inside a hole...)
-                and bounding box, in source pixels of the cropped logo
-  lidah         index of the hole that is the pink tongue
-  garis         bounding box of the horizontal line
-  teksAtas      y where the lettering starts
-  kepala        bounding box of the head (ears to snout, without the line)
-  hullKepala    head outline grown by RIM, for the white rim on dark grounds
-  hull          outline around the whole logo, for die-cut stickers
+                (0 = ink shape, 1 = hole, 2 = ink inside a hole...) and
+                bounding box, in pixels of the cropped logo
+  bagian        bounding boxes of the three bands: ilustrasi, kata, homestay
+  warna         ink colour of the lettering and of the drawing, in sRGB
+  hull          outline around the whole logo grown by RIM, for stickers
+  hullIlustrasi outline around the drawing alone, for badges on busy grounds
 """
+import io
 import json
 import sys
 import time
 
 import numpy as np
 import potrace
-from PIL import Image, ImageDraw, ImageFilter
+from PIL import Image, ImageCms, ImageDraw, ImageFilter
 
 SCALE = 3
 PAD = 30
-# white rim around the head on dark grounds, and around the sticker, in source px
-RIM = 9
-# extra closing for the sticker outline so head, line and words become one shape
-CLOSE = 26
+# white rim around the logo on dark grounds and stickers, in source px
+RIM = 10
+# extra closing so the drawing, the word and HOMESTAY become one sticker shape
+CLOSE = 24
+
+
+def srgb(path):
+    img = Image.open(path)
+    icc = img.info.get("icc_profile")
+    rgb = img.convert("RGB")
+    if icc:
+        src = ImageCms.ImageCmsProfile(io.BytesIO(icc))
+        rgb = ImageCms.profileToProfile(rgb, src, ImageCms.createProfile("sRGB"))
+    return rgb
 
 
 def load(path):
-    img = Image.open(path).convert("RGB")
-    gray = np.array(img.convert("L"))
-    ys, xs = np.where(gray < 128)
+    rgb = srgb(path)
+    gray = np.array(rgb.convert("L"))
+    ys, xs = np.where(gray < 180)
     x0, y0 = max(xs.min() - PAD, 0), max(ys.min() - PAD, 0)
     x1, y1 = min(xs.max() + PAD, gray.shape[1]), min(ys.max() + PAD, gray.shape[0])
-    crop = img.crop((x0, y0, x1, y1))
+    crop = rgb.crop((x0, y0, x1, y1))
     big = crop.convert("L").resize((crop.width * SCALE, crop.height * SCALE), Image.LANCZOS)
-    big = big.filter(ImageFilter.GaussianBlur(SCALE * 0.6))
-    bits = np.array(big) < 128
-    rgb = np.array(crop).astype(int)
-    pink = (rgb[..., 0] > 150) & (rgb[..., 0] - rgb[..., 1] > 30) & (rgb[..., 0] - rgb[..., 2] > 20)
-    return bits, pink, tuple(int(v) for v in (x0, y0, x1 - x0, y1 - y0))
+    big = big.filter(ImageFilter.GaussianBlur(SCALE * 0.5))
+    bits = np.array(big) < 180
+    return bits, np.array(crop).astype(int), tuple(int(v) for v in (x0, y0, x1 - x0, y1 - y0))
 
 
 def curve_to_d(curve, off=0.0):
@@ -126,9 +135,9 @@ def fill_holes(mask):
 
 
 def outline(bits, rim, close=0):
-    """Grow the black shapes by rim (and close gaps up to close) on a padded
-    canvas so nothing touches the border, then fill holes and trace. Returns
-    the outline as an SVG path in cropped source pixels."""
+    """Grow the shapes by rim (and close gaps up to close) on a padded canvas
+    so nothing touches the border, fill holes and trace. Returns an SVG path
+    in cropped source pixels."""
     m = (rim + close) * SCALE + 12
     big = np.pad(bits, m)
     g = grow(big, (rim + close) * SCALE)
@@ -145,56 +154,24 @@ def outline(bits, rim, close=0):
     return "".join(out)
 
 
-def parts(bits):
-    """Find the line, the lettering and the head in the big bitmap."""
-    H, W = bits.shape
-    # the line reaches further left than the head; the first band of rows with
-    # black near the left edge is the line, the next one is the lettering
-    left = np.where(bits[:, : int(W * 0.22)].any(axis=1))[0]
-    brk = np.where(np.diff(left) > 1)[0]
-    line_rows = left[: brk[0] + 1] if len(brk) else left
-    l0, l1 = int(line_rows.min()), int(line_rows.max())
-    cols = np.where(bits[l0:l1 + 1].any(axis=0))[0]
-    gx0, gx1 = int(cols.min()), int(cols.max())
-    # lettering: first row under the line where black spans most of the width
-    text_top = None
-    for y in range(l1 + 1, H):
-        xs = np.where(bits[y])[0]
-        if len(xs) and xs.max() - xs.min() > W * 0.4:
-            text_top = y
-            break
-    # snout: black under the line that is connected to it (the b and t
-    # ascenders of the lettering also sit here but do not touch the line)
-    band = bits[l1 + 1:text_top].copy()
-    img = Image.fromarray((band * 255).astype(np.uint8)).copy()
-    for x in np.where(band[0])[0]:
-        if img.getpixel((int(x), 0)) == 255:
-            ImageDraw.floodfill(img, (int(x), 0), 128)
-    tag = np.array(img)
-    snout = tag == 128
-    rest = tag == 255
-    sc = np.where(snout.any(axis=0))[0]
-    sx0, sx1 = int(sc.min()), int(sc.max())
-    ry = np.where(rest.any(axis=1))[0]
-    if len(ry):
-        text_top = l1 + 1 + int(ry.min())
-    head = bits.copy()
-    head[l1 + 1:] = False
-    head[l1 + 1:l1 + 1 + snout.shape[0]] |= snout
-    head[l0:l1 + 1, :sx0] = False
-    head[l0:l1 + 1, sx1 + 1:] = False
-    # the head body stops at the line, keep only what sits above it or is the snout
-    hy = np.where(head.any(axis=1))[0]
-    hx = np.where(head[:l0].any(axis=0))[0]
-    return {
-        "garis": (gx0, l0, gx1, l1), "teksAtas": text_top, "moncong": (sx0, sx1),
-        "kepala": (int(hx.min()), int(hy.min()), int(hx.max()), int(hy.max())), "maskKepala": head,
-    }
+def bands(bits):
+    """Split the logo into its three horizontal bands at the empty rows."""
+    rows = np.where(bits.any(axis=1))[0]
+    gaps = np.where(np.diff(rows) > 8 * SCALE)[0]
+    edges = [rows[0]] + [v for g in gaps for v in (rows[g], rows[g + 1])] + [rows[-1]]
+    spans = [(int(edges[i]), int(edges[i + 1])) for i in range(0, len(edges), 2)]
+    if len(spans) != 3:
+        raise SystemExit(f"expected 3 bands (drawing, word, HOMESTAY), found {len(spans)}: {spans}")
+    out = []
+    for a, b in spans:
+        cols = np.where(bits[a:b + 1].any(axis=0))[0]
+        out.append([int(cols.min()), a, int(cols.max()), b])
+    return out
 
 
 def main(src, out):
     t = time.time()
-    bits, pink, crop = load(src)
+    bits, rgb, crop = load(src)
     w, h = crop[2], crop[3]
     plist = potrace.Bitmap(bits).trace(turdsize=6 * SCALE, turnpolicy=potrace.POTRACE_TURNPOLICY_MINORITY,
                                        alphamax=1.0, opticurve=True, opttolerance=0.2)
@@ -209,33 +186,28 @@ def main(src, out):
         contours.append({"d": curve_to_d(curve), "bbox": bbox(polys[i]), "depth": depth,
                          "area": round(area(polys[i]), 1)})
 
-    # the tongue is the hole whose box covers the pink pixels
-    ys, xs = np.where(pink)
-    lidah = None
-    if len(xs):
-        cx, cy = xs.mean(), ys.mean()
-        cands = [i for i, c in enumerate(contours) if c["depth"] % 2 == 1
-                 and c["bbox"][0] <= cx <= c["bbox"][2] and c["bbox"][1] <= cy <= c["bbox"][3]]
-        if cands:
-            lidah = min(cands, key=lambda i: contours[i]["area"])
-
-    p = parts(bits)
     s = 1.0 / SCALE
+    ilu, kata, hs = bands(bits)
+    ilu_bits = bits.copy()
+    ilu_bits[ilu[3] + 1:] = False
+
+    def warna(box):
+        x0, y0, x1, y1 = [int(round(v * s)) for v in box]
+        part = rgb[y0:y1 + 1, x0:x1 + 1]
+        m = part.sum(axis=2) < 400
+        return "#%02X%02X%02X" % tuple(int(v) for v in np.median(part[m], axis=0))
 
     data = {
         "width": w, "height": h, "sourceCrop": crop, "rim": RIM,
-        "contours": contours, "lidah": lidah,
-        "garis": [round(v * s, 2) for v in p["garis"]],
-        "teksAtas": round(p["teksAtas"] * s, 2),
-        "moncong": [round(v * s, 2) for v in p["moncong"]],
-        "kepala": [round(v * s, 2) for v in p["kepala"]],
-        "hullKepala": outline(p["maskKepala"], RIM),
+        "contours": contours,
+        "bagian": {k: [round(v * s, 2) for v in b] for k, b in (("ilustrasi", ilu), ("kata", kata), ("homestay", hs))},
+        "warna": {"kata": warna(kata), "ilustrasi": warna(ilu)},
         "hull": outline(bits, RIM, CLOSE),
+        "hullIlustrasi": outline(ilu_bits, RIM, CLOSE),
     }
     with open(out, "w") as f:
         json.dump(data, f)
-    print(f"{len(contours)} contours, lidah {lidah}, garis {data['garis']}, teks {data['teksAtas']}, "
-          f"kepala {data['kepala']} in {time.time() - t:.1f}s -> {out}")
+    print(f"{len(contours)} contours, bagian {data['bagian']}, warna {data['warna']} in {time.time() - t:.1f}s -> {out}")
 
 
 if __name__ == "__main__":

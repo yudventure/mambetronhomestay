@@ -45,7 +45,7 @@ export default async function HalamanPondok({ params }: P) {
   return (
     <>
       <Bagian className="!pt-8 md:!pt-12">
-        <Link href="/kamar" className="inline-flex items-center gap-1 text-sm font-semibold text-toska-tua hover:underline">
+        <Link href="/kamar" className="inline-flex items-center gap-1 text-sm font-semibold text-biru-tua hover:underline">
           <Ikon nama="kiri" className="size-4" /> {k.semuaPondok}
         </Link>
         <div className="mt-5 grid gap-8 lg:grid-cols-[1.25fr_1fr] lg:gap-12">
@@ -63,7 +63,7 @@ export default async function HalamanPondok({ params }: P) {
               <p className="font-judul text-3xl font-semibold text-laut">{rupiah(km.harga, b)}</p>
               <p className="text-sm text-abu">{k.perSkema[km.skema_harga]}</p>
               {km.skema_harga === 'orang' && km.harga_anak != null && km.harga_anak !== km.harga && (
-                <p className="mt-2 text-sm font-semibold text-toska-tua">{k.hargaAnak(rupiah(km.harga_anak, b))}</p>
+                <p className="mt-2 text-sm font-semibold text-biru-tua">{k.hargaAnak(rupiah(km.harga_anak, b))}</p>
               )}
               <div className="mt-4 flex flex-wrap gap-2">
                 <Link href={`/pesan?kamar=${km.slug}`} className="tombol">{k.pesanPondok}</Link>
@@ -83,7 +83,7 @@ export default async function HalamanPondok({ params }: P) {
               <ul className="mt-4 grid gap-2">
                 {fasilitas.map((f) => (
                   <li key={f} className="flex items-start gap-3">
-                    <span className="mt-0.5 inline-flex size-7 shrink-0 items-center justify-center rounded-full bg-buih text-toska-tua"><Ikon nama="centang" className="size-4" tebal={2.4} /></span>
+                    <span className="mt-0.5 inline-flex size-7 shrink-0 items-center justify-center rounded-full bg-buih text-biru-tua"><Ikon nama="centang" className="size-4" tebal={2.4} /></span>
                     <span>{f}</span>
                   </li>
                 ))}

@@ -5,7 +5,7 @@ export default function Kabar({ ok, galat, pesan }: { ok?: string; galat?: strin
   const teks = galat ? pesan[`galat:${galat}`] ?? pesan.galat ?? 'Ada yang belum benar.' : ok ? pesan[`ok:${ok}`] ?? pesan.ok ?? 'Tersimpan.' : '';
   if (!teks) return null;
   return (
-    <p role={galat ? 'alert' : 'status'} className={`mb-6 flex items-start gap-3 rounded-2xl px-4 py-3 font-semibold ${galat ? 'bg-[#fbe4df] text-merah' : 'bg-buih-2 text-toska-tua'}`}>
+    <p role={galat ? 'alert' : 'status'} className={`mb-6 flex items-start gap-3 rounded-2xl px-4 py-3 font-semibold ${galat ? 'bg-[#fbe4df] text-merah' : 'bg-buih-2 text-biru-tua'}`}>
       <Ikon nama={galat ? 'info' : 'centang'} className="mt-0.5 size-5 shrink-0" tebal={2.2} /> {teks}
     </p>
   );

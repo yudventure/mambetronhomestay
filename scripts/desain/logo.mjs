@@ -5,17 +5,19 @@ import { png, pdf, simpan } from '../lib/render.mjs';
 // name, drawable, background used only for the preview sheet
 export function varian() {
   return [
-    ['mambetron-logo-utama-hitam', L.utama(), W.putih],
+    ['mambetron-logo-utama-biru', L.utama(), W.putih],
     ['mambetron-logo-utama-laut', L.utama({ ink: W.laut }), W.buih],
     ['mambetron-logo-utama-putih', L.utama({ varian: 'negative' }), W.laut],
-    ['mambetron-logo-utama-stiker', L.utama({ varian: 'sticker' }), W.toska],
+    ['mambetron-logo-utama-stiker', L.utama({ varian: 'sticker' }), W.biru],
     ['mambetron-logo-horizontal', L.horizontal(), W.putih],
-    ['mambetron-logo-horizontal-putih', L.horizontal({ ink: W.putih, sub: W.pasir, badge: { bg: W.toska } }), W.laut],
+    ['mambetron-logo-horizontal-putih', L.horizontal({ ink: W.putih, sub: W.pasir }), W.laut],
+    ['mambetron-simbol', L.simbol(), W.putih],
     ['mambetron-ikon', L.lencana(), W.putih],
-    ['mambetron-ikon-toska', L.lencana({ bg: W.toska }), W.laut],
-    ['mambetron-ikon-stempel-hitam', L.stempel(), W.putih],
+    ['mambetron-ikon-pasir', L.lencana({ bg: W.pasir, ink: W.laut }), W.laut],
+    ['mambetron-ikon-stempel-biru', L.stempel(), W.putih],
     ['mambetron-ikon-stempel-putih', L.stempel({ ink: W.putih }), W.laut],
-    ['mambetron-wordmark-hitam', L.wordmark(), W.putih],
+    ['mambetron-monogram', L.monogram(), W.putih],
+    ['mambetron-wordmark-biru', L.wordmark(), W.putih],
     ['mambetron-wordmark-putih', L.wordmark({ ink: W.putih, sub: W.pasir }), W.laut],
   ];
 }

@@ -5,8 +5,8 @@ import { KAMUS } from '@/lib/kamus';
 
 export const WARNA_STATUS: Record<StatusPesanan, string> = {
   menunggu: 'bg-pasir text-laut',
-  dikonfirmasi: 'bg-buih-2 text-toska-tua',
-  lunas: 'bg-toska-tua text-white',
+  dikonfirmasi: 'bg-buih-2 text-biru-tua',
+  lunas: 'bg-biru-tua text-white',
   selesai: 'bg-laut text-white',
   batal: 'bg-[#fbe4df] text-merah',
 };

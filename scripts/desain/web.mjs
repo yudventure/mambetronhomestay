@@ -12,38 +12,47 @@ const doc = (w, h, body) => `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 
 export function ogImage(K) {
   const w = 1200, h = 630;
   let s = `<rect width="${w}" height="${h}" fill="${W.buih}"/>`;
-  s += `<g transform="translate(0 ${h * 0.58})">${A.lanskap({ w, h: h * 0.42, horizon: 0.62, sunX: 0.88, seed: 4, sky: W.buih })}</g>`;
-  s += L.taruh(L.utama(), { x: 60, y: 60, w: 450, h: 300 }).svg;
-  s += text('Pelukan hangat', { x: 560, y: 150, family: 'fredoka', weight: 600, size: 64, fill: W.laut });
-  s += text('dari Raja Ampat', { x: 560, y: 222, family: 'fredoka', weight: 600, size: 64, fill: W.laut });
-  s += text(`Homestay di ${K.lokasi}`, { x: 562, y: 282, family: 'jakarta', weight: 500, size: 26, fill: W.hitam });
-  s += `<rect x="560" y="312" width="${330}" height="58" rx="29" fill="${W.senja}"/>`;
-  s += text('Pesan lewat WhatsApp', { x: 560 + 165, y: 349, family: 'jakarta', weight: 700, size: 22, fill: W.hitam, anchor: 'middle' });
+  s += `<g transform="translate(0 ${h * 0.6})">${A.lanskap({ w, h: h * 0.4, horizon: 0.62, sunX: 0.9, seed: 4, sky: W.buih })}</g>`;
+  s += L.taruh(L.utama(), { x: 70, y: 40, w: 420, h: 330 }).svg;
+  s += text('Pelukan hangat', { x: 560, y: 150, family: 'judul', weight: 900, size: 76, fill: W.laut });
+  s += text('dari Raja Ampat', { x: 560, y: 232, family: 'judul', weight: 900, size: 76, fill: W.laut });
+  s += text(`Homestay di ${K.lokasi}`, { x: 562, y: 290, family: 'jakarta', weight: 500, size: 26, fill: W.hitam });
+  s += `<rect x="560" y="318" width="${330}" height="58" rx="29" fill="${W.senja}"/>`;
+  s += text('Pesan lewat WhatsApp', { x: 560 + 165, y: 355, family: 'jakarta', weight: 700, size: 22, fill: W.hitam, anchor: 'middle' });
   return doc(w, h, s);
 }
 
 const FONTS_CSS = (ranges) => `/* Font website Mambetron Homestay.
-   Fredoka untuk judul (logo Mambetron memakai Fredoka Bold).
-   Plus Jakarta Sans untuk teks, menu, dan label (buatan Tokotype, Jakarta).
+   Londrina Solid untuk judul, senada dengan huruf MAMBETRON di logo yang tinggi, tebal, dan bergaya potongan tangan.
+   Plus Jakarta Sans untuk teks, menu, dan label, senada dengan tulisan HOMESTAY.
    Keduanya berlisensi SIL Open Font License 1.1, bebas dipakai dan di-host sendiri. */
-${['fredoka', 'plus-jakarta-sans'].flatMap((fam) => (fam === 'fredoka' ? ['normal'] : ['normal', 'italic']).flatMap((style) => ['latin-ext', 'latin'].map((sub) => `
+${[400, 900].map((wt) => `
 @font-face {
-  font-family: '${fam === 'fredoka' ? 'Fredoka' : 'Plus Jakarta Sans'}';
-  font-style: ${style};
-  font-weight: ${fam === 'fredoka' ? '300 700' : '200 800'};${fam === 'fredoka' ? '\n  font-stretch: 75% 125%;' : ''}
+  font-family: 'Londrina Solid';
+  font-style: normal;
+  font-weight: ${wt};
   font-display: swap;
-  src: url('./${fam}${style === 'italic' ? '-italic' : ''}-${sub}.woff2') format('woff2');
+  src: url('./londrina-solid-${wt}-latin.woff2') format('woff2');
+  unicode-range: ${ranges.latin};
+}`).join('\n')}
+${['normal', 'italic'].flatMap((style) => ['latin-ext', 'latin'].map((sub) => `
+@font-face {
+  font-family: 'Plus Jakarta Sans';
+  font-style: ${style};
+  font-weight: 200 800;
+  font-display: swap;
+  src: url('./plus-jakarta-sans${style === 'italic' ? '-italic' : ''}-${sub}.woff2') format('woff2');
   unicode-range: ${ranges[sub]};
-}`))).join('\n')}
+}`)).join('\n')}
 `;
 
 const TOKENS_CSS = () => `/* Token desain Mambetron Homestay. Pakai bersama ../font/web/fonts.css */
 :root {
 ${PALET.map((p) => `  --mb-${p.kunci}: ${p.hex}; /* ${p.nama} */`).join('\n')}
-  --mb-toska-tua: ${W.toskaTua}; /* toska untuk teks dan tautan di latar putih */
+  --mb-biru-tua: ${W.biruTua}; /* biru untuk teks dan tautan di latar putih */
   --mb-putih: #ffffff;
 
-  --mb-font-judul: 'Fredoka', 'Nunito', 'Trebuchet MS', system-ui, sans-serif;
+  --mb-font-judul: 'Londrina Solid', 'Arial Narrow', 'Trebuchet MS', system-ui, sans-serif;
   --mb-font-teks: 'Plus Jakarta Sans', 'Segoe UI', system-ui, -apple-system, sans-serif;
 
   /* skala huruf, lentur antara layar ponsel dan desktop */
@@ -70,12 +79,12 @@ body {
 
 h1, h2, h3, h4, .mb-judul {
   font-family: var(--mb-font-judul);
-  font-weight: 600;
-  line-height: 1.12;
-  letter-spacing: -0.01em;
+  font-weight: 900;
+  line-height: 1.05;
+  letter-spacing: 0.005em;
   color: var(--mb-laut);
 }
-h1 { font-size: var(--mb-judul-1); font-weight: 700; }
+h1 { font-size: var(--mb-judul-1); }
 h2 { font-size: var(--mb-judul-2); }
 h3 { font-size: var(--mb-judul-3); }
 h4 { font-size: var(--mb-judul-4); }
@@ -87,10 +96,10 @@ h4 { font-size: var(--mb-judul-4); }
   font-weight: 600;
   letter-spacing: 0.22em;
   text-transform: uppercase;
-  color: var(--mb-toska-tua);
+  color: var(--mb-biru-tua);
 }
 
-a { color: var(--mb-toska-tua); text-underline-offset: 0.18em; }
+a { color: var(--mb-biru-tua); text-underline-offset: 0.18em; }
 
 .mb-tombol {
   display: inline-flex;
@@ -122,18 +131,18 @@ const MANIFEST = (K) => JSON.stringify({
 }, null, 2);
 
 export default async function ({ out, K, ROOT }) {
-  const fav = L.lencana({ ringWidth: 0.1 });
+  const fav = L.monogram({ sudut: 0.24, isi: 0.62 });
   const favSvg = L.svgDoc(fav);
   simpan(out('web/favicon.svg'), favSvg);
   for (const s of [16, 32, 48]) await png(favSvg, out(`build-tmp/fav-${s}.png`), { width: s });
   execFileSync('convert', [16, 32, 48].map((s) => out(`build-tmp/fav-${s}.png`)).concat(out('web/favicon.ico')));
   fs.rmSync(out('build-tmp'), { recursive: true, force: true });
 
-  const sq = L.svgDoc(L.lencana({ bentuk: 'persegi', sisi: 530, atas: -40 }));
+  const sq = L.svgDoc(L.monogram({ sudut: 0, isi: 0.5 }));
   await png(sq, out('web/apple-touch-icon.png'), { width: 180 });
   await png(sq, out('web/icon-192.png'), { width: 192 });
   await png(sq, out('web/icon-512.png'), { width: 512 });
-  await png(L.svgDoc(L.lencana({ bentuk: 'persegi', sisi: 700, atas: -150 })), out('web/icon-maskable-512.png'), { width: 512 });
+  await png(L.svgDoc(L.monogram({ sudut: 0, isi: 0.4 })), out('web/icon-maskable-512.png'), { width: 512 });
   simpan(out('web/site.webmanifest'), MANIFEST(K));
 
   const og = ogImage(K);
@@ -141,7 +150,7 @@ export default async function ({ out, K, ROOT }) {
   await png(og, out('web/og-image.png'), { width: 1200 });
 
   simpan(out('web/logo-header.svg'), L.svgDoc(L.horizontal()));
-  simpan(out('web/logo-header-putih.svg'), L.svgDoc(L.horizontal({ ink: W.putih, sub: W.pasir, badge: { bg: W.toska } })));
+  simpan(out('web/logo-header-putih.svg'), L.svgDoc(L.horizontal({ ink: W.putih, sub: W.pasir })));
 
   // fonts.css from the subsets downloaded off Google Fonts
   const ranges = {

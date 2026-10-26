@@ -17,8 +17,13 @@ export default async function ({ ROOT, out }) {
     ['logo-utama.svg', L.utama()],
     ['logo-putih.svg', L.utama({ varian: 'negative' })],
     ['logo-horizontal.svg', L.horizontal()],
-    ['logo-horizontal-putih.svg', L.horizontal({ ink: W.putih, sub: W.pasir, badge: { bg: W.toska } })],
+    ['logo-horizontal-putih.svg', L.horizontal({ ink: W.putih, sub: W.pasir })],
+    ['wordmark.svg', L.wordmark()],
+    ['wordmark-putih.svg', L.wordmark({ ink: W.putih, sub: W.pasir })],
+    ['simbol.svg', L.simbol()],
+    ['simbol-putih.svg', L.simbol({ ink: W.putih })],
     ['ikon.svg', L.lencana()],
+    ['monogram.svg', L.monogram()],
   ];
   for (const [nama, d] of logo) simpan(merek(nama), L.svgDoc(d, { pad: d.box[2] * 0.01 }));
 
@@ -28,9 +33,7 @@ export default async function ({ ROOT, out }) {
   }
   for (const k of Object.keys(EKSPRESI)) simpan(merek(`wajah-${k}.svg`), L.svgDoc(wajah(k, { stiker: true }), { pad: 14 }));
 
-  // wide sea for the hero and footer, square-ish scenes as room placeholders
-  simpan(merek('laut.svg'), doc(1600, 420, A.lanskap({ w: 1600, h: 420, horizon: 0.62, sunX: 0.84, seed: 11 })));
-  simpan(merek('laut-malam.svg'), doc(1600, 300, A.lanskap({ w: 1600, h: 300, horizon: 0.5, sun: null, seed: 23, sky: W.laut, far: '#13566A', near: '#0A2F3B', sea1: '#13566A', sea2: '#082A35', glint: false })));
+  // placeholder room pictures until the owner uploads photos
   const adegan = [
     ['kamar-1.svg', { seed: 5, sunX: 0.72, sky: W.buih }],
     ['kamar-2.svg', { seed: 31, sunX: 0.28, sky: '#FDF0D2', sun: W.senja }],
@@ -49,10 +52,10 @@ export default async function ({ ROOT, out }) {
   fs.copyFileSync(out('web/icon-512.png'), merek('icon-512.png'));
 
   fs.mkdirSync(web('app/fonts'), { recursive: true });
-  for (const f of ['fredoka-latin.woff2', 'plus-jakarta-sans-latin.woff2', 'plus-jakarta-sans-italic-latin.woff2']) {
+  for (const f of ['londrina-solid-400-latin.woff2', 'londrina-solid-900-latin.woff2', 'plus-jakarta-sans-latin.woff2', 'plus-jakarta-sans-italic-latin.woff2']) {
     fs.copyFileSync(out(`font/web/${f}`), web(`app/fonts/${f}`));
   }
-  fs.copyFileSync(out('font/OFL-Fredoka.txt'), web('app/fonts/OFL-Fredoka.txt'));
+  fs.copyFileSync(out('font/OFL-LondrinaSolid.txt'), web('app/fonts/OFL-LondrinaSolid.txt'));
   fs.copyFileSync(out('font/OFL-PlusJakartaSans.txt'), web('app/fonts/OFL-PlusJakartaSans.txt'));
 
   // small raster mascot for e-mail and chat previews

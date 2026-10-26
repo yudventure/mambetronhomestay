@@ -10,7 +10,7 @@ export default async function Masuk() {
     <main className="flex min-h-svh items-center justify-center px-4 py-12">
       <div className="kartu w-full max-w-sm p-6 sm:p-8">
         {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src="/merek/logo-utama.svg" alt="Mambetron Homestay" width={220} height={120} className="mx-auto h-24 w-auto" />
+        <img src="/merek/logo-utama.svg" alt="Mambetron Homestay" width={134} height={112} className="mx-auto h-28 w-auto" />
         <h1 className="mt-6 text-center text-2xl">Panel pengelola</h1>
         {sandiDiatur() ? (
           <div className="mt-6"><FormMasuk /></div>

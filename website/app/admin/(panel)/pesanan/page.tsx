@@ -51,7 +51,7 @@ export default async function DaftarPesanan({ searchParams }: { searchParams: Pr
             {t.label}
           </Link>
         ))}
-        <Link href={tautan({ waktu: akanDatang ? '' : 'datang' })} className={`rounded-full px-4 py-2 text-sm font-bold ${akanDatang ? 'bg-toska-tua text-white' : 'bg-white text-toska-tua hover:bg-buih-2'}`}>
+        <Link href={tautan({ waktu: akanDatang ? '' : 'datang' })} className={`rounded-full px-4 py-2 text-sm font-bold ${akanDatang ? 'bg-biru-tua text-white' : 'bg-white text-biru-tua hover:bg-buih-2'}`}>
           {akanDatang ? 'Urut menurut tanggal tiba' : 'Hanya yang akan datang'}
         </Link>
       </div>

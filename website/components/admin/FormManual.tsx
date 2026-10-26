@@ -34,7 +34,7 @@ export default function FormManual({ kamar, layanan, hari }: { kamar: Pick<Kamar
             <div className="grid gap-2">
               {layanan.map((l) => (
                 <label key={l.id} className="flex items-center gap-3 rounded-2xl bg-buih px-4 py-2.5">
-                  <input type="checkbox" name="layanan" value={l.id} className="size-5 accent-[#0a7a73]" />
+                  <input type="checkbox" name="layanan" value={l.id} className="size-5 accent-[#036f87]" />
                   <span className="flex-1">{l.nama}</span>
                   <span className="text-sm text-abu">{rupiah(l.harga)} {SATUAN[l.satuan].id}</span>
                 </label>

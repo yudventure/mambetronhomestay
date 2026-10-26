@@ -17,8 +17,8 @@ export const metadata: Metadata = { robots: { index: false, follow: false } };
 
 const WARNA: Record<StatusPesanan, string> = {
   menunggu: 'bg-pasir text-laut',
-  dikonfirmasi: 'bg-buih-2 text-toska-tua',
-  lunas: 'bg-toska-tua text-white',
+  dikonfirmasi: 'bg-buih-2 text-biru-tua',
+  lunas: 'bg-biru-tua text-white',
   selesai: 'bg-laut text-white',
   batal: 'bg-[#fbe4df] text-merah',
 };
@@ -79,7 +79,7 @@ export default async function HalamanPesanan({ params, searchParams }: {
                 <div className={`mt-3 gap-3 ${KISI2}`}>
                   {situs.bank.map((r, i) => (
                     <div key={i} className={`rounded-2xl bg-white p-4 shadow-tipis ${rentang2(situs.bank.length, i)}`}>
-                      <p className="text-sm font-bold text-toska-tua">{r.bank}</p>
+                      <p className="text-sm font-bold text-biru-tua">{r.bank}</p>
                       <p className="mt-1 font-judul text-2xl font-semibold tracking-wide text-laut">{r.nomor}</p>
                       <p className="text-sm text-abu">{h.atasNama(r.atasNama)}</p>
                       <div className="mt-3"><Salin teks={r.nomor.replace(/\s/g, '')} label={h.salin} sudah={h.tersalin} /></div>

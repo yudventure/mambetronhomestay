@@ -1,15 +1,15 @@
 /* Token desain Mambetron Homestay. Pakai bersama ../font/web/fonts.css */
 :root {
-  --mb-hitam: #161616; /* Hitam Kuskus */
+  --mb-biru: #0497B2; /* Biru Mambetron */
   --mb-laut: #0B3B4A; /* Laut Dalam */
-  --mb-toska: #12A39A; /* Toska Laguna */
   --mb-senja: #F27A3D; /* Jingga Senja */
-  --mb-pasir: #F7DFA8; /* Pasir Pantai */
-  --mb-buih: #E6F5F3; /* Buih Laut */
-  --mb-toska-tua: #0A7A73; /* toska untuk teks dan tautan di latar putih */
+  --mb-pasir: #F7DFA8; /* Pasir Pulau */
+  --mb-buih: #E3F4F7; /* Buih Laut */
+  --mb-hitam: #161616; /* Hitam Malam */
+  --mb-biru-tua: #036F87; /* biru untuk teks dan tautan di latar putih */
   --mb-putih: #ffffff;
 
-  --mb-font-judul: 'Fredoka', 'Nunito', 'Trebuchet MS', system-ui, sans-serif;
+  --mb-font-judul: 'Londrina Solid', 'Arial Narrow', 'Trebuchet MS', system-ui, sans-serif;
   --mb-font-teks: 'Plus Jakarta Sans', 'Segoe UI', system-ui, -apple-system, sans-serif;
 
   /* skala huruf, lentur antara layar ponsel dan desktop */
@@ -36,12 +36,12 @@ body {
 
 h1, h2, h3, h4, .mb-judul {
   font-family: var(--mb-font-judul);
-  font-weight: 600;
-  line-height: 1.12;
-  letter-spacing: -0.01em;
+  font-weight: 900;
+  line-height: 1.05;
+  letter-spacing: 0.005em;
   color: var(--mb-laut);
 }
-h1 { font-size: var(--mb-judul-1); font-weight: 700; }
+h1 { font-size: var(--mb-judul-1); }
 h2 { font-size: var(--mb-judul-2); }
 h3 { font-size: var(--mb-judul-3); }
 h4 { font-size: var(--mb-judul-4); }
@@ -53,10 +53,10 @@ h4 { font-size: var(--mb-judul-4); }
   font-weight: 600;
   letter-spacing: 0.22em;
   text-transform: uppercase;
-  color: var(--mb-toska-tua);
+  color: var(--mb-biru-tua);
 }
 
-a { color: var(--mb-toska-tua); text-underline-offset: 0.18em; }
+a { color: var(--mb-biru-tua); text-underline-offset: 0.18em; }
 
 .mb-tombol {
   display: inline-flex;

@@ -34,7 +34,7 @@ function FormLayanan({ l }: { l?: Layanan }) {
       </div>
       <div><label className="label-isian" htmlFor={k('urutan')}>Urutan tampil</label><input id={k('urutan')} name="urutan" type="number" defaultValue={l?.urutan ?? 0} className="isian" /></div>
       <label className="flex items-center gap-3 rounded-2xl bg-buih px-4 py-3 font-semibold text-laut sm:col-span-2">
-        <input type="checkbox" name="aktif" value="ya" defaultChecked={l?.aktif ?? true} className="size-5 accent-[#0a7a73]" /> Tampilkan di situs dan formulir pesan
+        <input type="checkbox" name="aktif" value="ya" defaultChecked={l?.aktif ?? true} className="size-5 accent-[#036f87]" /> Tampilkan di situs dan formulir pesan
       </label>
       <div className="sm:col-span-2"><button className="tombol tombol-laut tombol-kecil">{l ? 'Simpan' : 'Tambah kegiatan'}</button></div>
     </form>
@@ -52,7 +52,7 @@ export default async function LayananAdmin({ searchParams }: { searchParams: Pro
         {layanan.map((l) => (
           <section key={l.id} className="kartu p-5 sm:p-6">
             <div className="mb-4 flex items-center gap-3">
-              <span className="inline-flex size-11 items-center justify-center rounded-2xl bg-buih text-toska-tua"><Ikon nama={l.ikon} className="size-6" /></span>
+              <span className="inline-flex size-11 items-center justify-center rounded-2xl bg-buih text-biru-tua"><Ikon nama={l.ikon} className="size-6" /></span>
               <h2 className="flex-1 text-2xl">{l.nama}</h2>
               {!l.aktif && <span className="rounded-full bg-[#fbe4df] px-3 py-1 text-xs font-bold text-merah">Nonaktif</span>}
               <form action={hapusLayanan}><input type="hidden" name="id" value={l.id} />

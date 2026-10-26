@@ -18,7 +18,7 @@ export default async function ({ out, K, ROOT }) {
     ik += `<circle cx="${x + 50}" cy="${y + 50}" r="50" fill="${W.putih}"/>` + A.ikon(k, { x: x + 20, y: y + 20, size: 60, color: W.laut, stroke: 1.8 });
   });
   await png(doc(800, 640, ik), out('panduan/elemen-ikon.png'));
-  await png(doc(800, 640, rect(0, 0, 800, 640, W.putih) + A.ekor({ x: 150, y: 400, R: 110, len: 3.2, color: W.toska })), out('panduan/elemen-ekor.png'));
+  await png(doc(800, 640, rect(0, 0, 800, 640, W.putih) + A.ekor({ x: 150, y: 400, R: 110, len: 3.2, color: W.biru })), out('panduan/elemen-ekor.png'));
 
   // screenshots of the sample website page
   const b = await buka();

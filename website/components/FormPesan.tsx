@@ -142,7 +142,7 @@ export default function FormPesan({ b, kamar, layanan, sisa, awal, akhir, dpPers
               {kamar.map((x, i) => {
                 const aktifKm = x.id === km.id;
                 return (
-                  <label key={x.id} className={`flex cursor-pointer items-center gap-3 rounded-2xl p-3 transition-colors ${aktifKm ? 'bg-buih ring-2 ring-toska' : 'bg-white ring-1 ring-buih-2 hover:bg-buih'} ${kamar.length % 2 === 1 && i === kamar.length - 1 ? 'sm:col-span-2' : ''}`}>
+                  <label key={x.id} className={`flex cursor-pointer items-center gap-3 rounded-2xl p-3 transition-colors ${aktifKm ? 'bg-buih ring-2 ring-biru' : 'bg-white ring-1 ring-buih-2 hover:bg-buih'} ${kamar.length % 2 === 1 && i === kamar.length - 1 ? 'sm:col-span-2' : ''}`}>
                     <input type="radio" name="pilih_kamar" className="sr-only" checked={aktifKm} onChange={() => gantiKamar(x.id)} />
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img src={x.gambar} alt="" className="size-16 shrink-0 rounded-xl object-cover" />
@@ -150,7 +150,7 @@ export default function FormPesan({ b, kamar, layanan, sisa, awal, akhir, dpPers
                       <span className="block font-judul text-lg font-semibold leading-tight text-laut">{pilih(b, x.nama, x.nama_en)}</span>
                       <span className="block text-sm text-abu">{rupiah(x.harga, b)} {k.perSkema[x.skema_harga]}</span>
                     </span>
-                    {aktifKm && <Ikon nama="centang" className="ml-auto size-6 shrink-0 text-toska-tua" tebal={2.4} />}
+                    {aktifKm && <Ikon nama="centang" className="ml-auto size-6 shrink-0 text-biru-tua" tebal={2.4} />}
                   </label>
                 );
               })}
@@ -191,8 +191,8 @@ export default function FormPesan({ b, kamar, layanan, sisa, awal, akhir, dpPers
               {layanan.map((l) => {
                 const on = pilihan.includes(l.id);
                 return (
-                  <label key={l.id} className={`grid cursor-pointer grid-cols-[auto_1fr] items-start gap-x-3 gap-y-2 rounded-2xl p-4 transition-colors sm:grid-cols-[auto_1fr_auto] ${on ? 'bg-buih ring-2 ring-toska' : 'ring-1 ring-buih-2 hover:bg-buih'}`}>
-                    <input type="checkbox" className="mt-1 size-5 shrink-0 accent-[#0a7a73]" checked={on}
+                  <label key={l.id} className={`grid cursor-pointer grid-cols-[auto_1fr] items-start gap-x-3 gap-y-2 rounded-2xl p-4 transition-colors sm:grid-cols-[auto_1fr_auto] ${on ? 'bg-buih ring-2 ring-biru' : 'ring-1 ring-buih-2 hover:bg-buih'}`}>
+                    <input type="checkbox" className="mt-1 size-5 shrink-0 accent-[#036f87]" checked={on}
                       onChange={() => setPilihan((p) => (on ? p.filter((x) => x !== l.id) : [...p, l.id]))} />
                     <span className="min-w-0">
                       <span className="block font-semibold text-laut">{pilih(b, l.nama, l.nama_en)}</span>
@@ -290,8 +290,8 @@ export default function FormPesan({ b, kamar, layanan, sisa, awal, akhir, dpPers
         )}
 
         <label className="mt-5 flex cursor-pointer items-start gap-3 text-[0.9375rem]">
-          <input type="checkbox" name="setuju" value="ya" checked={setuju} onChange={(e) => setSetuju(e.target.checked)} className="mt-1 size-5 shrink-0 accent-[#0a7a73]" />
-          <span>{f.setuju} <Link href="/ketentuan" target="_blank" className="font-semibold text-toska-tua underline underline-offset-4">{f.ketentuan}</Link></span>
+          <input type="checkbox" name="setuju" value="ya" checked={setuju} onChange={(e) => setSetuju(e.target.checked)} className="mt-1 size-5 shrink-0 accent-[#036f87]" />
+          <span>{f.setuju} <Link href="/ketentuan" target="_blank" className="font-semibold text-biru-tua underline underline-offset-4">{f.ketentuan}</Link></span>
         </label>
 
         {hasil.galat && (

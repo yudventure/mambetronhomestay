@@ -35,7 +35,7 @@ export default async function Beranda() {
             <div className={`${g.induk} gap-5`}>
               {s.sorotan.map((x, i) => (
                 <div key={i} className={`rounded-3xl p-6 ${latar === 'buih' ? 'bg-white' : 'bg-buih'} ${g.anak(i)}`}>
-                  <span className="inline-flex size-12 items-center justify-center rounded-2xl bg-toska-tua text-white"><Ikon nama={x.ikon} className="size-6" /></span>
+                  <span className="inline-flex size-12 items-center justify-center rounded-2xl bg-biru-tua text-white"><Ikon nama={x.ikon} className="size-6" /></span>
                   <h3 className="mt-4 text-xl">{dwi(x.judul, b)}</h3>
                   <p className="mt-2 text-abu">{dwi(x.teks, b)}</p>
                 </div>
@@ -50,7 +50,7 @@ export default async function Beranda() {
         <Bagian latar={latar} id="pondok" key="pondok">
           <div className="flex flex-wrap items-end justify-between gap-4">
             <JudulBagian judul={dwi(s.kamarJudul, b)} teks={dwi(s.kamarTeks, b)} />
-            <Link href="/kamar" className="mb-10 inline-flex items-center gap-1 font-semibold text-toska-tua hover:underline">{k.semuaPondok} <Ikon nama="panah" className="size-4" /></Link>
+            <Link href="/kamar" className="mb-10 inline-flex items-center gap-1 font-semibold text-biru-tua hover:underline">{k.semuaPondok} <Ikon nama="panah" className="size-4" /></Link>
           </div>
           <div className={`${KISI} gap-6`}>
             {kamar.map((x, i) => <KartuKamar key={x.id} kamar={x} b={b} i={i} className={rentang(kamar.length, i)} />)}
@@ -118,7 +118,7 @@ export default async function Beranda() {
             <div className={`${KISI} gap-5`}>
               {layanan.map((l, i) => (
                 <div key={l.id} className={`flex flex-col rounded-3xl bg-white p-6 text-hitam ${rentang(layanan.length, i)}`}>
-                  <span className="inline-flex size-12 items-center justify-center rounded-2xl bg-buih text-toska-tua"><Ikon nama={l.ikon} className="size-6" /></span>
+                  <span className="inline-flex size-12 items-center justify-center rounded-2xl bg-buih text-biru-tua"><Ikon nama={l.ikon} className="size-6" /></span>
                   <h3 className="mt-4 text-xl">{pilih(b, l.nama, l.nama_en)}</h3>
                   <p className="mt-2 text-abu">{pilih(b, l.keterangan, l.keterangan_en)}</p>
                   <div className="mt-auto pt-5">
@@ -186,7 +186,7 @@ export default async function Beranda() {
               </div>
               {dwi(s.alamat, b) && (
                 <p className="mt-6 flex items-start gap-3 rounded-2xl bg-buih px-4 py-3 text-laut">
-                  <Ikon nama="lokasi" className="mt-0.5 size-5 shrink-0 text-toska-tua" />
+                  <Ikon nama="lokasi" className="mt-0.5 size-5 shrink-0 text-biru-tua" />
                   <span className="whitespace-pre-line">{dwi(s.alamat, b)}</span>
                 </p>
               )}
@@ -220,7 +220,7 @@ export default async function Beranda() {
               <details key={i} className={`group rounded-2xl px-5 py-4 ${latar === 'buih' ? 'bg-white' : 'bg-buih'}`}>
                 <summary className="flex cursor-pointer list-none items-center justify-between gap-4 font-semibold text-laut [&::-webkit-details-marker]:hidden">
                   {dwi(f.tanya, b)}
-                  <Ikon nama="bawah" className="size-5 shrink-0 text-toska-tua transition-transform group-open:rotate-180" />
+                  <Ikon nama="bawah" className="size-5 shrink-0 text-biru-tua transition-transform group-open:rotate-180" />
                 </summary>
                 <div className="prosa mt-3 text-laut/85">{paragraf(dwi(f.jawab, b)).map((p, j) => <p key={j}>{p}</p>)}</div>
               </details>

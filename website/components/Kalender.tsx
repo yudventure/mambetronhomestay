@@ -87,7 +87,7 @@ export default function Kalender({ b, sisa, unit, butuh, minMalam, awal, akhir, 
             if (lewat) gaya = 'text-abu/35';
             else if (!aktif) gaya = malamPenuh ? 'text-merah/55 line-through' : 'text-abu/45';
             if (dalam) gaya = 'bg-buih-2 text-laut rounded-none';
-            if (ujungKiri || ujungKanan) gaya = 'bg-toska-tua text-white';
+            if (ujungKiri || ujungKanan) gaya = 'bg-biru-tua text-white';
             const label = `${tanggal(d, b, 'panjang')}${malamPenuh ? `, ${k.penuh}` : ''}`;
             return (
               <div key={d} className={`relative flex justify-center ${dalam ? 'bg-buih-2' : ''} ${ujungKiri && ujung ? 'bg-linear-to-r from-transparent from-50% to-buih-2 to-50%' : ''} ${ujungKanan && masuk ? 'bg-linear-to-l from-transparent from-50% to-buih-2 to-50%' : ''}`}>
@@ -119,7 +119,7 @@ export default function Kalender({ b, sisa, unit, butuh, minMalam, awal, akhir, 
           className="inline-flex size-10 items-center justify-center rounded-full bg-buih text-laut disabled:opacity-35" aria-label={k.sebelum}>
           <Ikon nama="kiri" />
         </button>
-        <p className="text-center text-sm font-semibold text-toska-tua" aria-live="polite">
+        <p className="text-center text-sm font-semibold text-biru-tua" aria-live="polite">
           {pesan || `${tanggal(masuk, b, 'hari')} ${k.sampai} ${tanggal(keluar, b, 'hari')}, ${KAMUS[b].form.malam(selisihHari(masuk, keluar))}`}
         </p>
         <button type="button" onClick={() => setBulan(tambahBulan(bulan, 1))} disabled={bulan >= akhirBln}
@@ -135,10 +135,10 @@ export default function Kalender({ b, sisa, unit, butuh, minMalam, awal, akhir, 
         <ul className="flex flex-wrap gap-4">
           <li className="inline-flex items-center gap-2"><span className="size-3 rounded-full bg-buih ring-2 ring-buih-2" />{k.kosong}</li>
           <li className="inline-flex items-center gap-2"><span className="size-3 rounded-full bg-[#f6d6cf]" />{k.penuh}</li>
-          <li className="inline-flex items-center gap-2"><span className="size-3 rounded-full bg-toska-tua" />{k.pilihan}</li>
+          <li className="inline-flex items-center gap-2"><span className="size-3 rounded-full bg-biru-tua" />{k.pilihan}</li>
         </ul>
         {masuk && (
-          <button type="button" onClick={() => onPilih('', '')} className="font-semibold text-toska-tua underline underline-offset-4">
+          <button type="button" onClick={() => onPilih('', '')} className="font-semibold text-biru-tua underline underline-offset-4">
             {k.ulangi}
           </button>
         )}

@@ -21,20 +21,20 @@ function stiker(d) {
 export function lembar() {
   const w = 2400, h = 1300;
   let s = rect(0, 0, w, h, W.buih);
-  s += text(`${NAMA}, maskot Mambetron Homestay`, { x: 80, y: 110, family: 'fredoka', weight: 700, size: 64, fill: W.laut });
-  s += text('Digambar dari kuskus Waigeo, kuskus berbintik yang hanya ada di Raja Ampat. Enam pose dan enam ekspresi.', { x: 80, y: 160, size: 28, weight: 500, fill: W.toskaTua });
+  s += text(`${NAMA}, maskot Mambetron Homestay`, { x: 80, y: 110, family: 'judul', weight: 700, size: 64, fill: W.laut });
+  s += text('Digambar dari kuskus Waigeo, kuskus berbintik yang hanya ada di Raja Ampat. Enam pose dan enam ekspresi.', { x: 80, y: 160, size: 28, weight: 500, fill: W.biruTua });
   Object.entries(POSE).forEach(([k, v], i) => {
     const x = 80 + i * 380;
     s += rect(x, 210, 340, 480, W.putih, 28);
     s += taruh(maskot(k), { x: x + 170, y: 240, w: 300, anchor: 'middle' }).svg;
-    s += text(v.nama, { x: x + 170, y: 620, family: 'fredoka', weight: 600, size: 34, fill: W.laut, anchor: 'middle' });
-    s += text(v.untuk, { x: x + 170, y: 656, size: 18, weight: 500, fill: W.toskaTua, anchor: 'middle', maxWidth: 300 });
+    s += text(v.nama, { x: x + 170, y: 620, family: 'judul', weight: 600, size: 34, fill: W.laut, anchor: 'middle' });
+    s += text(v.untuk, { x: x + 170, y: 656, size: 18, weight: 500, fill: W.biruTua, anchor: 'middle', maxWidth: 300 });
   });
   Object.entries(EKSPRESI).forEach(([k, v], i) => {
     const x = 80 + i * 380;
     s += rect(x, 740, 340, 440, W.laut, 28);
     s += taruh(wajah(k, { stiker: true }), { x: x + 170, y: 790, w: 290, anchor: 'middle' }).svg;
-    s += text(v, { x: x + 170, y: 1110, family: 'fredoka', weight: 600, size: 34, fill: W.pasir, anchor: 'middle' });
+    s += text(v, { x: x + 170, y: 1110, family: 'judul', weight: 600, size: 34, fill: W.pasir, anchor: 'middle' });
   });
   return doc(w, h, s);
 }

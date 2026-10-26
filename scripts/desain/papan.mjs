@@ -10,7 +10,7 @@ import { png, pdf, simpan } from '../lib/render.mjs';
 
 const mm = (w, h, body) => doc(w, h, body, 'mm');
 
-function layananBlok(K, { x, y, w, size, warna = W.putih, sub = W.pasir, ikonBg = W.toska, kolom = 2, gapY }) {
+function layananBlok(K, { x, y, w, size, warna = W.putih, sub = W.pasir, ikonBg = W.biru, kolom = 2, gapY }) {
   let s = '';
   const cw = w / kolom;
   const r = size * 1.25;
@@ -29,7 +29,7 @@ function kartuKontak(K, { x, y, w, h, s }) {
   const q = h - s * 1.6;
   o += qr(K, { x: x + s * 0.8, y: y + s * 0.8, size: q, dark: W.laut });
   const tx = x + s * 1.6 + q;
-  o += text('Pesan kamar', { x: tx, y: y + h * 0.28, size: s * 0.9, weight: 600, fill: W.toskaTua });
+  o += text('Pesan kamar', { x: tx, y: y + h * 0.28, size: s * 0.9, weight: 600, fill: W.biruTua });
   o += A.ikon('chat', { x: tx, y: y + h * 0.36, size: s * 1.7, color: W.laut, stroke: 2 });
   o += text(K.whatsapp, { x: tx + s * 2.2, y: y + h * 0.36 + s * 1.3, size: s * 1.3, weight: 800, fill: W.laut, maxWidth: x + w - tx - s * 3 });
   o += A.ikon('kamera', { x: tx, y: y + h * 0.62, size: s * 1.7, color: W.laut, stroke: 2 });
@@ -43,7 +43,7 @@ function kartuKontakTegak(K, { x, y, w, h, s }) {
   const q = w * 0.62;
   o += qr(K, { x: x + (w - q) / 2, y: y + s * 1.4, size: q, dark: W.laut });
   let ty = y + s * 1.4 + q + s * 2.2;
-  o += text('Pesan kamar', { x: x + w / 2, y: ty, size: s * 0.95, weight: 600, fill: W.toskaTua, anchor: 'middle' });
+  o += text('Pesan kamar', { x: x + w / 2, y: ty, size: s * 0.95, weight: 600, fill: W.biruTua, anchor: 'middle' });
   ty += s * 2.1;
   o += text(K.whatsapp, { x: x + w / 2, y: ty, size: s * 1.35, weight: 800, fill: W.laut, anchor: 'middle', maxWidth: w - s * 2 });
   ty += s * 1.8;
@@ -56,15 +56,16 @@ export function bannerBerdiri(K, { tinggiMm, lebarMm }) {
   const w = 800, h = (800 * tinggiMm) / lebarMm;
   const k = 800 / lebarMm;
   const langit = 700;
-  let s = `<g>${A.lanskap({ w, h: langit + 80, horizon: 0.83, sunX: 0.82, seed: 13, susunan: [[0.06, 0.12, 0.2, 0], [0.94, 0.14, 0.24, 0], [0.18, 0.08, 0.13, 1], [0.84, 0.09, 0.16, 1]] })}</g>`;
+  let s = `<g>${A.lanskap({ w, h: langit + 80, horizon: 0.83, sun: null, seed: 13, susunan: [[0.06, 0.12, 0.16, 0], [0.94, 0.14, 0.18, 0], [0.2, 0.08, 0.1, 1], [0.82, 0.09, 0.12, 1]] })}</g>`;
   s += rect(0, langit + 60, w, h - langit - 60, W.laut);
-  s += L.taruh(L.utama({ varian: 'sticker' }), { x: w / 2, y: 70, w: 690, h: 520, anchor: 'middle' }).svg;
+  // the logo stays in the sky, clear of the islands
+  s += L.taruh(L.utama({ varian: 'sticker' }), { x: w / 2, y: 46, w: 690, h: 468, anchor: 'middle' }).svg;
   let y = langit + 170;
   s += text('SELAMAT DATANG DI RAJA AMPAT', { x: w / 2, y, size: 25, weight: 700, tracking: 0.16, fill: W.pasir, anchor: 'middle' });
   y += 122;
-  s += text('Pelukan hangat', { x: w / 2, y, family: 'fredoka', weight: 700, size: 92, fill: W.putih, anchor: 'middle' });
+  s += text('Pelukan hangat', { x: w / 2, y, family: 'judul', weight: 700, size: 92, fill: W.putih, anchor: 'middle' });
   y += 100;
-  s += text('dari Raja Ampat', { x: w / 2, y, family: 'fredoka', weight: 700, size: 92, fill: W.putih, anchor: 'middle' });
+  s += text('dari Raja Ampat', { x: w / 2, y, family: 'judul', weight: 700, size: 92, fill: W.putih, anchor: 'middle' });
   y += 62;
   s += text(K.sloganEn, { x: w / 2, y, size: 30, weight: 500, fill: W.pasir, anchor: 'middle' });
   // flexible gap, contact card anchored above the stand area
@@ -81,12 +82,12 @@ export function bannerBerdiri(K, { tinggiMm, lebarMm }) {
 
 export function spanduk(K) {
   const w = 3000, h = 1000;
-  let s = `<g>${A.lanskap({ w, h, horizon: 0.84, sun: null, seed: 17, susunan: [[0.03, 0.06, 0.2, 0], [0.98, 0.05, 0.16, 0]] })}</g>`;
-  s += L.taruh(L.utama({ varian: 'sticker' }), { x: 70, y: 90, w: 1020, h: 720 }).svg;
-  s += text('SELAMAT DATANG DI RAJA AMPAT', { x: 1180, y: 190, size: 46, weight: 700, tracking: 0.16, fill: W.toskaTua });
-  s += text('Pelukan hangat', { x: 1170, y: 340, family: 'fredoka', weight: 700, size: 150, fill: W.laut });
-  s += text('dari Raja Ampat', { x: 1170, y: 490, family: 'fredoka', weight: 700, size: 150, fill: W.laut });
-  s += layananBlok(K, { x: 1180, y: 570, w: 1060, size: 40, warna: W.laut, sub: W.toskaTua, ikonBg: W.toskaTua, gapY: 120 });
+  let s = `<g>${A.lanskap({ w, h, horizon: 0.84, sun: null, seed: 17, susunan: [[0.37, 0.045, 0.07, 0], [0.985, 0.05, 0.14, 0]] })}</g>`;
+  s += L.taruh(L.utama({ varian: 'sticker' }), { x: 70, y: 60, w: 1020, h: 680 }).svg;
+  s += text('SELAMAT DATANG DI RAJA AMPAT', { x: 1180, y: 190, size: 46, weight: 700, tracking: 0.16, fill: W.biruTua });
+  s += text('Pelukan hangat', { x: 1170, y: 340, family: 'judul', weight: 700, size: 150, fill: W.laut });
+  s += text('dari Raja Ampat', { x: 1170, y: 490, family: 'judul', weight: 700, size: 150, fill: W.laut });
+  s += layananBlok(K, { x: 1180, y: 570, w: 1060, size: 40, warna: W.laut, sub: W.biruTua, ikonBg: W.biruTua, gapY: 120 });
   s += kartuKontakTegak(K, { x: 2340, y: 100, w: 560, h: 720, s: 36 });
   return mm(w, h, s);
 }
@@ -105,7 +106,7 @@ export function papanJemput(K) {
   const w = 420, h = 297;
   let s = rect(0, 0, w, h, W.putih);
   s += rect(0, 0, w, 64, W.laut);
-  s += L.taruh(L.horizontal({ ink: W.putih, sub: W.pasir, badge: { bg: W.toska } }), { x: 22, y: 14, h: 36 }).svg;
+  s += L.taruh(L.horizontal({ ink: W.putih, sub: W.pasir }), { x: 22, y: 14, h: 36 }).svg;
   s += text('SELAMAT DATANG  ·  WELCOME', { x: w - 22, y: 37, size: 8.5, weight: 700, tracking: 0.16, fill: W.pasir, anchor: 'end' });
   s += text('Tulis nama tamu di sini dengan spidol papan tulis', { x: w / 2, y: 92, size: 7, weight: 500, fill: '#9AB3B8', anchor: 'middle' });
   s += L.taruh(maskot('sapa'), { x: w - 24, y: h - 108, h: 96, anchor: 'end' }).svg;
@@ -186,7 +187,7 @@ export function mockJemput(K) {
   const k = 2.2;
   const x = (W2 - 420 * k) / 2, y = 110;
   let p = sisip(papanJemput(K), x, y, 420 * k, 297 * k);
-  p += text('Nama Tamu', { x: W2 / 2, y: y + 420, family: 'fredoka', weight: 500, size: 120, fill: '#1F4FA8', anchor: 'middle' });
+  p += text('Nama Tamu', { x: W2 / 2, y: y + 420, family: 'judul', weight: 500, size: 120, fill: '#1F4FA8', anchor: 'middle' });
   s += `<g transform="rotate(-2 ${W2 / 2} ${H / 2})">${bayangan(p)}</g>`;
   return doc(W2, H, s);
 }

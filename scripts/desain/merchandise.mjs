@@ -10,13 +10,12 @@ import { png, pdf, simpan } from '../lib/render.mjs';
 // print artwork: name, drawable, width in mm, note
 export function cetakan() {
   return [
-    ['kaos-dada-lencana-warna', L.lencana(), 90],
-    ['kaos-dada-stempel-hitam', L.stempel(), 90],
-    ['kaos-dada-stempel-putih', L.stempel({ ink: W.putih }), 90],
-    ['kaos-punggung-logo-hitam', L.utama(), 280],
+    ['kaos-dada-wordmark-biru', L.wordmark(), 90],
+    ['kaos-dada-wordmark-putih', L.wordmark({ ink: W.putih, sub: W.pasir }), 90],
+    ['kaos-punggung-logo-biru', L.utama(), 280],
     ['kaos-punggung-logo-putih', L.utama({ varian: 'negative' }), 280],
     ['kaos-suvenir-emblem', emblem(), 250],
-    ['jaket-bordir-dada-putih', L.stempel({ ink: W.putih, ringWidth: 0.07 }), 80],
+    ['jaket-bordir-dada-putih', L.wordmark({ ink: W.putih, homestay: false }), 80],
     ['jaket-punggung-logo-putih', L.utama({ varian: 'negative' }), 260],
     ['jaket-lengan-wordmark-putih', L.wordmark({ ink: W.putih, homestay: false }), 90],
   ];
@@ -53,7 +52,7 @@ export function mockupJaket() {
   const W2 = 1800, H = 960;
   let s = rect(0, 0, W2, H, W.buih);
   const warna = W.laut, rib = W.hitam;
-  s += `<g transform="translate(470 140)">${jaket({ warna, rib, sisi: 'depan' })}${pasang(L.stempel({ ink: W.putih, ringWidth: 0.07 }), { cx: 128, y: 150, w: 80 })}</g>`;
+  s += `<g transform="translate(470 140)">${jaket({ warna, rib, sisi: 'depan' })}${pasang(L.wordmark({ ink: W.putih, homestay: false }), { cx: 128, y: 160, w: 80 })}</g>`;
   s += `<g transform="translate(1330 140)">${jaket({ warna, rib, sisi: 'belakang' })}${pasang(L.utama({ varian: 'negative' }), { cx: 0, y: 120, w: 260 })}</g>`;
   s += label('Depan', 470, 910) + label('Belakang', 1330, 910);
   return doc(W2, H, s);
@@ -69,8 +68,8 @@ export default async function ({ out }) {
     await png(svgPx, out(`merchandise/cetak/${nama}-${mm / 10}cm-300dpi.png`), { width: Math.round((mm / 25.4) * 300) });
   }
   const mock = [
-    ['kaos-seragam-putih', mockupKaos({ warna: W.putih, dada: L.lencana(), punggung: L.utama() })],
-    ['kaos-seragam-laut', mockupKaos({ warna: W.laut, dada: L.stempel({ ink: W.putih }), punggung: L.utama({ varian: 'negative' }) })],
+    ['kaos-seragam-putih', mockupKaos({ warna: W.putih, dada: L.wordmark(), punggung: L.utama() })],
+    ['kaos-seragam-laut', mockupKaos({ warna: W.laut, dada: L.wordmark({ ink: W.putih, sub: W.pasir }), punggung: L.utama({ varian: 'negative' }) })],
     ['kaos-suvenir', mockupSuvenir()],
     ['jaket', mockupJaket()],
   ];

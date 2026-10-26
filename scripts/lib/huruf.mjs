@@ -7,7 +7,9 @@ import { fileURLToPath } from 'url';
 const DIR = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../../brand/font/desktop');
 const cache = {};
 const FILES = {
-  fredoka: { 400: 'Fredoka-Regular', 500: 'Fredoka-Medium', 600: 'Fredoka-SemiBold', 700: 'Fredoka-Bold' },
+  // Londrina Solid for headings, it shares the tall, heavy, hand cut letters
+  // of MAMBETRON in the logo. Regular for light weights, Black for the rest.
+  judul: { 300: 'LondrinaSolid-Regular', 400: 'LondrinaSolid-Regular', 500: 'LondrinaSolid-Regular', 600: 'LondrinaSolid-Black', 700: 'LondrinaSolid-Black', 800: 'LondrinaSolid-Black', 900: 'LondrinaSolid-Black' },
   jakarta: {
     400: 'PlusJakartaSans-Regular', 500: 'PlusJakartaSans-Medium', 600: 'PlusJakartaSans-SemiBold',
     700: 'PlusJakartaSans-Bold', 800: 'PlusJakartaSans-ExtraBold',

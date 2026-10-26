@@ -17,7 +17,7 @@ export default function Galeri({ foto, cadangan, nama }: { foto: Foto[]; cadanga
         <div className="mt-3 flex gap-2 overflow-x-auto pb-1">
           {foto.map((f, i) => (
             <button key={f.id} type="button" onClick={() => setAktif(i)} aria-label={f.keterangan || `${nama} ${i + 1}`} aria-pressed={i === aktif}
-              className={`h-16 w-20 shrink-0 overflow-hidden rounded-xl transition-opacity sm:h-20 sm:w-28 ${i === aktif ? 'ring-3 ring-toska' : 'opacity-70 hover:opacity-100'}`}>
+              className={`h-16 w-20 shrink-0 overflow-hidden rounded-xl transition-opacity sm:h-20 sm:w-28 ${i === aktif ? 'ring-3 ring-biru' : 'opacity-70 hover:opacity-100'}`}>
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img src={f.url} alt="" loading="lazy" className="size-full object-cover" />
             </button>

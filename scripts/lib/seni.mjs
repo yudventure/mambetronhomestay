@@ -45,7 +45,7 @@ export function pulau({ x, y, w, h, seed = 3, fill = W.laut, bumps = 7, lean = 0
 }
 
 // Gentle wave band filling everything below the crest line.
-export function ombak({ x = 0, y, w, depth, amp = 6, len = 60, fill = W.toska, phase = 0 }) {
+export function ombak({ x = 0, y, w, depth, amp = 6, len = 60, fill = W.biru, phase = 0 }) {
   let d = `M${f(x)} ${f(y + depth)}L${f(x)} ${f(y)}`;
   const n = Math.ceil(w / len) + 1;
   for (let i = 0; i < n; i++) {
@@ -70,7 +70,7 @@ export function kilau({ x, y, w, n = 6, seed = 7, color = W.putih, thick = 3, op
 
 // Raja Ampat seascape: sun, karst islets, layered sea, clipped to w×h.
 let lid = 0;
-export function lanskap({ w, h, sky = W.buih, sun = W.pasir, far = W.toska, near = W.laut, sea1 = W.toska, sea2 = W.laut, seed = 11, sunX = 0.7, horizon = 0.64, islands = true, glint = true, susunan = null, sunY = 0.26, sunR = null }) {
+export function lanskap({ w, h, sky = W.buih, sun = W.pasir, far = W.biru, near = W.laut, sea1 = W.biru, sea2 = W.laut, seed = 11, sunX = 0.7, horizon = 0.64, islands = true, glint = true, susunan = null, sunY = 0.26, sunR = null }) {
   const r = acak(seed);
   const hy = h * horizon;
   const id = `lsk${++lid}`;
@@ -111,12 +111,12 @@ export function ekorOmbak({ x, y, R, len = 3, turns = 1.35, dir = 1 }) {
   }
   return d;
 }
-export function ekor({ x, y, R, len = 3, turns = 1.35, dir = 1, color = W.toska, width = 0.3 }) {
+export function ekor({ x, y, R, len = 3, turns = 1.35, dir = 1, color = W.biru, width = 0.3 }) {
   return `<path d="${ekorOmbak({ x, y, R, len, turns, dir })}" fill="none" stroke="${color}" stroke-width="${f(R * width)}" stroke-linecap="round" stroke-linejoin="round"/>`;
 }
 
 // Repeating brand pattern on a square tile.
-export function polaTile(size, { swirl = W.toska, dot = W.pasir, opacity = 1 } = {}) {
+export function polaTile(size, { swirl = W.biru, dot = W.pasir, opacity = 1 } = {}) {
   const s = size;
   const R = s * 0.085;
   return `<g opacity="${opacity}">`
@@ -127,7 +127,7 @@ export function polaTile(size, { swirl = W.toska, dot = W.pasir, opacity = 1 } =
     + `</g>`;
 }
 let pid = 0;
-export function pola({ x = 0, y = 0, w, h, tile = 120, bg = W.laut, swirl = W.toska, dot = W.pasir, opacity = 1 }) {
+export function pola({ x = 0, y = 0, w, h, tile = 120, bg = W.laut, swirl = W.biru, dot = W.pasir, opacity = 1 }) {
   const id = `pola${++pid}`;
   return `<defs><pattern id="${id}" width="${tile}" height="${tile}" patternUnits="userSpaceOnUse" x="${x}" y="${y}">${polaTile(tile, { swirl, dot, opacity })}</pattern></defs>`
     + (bg ? `<rect x="${x}" y="${y}" width="${w}" height="${h}" fill="${bg}"/>` : '')

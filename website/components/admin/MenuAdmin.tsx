@@ -58,7 +58,7 @@ export default function MenuAdmin() {
       <aside className="sticky top-0 hidden h-svh w-64 shrink-0 flex-col overflow-y-auto bg-laut px-4 py-6 lg:flex">
         <Link href="/admin" className="mb-6 px-2">
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/merek/logo-horizontal-putih.svg" alt="Mambetron Homestay" width={190} height={40} className="h-10 w-auto" />
+          <img src="/merek/logo-horizontal-putih.svg" alt="Mambetron Homestay" width={180} height={40} className="h-10 w-auto" />
         </Link>
         <Daftar jalur={jalur} />
       </aside>
@@ -66,7 +66,7 @@ export default function MenuAdmin() {
       <div className="sticky top-0 z-40 flex h-16 items-center justify-between bg-laut px-4 lg:hidden">
         <Link href="/admin">
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/merek/logo-horizontal-putih.svg" alt="Mambetron Homestay" width={160} height={34} className="h-8 w-auto" />
+          <img src="/merek/logo-horizontal-putih.svg" alt="Mambetron Homestay" width={144} height={32} className="h-8 w-auto" />
         </Link>
         <button ref={tombol} type="button" onClick={() => setBuka((b) => !b)} aria-expanded={buka} aria-controls="menu-admin"
           className="inline-flex size-11 items-center justify-center rounded-full bg-white/10 text-white">

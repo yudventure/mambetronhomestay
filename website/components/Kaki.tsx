@@ -14,7 +14,7 @@ export default function Kaki({ b, situs }: { b: Bahasa; situs: Situs }) {
       <div className="mx-auto grid max-w-6xl gap-10 px-4 pt-14 pb-10 sm:px-6 md:grid-cols-[1.4fr_1fr_1fr]">
         <div>
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/merek/logo-horizontal-putih.svg" alt={situs.nama} width={213} height={44} className="h-11 w-auto" />
+          <img src="/merek/logo-putih.svg" alt={situs.nama} width={134} height={112} className="h-28 w-auto" />
           <p className="mt-4 max-w-sm text-white/80">{dwi(situs.kakiTeks, b)}</p>
           <p className="mt-3 text-sm text-pasir">{dwi(situs.lokasi, b)}</p>
         </div>

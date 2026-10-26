@@ -66,7 +66,7 @@ function Kolom({ f, nilai, ubah, awalan }: { f: Isian; nilai: unknown; ubah: (v:
           <div className="flex flex-wrap gap-2">
             {Object.entries(IKON_LABEL).map(([n, label]) => (
               <button key={n} type="button" onClick={() => ubah(n)} title={label} aria-pressed={nilai === n}
-                className={`inline-flex size-11 items-center justify-center rounded-xl ${nilai === n ? 'bg-toska-tua text-white' : 'bg-white text-laut ring-1 ring-buih-2 hover:bg-buih'}`}>
+                className={`inline-flex size-11 items-center justify-center rounded-xl ${nilai === n ? 'bg-biru-tua text-white' : 'bg-white text-laut ring-1 ring-buih-2 hover:bg-buih'}`}>
                 <Ikon nama={n} className="size-5" /><span className="sr-only">{label}</span>
               </button>
             ))}
@@ -122,7 +122,7 @@ export default function FormPengaturan({ bagian, nilai }: { bagian: Bagian; nila
       ))}
       <div className="flex flex-wrap items-center gap-3">
         <button className="tombol tombol-laut" disabled={sedang}>{sedang ? 'Menyimpan' : 'Simpan bagian ini'}</button>
-        {hasil.pesan && <p role="status" className={`font-semibold ${hasil.ok ? 'text-toska-tua' : 'text-merah'}`}>{hasil.pesan}</p>}
+        {hasil.pesan && <p role="status" className={`font-semibold ${hasil.ok ? 'text-biru-tua' : 'text-merah'}`}>{hasil.pesan}</p>}
       </div>
     </form>
   );

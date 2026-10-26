@@ -44,7 +44,7 @@ export default async function UbahKamar({ params, searchParams }: { params: Prom
   if (!k) notFound();
   return (
     <>
-      <Link href="/admin/kamar" className="mb-4 inline-flex items-center gap-1 text-sm font-semibold text-toska-tua hover:underline">
+      <Link href="/admin/kamar" className="mb-4 inline-flex items-center gap-1 text-sm font-semibold text-biru-tua hover:underline">
         <Ikon nama="kiri" className="size-4" /> Semua pondok
       </Link>
       <JudulAdmin judul={baru ? 'Pondok baru' : k.nama}>
@@ -106,7 +106,7 @@ export default async function UbahKamar({ params, searchParams }: { params: Prom
               <p className="bantuan">Angka kecil tampil lebih dulu.</p>
             </div>
             <label className="flex items-center gap-3 rounded-2xl bg-buih px-4 py-3 font-semibold text-laut sm:col-span-2">
-              <input type="checkbox" name="aktif" value="ya" defaultChecked={k.aktif} className="size-5 accent-[#0a7a73]" />
+              <input type="checkbox" name="aktif" value="ya" defaultChecked={k.aktif} className="size-5 accent-[#036f87]" />
               Tampilkan di situs dan bisa dipesan
             </label>
           </fieldset>

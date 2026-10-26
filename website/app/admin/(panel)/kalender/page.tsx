@@ -55,7 +55,7 @@ export default async function KalenderAdmin({ searchParams }: { searchParams: Pr
               {malam.map((d) => {
                 const libur = hariDalamMinggu(d) === 0 || hariDalamMinggu(d) === 6;
                 return (
-                  <th key={d} className={`min-w-10 rounded-lg px-1 py-1 font-semibold ${d === hari ? 'bg-senja text-hitam' : libur ? 'text-toska-tua' : 'text-abu'}`}>
+                  <th key={d} className={`min-w-10 rounded-lg px-1 py-1 font-semibold ${d === hari ? 'bg-senja text-hitam' : libur ? 'text-biru-tua' : 'text-abu'}`}>
                     <span className="block text-[0.7rem]">{HARI[hariDalamMinggu(d)]}</span>
                     <span className="block">{Number(d.slice(8))}</span>
                     {(d.endsWith('-01') || d === mulai) && <span className="block text-[0.65rem] uppercase">{tanggal(d, 'id').split(' ')[1]}</span>}
