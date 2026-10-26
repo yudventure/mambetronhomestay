@@ -25,13 +25,13 @@ export default function MenuSeluler({ tautan, label, tutupLabel, bahasa, wa, waL
   return (
     <>
       <button ref={tombol} type="button" onClick={() => setBuka((b) => !b)} aria-expanded={buka} aria-controls="menu-seluler"
-        className="inline-flex size-11 items-center justify-center rounded-full bg-buih text-laut group-data-[bening]/kepala:bg-white lg:hidden">
+        className="pointer-events-auto inline-flex size-11 items-center justify-center rounded-full bg-buih text-laut group-data-[bening]/kepala:bg-white lg:hidden">
         <Ikon nama={buka ? 'silang' : 'menu'} className="size-6" />
         <span className="sr-only">{buka ? tutupLabel : label}</span>
       </button>
-      {buka && <div aria-hidden className="fixed inset-0 z-40 bg-laut/40 lg:hidden" />}
+      {buka && <div aria-hidden className="pointer-events-auto fixed inset-0 z-40 bg-laut/40 lg:hidden" />}
       <div ref={panel} id="menu-seluler" role="dialog" aria-modal="true" aria-label={label} hidden={!buka}
-        className="tinggi-lembar fixed inset-x-0 bottom-0 z-50 overflow-y-auto rounded-t-3xl bg-white px-4 pt-3 pb-[max(1.25rem,env(safe-area-inset-bottom))] shadow-angkat lg:hidden">
+        className="tinggi-lembar pointer-events-auto fixed inset-x-0 bottom-0 z-50 overflow-y-auto rounded-t-3xl bg-white px-4 pt-3 pb-[max(1.25rem,env(safe-area-inset-bottom))] shadow-angkat lg:hidden">
         <div className="mx-auto mb-3 h-1.5 w-12 rounded-full bg-buih-2" aria-hidden />
         <nav className="grid gap-1">
           {tautan.map((t) => (
