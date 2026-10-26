@@ -27,7 +27,7 @@ export default function PilihanBahasa({ b, label }: { b: Bahasa; label: string }
   return (
     <div className="relative">
       <button ref={tombol} type="button" onClick={() => setBuka((x) => !x)} aria-expanded={buka} aria-controls="pilihan-bahasa" aria-label={label}
-        className="inline-flex h-10 items-center gap-1.5 rounded-full px-3 text-[0.75rem] font-bold tracking-[0.08em] text-laut transition-colors hover:bg-buih group-data-[bening]/kepala:text-white group-data-[bening]/kepala:hover:bg-white/15">
+        className="inline-flex h-10 items-center gap-1.5 rounded-full px-3 text-[0.75rem] font-bold tracking-[0.08em] text-laut transition-colors hover:bg-buih">
         <Ikon nama="globe" className="size-[1.125rem]" />
         <span>{b.toUpperCase()}</span>
         <Ikon nama="bawah" className={`size-3.5 transition-transform ${buka ? 'rotate-180' : ''}`} tebal={2.2} />

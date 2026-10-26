@@ -5,8 +5,8 @@ import type { Bahasa, Foto, Situs } from '@/lib/jenis';
 import { kamus } from '@/lib/kamus';
 import { dwi } from '@/lib/format';
 
-// Hero in a rounded frame. The header floats over its top, the room cards
-// overlap its bottom edge. Without an uploaded photo it shows the homestay
+// Hero in a rounded frame under the header, the feature cards overlap its
+// bottom edge. Without an uploaded photo it shows the homestay
 // photos shipped with the site, an upright one on phones.
 export default function Pahlawan({ b, s, foto, fotoHp }: { b: Bahasa; s: Situs; foto?: Foto; fotoHp?: Foto }) {
   const k = kamus(b);
@@ -14,13 +14,13 @@ export default function Pahlawan({ b, s, foto, fotoHp }: { b: Bahasa; s: Situs; 
   const kata = s.heroKata.filter((x) => dwi(x.teks, b));
   const video = /^https:\/\/\S+$/.test(s.heroVideo.trim()) ? s.heroVideo.trim() : '';
   return (
-    <section className="px-3 pt-3 sm:px-4 sm:pt-4">
+    <section className="px-3 pt-2 sm:px-4 sm:pt-3">
       <div className="bingkai relative isolate overflow-hidden bg-laut-3">
         <LatarPahlawan foto={foto} fotoHp={fotoHp} />
-        <div aria-hidden className="absolute inset-0 -z-10 bg-gradient-to-b from-black/30 via-black/0 via-25% to-black/20" />
+        <div aria-hidden className="absolute inset-0 -z-10 bg-gradient-to-b from-black/10 via-black/0 via-25% to-black/20" />
         <div aria-hidden className="absolute inset-0 -z-10 bg-black/30 lg:bg-transparent lg:bg-gradient-to-r lg:from-black/70 lg:via-black/35 lg:via-35% lg:to-transparent lg:to-60%" />
 
-        <div className="mx-auto flex min-h-[38rem] max-w-6xl flex-col px-5 pt-28 pb-24 sm:min-h-[44rem] sm:px-8 sm:pt-36 sm:pb-36 lg:min-h-[47rem]">
+        <div className="mx-auto flex min-h-[34rem] max-w-6xl flex-col px-5 pt-14 pb-24 sm:min-h-[40rem] sm:px-8 sm:pt-20 sm:pb-36 lg:min-h-[42.5rem]">
           {dwi(s.heroLabel, b) && <p className="label-kecil !text-sorot">{dwi(s.heroLabel, b)}</p>}
           <h1 className="mt-4 text-[clamp(3.4rem,2.2rem+5.6vw,6.75rem)] leading-[0.94] !text-white">
             {baris.map((x, i) => (
