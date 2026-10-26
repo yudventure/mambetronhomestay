@@ -96,7 +96,7 @@ export const PENGATURAN = [
       { k: 'ulasanSkor', label: 'Nilai ulasan di samping kartu', jenis: 'teks', bawaan: '8,7', bantuan: 'Nilai dari situs ulasan, misalnya 8,7. Kosongkan bila tidak ingin ditampilkan.' },
       { k: 'ulasanSkala', label: 'Nilai tertinggi di situs ulasan', jenis: 'angka', bawaan: 10, min: 1, max: 100, bantuan: 'Booking.com memakai 10, Google memakai 5.' },
       { k: 'ulasanSumber', label: 'Nama situs ulasan', jenis: 'teks', bawaan: 'Booking.com' },
-      { k: 'ulasanTautan', label: 'Tautan tombol ke situs ulasan', jenis: 'teks', bawaan: 'https://www.booking.com/searchresults.html?ss=Mambetron+Homestay', bantuan: 'Tombol Lihat di Booking.com di bawah nilai membuka tautan ini. Bawaannya hasil pencarian Mambetron di Booking.com. Ganti dengan tautan halaman Mambetron di Booking.com, disalin dari bilah alamat peramban. Bila dikosongkan, tombol membuka halaman semua pondok.' },
+      { k: 'ulasanTautan', label: 'Tautan tombol ke situs ulasan', jenis: 'teks', bawaan: 'https://www.booking.com/hotel/id/mambetron-homestay.html', bantuan: 'Tombol Lihat di Booking.com di bawah nilai membuka tautan ini. Bawaannya halaman Mambetron di Booking.com. Bila dikosongkan, tombol membuka halaman semua pondok.' },
       {
         k: 'ulasanWajah', label: 'Lingkaran tamu di samping nilai', jenis: 'daftar', tambah: 'Tambah tamu',
         bantuan: 'Tamu yang mengulas di situs ulasan. Tiap tamu tampil sebagai lingkaran berisi satu huruf, paling banyak enam.',
@@ -283,7 +283,7 @@ export function rapikan(f, v) {
 // field, so an untouched default stays in the database. A stored value that
 // still equals an old default is treated as unset and takes the current one.
 const BAWAAN_LAMA = {
-  ulasanTautan: [''],
+  ulasanTautan: ['', 'https://www.booking.com/searchresults.html?ss=Mambetron+Homestay'],
   whatsapp: [''],
   email: [''],
   heroLabel: [dua('Homestay keluarga di Raja Ampat', 'Family homestay in Raja Ampat')],
