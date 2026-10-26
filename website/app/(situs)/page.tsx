@@ -56,7 +56,7 @@ export default async function Beranda() {
 
   return (
     <>
-      <Pahlawan b={b} s={s} foto={foto.beranda[0]} />
+      <Pahlawan b={b} s={s} foto={foto.beranda[0]} fotoHp={foto.berandaHp[0]} />
 
       {kamar.length > 0 && (
         <section id="pondok" className="relative z-10 mx-auto -mt-16 max-w-6xl scroll-mt-28 px-4 sm:-mt-24 sm:px-6">

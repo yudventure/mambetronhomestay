@@ -8,6 +8,9 @@ import { sesiSah } from '@/lib/sesi';
 // page in this group. A signed in admin still sees the real site.
 export default async function SitusLayout({ children }: { children: React.ReactNode }) {
   const [b, situs, admin] = await Promise.all([bahasaAktif(), ambilSitus(), sesiSah()]);
-  if (situs.tutup && !admin) return <HalamanTutup b={b} situs={situs} foto={(await fotoSitus()).beranda[0]} />;
+  if (situs.tutup && !admin) {
+    const foto = await fotoSitus();
+    return <HalamanTutup b={b} situs={situs} foto={foto.beranda[0]} fotoHp={foto.berandaHp[0]} />;
+  }
   return <KerangkaSitus b={b} situs={situs} admin={admin}>{children}</KerangkaSitus>;
 }

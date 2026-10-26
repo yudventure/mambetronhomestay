@@ -127,13 +127,13 @@ export const daftarUlasan = cache(async (semua = false): Promise<Ulasan[]> => {
 });
 
 // Site photos outside the rooms, grouped by where they appear.
-export type WadahFoto = 'beranda' | 'tentang' | 'ajakan' | 'galeri';
+export type WadahFoto = 'beranda' | 'berandaHp' | 'tentang' | 'ajakan' | 'galeri';
 export const fotoSitus = cache(async (): Promise<Record<WadahFoto, Foto[]>> => {
-  const kosong = { beranda: [], tentang: [], ajakan: [], galeri: [] } as Record<WadahFoto, Foto[]>;
+  const kosong = { beranda: [], berandaHp: [], tentang: [], ajakan: [], galeri: [] } as Record<WadahFoto, Foto[]>;
   if (!dbDiatur()) return kosong;
   try {
     const r = await baris<{ id: number; wadah: WadahFoto; lebar: number; tinggi: number; keterangan: string }>(
-      "SELECT id, wadah, lebar, tinggi, keterangan FROM foto WHERE wadah IN ('beranda', 'tentang', 'ajakan', 'galeri') ORDER BY urutan, id",
+      "SELECT id, wadah, lebar, tinggi, keterangan FROM foto WHERE wadah IN ('beranda', 'berandaHp', 'tentang', 'ajakan', 'galeri') ORDER BY urutan, id",
     );
     for (const f of r) kosong[f.wadah].push({ id: f.id, lebar: f.lebar, tinggi: f.tinggi, keterangan: f.keterangan, url: urlFoto(f.id) });
     return kosong;

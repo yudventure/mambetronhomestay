@@ -6,9 +6,9 @@ import { kamus } from '@/lib/kamus';
 import { dwi } from '@/lib/format';
 
 // Hero in a rounded frame. The header floats over its top, the room cards
-// overlap its bottom edge. Without an uploaded photo it shows the dusk
-// illustration, drawn in a tall version for phones.
-export default function Pahlawan({ b, s, foto }: { b: Bahasa; s: Situs; foto?: Foto }) {
+// overlap its bottom edge. Without an uploaded photo it shows the homestay
+// photos shipped with the site, an upright one on phones.
+export default function Pahlawan({ b, s, foto, fotoHp }: { b: Bahasa; s: Situs; foto?: Foto; fotoHp?: Foto }) {
   const k = kamus(b);
   const baris = dwi(s.heroJudul, b).split('\n').map((x) => x.trim()).filter(Boolean);
   const kata = s.heroKata.filter((x) => dwi(x.teks, b));
@@ -16,7 +16,7 @@ export default function Pahlawan({ b, s, foto }: { b: Bahasa; s: Situs; foto?: F
   return (
     <section className="px-3 pt-3 sm:px-4 sm:pt-4">
       <div className="bingkai relative isolate overflow-hidden bg-laut-3">
-        <LatarPahlawan foto={foto} />
+        <LatarPahlawan foto={foto} fotoHp={fotoHp} />
         <div aria-hidden className="absolute inset-0 -z-10 bg-gradient-to-b from-black/30 via-black/0 via-25% to-black/20" />
         <div aria-hidden className="absolute inset-0 -z-10 bg-black/30 lg:bg-transparent lg:bg-gradient-to-r lg:from-black/70 lg:via-black/35 lg:via-35% lg:to-transparent lg:to-60%" />
 

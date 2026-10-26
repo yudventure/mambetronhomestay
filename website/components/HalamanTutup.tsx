@@ -7,7 +7,7 @@ import { dwi, tautanWa } from '@/lib/format';
 
 // What visitors see while developer mode is on. Same framed photo as the
 // home page hero, with the closed page title and text from the admin panel.
-export default function HalamanTutup({ b, situs, foto }: { b: Bahasa; situs: Situs; foto?: Foto }) {
+export default function HalamanTutup({ b, situs, foto, fotoHp }: { b: Bahasa; situs: Situs; foto?: Foto; fotoHp?: Foto }) {
   const k = kamus(b);
   const wa = tautanWa(situs.whatsapp, k.pesanWaUmum);
   const ig = situs.instagram.replace(/^@/, '').trim();
@@ -16,7 +16,7 @@ export default function HalamanTutup({ b, situs, foto }: { b: Bahasa; situs: Sit
   return (
     <main id="isi" className="situs flex min-h-svh flex-col p-3 sm:p-4">
       <div className="bingkai relative isolate flex flex-1 flex-col overflow-hidden bg-laut-3">
-        <LatarPahlawan foto={foto} />
+        <LatarPahlawan foto={foto} fotoHp={fotoHp} />
         <div aria-hidden className="absolute inset-0 -z-10 bg-gradient-to-b from-black/30 via-black/0 via-25% to-black/20" />
         <div aria-hidden className="absolute inset-0 -z-10 bg-black/30 lg:bg-transparent lg:bg-gradient-to-r lg:from-black/70 lg:via-black/35 lg:via-35% lg:to-transparent lg:to-60%" />
 
