@@ -28,7 +28,7 @@ export function JudulBagian({ label, judul, teks, terang = false, tengah = false
 }) {
   return (
     <div className={`mb-10 max-w-2xl ${tengah ? 'mx-auto text-center' : ''}`}>
-      {label && <p className={`label-kecil ${terang ? '!text-pasir' : ''}`}>{label}</p>}
+      {label && <p className={`label-kecil ${terang ? '!text-sorot' : ''}`}>{label}</p>}
       <h2 className={`mt-2 text-[clamp(1.9rem,1.4rem+2vw,2.75rem)] ${terang ? '!text-white' : ''}`}>{judul}</h2>
       {teks && <p className={`mt-3 text-lg ${terang ? 'text-white/80' : 'text-abu'}`}>{teks}</p>}
     </div>

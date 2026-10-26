@@ -14,7 +14,7 @@ import { SATUAN } from '@/lib/satuan.mjs';
 import { hariIni, tambahHari } from '@/lib/tanggal';
 
 const JUDUL = 'text-[clamp(2.1rem,1.5rem+2.4vw,3.25rem)]';
-const WARNA_INISIAL = ['bg-biru-tua', 'bg-senja', 'bg-laut', 'bg-biru'];
+const WARNA_INISIAL = ['bg-biru-tua', 'bg-laut', 'bg-aksen', 'bg-laut-2'];
 
 export default async function Beranda() {
   const [b, s, kamar, layanan, ulasan, foto] = await Promise.all([
@@ -74,7 +74,7 @@ export default async function Beranda() {
                       ))}
                     </div>
                     <p className="mt-2 inline-flex items-center gap-1.5 text-sm font-semibold text-laut">
-                      <Ikon nama="bintang" className="size-4 fill-senja text-senja" />
+                      <Ikon nama="bintang" className="size-4 fill-biru text-biru" />
                       {k.ulasanRingkas(angka1.format(rata), ulasan.length)}
                     </p>
                   </div>
@@ -140,7 +140,7 @@ export default async function Beranda() {
               width={ajakanFoto?.lebar || 1600} height={ajakanFoto?.tinggi || 1100} loading="lazy"
               className="aspect-[16/10] w-full rounded-[1.4rem] object-cover sm:rounded-[1.75rem]" />
             <div className="px-3 pt-8 pb-6 sm:px-6 lg:py-10 lg:pr-12">
-              {dwi(s.ajakanLabel, b) && <p className="text-sm font-semibold tracking-wide text-pasir">{dwi(s.ajakanLabel, b)}</p>}
+              {dwi(s.ajakanLabel, b) && <p className="text-sm font-semibold tracking-wide text-sorot">{dwi(s.ajakanLabel, b)}</p>}
               <h2 className={`mt-3 text-white ${JUDUL}`}>{dwi(s.ajakanJudul, b)}</h2>
               <p className="mt-4 max-w-md text-white/80">{dwi(s.ajakanTeks, b)}</p>
               <div className="mt-7 flex flex-wrap gap-3">
@@ -195,7 +195,7 @@ export default async function Beranda() {
           <div className={`${KISI} gap-4`}>
             {ulasan.map((u, i) => (
               <figure key={u.id} className={`flex flex-col rounded-3xl bg-embun p-6 ${rentang(ulasan.length, i)}`}>
-                <div className="flex gap-0.5 text-senja" role="img" aria-label={`${u.bintang}/5`}>
+                <div className="flex gap-0.5 text-biru" role="img" aria-label={`${u.bintang}/5`}>
                   {Array.from({ length: 5 }, (_, j) => (
                     <svg key={j} viewBox="0 0 24 24" className="size-5" fill={j < u.bintang ? 'currentColor' : 'none'} stroke="currentColor" strokeWidth={1.6} strokeLinejoin="round" aria-hidden>
                       <path d="M12 3.2l2.7 5.6 6.1.8-4.5 4.2 1.1 6.1L12 17l-5.4 2.9 1.1-6.1-4.5-4.2 6.1-.8Z" />

@@ -70,7 +70,7 @@ export default async function HalamanPesanan({ params, searchParams }: {
         </div>
 
         {perluBayar && (
-          <div className="bg-pasir px-5 py-6 sm:px-8">
+          <div className="bg-buih px-5 py-6 sm:px-8">
             <h2 className="text-2xl">{k.form.uangMuka(situs.dpPersen)}</h2>
             <p className="mt-1 font-judul text-3xl font-semibold text-laut">{rupiah(p.dp, b)}</p>
             {situs.bank.length > 0 ? (

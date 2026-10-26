@@ -12,7 +12,7 @@ export default function CariCepat({ b, awal, akhir, checkIn, checkOut }: { b: Ba
     <form action="/pesan" method="get" className="kartu p-5 shadow-angkat">
       <div className="flex items-center gap-3">
         {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src="/merek/wajah-senang.svg" alt="" aria-hidden width={64} height={52} className="size-16 shrink-0 rounded-2xl bg-pasir object-contain p-1.5" />
+        <img src="/merek/wajah-senang.svg" alt="" aria-hidden width={64} height={52} className="size-16 shrink-0 rounded-2xl bg-buih object-contain p-1.5" />
         <h3 className="text-[1.65rem] leading-[1.02]">{k.rencana}</h3>
       </div>
       <div className="mt-5 grid gap-2.5">

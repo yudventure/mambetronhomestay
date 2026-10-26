@@ -21,10 +21,10 @@ export default function Pahlawan({ b, s, foto }: { b: Bahasa; s: Situs; foto?: F
         <div aria-hidden className="absolute inset-0 -z-10 bg-gradient-to-r from-laut-3/55 via-laut-3/10 to-transparent" />
 
         <div className="mx-auto flex min-h-[38rem] max-w-6xl flex-col px-5 pt-28 pb-24 sm:min-h-[44rem] sm:px-8 sm:pt-36 sm:pb-36 lg:min-h-[47rem]">
-          {dwi(s.heroLabel, b) && <p className="label-kecil !text-pasir">{dwi(s.heroLabel, b)}</p>}
+          {dwi(s.heroLabel, b) && <p className="label-kecil !text-sorot">{dwi(s.heroLabel, b)}</p>}
           <h1 className="mt-4 text-[clamp(3.4rem,2.2rem+5.6vw,6.75rem)] leading-[0.94] !text-white">
             {baris.map((x, i) => (
-              <span key={i} className={`block ${baris.length > 1 && i === baris.length - 1 ? 'text-pasir' : ''}`}>{x}</span>
+              <span key={i} className={`block ${baris.length > 1 && i === baris.length - 1 ? 'text-sorot' : ''}`}>{x}</span>
             ))}
           </h1>
           {dwi(s.heroTeks, b) && <p className="mt-6 max-w-md text-lg text-white/90 [text-shadow:0_1px_12px_rgb(8_42_53/0.6)]">{dwi(s.heroTeks, b)}</p>}

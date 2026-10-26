@@ -29,7 +29,7 @@ export default async function Ketentuan() {
       <div className="prosa mt-8 text-lg">
         {paragraf(dwi(situs.ketentuan, b)).map((p, i) => <p key={i}>{p}</p>)}
       </div>
-      <div className="prosa mt-8 rounded-3xl bg-pasir p-6 text-laut">
+      <div className="prosa mt-8 rounded-3xl bg-buih p-6 text-laut">
         {paragraf(dwi(situs.catatanBayar, b)).map((p, i) => <p key={i}>{p}</p>)}
       </div>
     </Bagian>

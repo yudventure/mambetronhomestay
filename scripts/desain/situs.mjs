@@ -36,9 +36,9 @@ export default async function ({ ROOT, out }) {
 
   // placeholder room pictures until the owner uploads photos
   const adegan = [
-    ['kamar-1.svg', { seed: 5, sunX: 0.72, sky: W.buih }],
-    ['kamar-2.svg', { seed: 31, sunX: 0.28, sky: '#FDF0D2', sun: W.senja }],
-    ['kamar-3.svg', { seed: 47, sunX: 0.6, sky: '#DDF1EE' }],
+    ['kamar-1.svg', { seed: 5, sunX: 0.72, sky: W.buih, sun: '#FFFFFF' }],
+    ['kamar-2.svg', { seed: 31, sunX: 0.28, sky: '#BFE8F0', sun: '#FFFFFF' }],
+    ['kamar-3.svg', { seed: 47, sunX: 0.6, sky: '#D6F0F4', sun: '#8FDCE8' }],
   ];
   for (const [nama, o] of adegan) simpan(merek(nama), doc(1200, 800, A.lanskap({ w: 1200, h: 800, horizon: 0.62, ...o })));
   // stand-in scenes for the about block (daylight) and the closing banner

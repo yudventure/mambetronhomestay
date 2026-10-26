@@ -39,7 +39,7 @@ export default function Kepala({ b, situs }: { b: Bahasa; situs: Situs }) {
           ))}
         </nav>
         <a href={`/bahasa?ke=${lain}`} hrefLang={lain} title={k.gantiBahasa}
-          className="mr-1 hidden rounded-full px-2.5 py-2 text-[0.75rem] font-bold tracking-[0.12em] text-biru-tua lg:inline-flex xl:text-[0.8125rem] group-data-[bening]/kepala:text-pasir">
+          className="mr-1 hidden rounded-full px-2.5 py-2 text-[0.75rem] font-bold tracking-[0.12em] text-biru-tua lg:inline-flex xl:text-[0.8125rem] group-data-[bening]/kepala:text-sorot">
           {k.kodeBahasaLain}
         </a>
         <Link href="/pesan" className="tombol tombol-kecil whitespace-nowrap max-[339px]:hidden">

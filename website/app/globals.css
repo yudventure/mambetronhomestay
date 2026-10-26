@@ -1,6 +1,10 @@
 @import "tailwindcss";
 
-/* Mambetron brand tokens. Colours follow the brand guide in brand/web/tokens.css. */
+/* Mambetron brand tokens. The site palette is drawn from the logo blue
+   (#0497b2): a slightly deeper blue for buttons so white text stays
+   readable, a light tint of it for highlights on dark ground, and the deep
+   sea blue for headings and dark sections. Sunset orange and sand stay for
+   the illustrations and for warning notes. */
 @theme {
   --color-hitam: #161616;
   --color-laut: #0b3b4a;
@@ -11,6 +15,8 @@
   --color-senja: #f27a3d;
   --color-senja-tua: #d9622a;
   --color-pasir: #f7dfa8;
+  --color-aksen: #037f96;
+  --color-sorot: #8fdce8;
   --color-buih: #e3f4f7;
   --color-buih-2: #cbe9ef;
   --color-embun: #f1f8f9;
@@ -53,7 +59,7 @@
     outline-offset: 2px;
     border-radius: 6px;
   }
-  ::selection { background: var(--color-pasir); }
+  ::selection { background: var(--color-buih-2); }
 }
 
 @layer components {
@@ -65,8 +71,8 @@
     min-height: 3rem;
     padding: 0.7em 1.5em;
     border-radius: 999px;
-    background: var(--color-senja);
-    color: var(--color-hitam);
+    background: var(--color-aksen);
+    color: #fff;
     font-weight: 700;
     line-height: 1.2;
     text-align: center;
@@ -74,7 +80,7 @@
     transition: background-color 0.15s, box-shadow 0.15s, color 0.15s;
     cursor: pointer;
   }
-  .tombol:hover { background: #f58f5c; box-shadow: var(--shadow-tipis); }
+  .tombol:hover { background: var(--color-biru-tua); box-shadow: var(--shadow-tipis); }
   .tombol:disabled { opacity: 0.55; cursor: not-allowed; box-shadow: none; }
   .tombol-laut { background: var(--color-laut); color: #fff; }
   .tombol-laut:hover { background: var(--color-laut-2); }

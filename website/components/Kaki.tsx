@@ -17,28 +17,28 @@ export default function Kaki({ b, situs }: { b: Bahasa; situs: Situs }) {
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src="/merek/logo-putih.svg" alt={situs.nama} width={134} height={112} className="h-28 w-auto" />
             <p className="mt-4 max-w-sm text-white/80">{dwi(situs.kakiTeks, b)}</p>
-            <p className="mt-3 text-sm text-pasir">{dwi(situs.lokasi, b)}</p>
+            <p className="mt-3 text-sm text-sorot">{dwi(situs.lokasi, b)}</p>
           </div>
           <div>
             <h2 className="text-lg text-white">{k.kaki.hubungi}</h2>
             <ul className="mt-3 grid gap-2 text-white/85">
               {wa && (
                 <li>
-                  <a href={wa} target="_blank" rel="noopener" className="inline-flex items-center gap-2 hover:text-pasir">
+                  <a href={wa} target="_blank" rel="noopener" className="inline-flex items-center gap-2 hover:text-sorot">
                     <Ikon nama="chat" /> WhatsApp
                   </a>
                 </li>
               )}
               {situs.email && (
                 <li>
-                  <a href={`mailto:${situs.email}`} className="inline-flex items-center gap-2 break-all hover:text-pasir">
+                  <a href={`mailto:${situs.email}`} className="inline-flex items-center gap-2 break-all hover:text-sorot">
                     <Ikon nama="surel" /> {situs.email}
                   </a>
                 </li>
               )}
               {ig && (
                 <li>
-                  <a href={`https://instagram.com/${ig}`} target="_blank" rel="noopener" className="inline-flex items-center gap-2 hover:text-pasir">
+                  <a href={`https://instagram.com/${ig}`} target="_blank" rel="noopener" className="inline-flex items-center gap-2 hover:text-sorot">
                     <Ikon nama="kamera" /> @{ig}
                   </a>
                 </li>
@@ -48,10 +48,10 @@ export default function Kaki({ b, situs }: { b: Bahasa; situs: Situs }) {
           <div>
             <h2 className="text-lg text-white">{k.kaki.pesanLangsung}</h2>
             <ul className="mt-3 grid gap-2 text-white/85">
-              <li><Link href="/kamar" className="hover:text-pasir">{k.semuaPondok}</Link></li>
-              <li><Link href="/pesan" className="hover:text-pasir">{k.pesanSekarang}</Link></li>
-              <li><Link href="/cek-pesanan" className="hover:text-pasir">{k.nav.cek}</Link></li>
-              <li><Link href="/ketentuan" className="hover:text-pasir">{k.kaki.ketentuan}</Link></li>
+              <li><Link href="/kamar" className="hover:text-sorot">{k.semuaPondok}</Link></li>
+              <li><Link href="/pesan" className="hover:text-sorot">{k.pesanSekarang}</Link></li>
+              <li><Link href="/cek-pesanan" className="hover:text-sorot">{k.nav.cek}</Link></li>
+              <li><Link href="/ketentuan" className="hover:text-sorot">{k.kaki.ketentuan}</Link></li>
             </ul>
           </div>
         </div>

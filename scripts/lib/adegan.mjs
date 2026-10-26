@@ -14,25 +14,25 @@ export const WAKTU = {
     laut: [[0, '#D99A70'], [0.08, '#3A7585'], [0.4, '#0F4453'], [1, '#05212B']],
     kilau: '#F9D8A0',
     tiang: '#06242E', dinding: '#0A3340', atap: '#06242E', jendela: '#FFC56E', lampu: true,
-    pantai: '#0B3440', pohon: '#05212A',
+    pantai: '#0B3440', pohon: '#05212A', ayunan: '#05212A',
   },
   siang: {
     langit: [[0, '#A8DDE7'], [1, '#E8F6F8']],
-    matahari: '#FFF3D2', cahaya: null, bintang: false,
+    matahari: '#FFFFFF', cahaya: null, bintang: false,
     jauh: '#76C2D0', dekat: '#2E8A9C',
     laut: [[0, '#5CC1D3'], [0.12, W.biru], [0.6, '#036A80'], [1, W.laut]],
     kilau: '#FFFFFF',
-    tiang: W.laut, dinding: W.pasir, atap: '#D9622A', jendela: W.laut, lampu: false,
-    pantai: W.pasir, pohon: W.laut,
+    tiang: W.laut, dinding: '#FFFFFF', atap: W.biruTua, garisAtap: '#025466', jendela: W.laut, lampu: false,
+    pantai: '#F4FAFB', pohon: W.laut, ayunan: W.biru,
   },
   pagi: {
-    langit: [[0, '#F9DDB0'], [1, '#FDF1D8']],
-    matahari: W.senja, cahaya: '#F7B98A', bintang: false,
-    jauh: '#7FBFCB', dekat: '#2C7F91',
+    langit: [[0, '#7FCFDD'], [1, '#D7F0F4']],
+    matahari: '#FFFFFF', cahaya: '#FFFFFF', bintang: false,
+    jauh: '#5DB5C6', dekat: '#2C7F91',
     laut: [[0, '#8ACBD6'], [0.14, W.biru], [0.6, '#036A80'], [1, W.laut]],
     kilau: '#FFFFFF',
-    tiang: W.laut, dinding: '#FFF6E2', atap: '#D9622A', jendela: W.laut, lampu: false,
-    pantai: W.pasir, pohon: W.laut,
+    tiang: W.laut, dinding: '#FFFFFF', atap: W.laut, garisAtap: '#062A35', jendela: W.laut, lampu: false,
+    pantai: '#F4FAFB', pohon: W.laut, ayunan: W.biru,
   },
 };
 
@@ -70,7 +70,7 @@ function pondok(x, y, s, P, jetiKiri = 420) {
     for (const t of [0.35, 0.65]) {
       const yy = -252 + (86 * t);
       const half = 70 + 82 * t;
-      g += `<path d="M${X(-half)} ${Y(yy)}Q${X(0)} ${Y(yy - 5)} ${X(half)} ${Y(yy)}" fill="none" stroke="#B94F1F" stroke-width="${S(3)}" stroke-linecap="round"/>`;
+      g += `<path d="M${X(-half)} ${Y(yy)}Q${X(0)} ${Y(yy - 5)} ${X(half)} ${Y(yy)}" fill="none" stroke="${P.garisAtap}" stroke-width="${S(3)}" stroke-linecap="round"/>`;
     }
   }
   if (P.lampu) {
@@ -173,7 +173,7 @@ export function adegan({ w, h, waktu = 'senja', hz = 0.6, matahariX = 0.4, pondo
   const sag = 70 * s;
   const mx = (ta.x + tb.x) / 2, my = (ta.y + tb.y) / 2;
   g += a.svg + b.svg;
-  g += `<path d="M${f(ta.x)} ${f(ta.y)}Q${f(mx)} ${f(my + sag * 1.5)} ${f(tb.x)} ${f(tb.y)}Q${f(mx)} ${f(my + sag * 2.25)} ${f(ta.x)} ${f(ta.y)}Z" fill="${P.lampu ? P.pohon : W.senja}"/>`;
+  g += `<path d="M${f(ta.x)} ${f(ta.y)}Q${f(mx)} ${f(my + sag * 1.5)} ${f(tb.x)} ${f(tb.y)}Q${f(mx)} ${f(my + sag * 2.25)} ${f(ta.x)} ${f(ta.y)}Z" fill="${P.ayunan}"/>`;
   g += pondok(w * pondokX, h * pondokY, s * 1.25, P);
 
   return `<defs>${defs}</defs>${g}`;

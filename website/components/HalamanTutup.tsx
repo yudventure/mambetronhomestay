@@ -24,16 +24,16 @@ export default function HalamanTutup({ b, situs, foto }: { b: Bahasa; situs: Sit
           <div className="flex items-center justify-between gap-4">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src="/merek/logo-horizontal-putih.svg" alt={situs.nama} width={198} height={44} className="h-9 w-auto sm:h-11" />
-            <a href={`/bahasa?ke=${lain}`} hrefLang={lain} className="rounded-full px-3 py-2 text-sm font-bold text-pasir hover:bg-white/15">
+            <a href={`/bahasa?ke=${lain}`} hrefLang={lain} className="rounded-full px-3 py-2 text-sm font-bold text-sorot hover:bg-white/15">
               {k.gantiBahasa}
             </a>
           </div>
 
           <div className="my-auto py-16">
-            {dwi(situs.lokasi, b) && <p className="label-kecil !text-pasir">{dwi(situs.lokasi, b)}</p>}
+            {dwi(situs.lokasi, b) && <p className="label-kecil !text-sorot">{dwi(situs.lokasi, b)}</p>}
             <h1 className="mt-4 text-[clamp(3.4rem,2.2rem+5.6vw,6.75rem)] leading-[0.94] !text-white">
               {baris.map((x, i) => (
-                <span key={i} className={`block ${baris.length > 1 && i === baris.length - 1 ? 'text-pasir' : ''}`}>{x}</span>
+                <span key={i} className={`block ${baris.length > 1 && i === baris.length - 1 ? 'text-sorot' : ''}`}>{x}</span>
               ))}
             </h1>
             {dwi(situs.tutupTeks, b) && (
