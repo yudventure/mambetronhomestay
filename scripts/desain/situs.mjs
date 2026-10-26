@@ -41,13 +41,8 @@ export default async function ({ ROOT, out }) {
     ['kamar-3.svg', { seed: 47, sunX: 0.6, sky: '#DDF1EE' }],
   ];
   for (const [nama, o] of adegan) simpan(merek(nama), doc(1200, 800, A.lanskap({ w: 1200, h: 800, horizon: 0.62, ...o })));
-  // home page scenes: dusk behind the hero (wide and phone), daylight for
-  // the about block and morning for the closing banner
-  simpan(merek('adegan-senja.svg'), doc(1920, 1080, pemandangan({ w: 1920, h: 1080, waktu: 'senja', matahariX: 0.5, pondokX: 0.66 })));
-  simpan(merek('adegan-senja-tegak.svg'), doc(1080, 1920, pemandangan({
-    w: 1080, h: 1920, waktu: 'senja', hz: 0.58, skala: 1.05, matahariX: 0.3, pondokX: 0.45, pondokY: 0.84, pantaiX: 0.7,
-    palem: [[0.78, 0.16, 520], [0.98, -0.1, 560]],
-  })));
+  // stand-in scenes for the about block (daylight) and the closing banner
+  // (morning); the hero uses the homestay photo in website/public/foto
   simpan(merek('adegan-siang.svg'), doc(1600, 1200, pemandangan({ w: 1600, h: 1200, waktu: 'siang', matahariX: 0.3 })));
   simpan(merek('adegan-pagi.svg'), doc(1600, 1100, pemandangan({ w: 1600, h: 1100, waktu: 'pagi', matahariX: 0.3, pondokX: 0.5 })));
   simpan(merek('pola.svg'), doc(600, 600, A.pola({ w: 600, h: 600, tile: 150, bg: W.laut, swirl: '#13566A', dot: '#1D6A7E' })));

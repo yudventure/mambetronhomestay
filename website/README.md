@@ -107,7 +107,7 @@ Tamu mendapat halaman pesanan dengan tautan rahasia. Dari sana tamu melihat reke
 
 Foto disimpan di database supaya tidak hilang saat deploy ulang. Foto diperkecil di peramban menjadi paling lebar 1800 piksel sebelum diunggah.
 
-Halaman utama punya tiga tempat foto di menu Foto situs. Foto utama tampil penuh di belakang judul besar, foto tentang kami tampil di samping kotak rencana menginap, dan foto ajakan tampil di kotak berwarna laut. Selama belum ada foto, situs memakai ilustrasi senja, siang, dan pagi di Raja Ampat yang dibuat oleh `scripts/desain/situs.mjs`. Kartu pondok di bawah foto utama memakai foto pertama tiap pondok.
+Halaman utama punya tiga tempat foto di menu Foto situs. Foto utama tampil penuh di belakang judul besar, foto tentang kami tampil di samping kotak rencana menginap, dan foto ajakan tampil di kotak berwarna laut. Selama belum ada foto unggahan, foto utama memakai foto pondok berjajar di tepi pantai dari `public/foto`, sedangkan dua tempat lainnya memakai ilustrasi siang dan pagi di Raja Ampat yang dibuat oleh `scripts/desain/situs.mjs`. Kartu pondok di bawah foto utama memakai foto pertama tiap pondok.
 
 ## Mode pengembang
 

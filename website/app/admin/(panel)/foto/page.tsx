@@ -12,7 +12,7 @@ export default async function FotoAdmin() {
       <div className="grid gap-6">
         <section className="kartu p-5 sm:p-6">
           <h2 className="mb-1 text-2xl">Foto utama halaman depan</h2>
-          <KelolaFoto wadah="beranda" foto={foto.beranda} catatan="Tampil penuh sebagai latar bagian paling atas, di belakang judul besar. Pakai foto mendatar yang agak gelap supaya tulisan putih terbaca. Hanya foto pertama yang dipakai. Tanpa foto, situs memakai ilustrasi senja." />
+          <KelolaFoto wadah="beranda" foto={foto.beranda} catatan="Tampil penuh sebagai latar bagian paling atas, di belakang judul besar. Pakai foto mendatar yang agak gelap supaya tulisan putih terbaca. Hanya foto pertama yang dipakai. Tanpa foto, situs memakai foto pondok berjajar di tepi pantai yang sudah terpasang di situs." />
         </section>
         <section className="kartu p-5 sm:p-6">
           <h2 className="mb-1 text-2xl">Foto bagian tentang kami</h2>

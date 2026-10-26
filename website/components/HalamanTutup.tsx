@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import Ikon from './Ikon';
+import LatarPahlawan from './LatarPahlawan';
 import type { Bahasa, Foto, Situs } from '@/lib/jenis';
 import { kamus } from '@/lib/kamus';
 import { dwi, tautanWa } from '@/lib/format';
@@ -15,16 +16,7 @@ export default function HalamanTutup({ b, situs, foto }: { b: Bahasa; situs: Sit
   return (
     <main id="isi" className="situs flex min-h-svh flex-col p-3 sm:p-4">
       <div className="bingkai relative isolate flex flex-1 flex-col overflow-hidden bg-laut-3">
-        {foto ? (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img src={foto.url} alt="" aria-hidden width={foto.lebar} height={foto.tinggi} fetchPriority="high" className="absolute inset-0 -z-10 size-full object-cover" />
-        ) : (
-          <picture>
-            <source media="(max-width: 767px)" srcSet="/merek/adegan-senja-tegak.svg" />
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="/merek/adegan-senja.svg" alt="" aria-hidden width={1920} height={1080} fetchPriority="high" className="absolute inset-0 -z-10 size-full object-cover object-bottom" />
-          </picture>
-        )}
+        <LatarPahlawan foto={foto} />
         <div aria-hidden className="absolute inset-0 -z-10 bg-gradient-to-b from-laut-3/60 via-laut-3/10 to-laut-3/70" />
         <div aria-hidden className="absolute inset-0 -z-10 bg-gradient-to-r from-laut-3/60 via-laut-3/15 to-transparent" />
 

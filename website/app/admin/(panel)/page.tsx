@@ -5,7 +5,7 @@ import Kabar, { JudulAdmin } from '@/components/admin/Kabar';
 import TombolYakin from '@/components/admin/TombolYakin';
 import { aturTutup } from '@/app/admin/aksi';
 import { baris } from '@/lib/db';
-import { ambilSitus, cariPesanan, daftarKamar, fotoSitus } from '@/lib/data';
+import { ambilSitus, cariPesanan, daftarKamar } from '@/lib/data';
 import { alamatSitus, surelDiatur } from '@/lib/env';
 import { tanggal } from '@/lib/format';
 import { daftarMalam, hariIni, tambahHari } from '@/lib/tanggal';
@@ -29,10 +29,9 @@ export default async function Dasbor({ searchParams }: { searchParams: Promise<{
   const { ok } = await searchParams;
   const hari = hariIni();
   const sampai = tambahHari(hari, 30);
-  const [situs, kamar, foto, aktifRentang, terbaru, [{ menunggu }]] = await Promise.all([
+  const [situs, kamar, aktifRentang, terbaru, [{ menunggu }]] = await Promise.all([
     ambilSitus(),
     daftarKamar(true),
-    fotoSitus(),
     cariPesanan({ dari: hari, sampai, urut: 'tiba', batas: 1000 }),
     cariPesanan({ batas: 6 }),
     baris<{ menunggu: number }>("SELECT COUNT(*) AS menunggu FROM pesanan WHERE status = 'menunggu'"),
@@ -51,7 +50,6 @@ export default async function Dasbor({ searchParams }: { searchParams: Promise<{
     { ok: Boolean(situs.whatsapp), teks: 'Isi nomor WhatsApp homestay', href: '/admin/pengaturan#kontak' },
     { ok: situs.bank.length > 0, teks: 'Isi rekening untuk uang muka', href: '/admin/pengaturan#pemesanan' },
     { ok: kamar.length > 0 && kamar.every((k) => k.foto.length > 0), teks: 'Unggah foto setiap pondok', href: '/admin/kamar' },
-    { ok: foto.beranda.length > 0, teks: 'Unggah foto utama halaman depan', href: '/admin/foto' },
     { ok: Boolean(situs.petaKoordinat), teks: 'Isi titik peta lokasi homestay', href: '/admin/pengaturan#kontak' },
     { ok: Boolean(alamatSitus()), teks: 'Isi SITE_URL di environment variables hPanel', href: '' },
     { ok: surelDiatur(), teks: 'Atur surel pemberitahuan pesanan (tidak wajib)', href: '' },
