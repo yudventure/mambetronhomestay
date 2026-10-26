@@ -18,7 +18,7 @@ export const MENU = [
   { href: '/admin/pengaturan', label: 'Isi situs', ikon: 'geser' },
 ];
 
-function Daftar({ jalur, klik }: { jalur: string; klik?: () => void }) {
+function Daftar({ jalur, surel, klik }: { jalur: string; surel: string; klik?: () => void }) {
   return (
     <nav className="grid gap-1">
       {MENU.map((m) => {
@@ -41,11 +41,17 @@ function Daftar({ jalur, klik }: { jalur: string; klik?: () => void }) {
           <Ikon nama="keluar" /> Keluar
         </button>
       </form>
+      {surel && (
+        <p className="mt-3 px-4 text-xs text-white/60">
+          <span className="block">Masuk sebagai</span>
+          <span className="block font-semibold text-white/85 [overflow-wrap:anywhere]">{surel.split('@')[0]}@<wbr />{surel.split('@')[1]}</span>
+        </p>
+      )}
     </nav>
   );
 }
 
-export default function MenuAdmin() {
+export default function MenuAdmin({ surel }: { surel: string }) {
   const jalur = usePathname();
   const [buka, setBuka] = useState(false);
   const panel = useRef<HTMLDivElement>(null);
@@ -63,7 +69,7 @@ export default function MenuAdmin() {
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src="/merek/logo-horizontal-putih.svg" alt="Mambetron Homestay" width={180} height={40} className="h-10 w-auto" />
         </Link>
-        <Daftar jalur={jalur} />
+        <Daftar jalur={jalur} surel={surel} />
       </aside>
 
       <div className="sticky top-0 z-40 flex h-16 items-center justify-between bg-laut px-4 lg:hidden">
@@ -80,7 +86,7 @@ export default function MenuAdmin() {
         <div ref={panel} id="menu-admin" role="dialog" aria-modal="true" aria-label="Menu" hidden={!buka}
           className="tinggi-lembar fixed inset-x-0 bottom-0 z-50 overflow-y-auto rounded-t-3xl bg-laut px-4 pt-3 pb-[max(1.25rem,env(safe-area-inset-bottom))]">
           <div className="mx-auto mb-3 h-1.5 w-12 rounded-full bg-white/25" aria-hidden />
-          <Daftar jalur={jalur} klik={tutup} />
+          <Daftar jalur={jalur} surel={surel} klik={tutup} />
         </div>
       </div>
     </>

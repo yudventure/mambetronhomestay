@@ -69,7 +69,7 @@ Semua nilai dibaca saat aplikasi berjalan. Bila nilai diubah di hPanel, mulai ul
 | `DB_NAME` | Ya | Nama database dari hPanel |
 | `DB_USER` | Ya | Pengguna database dari hPanel |
 | `DB_PASSWORD` | Ya | Kata sandi pengguna database |
-| `ADMIN_PASSWORD` | Ya | Kata sandi panel `/admin`. Pakai minimal 10 karakter |
+| `ADMIN_PASSWORD` | Ya | Kata sandi awal semua akun panel `/admin`. Pakai minimal 10 karakter |
 | `SESSION_SECRET` | Tidak | 32 karakter acak untuk menandatangani sesi masuk |
 | `SITE_URL` | Tidak | Alamat lengkap situs, contoh `https://mambetronhomestay.com` |
 | `SMTP_HOST` | Tidak | Server surel keluar. Untuk surel Hostinger `smtp.hostinger.com` |
@@ -77,7 +77,10 @@ Semua nilai dibaca saat aplikasi berjalan. Bila nilai diubah di hPanel, mulai ul
 | `SMTP_USER` | Tidak | Alamat kotak surel pengirim, contoh `halo@mambetronhomestay.com` |
 | `SMTP_PASSWORD` | Tidak | Kata sandi kotak surel itu |
 | `EMAIL_FROM` | Tidak | Nama dan alamat pengirim, contoh `Mambetron Homestay <halo@mambetronhomestay.com>`. Alamatnya harus sama dengan `SMTP_USER` |
-| `EMAIL_ADMIN` | Tidak | Penerima pemberitahuan pesanan baru dan kode ganti kata sandi panel. Bila kosong, dikirim ke `SMTP_USER` |
+| `EMAIL_ADMIN` | Tidak | Surel pemilik untuk masuk panel, sekaligus penerima pemberitahuan pesanan baru. Bila kosong, dipakai `SMTP_USER`, lalu `halo@mambetronhomestay.com` |
+| `EMAIL_DEVELOPER` | Tidak | Surel pengembang yang juga boleh masuk panel. Boleh lebih dari satu, dipisah koma |
+
+Variabel database juga terbaca dengan nama lain yang sering dipakai, yaitu `DB_DATABASE`, `DB_USERNAME`, `DB_PASS`, awalan `MYSQL_`, atau satu `DATABASE_URL` berbentuk `mysql://pengguna:sandi@host:3306/nama`. Selama database belum terhubung, panel menampilkan nilai mana yang terbaca dan mana yang kosong, tanpa menampilkan kata sandinya.
 
 Berkas `.env` berisi kata sandi tidak boleh masuk GitHub. Berkas itu sudah ada di `.gitignore`.
 
@@ -132,13 +135,15 @@ Nomor WhatsApp dan surel punya isian bawaan, jadi tampil walau kolomnya di panel
 
 Di pita paling bawah ada tombol Masuk operator yang membuka `/admin`. Operator yang belum masuk diarahkan ke halaman masuk.
 
-## Surel pemberitahuan dan ganti kata sandi
+## Masuk panel, surel pemberitahuan, dan ganti kata sandi
+
+Panel dibuka dengan surel dan kata sandi. Surel yang boleh masuk hanya `EMAIL_ADMIN` milik pemilik dan `EMAIL_DEVELOPER` milik pengembang, keduanya diisi di hPanel, tidak bisa ditambah dari panel. Semua akun mula-mula memakai `ADMIN_PASSWORD`, lalu masing-masing bisa membuat kata sandi sendiri lewat kode surel. Di menu panel tertulis akun yang sedang masuk.
 
 Bila `SMTP_HOST`, `SMTP_USER`, dan `SMTP_PASSWORD` terisi, setiap pesanan baru dikirimkan ke `EMAIL_ADMIN`, dan tamu yang mengisi surel mendapat salinan pesanannya. Surel dikirim setelah halaman pesanan tampil, jadi tamu tidak ikut menunggu, dan pesanan tetap tersimpan walau surel gagal.
 
-Kata sandi panel bisa diganti di `/admin/sandi`, lewat menu Ganti kata sandi di panel atau tautan Lupa kata sandi di halaman masuk. Halaman itu mengirim kode 6 angka ke `EMAIL_ADMIN`. Kode berlaku 10 menit, gugur setelah 5 kali salah, dan paling banyak diminta tiga kali sejam dengan jeda satu menit. Alamat tujuan kode hanya bisa diubah di hPanel, tidak dari panel, supaya orang yang sempat masuk ke panel tidak bisa mengalihkannya.
+Kata sandi diganti di `/admin/sandi`, lewat menu Ganti kata sandi di panel atau tautan Lupa kata sandi di halaman masuk. Tulis surel akun, lalu kode 6 angka dikirim ke surel itu bila terdaftar. Jawabannya sama walau surel tidak terdaftar, supaya daftar akun tidak bisa ditebak. Kode berlaku 10 menit, gugur setelah 5 kali salah, dan tiap akun paling banyak meminta tiga kode sejam dengan jeda satu menit.
 
-Kata sandi baru disimpan sebagai hash scrypt di tabel `akun` dan menggantikan `ADMIN_PASSWORD`. Setelah diganti, semua perangkat lain yang masih masuk ikut keluar, dan surel pemberitahuan dikirim ke `EMAIL_ADMIN`. Bila kotak surel tidak bisa dibuka, ubah `ADMIN_PASSWORD` di hPanel lalu mulai ulang aplikasi. Kata sandi dari hPanel itu langsung berlaku lagi, dan kata sandi yang disimpan lewat kode diabaikan.
+Kata sandi baru disimpan sebagai hash scrypt di tabel `admin_akun` dan menggantikan `ADMIN_PASSWORD` untuk akun itu saja. Setelah diganti, perangkat lain yang masih masuk dengan akun itu ikut keluar, dan surel pemberitahuan dikirim ke surel akun itu. Bila kotak surel tidak bisa dibuka, ubah `ADMIN_PASSWORD` di hPanel lalu mulai ulang aplikasi. Kata sandi dari hPanel itu langsung berlaku lagi, dan kata sandi yang disimpan lewat kode diabaikan.
 
 ## Mode pengembang
 

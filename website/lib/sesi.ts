@@ -1,19 +1,20 @@
-// Admin sign-in. One shared password, from ADMIN_PASSWORD or the one set
-// through the e-mail code (see akun.ts), a signed cookie that lasts seven
-// days, and a small limit on wrong guesses per visitor. The cookie is signed
-// with the stored password hash as well, so changing the password signs out
-// every other device.
+// Admin sign-in with an e-mail and a password (see akun.ts for the
+// accounts), a signed cookie that lasts seven days, and a small limit on
+// wrong guesses per visitor. The cookie carries the e-mail and is signed with
+// that account's stored password hash as well, so changing a password signs
+// out every other device of that account.
 import crypto from 'crypto';
 import { cookies, headers } from 'next/headers';
 import { redirect } from 'next/navigation';
-import { cocokHash, sandiTersimpan } from './akun';
+import { cache } from 'react';
+import { akunDari, cocokHash, sandiTersimpan } from './akun';
 import { rahasiaSesi, sandiAdmin } from './env';
 
 const KUKI = 'mb_sesi';
 const UMUR = 7 * 24 * 3600;
 
-const tanda = (isi: string, simpan: string) =>
-  crypto.createHmac('sha256', simpan ? `${rahasiaSesi()}|${simpan}` : rahasiaSesi()).update(isi).digest('base64url');
+const tanda = (isi: string, surel: string, simpan: string) =>
+  crypto.createHmac('sha256', `${rahasiaSesi()}|${surel}|${simpan}`).update(isi).digest('base64url');
 
 function sama(a: string, b: string) {
   const x = crypto.createHash('sha256').update(a).digest();
@@ -23,9 +24,13 @@ function sama(a: string, b: string) {
 
 export const sandiDiatur = () => sandiAdmin().length > 0;
 
-export async function sandiCocok(masukan: string) {
-  if (!sandiDiatur()) return false;
-  const simpan = await sandiTersimpan();
+export async function sandiCocok(surel: string, masukan: string) {
+  const akun = akunDari(surel);
+  if (!sandiDiatur() || !akun) {
+    sama(masukan, 'tidak ada akun');
+    return false;
+  }
+  const simpan = await sandiTersimpan(akun.surel);
   return simpan ? cocokHash(masukan, simpan) : sama(masukan, sandiAdmin());
 }
 
@@ -35,9 +40,9 @@ export async function viaHttps() {
 }
 
 // Pass the new hash right after a password change, the cached one is stale.
-export async function buatSesi(simpan?: string) {
-  const isi = `v1.${Date.now() + UMUR * 1000}`;
-  (await cookies()).set(KUKI, `${isi}.${tanda(isi, simpan ?? await sandiTersimpan())}`, {
+export async function buatSesi(surel: string, simpan?: string) {
+  const isi = `v2.${Date.now() + UMUR * 1000}.${Buffer.from(surel).toString('base64url')}`;
+  (await cookies()).set(KUKI, `${isi}.${tanda(isi, surel, simpan ?? await sandiTersimpan(surel))}`, {
     httpOnly: true,
     sameSite: 'lax',
     secure: await viaHttps(),
@@ -50,16 +55,22 @@ export async function hapusSesi() {
   (await cookies()).delete(KUKI);
 }
 
-export async function sesiSah() {
-  if (!sandiDiatur()) return false;
+// The signed in e-mail, or '' when nobody is signed in. An account removed
+// from hPanel is signed out at once.
+export const sesiAkun = cache(async () => {
+  if (!sandiDiatur()) return '';
   const nilai = (await cookies()).get(KUKI)?.value ?? '';
   const i = nilai.lastIndexOf('.');
-  if (i < 0) return false;
+  if (i < 0) return '';
   const isi = nilai.slice(0, i);
-  const [versi, habis] = isi.split('.');
-  if (versi !== 'v1' || !(Number(habis) > Date.now())) return false;
-  return sama(nilai.slice(i + 1), tanda(isi, await sandiTersimpan()));
-}
+  const [versi, habis, kode] = isi.split('.');
+  if (versi !== 'v2' || !(Number(habis) > Date.now()) || !kode) return '';
+  const akun = akunDari(Buffer.from(kode, 'base64url').toString());
+  if (!akun) return '';
+  return sama(nilai.slice(i + 1), tanda(isi, akun.surel, await sandiTersimpan(akun.surel))) ? akun.surel : '';
+});
+
+export const sesiSah = async () => Boolean(await sesiAkun());
 
 // Use at the top of every admin page and admin server action.
 export async function wajibMasuk() {

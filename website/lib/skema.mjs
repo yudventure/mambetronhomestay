@@ -120,10 +120,10 @@ export const SKEMA = [
   dibuat TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ${T}`,
 
-  // One row. The admin password set through the e-mail code, stored as a
-  // scrypt hash, and the pending code with its expiry and counters.
-  `CREATE TABLE IF NOT EXISTS akun (
-  id TINYINT UNSIGNED NOT NULL PRIMARY KEY,
+  // One row per admin e-mail. The password set through the e-mail code,
+  // stored as a scrypt hash, and the pending code with its expiry and counters.
+  `CREATE TABLE IF NOT EXISTS admin_akun (
+  surel VARCHAR(190) NOT NULL PRIMARY KEY,
   sandi VARCHAR(255) NOT NULL DEFAULT '',
   sidik_env CHAR(64) NOT NULL DEFAULT '',
   kode CHAR(64) NOT NULL DEFAULT '',

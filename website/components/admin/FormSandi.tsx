@@ -1,7 +1,8 @@
 'use client';
-// Two steps on one page. The second form stays visible, so a code that
-// already sits in the mailbox can be used after a reload.
-import { useActionState } from 'react';
+// Two steps on one page. The e-mail is typed once and sent with both forms,
+// and the second form stays visible, so a code that already sits in the
+// mailbox can be used after a reload.
+import { useActionState, useState } from 'react';
 import { gantiSandi, mintaKode, type HasilSandi } from '@/app/admin/sandi/aksi';
 
 const AWAL: HasilSandi = { galat: '', pesan: '' };
@@ -12,7 +13,8 @@ function Kabar({ h }: { h: HasilSandi }) {
   return null;
 }
 
-export default function FormSandi({ tujuan }: { tujuan: string }) {
+export default function FormSandi({ awal }: { awal: string }) {
+  const [surel, setSurel] = useState(awal);
   const [kirim, aksiKirim, mengirim] = useActionState(mintaKode, AWAL);
   const [ganti, aksiGanti, mengganti] = useActionState(gantiSandi, AWAL);
   return (
@@ -22,7 +24,12 @@ export default function FormSandi({ tujuan }: { tujuan: string }) {
           <span className="inline-flex size-8 shrink-0 items-center justify-center rounded-full bg-buih font-judul text-biru-tua">1</span>
           Minta kode
         </h2>
-        <p className="text-sm text-abu">Kode 6 angka dikirim ke surel admin {tujuan}.</p>
+        <div>
+          <label htmlFor="surel-akun" className="label-isian">Surel akun</label>
+          <input id="surel-akun" name="surel" type="email" autoComplete="username" required value={surel}
+            onChange={(e) => setSurel(e.target.value)} className="isian" />
+          <p className="bantuan">Kode 6 angka dikirim ke surel ini bila terdaftar sebagai pengelola.</p>
+        </div>
         <Kabar h={kirim} />
         <button className="tombol tombol-garis" disabled={mengirim}>{mengirim ? 'Mengirim' : 'Kirim kode ke surel'}</button>
       </form>
@@ -32,6 +39,7 @@ export default function FormSandi({ tujuan }: { tujuan: string }) {
           <span className="inline-flex size-8 shrink-0 items-center justify-center rounded-full bg-buih font-judul text-biru-tua">2</span>
           Buat kata sandi baru
         </h2>
+        <input type="hidden" name="surel" value={surel} />
         <div>
           <label htmlFor="kode" className="label-isian">Kode dari surel</label>
           <input id="kode" name="kode" inputMode="numeric" autoComplete="one-time-code" maxLength={6} pattern="\d{6}" required

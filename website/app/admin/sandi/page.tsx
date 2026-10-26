@@ -1,13 +1,13 @@
 import Link from 'next/link';
 import FormSandi from '@/components/admin/FormSandi';
 import { dbDiatur, surelDiatur } from '@/lib/env';
-import { sandiDiatur, sesiSah } from '@/lib/sesi';
-import { samarkan, tujuanAdmin } from '@/lib/surel';
+import { sandiDiatur, sesiAkun } from '@/lib/sesi';
 
 export const metadata = { title: 'Ganti kata sandi' };
 
 export default async function GantiSandi() {
-  const masuk = await sesiSah();
+  const akun = await sesiAkun();
+  const masuk = Boolean(akun);
   const siap = sandiDiatur() && dbDiatur() && surelDiatur();
   return (
     <main className="flex min-h-svh items-center justify-center px-4 py-12">
@@ -17,7 +17,7 @@ export default async function GantiSandi() {
         <h1 className="mt-6 text-center text-2xl">Ganti kata sandi panel</h1>
         <p className="mt-2 text-center text-sm text-abu">Bisa dipakai saat lupa kata sandi atau ingin menggantinya.</p>
         <div className="mt-6">
-          {siap ? <FormSandi tujuan={samarkan(tujuanAdmin())} /> : (
+          {siap ? <FormSandi awal={akun} /> : (
             <div className="grid gap-3 rounded-2xl bg-buih px-4 py-4 text-laut">
               <p className="font-semibold">Ganti kata sandi lewat surel belum bisa dipakai.</p>
               <p className="text-sm">

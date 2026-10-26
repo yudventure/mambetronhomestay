@@ -35,17 +35,11 @@ export function tujuanAdmin() {
   return s.admin || (s.dari.match(/<([^>]+)>/)?.[1] ?? s.dari).trim();
 }
 
-// h***@mambetronhomestay.com, for showing where a code went.
-export function samarkan(surel: string) {
-  const [nama, ranah] = surel.split('@');
-  return ranah ? `${nama.charAt(0)}***@${ranah}` : '***';
-}
-
 const kini = () => waktu(new Date().toISOString().slice(0, 19).replace('T', ' '));
 
-export function surelKodeSandi(kode: string, ip: string) {
+export function surelKodeSandi(ke: string, kode: string, ip: string) {
   return kirim(
-    tujuanAdmin(),
+    ke,
     'Kode ganti kata sandi panel Mambetron',
     `Kode untuk mengganti kata sandi panel pengelola Mambetron Homestay\n\n${kode}\n\n`
       + `Kode berlaku ${KODE_MENIT} menit dan hanya bisa dipakai sekali.\n`
@@ -54,11 +48,11 @@ export function surelKodeSandi(kode: string, ip: string) {
   );
 }
 
-export function surelSandiDiganti(ip: string) {
+export function surelSandiDiganti(ke: string, ip: string) {
   return kirim(
-    tujuanAdmin(),
+    ke,
     'Kata sandi panel Mambetron sudah diganti',
-    'Kata sandi panel pengelola Mambetron Homestay baru saja diganti. Perangkat lain yang masih masuk sudah dikeluarkan.\n\n'
+    `Kata sandi akun ${ke} di panel pengelola Mambetron Homestay baru saja diganti. Perangkat lain yang masih masuk dengan akun ini sudah dikeluarkan.\n\n`
       + `Diganti pada ${kini()}\nAlamat IP ${ip}\n\n`
       + 'Bila bukan kamu yang menggantinya, ubah ADMIN_PASSWORD di hPanel Hostinger lalu mulai ulang aplikasi. '
       + 'Kata sandi dari hPanel itu langsung berlaku, dan kata sandi yang baru diganti ini tidak bisa dipakai lagi.\n',

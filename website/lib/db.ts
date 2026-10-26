@@ -122,7 +122,7 @@ export async function transaksi<T>(fn: (c: Koneksi) => Promise<T>): Promise<T> {
 
 // Short status for the health check and the admin dashboard.
 export async function cekDb(): Promise<{ ok: boolean; pesan: string }> {
-  if (!dbDiatur()) return { ok: false, pesan: 'Database belum diatur di environment variables.' };
+  if (!dbDiatur()) return { ok: false, pesan: 'Nama database atau pengguna database belum terbaca dari environment variables.' };
   try {
     await db();
     return { ok: true, pesan: 'Database terhubung.' };
