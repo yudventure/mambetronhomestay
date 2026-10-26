@@ -91,12 +91,12 @@ export const PENGATURAN = [
           { judul: dua('Wifi dan makan', 'Wi-Fi and meals'), teks: dua('Ada wifi, dan makan tiga kali sehari sudah termasuk harga.', 'Wi-Fi on site, and three meals a day are in the rate.') },
         ],
       },
-      { k: 'kamarJudul', label: 'Judul di samping kartu keunggulan', jenis: 'dua', bantuan: 'Juga dipakai sebagai judul halaman semua pondok.', bawaan: dua('Pilih pondokmu', 'Choose your hut') },
-      { k: 'kamarTeks', label: 'Teks di samping kartu keunggulan', jenis: 'duaPanjang', bawaan: dua('Semua pondok menghadap laut dan sudah termasuk makan tiga kali sehari.', 'Every hut faces the sea and includes three meals a day.') },
+      { k: 'kamarJudul', label: 'Judul halaman semua pondok', jenis: 'dua', bawaan: dua('Pilih pondokmu', 'Choose your hut') },
+      { k: 'kamarTeks', label: 'Teks halaman semua pondok', jenis: 'duaPanjang', bawaan: dua('Semua pondok menghadap laut dan sudah termasuk makan tiga kali sehari.', 'Every hut faces the sea and includes three meals a day.') },
       { k: 'ulasanSkor', label: 'Nilai ulasan di samping kartu', jenis: 'teks', bawaan: '8,7', bantuan: 'Nilai dari situs ulasan, misalnya 8,7. Kosongkan bila tidak ingin ditampilkan.' },
       { k: 'ulasanSkala', label: 'Nilai tertinggi di situs ulasan', jenis: 'angka', bawaan: 10, min: 1, max: 100, bantuan: 'Booking.com memakai 10, Google memakai 5.' },
       { k: 'ulasanSumber', label: 'Nama situs ulasan', jenis: 'teks', bawaan: 'Booking.com' },
-      { k: 'ulasanTautan', label: 'Tautan halaman ulasan', jenis: 'teks', bawaan: '', bantuan: 'Tautan halaman Mambetron di situs ulasan. Bila diisi, nama situs ulasan bisa diklik.' },
+      { k: 'ulasanTautan', label: 'Tautan tombol ke situs ulasan', jenis: 'teks', bawaan: 'https://www.booking.com/searchresults.html?ss=Mambetron+Homestay', bantuan: 'Tombol Lihat di Booking.com di bawah nilai membuka tautan ini. Bawaannya hasil pencarian Mambetron di Booking.com. Ganti dengan tautan halaman Mambetron di Booking.com, disalin dari bilah alamat peramban. Bila dikosongkan, tombol membuka halaman semua pondok.' },
       {
         k: 'ulasanWajah', label: 'Lingkaran tamu di samping nilai', jenis: 'daftar', tambah: 'Tambah tamu',
         bantuan: 'Tamu yang mengulas di situs ulasan. Tiap tamu tampil sebagai lingkaran berisi satu huruf, paling banyak enam.',
@@ -283,6 +283,7 @@ export function rapikan(f, v) {
 // field, so an untouched default stays in the database. A stored value that
 // still equals an old default is treated as unset and takes the current one.
 const BAWAAN_LAMA = {
+  ulasanTautan: [''],
   whatsapp: [''],
   email: [''],
   heroLabel: [dua('Homestay keluarga di Raja Ampat', 'Family homestay in Raja Ampat')],

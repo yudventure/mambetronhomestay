@@ -84,15 +84,14 @@ export default async function Beranda() {
 
       {kartuUnggulan.length > 0 && (
         <section id="pondok" className="relative z-10 mx-auto -mt-16 max-w-6xl scroll-mt-28 px-4 sm:-mt-24 sm:px-6">
+          <h2 className="sr-only">{k.unggulanJudul}</h2>
           <GeserPondok
             kartu={kartuUnggulan}
             label={k.geser}
             samping={(
               <div className="lg:pr-2">
-                <h2 className="text-[1.75rem]">{dwi(s.kamarJudul, b)}</h2>
-                <p className="mt-2 text-[0.95rem] text-abu">{dwi(s.kamarTeks, b)}</p>
                 {skor > 0 ? (
-                  <div className="mt-5">
+                  <div>
                     {wajah.length > 0 && (
                       <div className="flex -space-x-2" aria-hidden>
                         {wajah.map((x, i) => (
@@ -105,15 +104,13 @@ export default async function Beranda() {
                     <div className="mt-3 flex items-center gap-3">
                       <span className="rounded-xl rounded-bl-sm bg-laut px-2.5 py-2 font-judul text-xl leading-none text-white tabular-nums">{angka1.format(skor)}</span>
                       <p className="text-sm leading-tight text-abu">
-                        {sumber && (tautanUlasan
-                          ? <a href={tautanUlasan} target="_blank" rel="noopener" className="block font-bold text-laut hover:underline">{sumber}</a>
-                          : <span className="block font-bold text-laut">{sumber}</span>)}
+                        {sumber && <span className="block font-bold text-laut">{sumber}</span>}
                         {k.nilaiTamu(s.ulasanSkala)}
                       </p>
                     </div>
                   </div>
                 ) : ulasan.length > 0 && (
-                  <div className="mt-5">
+                  <div>
                     <div className="flex -space-x-2" aria-hidden>
                       {ulasan.slice(0, 3).map((u, i) => (
                         <span key={u.id} className={`inline-flex size-9 items-center justify-center rounded-full text-sm font-bold text-white ring-[3px] ring-white ${WARNA_INISIAL[i % WARNA_INISIAL.length]}`}>
@@ -127,9 +124,15 @@ export default async function Beranda() {
                     </p>
                   </div>
                 )}
-                <Link href="/kamar" className="mt-5 inline-flex items-center gap-1.5 text-sm font-bold text-biru-tua hover:underline">
-                  {k.semuaPondok} <Ikon nama="panah" className="size-4" />
-                </Link>
+                {tautanUlasan ? (
+                  <a href={tautanUlasan} target="_blank" rel="noopener" className="mt-5 inline-flex items-center gap-1.5 text-sm font-bold text-biru-tua hover:underline">
+                    {k.lihatDi(sumber || 'Booking.com')} <Ikon nama="luar" className="size-4" />
+                  </a>
+                ) : (
+                  <Link href="/kamar" className="mt-5 inline-flex items-center gap-1.5 text-sm font-bold text-biru-tua hover:underline">
+                    {k.semuaPondok} <Ikon nama="panah" className="size-4" />
+                  </Link>
+                )}
               </div>
             )}
           />
