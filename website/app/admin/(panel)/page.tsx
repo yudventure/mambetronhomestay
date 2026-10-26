@@ -52,7 +52,7 @@ export default async function Dasbor({ searchParams }: { searchParams: Promise<{
     { ok: kamar.length > 0 && kamar.every((k) => k.foto.length > 0), teks: 'Unggah foto setiap pondok', href: '/admin/kamar' },
     { ok: Boolean(situs.petaKoordinat), teks: 'Isi titik peta lokasi homestay', href: '/admin/pengaturan#kontak' },
     { ok: Boolean(alamatSitus()), teks: 'Isi SITE_URL di environment variables hPanel', href: '' },
-    { ok: surelDiatur(), teks: 'Atur surel pemberitahuan pesanan (tidak wajib)', href: '' },
+    { ok: surelDiatur(), teks: 'Atur surel untuk pemberitahuan pesanan dan kode ganti kata sandi', href: '' },
   ];
   const belum = daftarCek.filter((c) => !c.ok);
 
@@ -65,6 +65,7 @@ export default async function Dasbor({ searchParams }: { searchParams: Promise<{
       <Kabar ok={ok} pesan={{
         'ok:tutup': 'Situs ditutup. Pengunjung sekarang melihat halaman segera dibuka.',
         'ok:buka': 'Situs dibuka lagi untuk semua pengunjung.',
+        'ok:sandi': 'Kata sandi panel sudah diganti. Perangkat lain yang masih masuk sudah dikeluarkan.',
       }} />
 
       <section className={`kartu mb-6 flex flex-wrap items-center gap-4 p-5 sm:p-6 ${situs.tutup ? 'ring-2 ring-senja' : ''}`}>

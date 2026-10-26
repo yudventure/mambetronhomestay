@@ -72,7 +72,12 @@ Semua nilai dibaca saat aplikasi berjalan. Bila nilai diubah di hPanel, mulai ul
 | `ADMIN_PASSWORD` | Ya | Kata sandi panel `/admin`. Pakai minimal 10 karakter |
 | `SESSION_SECRET` | Tidak | 32 karakter acak untuk menandatangani sesi masuk |
 | `SITE_URL` | Tidak | Alamat lengkap situs, contoh `https://mambetronhomestay.com` |
-| `SMTP_HOST` dan lainnya | Tidak | Surel pemberitahuan pesanan. Kosongkan bila belum dipakai |
+| `SMTP_HOST` | Tidak | Server surel keluar. Untuk surel Hostinger `smtp.hostinger.com` |
+| `SMTP_PORT` | Tidak | Bawaan `465` |
+| `SMTP_USER` | Tidak | Alamat kotak surel pengirim, contoh `halo@mambetronhomestay.com` |
+| `SMTP_PASSWORD` | Tidak | Kata sandi kotak surel itu |
+| `EMAIL_FROM` | Tidak | Nama dan alamat pengirim, contoh `Mambetron Homestay <halo@mambetronhomestay.com>`. Alamatnya harus sama dengan `SMTP_USER` |
+| `EMAIL_ADMIN` | Tidak | Penerima pemberitahuan pesanan baru dan kode ganti kata sandi panel. Bila kosong, dikirim ke `SMTP_USER` |
 
 Berkas `.env` berisi kata sandi tidak boleh masuk GitHub. Berkas itu sudah ada di `.gitignore`.
 
@@ -126,6 +131,14 @@ Kaki halaman punya tiga kolom. Kolom kiri berisi logo dan teks singkat, kolom te
 Nomor WhatsApp dan surel punya isian bawaan, jadi tampil walau kolomnya di panel masih kosong. Facebook, TikTok, dan YouTube untuk sementara membuka halaman depan masing-masing sampai tautan akun asli diisi.
 
 Di pita paling bawah ada tombol Masuk operator yang membuka `/admin`. Operator yang belum masuk diarahkan ke halaman masuk.
+
+## Surel pemberitahuan dan ganti kata sandi
+
+Bila `SMTP_HOST`, `SMTP_USER`, dan `SMTP_PASSWORD` terisi, setiap pesanan baru dikirimkan ke `EMAIL_ADMIN`, dan tamu yang mengisi surel mendapat salinan pesanannya. Surel dikirim setelah halaman pesanan tampil, jadi tamu tidak ikut menunggu, dan pesanan tetap tersimpan walau surel gagal.
+
+Kata sandi panel bisa diganti di `/admin/sandi`, lewat menu Ganti kata sandi di panel atau tautan Lupa kata sandi di halaman masuk. Halaman itu mengirim kode 6 angka ke `EMAIL_ADMIN`. Kode berlaku 10 menit, gugur setelah 5 kali salah, dan paling banyak diminta tiga kali sejam dengan jeda satu menit. Alamat tujuan kode hanya bisa diubah di hPanel, tidak dari panel, supaya orang yang sempat masuk ke panel tidak bisa mengalihkannya.
+
+Kata sandi baru disimpan sebagai hash scrypt di tabel `akun` dan menggantikan `ADMIN_PASSWORD`. Setelah diganti, semua perangkat lain yang masih masuk ikut keluar, dan surel pemberitahuan dikirim ke `EMAIL_ADMIN`. Bila kotak surel tidak bisa dibuka, ubah `ADMIN_PASSWORD` di hPanel lalu mulai ulang aplikasi. Kata sandi dari hPanel itu langsung berlaku lagi, dan kata sandi yang disimpan lewat kode diabaikan.
 
 ## Mode pengembang
 

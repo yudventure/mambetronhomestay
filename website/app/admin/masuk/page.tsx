@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import { redirect } from 'next/navigation';
 import FormMasuk from '@/components/admin/FormMasuk';
 import { sandiDiatur, sesiSah } from '@/lib/sesi';
@@ -13,7 +14,10 @@ export default async function Masuk() {
         <img src="/merek/logo-utama.svg" alt="Mambetron Homestay" width={134} height={112} className="mx-auto h-28 w-auto" />
         <h1 className="mt-6 text-center text-2xl">Panel pengelola</h1>
         {sandiDiatur() ? (
-          <div className="mt-6"><FormMasuk /></div>
+          <>
+            <div className="mt-6"><FormMasuk /></div>
+            <Link href="/admin/sandi" className="mt-5 block text-center text-sm font-bold text-biru-tua hover:underline">Lupa kata sandi?</Link>
+          </>
         ) : (
           <p className="mt-4 rounded-2xl bg-pasir px-4 py-3 text-laut">
             Panel belum bisa dipakai karena ADMIN_PASSWORD masih kosong. Isi di hPanel Hostinger pada Environment variables aplikasi Node.js, lalu mulai ulang aplikasi.

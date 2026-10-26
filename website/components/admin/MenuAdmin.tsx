@@ -30,6 +30,9 @@ function Daftar({ jalur, klik }: { jalur: string; klik?: () => void }) {
           </Link>
         );
       })}
+      <Link href="/admin/sandi" onClick={klik} className="flex items-center gap-3 rounded-2xl px-4 py-2.5 font-semibold text-white/85 hover:bg-white/10 hover:text-white">
+        <Ikon nama="gembok" /> Ganti kata sandi
+      </Link>
       <a href="/" target="_blank" className="flex items-center gap-3 rounded-2xl px-4 py-2.5 font-semibold text-white/85 hover:bg-white/10 hover:text-white">
         <Ikon nama="luar" /> Lihat situs
       </a>

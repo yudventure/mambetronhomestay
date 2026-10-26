@@ -30,7 +30,7 @@ export async function masuk(_: { galat: string }, fd: FormData): Promise<{ galat
   if (!sandiDiatur()) return { galat: 'ADMIN_PASSWORD belum diisi di environment variables.' };
   const ip = await alamatPengunjung();
   if (!bolehMencoba(ip)) return { galat: 'Terlalu banyak percobaan. Tunggu 15 menit lalu coba lagi.' };
-  if (!sandiCocok(String(fd.get('sandi') ?? ''))) {
+  if (!(await sandiCocok(String(fd.get('sandi') ?? '')))) {
     catatGagal(ip);
     return { galat: 'Kata sandi salah.' };
   }

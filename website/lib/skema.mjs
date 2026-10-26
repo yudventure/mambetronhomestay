@@ -119,6 +119,21 @@ export const SKEMA = [
   urutan INT NOT NULL DEFAULT 0,
   dibuat TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ${T}`,
+
+  // One row. The admin password set through the e-mail code, stored as a
+  // scrypt hash, and the pending code with its expiry and counters.
+  `CREATE TABLE IF NOT EXISTS akun (
+  id TINYINT UNSIGNED NOT NULL PRIMARY KEY,
+  sandi VARCHAR(255) NOT NULL DEFAULT '',
+  sidik_env CHAR(64) NOT NULL DEFAULT '',
+  kode CHAR(64) NOT NULL DEFAULT '',
+  kode_habis DATETIME NULL,
+  kode_salah TINYINT UNSIGNED NOT NULL DEFAULT 0,
+  kirim_mulai DATETIME NULL,
+  kirim_n TINYINT UNSIGNED NOT NULL DEFAULT 0,
+  kirim_akhir DATETIME NULL,
+  diubah TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ${T}`,
 ];
 
 // The whole schema as one SQL file, for import through phpMyAdmin.

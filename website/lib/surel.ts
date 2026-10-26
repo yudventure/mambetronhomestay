@@ -1,13 +1,15 @@
-// Booking e-mails through SMTP. Optional, nothing is sent while the SMTP
-// values are empty, and a failed send never blocks the booking.
+// E-mails through SMTP, for bookings and for the admin password code.
+// Optional, nothing is sent while the SMTP values are empty, and a failed
+// send never blocks a booking.
 import nodemailer from 'nodemailer';
+import { KODE_MENIT } from './akun';
 import { alamatSitus, envSurel, surelDiatur } from './env';
-import { rupiah, tanggal } from './format';
+import { rupiah, tanggal, waktu } from './format';
 import type { Pesanan, Situs } from './jenis';
 import { KAMUS } from './kamus';
 
 async function kirim(ke: string, judul: string, teks: string) {
-  if (!surelDiatur() || !ke) return;
+  if (!surelDiatur() || !ke) return false;
   const s = envSurel();
   try {
     const t = nodemailer.createTransport({
@@ -15,11 +17,52 @@ async function kirim(ke: string, judul: string, teks: string) {
       port: s.port,
       secure: s.port === 465,
       auth: { user: s.user, pass: s.password },
+      connectionTimeout: 15_000,
+      greetingTimeout: 15_000,
+      socketTimeout: 30_000,
     });
     await t.sendMail({ from: s.dari, to: ke, subject: judul, text: teks });
+    return true;
   } catch (e) {
     console.error('[mambetron] surel gagal dikirim', e);
+    return false;
   }
+}
+
+// EMAIL_ADMIN, or the sending mailbox itself when EMAIL_ADMIN is empty.
+export function tujuanAdmin() {
+  const s = envSurel();
+  return s.admin || (s.dari.match(/<([^>]+)>/)?.[1] ?? s.dari).trim();
+}
+
+// h***@mambetronhomestay.com, for showing where a code went.
+export function samarkan(surel: string) {
+  const [nama, ranah] = surel.split('@');
+  return ranah ? `${nama.charAt(0)}***@${ranah}` : '***';
+}
+
+const kini = () => waktu(new Date().toISOString().slice(0, 19).replace('T', ' '));
+
+export function surelKodeSandi(kode: string, ip: string) {
+  return kirim(
+    tujuanAdmin(),
+    'Kode ganti kata sandi panel Mambetron',
+    `Kode untuk mengganti kata sandi panel pengelola Mambetron Homestay\n\n${kode}\n\n`
+      + `Kode berlaku ${KODE_MENIT} menit dan hanya bisa dipakai sekali.\n`
+      + 'Bila kamu tidak sedang mengganti kata sandi, abaikan surel ini. Kata sandi yang sekarang tetap berlaku.\n\n'
+      + `Diminta pada ${kini()}\nAlamat IP ${ip}\n`,
+  );
+}
+
+export function surelSandiDiganti(ip: string) {
+  return kirim(
+    tujuanAdmin(),
+    'Kata sandi panel Mambetron sudah diganti',
+    'Kata sandi panel pengelola Mambetron Homestay baru saja diganti. Perangkat lain yang masih masuk sudah dikeluarkan.\n\n'
+      + `Diganti pada ${kini()}\nAlamat IP ${ip}\n\n`
+      + 'Bila bukan kamu yang menggantinya, ubah ADMIN_PASSWORD di hPanel Hostinger lalu mulai ulang aplikasi. '
+      + 'Kata sandi dari hPanel itu langsung berlaku, dan kata sandi yang baru diganti ini tidak bisa dipakai lagi.\n',
+  );
 }
 
 function ringkas(p: Pesanan, situs: Situs, untukAdmin: boolean) {
@@ -51,7 +94,7 @@ export async function surelPesananBaru(p: Pesanan, situs: Situs, asal: string) {
       `${situs.pesanTerima[p.bahasa] || situs.pesanTerima.id}\n\n${ringkas(p, situs, false)}\n\n${k.hasil.simpan}\n${tautanTamu}\n`,
     );
   }
-  const admin = envSurel().admin;
+  const admin = tujuanAdmin();
   if (admin) {
     await kirim(
       admin,
