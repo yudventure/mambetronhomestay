@@ -109,6 +109,14 @@ Foto disimpan di database supaya tidak hilang saat deploy ulang. Foto diperkecil
 
 Halaman utama punya tiga tempat foto di menu Foto situs. Foto utama tampil penuh di belakang judul besar, foto tentang kami tampil di samping kotak rencana menginap, dan foto ajakan tampil di kotak berwarna laut. Selama belum ada foto unggahan, foto utama memakai foto pondok berjajar di tepi pantai dari `public/foto`, sedangkan dua tempat lainnya memakai ilustrasi siang dan pagi di Raja Ampat yang dibuat oleh `scripts/desain/situs.mjs`. Kartu pondok di bawah foto utama memakai foto pertama tiap pondok.
 
+## Bahasa dan mata uang
+
+Tombol berikon bola dunia di kepala halaman membuka pilihan bahasa (Indonesia atau Inggris) dan mata uang (rupiah, dolar Amerika, euro, yen, atau yuan). Pilihan disimpan di kuki peramban pengunjung.
+
+Harga tetap diisi dan dibayar dalam rupiah. Bila pengunjung memilih mata uang lain, harga pondok dan kegiatan tampil dalam mata uang itu sebagai perkiraan, dengan harga rupiah di bawahnya. Di formulir pesan dan halaman pesanan, jumlah yang dibayar tetap rupiah dengan perkiraan di bawahnya.
+
+Kurs diambil dari kurs acuan Bank Sentral Eropa lewat Frankfurter (`api.frankfurter.app`, tanpa kunci API) dan disimpan 12 jam. Bila server tidak bisa mengambilnya, situs memakai kurs yang diisi di Isi situs, bagian Mata uang, lalu mencoba lagi setelah 30 menit. Kurs otomatis bisa dimatikan di bagian yang sama. Alamat sumber kurs bisa diganti lewat environment variable `KURS_URL` bila perlu.
+
 ## Mode pengembang
 
 Mode pengembang menutup situs sementara, misalnya selama situs masih disiapkan atau sedang diperbaiki. Nyalakan dan matikan dari kartu di Dasbor, atau dari bagian Mode pengembang di Isi situs. Situs tetap tertutup sampai ada yang membukanya lagi dari panel.

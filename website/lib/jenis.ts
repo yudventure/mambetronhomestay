@@ -135,6 +135,11 @@ export type Situs = {
   ajakanLabel: Dua;
   ajakanJudul: Dua;
   ajakanTeks: Dua;
+  kursOtomatis: boolean;
+  kursUSD: number;
+  kursEUR: number;
+  kursJPY: number;
+  kursCNY: number;
   tutup: boolean;
   tutupJudul: Dua;
   tutupTeks: Dua;

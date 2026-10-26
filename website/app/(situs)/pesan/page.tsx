@@ -5,6 +5,7 @@ import { bahasaAktif } from '@/lib/bahasa';
 import { ambilSitus, daftarKamar, daftarLayanan, gambarCadangan, pemesananAktif, sisaKamar } from '@/lib/data';
 import { kamus } from '@/lib/kamus';
 import { tautanWa } from '@/lib/format';
+import { konteksUang } from '@/lib/uang-server';
 import { daftarMalam, hariIni, sahTanggal, selisihHari, tambahHari } from '@/lib/tanggal';
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -57,6 +58,7 @@ export default async function Pesan({ searchParams }: { searchParams: Promise<Re
       </div>
       <FormPesan
         b={b}
+        u={await konteksUang()}
         kamar={daftar}
         layanan={layanan}
         sisa={sisa}

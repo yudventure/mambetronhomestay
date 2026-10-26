@@ -2,11 +2,14 @@ import { JudulAdmin } from '@/components/admin/Kabar';
 import FormPengaturan from '@/components/admin/FormPengaturan';
 import { PENGATURAN } from '@/lib/bawaan.mjs';
 import { ambilSitus } from '@/lib/data';
+import { rupiah, tanggal } from '@/lib/format';
+import { ambilKurs } from '@/lib/kurs';
+import { NAMA_UANG } from '@/lib/uang';
 
 export const metadata = { title: 'Isi situs' };
 
 export default async function Pengaturan() {
-  const situs = (await ambilSitus()) as unknown as Record<string, unknown>;
+  const [situs, kurs] = await Promise.all([ambilSitus() as unknown as Promise<Record<string, unknown>>, ambilKurs()]);
   return (
     <>
       <JudulAdmin judul="Isi situs" teks="Semua teks, kontak, dan aturan pemesanan yang tampil di situs. Setiap bagian disimpan sendiri-sendiri." />
@@ -18,6 +21,18 @@ export default async function Pengaturan() {
           <section key={g.kunci} id={g.kunci} className="kartu scroll-mt-20 p-5 sm:p-7">
             <h2 className="text-2xl">{g.judul}</h2>
             {g.keterangan && <p className="mt-1 mb-6 text-abu">{g.keterangan}</p>}
+            {g.kunci === 'uang' && (
+              <div className="mb-6 rounded-2xl bg-buih px-4 py-3">
+                <p className="font-semibold text-laut">
+                  {kurs.sumber === 'otomatis' ? `Kurs yang dipakai sekarang, otomatis per ${kurs.tanggal ? tanggal(kurs.tanggal, 'id', 'polos') : 'hari ini'}` : 'Kurs yang dipakai sekarang, dari isian di bawah'}
+                </p>
+                <ul className="mt-2 grid gap-x-6 gap-y-1 text-sm text-laut sm:grid-cols-2">
+                  {(['USD', 'EUR', 'JPY', 'CNY'] as const).map((c) => (
+                    <li key={c}>1 {NAMA_UANG[c].id.charAt(0).toLowerCase() + NAMA_UANG[c].id.slice(1)} sama dengan {rupiah(Math.round(kurs.idrPer[c]))}</li>
+                  ))}
+                </ul>
+              </div>
+            )}
             <FormPengaturan bagian={g} nilai={Object.fromEntries(g.isian.map((f) => [f.k, situs[f.k]]))} />
           </section>
         ))}

@@ -8,8 +8,8 @@ import { useKunciGulir, useTutupLuar } from '@/lib/kait';
 
 type Tautan = { href: string; label: string };
 
-export default function MenuSeluler({ tautan, label, tutupLabel, bahasa, wa, waLabel, pesan }: {
-  tautan: Tautan[]; label: string; tutupLabel: string; bahasa: { href: string; label: string }; wa: string; waLabel: string; pesan: Tautan;
+export default function MenuSeluler({ tautan, label, tutupLabel, wa, waLabel }: {
+  tautan: Tautan[]; label: string; tutupLabel: string; wa: string; waLabel: string;
 }) {
   const [buka, setBuka] = useState(false);
   const panel = useRef<HTMLDivElement>(null);
@@ -40,17 +40,11 @@ export default function MenuSeluler({ tautan, label, tutupLabel, bahasa, wa, waL
             </Link>
           ))}
         </nav>
-        <div className="mt-4 grid gap-2">
-          <Link href={pesan.href} onClick={tutup} className="tombol w-full">{pesan.label}</Link>
-          {wa && (
-            <a href={wa} target="_blank" rel="noopener" className="tombol tombol-putih w-full">
-              <Ikon nama="chat" /> {waLabel}
-            </a>
-          )}
-          <a href={bahasa.href} className="tombol tombol-putih w-full">
-            <Ikon nama="globe" /> {bahasa.label}
+        {wa && (
+          <a href={wa} target="_blank" rel="noopener" className="tombol tombol-garis mt-4 w-full">
+            <Ikon nama="chat" /> {waLabel}
           </a>
-        </div>
+        )}
       </div>
     </>
   );

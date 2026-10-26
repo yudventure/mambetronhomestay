@@ -11,6 +11,7 @@ import { KAMUS } from '@/lib/kamus';
 import { SATUAN } from '@/lib/satuan.mjs';
 import { hitungHarga } from '@/lib/harga';
 import { pilih, rupiah, tanggal } from '@/lib/format';
+import { asing, nominal, type KonteksUang } from '@/lib/uang';
 import { daftarMalam, selisihHari } from '@/lib/tanggal';
 
 export type KamarForm = Pick<Kamar, 'id' | 'slug' | 'nama' | 'nama_en' | 'harga' | 'harga_anak' | 'skema_harga' | 'kapasitas' | 'jumlah_unit' | 'min_malam'> & { gambar: string };
@@ -25,6 +26,7 @@ type Props = {
   dpPersen: number;
   aktif: boolean;
   wa: string;
+  u: KonteksUang;
   mula: { kamarId: number; masuk: string; keluar: string; dewasa: number; anak: number; jumlahKamar: number };
 };
 
@@ -61,7 +63,7 @@ function Hitung({ label, ket, nilai, min, maks, ubah, kurang, tambah }: {
   );
 }
 
-export default function FormPesan({ b, kamar, layanan, sisa, awal, akhir, dpPersen, aktif, wa, mula }: Props) {
+export default function FormPesan({ b, kamar, layanan, sisa, awal, akhir, dpPersen, aktif, wa, u, mula }: Props) {
   const k = KAMUS[b];
   const f = k.form;
   const [hasil, aksi, sedang] = useActionState<HasilKirim, FormData>(kirimPesanan, { galat: '' });
@@ -271,6 +273,7 @@ export default function FormPesan({ b, kamar, layanan, sisa, awal, akhir, dpPers
                 <span className="font-semibold text-laut">{f.total}</span>
                 <span className="font-judul text-2xl font-semibold tabular-nums text-laut">{rupiah(harga.total, b)}</span>
               </div>
+              {asing(u) && <p className="text-right text-sm text-abu">{k.sekitar(nominal(harga.total, u, b))}</p>}
               {harga.dp > 0 && (
                 <>
                   <div className="mt-1 flex justify-between gap-3 text-sm">

@@ -12,6 +12,8 @@ import { kamus } from '@/lib/kamus';
 import { paragraf, pilih, rupiah, tautanWa } from '@/lib/format';
 import { hariIni, tambahHari } from '@/lib/tanggal';
 import { KISI, rentang } from '@/lib/kisi';
+import { asing, nominal } from '@/lib/uang';
+import { konteksUang } from '@/lib/uang-server';
 
 type P = { params: Promise<{ slug: string }> };
 
@@ -28,7 +30,7 @@ export async function generateMetadata({ params }: P): Promise<Metadata> {
 
 export default async function HalamanPondok({ params }: P) {
   const { slug } = await params;
-  const [b, situs, semua, aktif] = await Promise.all([bahasaAktif(), ambilSitus(), daftarKamar(), pemesananAktif()]);
+  const [b, situs, semua, aktif, u] = await Promise.all([bahasaAktif(), ambilSitus(), daftarKamar(), pemesananAktif(), konteksUang()]);
   const i = semua.findIndex((x) => x.slug === slug);
   if (i < 0) notFound();
   const km = semua[i];
@@ -60,10 +62,11 @@ export default async function HalamanPondok({ params }: P) {
             </ul>
             <div className="mt-6 rounded-3xl bg-buih p-5">
               <p className="text-sm text-abu">{k.mulai}</p>
-              <p className="font-judul text-3xl font-semibold text-laut">{rupiah(km.harga, b)}</p>
+              <p className="font-judul text-3xl font-semibold text-laut">{nominal(km.harga, u, b)}</p>
               <p className="text-sm text-abu">{k.perSkema[km.skema_harga]}</p>
+              {asing(u) && <p className="text-xs text-abu">{rupiah(km.harga, b)}</p>}
               {km.skema_harga === 'orang' && km.harga_anak != null && km.harga_anak !== km.harga && (
-                <p className="mt-2 text-sm font-semibold text-biru-tua">{k.hargaAnak(rupiah(km.harga_anak, b))}</p>
+                <p className="mt-2 text-sm font-semibold text-biru-tua">{k.hargaAnak(nominal(km.harga_anak, u, b))}</p>
               )}
               <div className="mt-4 flex flex-wrap gap-2">
                 <Link href={`/pesan?kamar=${km.slug}`} className="tombol">{k.pesanPondok}</Link>
@@ -106,7 +109,7 @@ export default async function HalamanPondok({ params }: P) {
         <Bagian latar={aktif ? 'putih' : 'buih'}>
           <h2 className="mb-8 text-3xl">{k.semuaPondok}</h2>
           <div className={`${KISI} gap-6`}>
-            {lain.map((x, j) => <KartuKamar key={x.id} kamar={x} b={b} i={semua.indexOf(x)} className={rentang(lain.length, j)} />)}
+            {lain.map((x, j) => <KartuKamar key={x.id} kamar={x} b={b} u={u} i={semua.indexOf(x)} className={rentang(lain.length, j)} />)}
           </div>
         </Bagian>
       )}

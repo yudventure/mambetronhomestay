@@ -4,8 +4,9 @@ import type { Bahasa, Kamar } from '@/lib/jenis';
 import { kamus } from '@/lib/kamus';
 import { pilih, rupiah } from '@/lib/format';
 import { gambarCadangan } from '@/lib/data';
+import { asing, nominal, type KonteksUang } from '@/lib/uang';
 
-export default function KartuKamar({ kamar, b, i, className = '' }: { kamar: Kamar; b: Bahasa; i: number; className?: string }) {
+export default function KartuKamar({ kamar, b, u, i, className = '' }: { kamar: Kamar; b: Bahasa; u: KonteksUang; i: number; className?: string }) {
   const k = kamus(b);
   const foto = kamar.foto[0];
   const nama = pilih(b, kamar.nama, kamar.nama_en);
@@ -28,8 +29,9 @@ export default function KartuKamar({ kamar, b, i, className = '' }: { kamar: Kam
         <div className="mt-auto flex flex-wrap items-end justify-between gap-4 pt-6">
           <div>
             <p className="text-sm text-abu">{k.mulai}</p>
-            <p className="font-judul text-2xl font-semibold text-laut">{rupiah(kamar.harga, b)}</p>
+            <p className="font-judul text-2xl font-semibold text-laut">{nominal(kamar.harga, u, b)}</p>
             <p className="text-sm text-abu">{k.perSkema[kamar.skema_harga]}</p>
+            {asing(u) && <p className="text-xs text-abu">{rupiah(kamar.harga, b)}</p>}
           </div>
           <Link href={`/kamar/${kamar.slug}`} className="tombol tombol-laut tombol-kecil">
             {k.lihatDetail} <Ikon nama="panah" className="size-4" />

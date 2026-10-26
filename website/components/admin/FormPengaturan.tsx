@@ -79,7 +79,7 @@ function Kolom({ f, nilai, ubah, awalan }: { f: Isian; nilai: unknown; ubah: (v:
         <div>
           <button type="button" role="switch" id={id} aria-checked={nyala} onClick={() => ubah(!nyala)}
             className="flex w-full items-center gap-4 rounded-2xl bg-buih px-4 py-3 text-left hover:bg-buih-2">
-            <span aria-hidden className={`relative inline-flex h-7 w-12 shrink-0 rounded-full transition-colors ${nyala ? 'bg-senja' : 'bg-white'}`}>
+            <span aria-hidden className={`relative inline-flex h-7 w-12 shrink-0 rounded-full transition-colors ${nyala ? 'bg-aksen' : 'bg-white'}`}>
               <span className={`absolute top-1 size-5 rounded-full transition-[left] ${nyala ? 'left-6 bg-white' : 'left-1 bg-laut/35'}`} />
             </span>
             <span className="font-semibold text-laut">

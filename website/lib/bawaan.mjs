@@ -177,6 +177,21 @@ export const PENGATURAN = [
     ],
   },
   {
+    kunci: 'uang',
+    judul: 'Mata uang',
+    keterangan: 'Harga pondok dan kegiatan diisi dan dibayar dalam rupiah. Tamu bisa melihat perkiraan harga dalam dolar Amerika, euro, yen, dan yuan lewat tombol bahasa dan mata uang di kepala halaman.',
+    isian: [
+      {
+        k: 'kursOtomatis', label: 'Perbarui kurs otomatis', jenis: 'saklar', bawaan: true,
+        bantuan: 'Kurs acuan Bank Sentral Eropa diambil dua kali sehari. Angka di bawah dipakai bila kurs otomatis dimatikan atau gagal diambil.',
+      },
+      { k: 'kursUSD', label: 'Rupiah untuk 1 dolar Amerika', jenis: 'angka', min: 1, max: 1000000, bawaan: 16500 },
+      { k: 'kursEUR', label: 'Rupiah untuk 1 euro', jenis: 'angka', min: 1, max: 1000000, bawaan: 19000 },
+      { k: 'kursJPY', label: 'Rupiah untuk 1 yen', jenis: 'angka', min: 1, max: 100000, bawaan: 110 },
+      { k: 'kursCNY', label: 'Rupiah untuk 1 yuan', jenis: 'angka', min: 1, max: 100000, bawaan: 2300 },
+    ],
+  },
+  {
     kunci: 'tutup',
     judul: 'Mode pengembang',
     keterangan: 'Tutup situs sementara selama masih disiapkan atau diperbaiki. Pengunjung hanya melihat halaman segera dibuka, sedangkan kamu yang sudah masuk ke panel tetap melihat dan bisa menguji situs seperti biasa.',
