@@ -6,10 +6,10 @@ import { ambilSitus } from '@/lib/data';
 export default async function SitusLayout({ children }: { children: React.ReactNode }) {
   const [b, situs] = await Promise.all([bahasaAktif(), ambilSitus()]);
   return (
-    <>
+    <div className="situs">
       <Kepala b={b} situs={situs} />
       <main id="isi">{children}</main>
       <Kaki b={b} situs={situs} />
-    </>
+    </div>
   );
 }

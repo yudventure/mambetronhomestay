@@ -1,16 +1,20 @@
 import Link from 'next/link';
-import Bagian, { JudulBagian, type Latar } from '@/components/Bagian';
+import Bagian, { JudulBagian } from '@/components/Bagian';
 import CariCepat from '@/components/CariCepat';
+import GeserPondok from '@/components/GeserPondok';
 import Ikon from '@/components/Ikon';
-import KartuKamar from '@/components/KartuKamar';
+import Pahlawan from '@/components/Pahlawan';
 import Peta, { koordinat } from '@/components/Peta';
 import { bahasaAktif } from '@/lib/bahasa';
-import { ambilSitus, daftarKamar, daftarLayanan, daftarUlasan, fotoSitus } from '@/lib/data';
+import { ambilSitus, daftarKamar, daftarLayanan, daftarUlasan, fotoSitus, gambarCadangan } from '@/lib/data';
 import { kamus } from '@/lib/kamus';
 import { dwi, paragraf, pilih, rupiah, tautanWa } from '@/lib/format';
 import { KISI, kisiSorotan, rentang } from '@/lib/kisi';
 import { SATUAN } from '@/lib/satuan.mjs';
 import { hariIni, tambahHari } from '@/lib/tanggal';
+
+const JUDUL = 'text-[clamp(2.1rem,1.5rem+2.4vw,3.25rem)]';
+const WARNA_INISIAL = ['bg-biru-tua', 'bg-senja', 'bg-laut', 'bg-biru'];
 
 export default async function Beranda() {
   const [b, s, kamar, layanan, ulasan, foto] = await Promise.all([
@@ -19,143 +23,178 @@ export default async function Beranda() {
   const k = kamus(b);
   const wa = tautanWa(s.whatsapp, k.pesanWaUmum);
   const hari = hariIni();
-  const heroFoto = foto.beranda[0];
   const tentangFoto = foto.tentang[0];
+  const ajakanFoto = foto.ajakan[0];
   const titik = koordinat(s.petaKoordinat);
   const tautanPeta = s.petaTautan || (titik ? `https://www.google.com/maps?q=${titik.lat},${titik.lng}` : '');
+  const rata = ulasan.length ? ulasan.reduce((n, u) => n + u.bintang, 0) / ulasan.length : 0;
+  const angka1 = new Intl.NumberFormat(b === 'en' ? 'en-US' : 'id-ID', { minimumFractionDigits: 1, maximumFractionDigits: 1 });
+  const g = kisiSorotan(s.sorotan.length);
 
-  // light sections alternate between white and foam, dark ones stay sea blue
-  const bagian: { kunci: string; gelap?: boolean; ada: boolean; isi: (latar: Latar) => React.ReactNode }[] = [
-    {
-      kunci: 'sorotan', ada: s.sorotan.length > 0, isi: (latar) => {
-        const g = kisiSorotan(s.sorotan.length);
-        return (
-          <Bagian latar={latar} key="sorotan">
-            <JudulBagian judul={dwi(s.sorotanJudul, b)} />
-            <div className={`${g.induk} gap-5`}>
-              {s.sorotan.map((x, i) => (
-                <div key={i} className={`rounded-3xl p-6 ${latar === 'buih' ? 'bg-white' : 'bg-buih'} ${g.anak(i)}`}>
-                  <span className="inline-flex size-12 items-center justify-center rounded-2xl bg-biru-tua text-white"><Ikon nama={x.ikon} className="size-6" /></span>
-                  <h3 className="mt-4 text-xl">{dwi(x.judul, b)}</h3>
-                  <p className="mt-2 text-abu">{dwi(x.teks, b)}</p>
-                </div>
-              ))}
-            </div>
-          </Bagian>
-        );
-      },
-    },
-    {
-      kunci: 'pondok', ada: kamar.length > 0, isi: (latar) => (
-        <Bagian latar={latar} id="pondok" key="pondok">
-          <div className="flex flex-wrap items-end justify-between gap-4">
-            <JudulBagian judul={dwi(s.kamarJudul, b)} teks={dwi(s.kamarTeks, b)} />
-            <Link href="/kamar" className="mb-10 inline-flex items-center gap-1 font-semibold text-biru-tua hover:underline">{k.semuaPondok} <Ikon nama="panah" className="size-4" /></Link>
+  const kartuPondok = kamar.map((x, i) => {
+    const f = x.foto[0];
+    return (
+      <Link key={x.id} href={`/kamar/${x.slug}`}
+        className={`group relative block overflow-hidden rounded-[1.6rem] bg-laut shadow-lembut ring-[5px] ring-white ${kamar.length === 1 ? 'aspect-[2/1]' : 'aspect-[4/3.3]'}`}>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src={f?.url ?? gambarCadangan(i)} alt="" loading="lazy" width={f?.lebar || 1200} height={f?.tinggi || 800}
+          className="absolute inset-0 size-full object-cover transition-transform duration-700 group-hover:scale-[1.04]" />
+        <div aria-hidden className="absolute inset-0 bg-gradient-to-t from-laut-3/90 via-laut-3/20 to-transparent" />
+        <div className="absolute inset-x-0 bottom-0 flex items-end justify-between gap-4 p-5 text-white">
+          <div>
+            <h3 className="text-[1.6rem] leading-[1.02] text-white">{pilih(b, x.nama, x.nama_en)}</h3>
+            <p className="mt-1 text-sm text-white/80">{k.mulai} {rupiah(x.harga, b)}</p>
           </div>
-          <div className={`${KISI} gap-6`}>
-            {kamar.map((x, i) => <KartuKamar key={x.id} kamar={x} b={b} i={i} className={rentang(kamar.length, i)} />)}
-          </div>
-        </Bagian>
-      ),
-    },
-    {
-      kunci: 'tentang', ada: true, isi: (latar) => (
-        <Bagian latar={latar} id="tentang" key="tentang">
-          <div className="grid items-center gap-10 lg:grid-cols-2 lg:gap-16">
-            <div className="relative order-2 lg:order-1">
-              {tentangFoto ? (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img src={tentangFoto.url} alt={tentangFoto.keterangan} width={tentangFoto.lebar} height={tentangFoto.tinggi} loading="lazy" className="aspect-[4/3] w-full rounded-[2rem] object-cover shadow-lembut" />
-              ) : (
-                <div className="flex aspect-[4/3] items-center justify-center rounded-[2rem] bg-pasir">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src="/merek/mambe-santai-stiker.svg" alt="Mambe" width={320} height={350} className="h-[80%] w-auto" />
-                </div>
-              )}
-            </div>
-            <div className="order-1 lg:order-2">
-              <p className="label-kecil">{k.nav.tentang}</p>
-              <h2 className="mt-2 text-[clamp(1.9rem,1.4rem+2vw,2.75rem)]">{dwi(s.tentangJudul, b)}</h2>
-              <div className="prosa mt-5 text-lg text-laut/85">
-                {paragraf(dwi(s.tentangTeks, b)).map((p, i) => <p key={i}>{p}</p>)}
-              </div>
-              <div className="mt-6 grid max-w-md grid-cols-2 gap-3">
-                <div className="rounded-2xl bg-buih px-4 py-3">
-                  <p className="text-sm text-abu">{k.checkInOut.masuk}</p>
-                  <p className="font-judul text-xl font-semibold text-laut">{s.checkIn}</p>
-                </div>
-                <div className="rounded-2xl bg-buih px-4 py-3">
-                  <p className="text-sm text-abu">{k.checkInOut.keluar}</p>
-                  <p className="font-judul text-xl font-semibold text-laut">{s.checkOut}</p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </Bagian>
-      ),
-    },
-    {
-      kunci: 'galeri', ada: foto.galeri.length > 0, isi: (latar) => (
-        <Bagian latar={latar} key="galeri">
-          <JudulBagian judul={dwi(s.galeriJudul, b)} />
-          <div className="columns-2 gap-4 md:columns-3">
-            {foto.galeri.map((f) => (
-              <figure key={f.id} className="mb-4 break-inside-avoid">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={f.url} alt={f.keterangan} width={f.lebar} height={f.tinggi} loading="lazy" className="w-full rounded-2xl" />
-                {f.keterangan && <figcaption className="mt-1.5 text-sm text-abu">{f.keterangan}</figcaption>}
-              </figure>
-            ))}
-          </div>
-        </Bagian>
-      ),
-    },
-    {
-      kunci: 'layanan', gelap: true, ada: layanan.length > 0, isi: () => (
-        <section id="kegiatan" key="layanan" className="bg-laut bg-[url('/merek/pola.svg')] bg-[length:300px] py-16 text-white md:py-24">
-          <div className="mx-auto max-w-6xl px-4 sm:px-6">
-            <JudulBagian terang judul={dwi(s.layananJudul, b)} teks={dwi(s.layananTeks, b)} />
-            <div className={`${KISI} gap-5`}>
-              {layanan.map((l, i) => (
-                <div key={l.id} className={`flex flex-col rounded-3xl bg-white p-6 text-hitam ${rentang(layanan.length, i)}`}>
-                  <span className="inline-flex size-12 items-center justify-center rounded-2xl bg-buih text-biru-tua"><Ikon nama={l.ikon} className="size-6" /></span>
-                  <h3 className="mt-4 text-xl">{pilih(b, l.nama, l.nama_en)}</h3>
-                  <p className="mt-2 text-abu">{pilih(b, l.keterangan, l.keterangan_en)}</p>
-                  <div className="mt-auto pt-5">
-                    <p className="font-judul text-xl font-semibold text-laut">{rupiah(l.harga, b)}</p>
-                    <p className="text-sm text-abu">{SATUAN[l.satuan][b]}</p>
+          <span className="font-judul text-2xl text-white/90">{String(i + 1).padStart(2, '0')}</span>
+        </div>
+      </Link>
+    );
+  });
+
+  return (
+    <>
+      <Pahlawan b={b} s={s} foto={foto.beranda[0]} />
+
+      {kamar.length > 0 && (
+        <section id="pondok" className="relative z-10 mx-auto -mt-16 max-w-6xl scroll-mt-28 px-4 sm:-mt-24 sm:px-6">
+          <GeserPondok
+            kartu={kartuPondok}
+            label={k.geser}
+            samping={(
+              <div className="lg:pr-2">
+                <h2 className="text-[1.75rem]">{dwi(s.kamarJudul, b)}</h2>
+                <p className="mt-2 text-[0.95rem] text-abu">{dwi(s.kamarTeks, b)}</p>
+                {ulasan.length > 0 && (
+                  <div className="mt-5">
+                    <div className="flex -space-x-2" aria-hidden>
+                      {ulasan.slice(0, 3).map((u, i) => (
+                        <span key={u.id} className={`inline-flex size-9 items-center justify-center rounded-full text-sm font-bold text-white ring-[3px] ring-white ${WARNA_INISIAL[i % WARNA_INISIAL.length]}`}>
+                          {u.nama.trim().charAt(0).toUpperCase()}
+                        </span>
+                      ))}
+                    </div>
+                    <p className="mt-2 inline-flex items-center gap-1.5 text-sm font-semibold text-laut">
+                      <Ikon nama="bintang" className="size-4 fill-senja text-senja" />
+                      {k.ulasanRingkas(angka1.format(rata), ulasan.length)}
+                    </p>
                   </div>
+                )}
+                <Link href="/kamar" className="mt-5 inline-flex items-center gap-1.5 text-sm font-bold text-biru-tua hover:underline">
+                  {k.semuaPondok} <Ikon nama="panah" className="size-4" />
+                </Link>
+              </div>
+            )}
+          />
+        </section>
+      )}
+
+      <section id="tentang" className="scroll-mt-24 py-16 md:py-24">
+        <div className="mx-auto grid max-w-6xl gap-10 px-4 sm:px-6 lg:grid-cols-[minmax(0,0.82fr)_minmax(0,1.6fr)] lg:items-center lg:gap-12">
+          <div>
+            <h2 className={JUDUL}>{dwi(s.tentangJudul, b)}</h2>
+            <div className="prosa mt-5 text-laut/80">
+              {paragraf(dwi(s.tentangTeks, b)).map((p, i) => <p key={i}>{p}</p>)}
+            </div>
+            <div className="mt-8">
+              {wa
+                ? <a href={wa} target="_blank" rel="noopener" className="tombol tombol-garis"><Ikon nama="chat" className="size-4" /> {k.tanyaWa}</a>
+                : <Link href="/#lokasi" className="tombol tombol-garis">{k.nav.lokasi}</Link>}
+            </div>
+          </div>
+          <div className="relative">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src={tentangFoto?.url ?? '/merek/adegan-siang.svg'} alt={tentangFoto?.keterangan ?? ''} aria-hidden={tentangFoto ? undefined : true}
+              width={tentangFoto?.lebar || 1600} height={tentangFoto?.tinggi || 1200} loading="lazy"
+              className="aspect-[4/3] w-full rounded-[1.75rem] object-cover lg:ml-auto lg:aspect-[16/12] lg:w-[74%]" />
+            <div className="relative mx-auto -mt-24 w-[calc(100%-2rem)] max-w-sm lg:absolute lg:top-[6%] lg:left-0 lg:mx-0 lg:mt-0 lg:w-[17.5rem]">
+              <CariCepat b={b} awal={tambahHari(hari, s.jedaHari)} akhir={tambahHari(hari, s.batasHari)} checkIn={s.checkIn} checkOut={s.checkOut} />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {s.sorotan.length > 0 && (
+        <section className="pb-16 md:pb-24">
+          <div className="mx-auto max-w-6xl px-4 sm:px-6">
+            <h2 className="sr-only">{dwi(s.sorotanJudul, b)}</h2>
+            <div className={`${g.induk} gap-4`}>
+              {s.sorotan.map((x, i) => (
+                <div key={i} className={`rounded-3xl bg-embun p-6 ${g.anak(i)}`}>
+                  <div className="flex items-center gap-3">
+                    <Ikon nama={x.ikon} className="size-7 shrink-0 text-biru-tua" tebal={1.5} />
+                    <h3 className="text-xl">{dwi(x.judul, b)}</h3>
+                  </div>
+                  <p className="mt-3 text-[0.95rem] text-abu">{dwi(x.teks, b)}</p>
                 </div>
               ))}
             </div>
           </div>
         </section>
-      ),
-    },
-    {
-      kunci: 'langkah', ada: s.langkah.length > 0, isi: (latar) => (
-        <Bagian latar={latar} key="langkah">
-          <JudulBagian judul={dwi(s.caraJudul, b)} />
-          <ol className={`${KISI} gap-5`}>
-            {s.langkah.map((x, i) => (
-              <li key={i} className={`rounded-3xl p-6 ${latar === 'buih' ? 'bg-white' : 'bg-buih'} ${rentang(s.langkah.length, i)}`}>
-                <span className="inline-flex size-11 items-center justify-center rounded-full bg-senja font-judul text-xl font-bold text-hitam">{i + 1}</span>
-                <h3 className="mt-4 text-xl">{dwi(x.judul, b)}</h3>
-                <p className="mt-2 text-abu">{dwi(x.teks, b)}</p>
-              </li>
+      )}
+
+      <section className="pb-16 md:pb-24">
+        <div className="mx-auto max-w-6xl px-4 sm:px-6">
+          <div className="bingkai relative isolate overflow-hidden bg-laut p-3 sm:p-4 lg:grid lg:grid-cols-[1.15fr_1fr] lg:items-center lg:gap-6">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src={ajakanFoto?.url ?? '/merek/adegan-pagi.svg'} alt={ajakanFoto?.keterangan ?? ''} aria-hidden={ajakanFoto ? undefined : true}
+              width={ajakanFoto?.lebar || 1600} height={ajakanFoto?.tinggi || 1100} loading="lazy"
+              className="aspect-[16/10] w-full rounded-[1.4rem] object-cover sm:rounded-[1.75rem]" />
+            <div className="px-3 pt-8 pb-6 sm:px-6 lg:py-10 lg:pr-12">
+              {dwi(s.ajakanLabel, b) && <p className="text-sm font-semibold tracking-wide text-pasir">{dwi(s.ajakanLabel, b)}</p>}
+              <h2 className={`mt-3 text-white ${JUDUL}`}>{dwi(s.ajakanJudul, b)}</h2>
+              <p className="mt-4 max-w-md text-white/80">{dwi(s.ajakanTeks, b)}</p>
+              <div className="mt-7 flex flex-wrap gap-3">
+                <Link href="/pesan" className="tombol tombol-garis-putih">{k.cekTanggal}</Link>
+              </div>
+            </div>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src="/merek/simbol-putih.svg" alt="" aria-hidden width={400} height={300} className="pointer-events-none absolute -right-16 -bottom-10 -z-10 w-80 opacity-[0.07]" />
+          </div>
+        </div>
+      </section>
+
+      {layanan.length > 0 && (
+        <Bagian id="kegiatan" className="!pt-0">
+          <JudulBagian judul={dwi(s.layananJudul, b)} teks={dwi(s.layananTeks, b)} />
+          <div className={`${KISI} gap-4`}>
+            {layanan.map((l, i) => (
+              <div key={l.id} className={`flex flex-col rounded-3xl bg-embun p-6 ${rentang(layanan.length, i)}`}>
+                <div className="flex items-center gap-3">
+                  <Ikon nama={l.ikon} className="size-7 shrink-0 text-biru-tua" tebal={1.5} />
+                  <h3 className="text-xl">{pilih(b, l.nama, l.nama_en)}</h3>
+                </div>
+                <p className="mt-3 text-[0.95rem] text-abu">{pilih(b, l.keterangan, l.keterangan_en)}</p>
+                <div className="mt-auto pt-5">
+                  <p className="font-judul text-xl text-laut">{rupiah(l.harga, b)}</p>
+                  <p className="text-sm text-abu">{SATUAN[l.satuan][b]}</p>
+                </div>
+              </div>
             ))}
-          </ol>
-          <Link href="/pesan" className="tombol mt-10">{k.pesanSekarang}</Link>
+          </div>
         </Bagian>
-      ),
-    },
-    {
-      kunci: 'ulasan', ada: ulasan.length > 0, isi: (latar) => (
-        <Bagian latar={latar} key="ulasan">
+      )}
+
+      {foto.galeri.length > 0 && (
+        <Bagian className="!pt-0">
+          <JudulBagian judul={dwi(s.galeriJudul, b)} />
+          <div className="columns-2 gap-4 md:columns-3">
+            {foto.galeri.map((f) => (
+              <figure key={f.id} className="mb-4 break-inside-avoid">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={f.url} alt={f.keterangan} width={f.lebar} height={f.tinggi} loading="lazy" className="w-full rounded-3xl" />
+                {f.keterangan && <figcaption className="mt-1.5 text-sm text-abu">{f.keterangan}</figcaption>}
+              </figure>
+            ))}
+          </div>
+        </Bagian>
+      )}
+
+      {ulasan.length > 0 && (
+        <Bagian className="!pt-0">
           <JudulBagian judul={dwi(s.ulasanJudul, b)} />
-          <div className={`${KISI} gap-5`}>
+          <div className={`${KISI} gap-4`}>
             {ulasan.map((u, i) => (
-              <figure key={u.id} className={`flex flex-col rounded-3xl p-6 ${latar === 'buih' ? 'bg-white' : 'bg-buih'} ${rentang(ulasan.length, i)}`}>
+              <figure key={u.id} className={`flex flex-col rounded-3xl bg-embun p-6 ${rentang(ulasan.length, i)}`}>
                 <div className="flex gap-0.5 text-senja" role="img" aria-label={`${u.bintang}/5`}>
                   {Array.from({ length: 5 }, (_, j) => (
                     <svg key={j} viewBox="0 0 24 24" className="size-5" fill={j < u.bintang ? 'currentColor' : 'none'} stroke="currentColor" strokeWidth={1.6} strokeLinejoin="round" aria-hidden>
@@ -164,135 +203,86 @@ export default async function Beranda() {
                   ))}
                 </div>
                 <blockquote className="prosa mt-4 text-lg text-laut">{paragraf(u.isi).map((p, j) => <p key={j}>{p}</p>)}</blockquote>
-                <figcaption className="mt-auto pt-5">
-                  <span className="block font-bold text-laut">{u.nama}</span>
-                  {u.asal && <span className="block text-sm text-abu">{u.asal}</span>}
+                <figcaption className="mt-auto flex items-center gap-3 pt-5">
+                  <span aria-hidden className={`inline-flex size-10 shrink-0 items-center justify-center rounded-full font-bold text-white ${WARNA_INISIAL[i % WARNA_INISIAL.length]}`}>
+                    {u.nama.trim().charAt(0).toUpperCase()}
+                  </span>
+                  <span>
+                    <span className="block font-bold text-laut">{u.nama}</span>
+                    {u.asal && <span className="block text-sm text-abu">{u.asal}</span>}
+                  </span>
                 </figcaption>
               </figure>
             ))}
           </div>
         </Bagian>
-      ),
-    },
-    {
-      kunci: 'lokasi', ada: true, isi: (latar) => (
-        <Bagian latar={latar} id="lokasi" key="lokasi">
-          <div className="grid items-center gap-10 lg:grid-cols-2 lg:gap-16">
-            <div>
-              <p className="label-kecil">{k.nav.lokasi}</p>
-              <h2 className="mt-2 text-[clamp(1.9rem,1.4rem+2vw,2.75rem)]">{dwi(s.lokasiJudul, b)}</h2>
-              <div className="prosa mt-5 text-lg text-laut/85">
-                {paragraf(dwi(s.caraSampai, b)).map((p, i) => <p key={i}>{p}</p>)}
-              </div>
-              {dwi(s.alamat, b) && (
-                <p className="mt-6 flex items-start gap-3 rounded-2xl bg-buih px-4 py-3 text-laut">
-                  <Ikon nama="lokasi" className="mt-0.5 size-5 shrink-0 text-biru-tua" />
-                  <span className="whitespace-pre-line">{dwi(s.alamat, b)}</span>
-                </p>
-              )}
-              <div className="mt-6 flex flex-wrap gap-3">
-                {tautanPeta && <a href={tautanPeta} target="_blank" rel="noopener" className="tombol tombol-laut"><Ikon nama="luar" /> {k.peta}</a>}
-                {wa && <a href={wa} target="_blank" rel="noopener" className="tombol tombol-putih"><Ikon nama="chat" /> {k.tanyaWa}</a>}
-              </div>
+      )}
+
+      {s.langkah.length > 0 && (
+        <Bagian className="!pt-0">
+          <JudulBagian judul={dwi(s.caraJudul, b)} />
+          <ol className={`${KISI} gap-4`}>
+            {s.langkah.map((x, i) => (
+              <li key={i} className={`rounded-3xl bg-embun p-6 ${rentang(s.langkah.length, i)}`}>
+                <span className="font-judul text-4xl text-biru">{String(i + 1).padStart(2, '0')}</span>
+                <h3 className="mt-3 text-xl">{dwi(x.judul, b)}</h3>
+                <p className="mt-2 text-[0.95rem] text-abu">{dwi(x.teks, b)}</p>
+              </li>
+            ))}
+          </ol>
+          <Link href="/pesan" className="tombol mt-8">{k.pesanSekarang} <Ikon nama="panah" className="size-4" /></Link>
+        </Bagian>
+      )}
+
+      <Bagian id="lokasi" className="!pt-0">
+        <div className="grid items-center gap-10 lg:grid-cols-2 lg:gap-16">
+          <div>
+            <h2 className={JUDUL}>{dwi(s.lokasiJudul, b)}</h2>
+            <div className="prosa mt-5 text-laut/80">
+              {paragraf(dwi(s.caraSampai, b)).map((p, i) => <p key={i}>{p}</p>)}
             </div>
-            <div>
-              {titik ? (
-                <Peta titik={s.petaKoordinat} judul={dwi(s.lokasiJudul, b)} />
-              ) : (
-                <div className="relative overflow-hidden rounded-[2rem] bg-buih">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src="/merek/kamar-2.svg" alt="" aria-hidden width={1200} height={800} className="w-full" />
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src="/merek/mambe-perahu-stiker.svg" alt="Mambe" width={200} height={220} className="absolute bottom-3 left-1/2 h-[62%] w-auto -translate-x-1/2" />
-                </div>
-              )}
+            {dwi(s.alamat, b) && (
+              <p className="mt-6 flex items-start gap-3 rounded-2xl bg-embun px-4 py-3 text-laut">
+                <Ikon nama="lokasi" className="mt-0.5 size-5 shrink-0 text-biru-tua" />
+                <span className="whitespace-pre-line">{dwi(s.alamat, b)}</span>
+              </p>
+            )}
+            <div className="mt-6 flex flex-wrap gap-3">
+              {tautanPeta && <a href={tautanPeta} target="_blank" rel="noopener" className="tombol tombol-laut"><Ikon nama="luar" className="size-4" /> {k.peta}</a>}
+              {wa && <a href={wa} target="_blank" rel="noopener" className="tombol tombol-garis"><Ikon nama="chat" className="size-4" /> {k.tanyaWa}</a>}
             </div>
           </div>
-        </Bagian>
-      ),
-    },
-    {
-      kunci: 'faq', ada: s.faq.length > 0, isi: (latar) => (
-        <Bagian latar={latar} id="tanya" lebar="max-w-3xl" key="faq">
+          <div>
+            {titik ? (
+              <Peta titik={s.petaKoordinat} judul={dwi(s.lokasiJudul, b)} />
+            ) : (
+              <div className="relative overflow-hidden rounded-[1.75rem] bg-buih">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src="/merek/kamar-2.svg" alt="" aria-hidden width={1200} height={800} loading="lazy" className="w-full" />
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src="/merek/mambe-perahu-stiker.svg" alt="Mambe" width={200} height={220} loading="lazy" className="absolute bottom-3 left-1/2 h-[62%] w-auto -translate-x-1/2" />
+              </div>
+            )}
+          </div>
+        </div>
+      </Bagian>
+
+      {s.faq.length > 0 && (
+        <Bagian id="tanya" lebar="max-w-3xl" className="!pt-0">
           <JudulBagian judul={dwi(s.faqJudul, b)} />
           <div className="grid gap-3">
             {s.faq.map((f, i) => (
-              <details key={i} className={`group rounded-2xl px-5 py-4 ${latar === 'buih' ? 'bg-white' : 'bg-buih'}`}>
+              <details key={i} className="group rounded-2xl bg-embun px-5 py-4">
                 <summary className="flex cursor-pointer list-none items-center justify-between gap-4 font-semibold text-laut [&::-webkit-details-marker]:hidden">
                   {dwi(f.tanya, b)}
                   <Ikon nama="bawah" className="size-5 shrink-0 text-biru-tua transition-transform group-open:rotate-180" />
                 </summary>
-                <div className="prosa mt-3 text-laut/85">{paragraf(dwi(f.jawab, b)).map((p, j) => <p key={j}>{p}</p>)}</div>
+                <div className="prosa mt-3 text-laut/80">{paragraf(dwi(f.jawab, b)).map((p, j) => <p key={j}>{p}</p>)}</div>
               </details>
             ))}
           </div>
         </Bagian>
-      ),
-    },
-    {
-      kunci: 'ajakan', gelap: true, ada: true, isi: () => (
-        <section key="ajakan" className="bg-laut-2 text-white">
-          <div className="mx-auto grid max-w-6xl items-center gap-8 px-4 py-16 sm:px-6 md:grid-cols-[auto_1fr] md:py-20">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="/merek/mambe-sapa-stiker.svg" alt="Mambe" width={200} height={220} loading="lazy" className="h-44 w-auto md:h-56" />
-            <div>
-              <h2 className="text-[clamp(2rem,1.5rem+2vw,3rem)] !text-white">{dwi(s.ajakanJudul, b)}</h2>
-              <p className="mt-3 max-w-xl text-lg text-white/80">{dwi(s.ajakanTeks, b)}</p>
-              <div className="mt-6 flex flex-wrap gap-3">
-                <Link href="/pesan" className="tombol">{k.cekTanggal}</Link>
-                {wa && <a href={wa} target="_blank" rel="noopener" className="tombol tombol-putih"><Ikon nama="chat" /> {k.tanyaWa}</a>}
-              </div>
-            </div>
-          </div>
-        </section>
-      ),
-    },
-  ];
-
-  let terang = 0;
-  const isi = bagian.filter((x) => x.ada).map((x) => {
-    if (x.gelap) {
-      terang = 0;
-      return x.isi('laut');
-    }
-    const latar: Latar = terang++ % 2 === 0 ? 'putih' : 'buih';
-    return x.isi(latar);
-  });
-
-  return (
-    <>
-      <section className="bg-buih">
-        <div className="mx-auto grid max-w-6xl items-center gap-10 px-4 pt-10 sm:px-6 lg:grid-cols-[1.05fr_1fr] lg:gap-14 lg:pt-16">
-          <div className="lg:pb-16">
-            <p className="label-kecil">{dwi(s.heroLabel, b)}</p>
-            <h1 className="mt-3 text-[clamp(2.6rem,1.7rem+3.8vw,4.5rem)] font-bold">{dwi(s.heroJudul, b)}</h1>
-            <p className="mt-5 max-w-xl text-lg text-laut/80 sm:text-xl">{dwi(s.heroTeks, b)}</p>
-            <div className="mt-8 flex flex-wrap gap-3">
-              <Link href="/pesan" className="tombol">{k.cekTanggal}</Link>
-              {wa ? (
-                <a href={wa} target="_blank" rel="noopener" className="tombol tombol-putih"><Ikon nama="chat" /> {k.tanyaWa}</a>
-              ) : (
-                <Link href="/kamar" className="tombol tombol-putih">{k.lihatPondok}</Link>
-              )}
-            </div>
-          </div>
-          <div className="relative mx-auto w-full max-w-lg lg:max-w-none">
-            {heroFoto ? (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img src={heroFoto.url} alt={heroFoto.keterangan} width={heroFoto.lebar} height={heroFoto.tinggi} fetchPriority="high" className="aspect-[5/4] w-full rounded-[2rem] object-cover shadow-angkat" />
-            ) : (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img src="/merek/kamar-1.svg" alt="" aria-hidden width={1200} height={800} className="aspect-[5/4] w-full rounded-[2rem] object-cover shadow-angkat" />
-            )}
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="/merek/mambe-sapa-stiker.svg" alt="Mambe" width={200} height={220} className="absolute -bottom-2 -left-3 h-36 w-auto sm:h-44 lg:-left-10 lg:h-52" />
-          </div>
-        </div>
-        <div className="mx-auto max-w-6xl px-4 pt-10 pb-14 sm:px-6 md:pb-20 lg:pt-6">
-          <CariCepat b={b} awal={tambahHari(hari, s.jedaHari)} akhir={tambahHari(hari, s.batasHari)} />
-        </div>
-      </section>
-      {isi}
+      )}
     </>
   );
 }

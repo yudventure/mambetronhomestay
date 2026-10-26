@@ -92,6 +92,7 @@ export type Pesanan = {
 };
 
 type Sorotan = { ikon: string; judul: Dua; teks: Dua };
+type Kata = { ikon: string; teks: Dua };
 type Langkah = { judul: Dua; teks: Dua };
 type Faq = { tanya: Dua; jawab: Dua };
 type Rekening = { bank: string; nomor: string; atasNama: string };
@@ -113,6 +114,8 @@ export type Situs = {
   heroLabel: Dua;
   heroJudul: Dua;
   heroTeks: Dua;
+  heroKata: Kata[];
+  heroVideo: string;
   sorotanJudul: Dua;
   sorotan: Sorotan[];
   kamarJudul: Dua;
@@ -129,6 +132,7 @@ export type Situs = {
   caraSampai: Dua;
   faqJudul: Dua;
   faq: Faq[];
+  ajakanLabel: Dua;
   ajakanJudul: Dua;
   ajakanTeks: Dua;
   checkIn: string;

@@ -13,6 +13,7 @@
   --color-pasir: #f7dfa8;
   --color-buih: #e3f4f7;
   --color-buih-2: #cbe9ef;
+  --color-embun: #f1f8f9;
   --color-abu: #5b6b70;
   --color-merah: #c2412d;
 
@@ -114,8 +115,25 @@
 
   .kartu { background: #fff; border-radius: 1.25rem; box-shadow: var(--shadow-lembut); }
 
+  /* Public pages use small capital button labels with wide spacing, the
+     admin panel keeps plain labels. */
+  .situs .tombol { padding: 0.95em 1.75em; font-size: 0.8125rem; letter-spacing: 0.11em; text-transform: uppercase; }
+  .situs .tombol-kecil { padding: 0.8em 1.35em; font-size: 0.75rem; }
+  .tombol-garis { background: transparent; color: var(--color-laut); box-shadow: inset 0 0 0 1.5px var(--color-laut); }
+  .tombol-garis:hover { background: var(--color-laut); color: #fff; box-shadow: none; }
+  .tombol-garis-putih { background: transparent; color: #fff; box-shadow: inset 0 0 0 1.5px rgb(255 255 255 / 0.7); }
+  .tombol-garis-putih:hover { background: #fff; color: var(--color-laut); box-shadow: none; }
+
+  /* Rounded frame used by the hero, the closing banner and the footer. */
+  .bingkai { border-radius: 1.75rem; }
+  @media (min-width: 640px) { .bingkai { border-radius: 2.25rem; } }
+
   .prosa p + p { margin-top: 1em; }
 }
+
+/* Sideways card rows scroll without a visible bar, arrows sit beside them. */
+.tanpa-bilah { scrollbar-width: none; }
+.tanpa-bilah::-webkit-scrollbar { display: none; }
 
 /* Sheets pinned to the bottom of phone screens. svh keeps them above the
    browser toolbar, vh is the fallback for older browsers. */

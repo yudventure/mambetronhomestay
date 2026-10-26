@@ -79,6 +79,7 @@ function Kolom({ f, nilai, ubah, awalan }: { f: Isian; nilai: unknown; ubah: (v:
       return (
         <fieldset>
           <legend className="label-isian">{f.label}</legend>
+          {f.bantuan && <p className="bantuan -mt-1 mb-3">{f.bantuan}</p>}
           <div className="grid gap-3">
             {baris.map((r, i) => (
               <div key={i} className="rounded-2xl bg-buih p-4">

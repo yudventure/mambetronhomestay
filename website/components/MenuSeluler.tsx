@@ -25,7 +25,7 @@ export default function MenuSeluler({ tautan, label, tutupLabel, bahasa, wa, waL
   return (
     <>
       <button ref={tombol} type="button" onClick={() => setBuka((b) => !b)} aria-expanded={buka} aria-controls="menu-seluler"
-        className="inline-flex size-11 items-center justify-center rounded-full bg-buih text-laut lg:hidden">
+        className="inline-flex size-11 items-center justify-center rounded-full bg-buih text-laut group-data-[bening]/kepala:bg-white lg:hidden">
         <Ikon nama={buka ? 'silang' : 'menu'} className="size-6" />
         <span className="sr-only">{buka ? tutupLabel : label}</span>
       </button>

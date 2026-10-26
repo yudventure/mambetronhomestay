@@ -107,8 +107,10 @@ Tamu mendapat halaman pesanan dengan tautan rahasia. Dari sana tamu melihat reke
 
 Foto disimpan di database supaya tidak hilang saat deploy ulang. Foto diperkecil di peramban menjadi paling lebar 1800 piksel sebelum diunggah.
 
+Halaman utama punya tiga tempat foto di menu Foto situs. Foto utama tampil penuh di belakang judul besar, foto tentang kami tampil di samping kotak rencana menginap, dan foto ajakan tampil di kotak berwarna laut. Selama belum ada foto, situs memakai ilustrasi senja, siang, dan pagi di Raja Ampat yang dibuat oleh `scripts/desain/situs.mjs`. Kartu pondok di bawah foto utama memakai foto pertama tiap pondok.
+
 ## Yang bisa diubah dari panel
 
 Semua yang tampil di situs bisa diubah dari panel, yaitu teks setiap bagian halaman utama, pondok beserta harga dan fotonya, kegiatan tambahan, ulasan, foto situs, kontak, titik peta, rekening, uang muka, jam check-in dan check-out, serta ketentuan menginap.
 
-Pengecualiannya teks tombol dan label formulir, misalnya Pesan sekarang atau Nomor WhatsApp. Teks itu ada di `lib/kamus.ts` dan perlu diubah lewat kode.
+Pengecualiannya teks tombol dan label formulir, misalnya Pesan sekarang, Rencanakan liburanmu, atau Nomor WhatsApp. Teks itu ada di `lib/kamus.ts` dan perlu diubah lewat kode. Hiasan merek seperti wajah Mambe di kotak rencana menginap dan gambar hammock samar di kotak ajakan juga tetap.

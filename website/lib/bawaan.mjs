@@ -55,13 +55,38 @@ export const PENGATURAN = [
     keterangan: 'Semua judul dan teks di halaman utama, urut dari atas ke bawah.',
     isian: [
       { k: 'heroLabel', label: 'Label kecil di atas judul', jenis: 'dua', bawaan: dua('Homestay keluarga di Raja Ampat', 'Family homestay in Raja Ampat') },
-      { k: 'heroJudul', label: 'Judul besar', jenis: 'dua', bawaan: dua('Bangun pagi di atas laut paling biru', 'Wake up above the bluest sea') },
+      {
+        k: 'heroJudul', label: 'Judul besar', jenis: 'duaPanjang', bawaan: dua('Laut.\nPulau.\nKamu.', 'Sea.\nIslands.\nYou.'),
+        bantuan: 'Tiap baris tampil sebagai baris sendiri. Baris terakhir berwarna pasir. Judul pendek tiga baris terlihat paling baik.',
+      },
       {
         k: 'heroTeks', label: 'Teks di bawah judul', jenis: 'duaPanjang', bawaan: dua(
-          'Pondok kayu di tepi laut, ikan segar dari nelayan kampung, dan terumbu karang beberapa langkah dari dermaga. Pesan langsung tanpa perantara.',
-          'Wooden huts by the water, fresh fish from village fishermen and coral a few steps from the jetty. Book direct with no middleman.'),
+          'Pondok kayu di atas laut paling biru, karang selangkah dari dermaga, dan tuan rumah yang hangat.',
+          'Wooden huts above the bluest sea, a reef a step from the jetty and warm hosts.'),
       },
-      { k: 'sorotanJudul', label: 'Judul bagian keunggulan', jenis: 'dua', bawaan: dua('Kenapa menginap di sini', 'Why stay with us') },
+      {
+        k: 'heroKata', label: 'Kata kesan di pojok foto utama', jenis: 'daftar', tambah: 'Tambah kata',
+        bantuan: 'Dua sampai empat kata pendek. Kosongkan semua bila tidak ingin ditampilkan.',
+        isian: [
+          { k: 'ikon', label: 'Ikon', jenis: 'ikon' },
+          { k: 'teks', label: 'Kata', jenis: 'dua' },
+        ],
+        bawaan: [
+          { ikon: 'air', teks: dua('Tenang', 'Calm') },
+          { ikon: 'daun', teks: dua('Alami', 'Natural') },
+          { ikon: 'hati', teks: dua('Hangat', 'Warm') },
+        ],
+      },
+      { k: 'heroVideo', label: 'Tautan video', jenis: 'teks', bawaan: '', bantuan: 'Tautan video YouTube atau Instagram, diawali https://. Bila diisi, tombol putar muncul di foto utama. Kosongkan bila belum ada.' },
+      { k: 'kamarJudul', label: 'Judul di samping kartu pondok', jenis: 'dua', bantuan: 'Juga dipakai sebagai judul halaman semua pondok.', bawaan: dua('Pilih pondokmu', 'Choose your hut') },
+      { k: 'kamarTeks', label: 'Teks di samping kartu pondok', jenis: 'duaPanjang', bawaan: dua('Semua pondok menghadap laut dan sudah termasuk makan tiga kali sehari.', 'Every hut faces the sea and includes three meals a day.') },
+      { k: 'tentangJudul', label: 'Judul bagian tentang kami', jenis: 'dua', bantuan: 'Tampil di samping kotak rencana menginap.', bawaan: dua('Rumah kecil di ujung dermaga', 'A little home at the end of the jetty') },
+      {
+        k: 'tentangTeks', label: 'Teks tentang kami', jenis: 'duaPanjang', bawaan: dua(
+          'Mambetron Homestay adalah rumah singgah keluarga di Raja Ampat. Maskot kami, Mambe, adalah kuskus, hewan pemalu bermata besar yang suka mengintip dari balik dahan hutan pulau.\n\nDi sini hari dimulai dengan matahari terbit di atas laut dan ditutup dengan obrolan di dermaga. Tidak ada yang terburu-buru. Kamu cukup datang, kami yang urus sisanya.',
+          'Mambetron Homestay is a family guesthouse in Raja Ampat. Our mascot Mambe is a cuscus, the shy big-eyed animal that peeks out from the branches of the island forest.\n\nDays here start with sunrise over the sea and end with stories on the jetty. Nobody is in a hurry. Just come, we will take care of the rest.'),
+      },
+      { k: 'sorotanJudul', label: 'Judul bagian keunggulan', jenis: 'dua', bantuan: 'Tidak tampil di layar. Dibaca oleh pembaca layar dan mesin pencari.', bawaan: dua('Kenapa menginap di sini', 'Why stay with us') },
       {
         k: 'sorotan', label: 'Keunggulan', jenis: 'daftar', tambah: 'Tambah keunggulan',
         isian: [
@@ -76,17 +101,12 @@ export const PENGATURAN = [
           { ikon: 'hati', judul: dua('Tuan rumah yang hangat', 'Warm hosts'), teks: dua('Kami mengenal setiap sudut pulau dan senang berbagi cerita kampung.', 'We know every corner of the island and love sharing village stories.') },
         ],
       },
-      { k: 'kamarJudul', label: 'Judul bagian pondok', jenis: 'dua', bawaan: dua('Pilih pondokmu', 'Choose your hut') },
-      { k: 'kamarTeks', label: 'Teks bagian pondok', jenis: 'duaPanjang', bawaan: dua('Semua pondok menghadap laut dan sudah termasuk makan tiga kali sehari.', 'Every hut faces the sea and includes three meals a day.') },
-      { k: 'tentangJudul', label: 'Judul bagian tentang kami', jenis: 'dua', bawaan: dua('Rumah kecil di ujung dermaga', 'A little home at the end of the jetty') },
-      {
-        k: 'tentangTeks', label: 'Teks tentang kami', jenis: 'duaPanjang', bawaan: dua(
-          'Mambetron Homestay adalah rumah singgah keluarga di Raja Ampat. Maskot kami, Mambe, adalah kuskus, hewan pemalu bermata besar yang suka mengintip dari balik dahan hutan pulau.\n\nDi sini hari dimulai dengan matahari terbit di atas laut dan ditutup dengan obrolan di dermaga. Tidak ada yang terburu-buru. Kamu cukup datang, kami yang urus sisanya.',
-          'Mambetron Homestay is a family guesthouse in Raja Ampat. Our mascot Mambe is a cuscus, the shy big-eyed animal that peeks out from the branches of the island forest.\n\nDays here start with sunrise over the sea and end with stories on the jetty. Nobody is in a hurry. Just come, we will take care of the rest.'),
-      },
-      { k: 'galeriJudul', label: 'Judul bagian galeri foto', jenis: 'dua', bawaan: dua('Sehari di Mambetron', 'A day at Mambetron') },
+      { k: 'ajakanLabel', label: 'Label kecil di kotak ajakan', jenis: 'dua', bawaan: dua('Pesan langsung', 'Book direct') },
+      { k: 'ajakanJudul', label: 'Judul kotak ajakan', jenis: 'dua', bawaan: dua('Laut sudah menunggu', 'The sea is waiting') },
+      { k: 'ajakanTeks', label: 'Teks kotak ajakan', jenis: 'duaPanjang', bawaan: dua('Cek tanggal kosong dan amankan pondokmu sekarang.', 'Check open dates and secure your hut now.') },
       { k: 'layananJudul', label: 'Judul bagian kegiatan', jenis: 'dua', bawaan: dua('Kegiatan dan antar jemput', 'Trips and transfers') },
       { k: 'layananTeks', label: 'Teks bagian kegiatan', jenis: 'duaPanjang', bawaan: dua('Tambahkan saat memesan atau tanyakan langsung ke kami.', 'Add them when you book or just ask us.') },
+      { k: 'galeriJudul', label: 'Judul bagian galeri foto', jenis: 'dua', bawaan: dua('Sehari di Mambetron', 'A day at Mambetron') },
       { k: 'ulasanJudul', label: 'Judul bagian ulasan', jenis: 'dua', bawaan: dua('Kata tamu', 'What guests say') },
       { k: 'caraJudul', label: 'Judul bagian cara memesan', jenis: 'dua', bawaan: dua('Cara memesan', 'How to book') },
       {
@@ -121,8 +141,6 @@ export const PENGATURAN = [
           { tanya: dua('Bisakah membatalkan pesanan?', 'Can I cancel?'), jawab: dua('Bisa. Aturan pengembalian uang muka ada di halaman ketentuan menginap.', 'Yes. The deposit refund rules are on the house rules page.') },
         ],
       },
-      { k: 'ajakanJudul', label: 'Judul ajakan di bawah', jenis: 'dua', bawaan: dua('Laut sudah menunggu', 'The sea is waiting') },
-      { k: 'ajakanTeks', label: 'Teks ajakan di bawah', jenis: 'duaPanjang', bawaan: dua('Cek tanggal kosong dan amankan pondokmu sekarang.', 'Check open dates and secure your hut now.') },
     ],
   },
   {
@@ -194,9 +212,25 @@ export function rapikan(f, v) {
 }
 
 // Stored settings over the defaults, so fields added later get their default.
+// Defaults from earlier versions. Saving any settings section stores every
+// field, so an untouched default stays in the database. A stored value that
+// still equals an old default is treated as unset and takes the current one.
+const BAWAAN_LAMA = {
+  heroJudul: [dua('Bangun pagi di atas laut paling biru', 'Wake up above the bluest sea')],
+  heroTeks: [dua(
+    'Pondok kayu di tepi laut, ikan segar dari nelayan kampung, dan terumbu karang beberapa langkah dari dermaga. Pesan langsung tanpa perantara.',
+    'Wooden huts by the water, fresh fish from village fishermen and coral a few steps from the jetty. Book direct with no middleman.')],
+};
+const samaDua = (a, b) => a && typeof a === 'object' && a.id === b.id && a.en === b.en;
+
 export function gabungSitus(simpanan) {
   const o = {};
-  for (const g of PENGATURAN) for (const f of g.isian) o[f.k] = rapikan(f, simpanan?.[f.k]);
+  for (const g of PENGATURAN) {
+    for (const f of g.isian) {
+      const v = simpanan?.[f.k];
+      o[f.k] = rapikan(f, BAWAAN_LAMA[f.k]?.some((x) => samaDua(v, x)) ? undefined : v);
+    }
+  }
   return o;
 }
 
