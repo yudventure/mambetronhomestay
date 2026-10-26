@@ -1,11 +1,12 @@
 import path from 'path';
-import type { NextConfig } from 'next';
+import { fileURLToPath } from 'url';
 
 // The repo root holds the brand build with its own package.json, so pin the
 // app root to this folder.
-const akar = path.resolve(__dirname);
+const akar = path.dirname(fileURLToPath(import.meta.url));
 
-const config: NextConfig = {
+/** @type {import('next').NextConfig} */
+const config = {
   poweredByHeader: false,
   outputFileTracingRoot: akar,
   turbopack: { root: akar },

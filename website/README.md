@@ -1,6 +1,6 @@
 # Situs pemesanan Mambetron Homestay
 
-Situs ini dibuat dengan Next.js 16, Tailwind CSS 4, dan database MySQL. Isinya halaman utama, daftar pondok, pemesanan dengan kalender tanggal kosong, halaman pesanan untuk tamu, dan panel pengelola di `/admin`. Bahasa Indonesia dan Inggris.
+Situs ini dibuat dengan Next.js 16.2, Tailwind CSS 4, dan database MySQL. Isinya halaman utama, daftar pondok, pemesanan dengan kalender tanggal kosong, halaman pesanan untuk tamu, dan panel pengelola di `/admin`. Bahasa Indonesia dan Inggris.
 
 Situs tetap bisa dibangun dan dibuka walau environment variables masih kosong. Tanpa database, situs tampil dengan isi bawaan dan tombol kirim pesanan belum aktif. Setelah database diisi, tabel dan isi awal dibuat sendiri pada kunjungan pertama.
 
@@ -51,6 +51,10 @@ Root directory wajib diubah ke `./website`. Bila dibiarkan `./`, Hostinger akan 
 Berkas `server.js` menjalankan hasil build sama seperti `npm start`. Berkas ini dipakai bila Hostinger menjalankan aplikasi dengan `node server.js`, misalnya saat preset Other dipilih.
 
 Port diatur Hostinger sendiri lewat variabel `PORT`, tidak perlu diisi.
+
+### Catatan versi Next.js
+
+Next.js sengaja dikunci di versi 16.2.12. Mulai versi 16.3, mesin kompilasi Next.js butuh pustaka sistem glibc 2.30, sedangkan server build Hostinger memakai versi yang lebih lama, sehingga build gagal dengan pesan tentang `GLIBC_2.29` atau `@next/swc-linux-x64-gnu`. Jangan menaikkan versi Next.js sebelum memastikan server Hostinger sudah mendukungnya.
 
 ### Environment variables
 
