@@ -3,13 +3,29 @@
 // variable in hPanel is easy to spot. The password itself is never shown.
 import { dbDiatur, diagnosaDb } from '@/lib/env';
 
+// What a database reply means for the owner, in plain words.
+export function saranDb(pesan: string) {
+  const p = pesan.toLowerCase();
+  const saran: string[] = [];
+  if (p.includes('access denied')) saran.push('Server database menolak nama pengguna atau kata sandinya. Samakan DB_PASSWORD dengan kata sandi database di hPanel, menu Databases, tombol titik tiga, ubah kata sandi. Lalu jalankan Redeploy.');
+  if (p.includes('unknown database')) saran.push('Nama database tidak ditemukan. Periksa DB_NAME, harus sama persis dengan nama di menu Databases.');
+  if (/econnrefused|enoent|etimedout|enotfound|ehostunreach|can't connect/.test(p)) saran.push('Ada alamat yang tidak bisa dijangkau. Bila semua alamat gagal, buka menu Databases di hPanel, lihat host MySQL yang tertulis di sana, lalu isi DB_HOST dengan host itu.');
+  return saran;
+}
+
 export default function DiagnosaDb({ pesan }: { pesan: string }) {
   const d = diagnosaDb();
   const diatur = dbDiatur();
+  const saran = saranDb(pesan);
   return (
     <div className="kartu max-w-3xl p-6 sm:p-8">
       <h1 className="text-3xl">Database belum terhubung</h1>
-      <p className="mt-3 text-abu">{pesan}</p>
+      <p className="mt-3 text-abu [overflow-wrap:anywhere]">{pesan}</p>
+      {saran.length > 0 && (
+        <div className="mt-4 grid gap-2">
+          {saran.map((x) => <p key={x} className="rounded-2xl bg-[#fbe4df] px-4 py-3 font-semibold text-merah">{x}</p>)}
+        </div>
+      )}
 
       <h2 className="mt-6 text-xl">Yang terbaca dari environment variables</h2>
       <ul className="mt-3 grid gap-2">

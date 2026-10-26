@@ -45,6 +45,7 @@ export function envDb() {
     user: pertama(NAMA_DB.user) || u?.user || '',
     password: sandi ?? u?.password ?? '',
     database: pertama(NAMA_DB.database) || u?.database || '',
+    socket: baca('DB_SOCKET'),
   };
 }
 

@@ -80,7 +80,9 @@ Semua nilai dibaca saat aplikasi berjalan. Bila nilai diubah di hPanel, mulai ul
 | `EMAIL_ADMIN` | Tidak | Surel pemilik untuk masuk panel, sekaligus penerima pemberitahuan pesanan baru. Bila kosong, dipakai `SMTP_USER`, lalu `halo@mambetronhomestay.com` |
 | `EMAIL_DEVELOPER` | Tidak | Surel pengembang yang juga boleh masuk panel. Boleh lebih dari satu, dipisah koma |
 
-Variabel database juga terbaca dengan nama lain yang sering dipakai, yaitu `DB_DATABASE`, `DB_USERNAME`, `DB_PASS`, awalan `MYSQL_`, atau satu `DATABASE_URL` berbentuk `mysql://pengguna:sandi@host:3306/nama`. Selama database belum terhubung, panel menampilkan nilai mana yang terbaca dan mana yang kosong, tanpa menampilkan kata sandinya.
+Untuk host `localhost`, aplikasi mencoba soket MySQL lebih dulu, lalu `127.0.0.1`, lalu nama host itu sendiri. Node bisa membaca `localhost` sebagai alamat IPv6 `::1`, padahal MySQL di hosting bersama biasanya hanya mendengar di IPv4 atau soket. Jalur soket tertentu bisa dipaksa dengan `DB_SOCKET`.
+
+Variabel database juga terbaca dengan nama lain yang sering dipakai, yaitu `DB_DATABASE`, `DB_USERNAME`, `DB_PASS`, awalan `MYSQL_`, atau satu `DATABASE_URL` berbentuk `mysql://pengguna:sandi@host:3306/nama`. Selama database belum terhubung, panel menampilkan nilai mana yang terbaca dan mana yang kosong tanpa menampilkan kata sandinya, jawaban server untuk tiap alamat yang dicoba, dan arti jawaban itu, misalnya kata sandi database ditolak.
 
 Berkas `.env` berisi kata sandi tidak boleh masuk GitHub. Berkas itu sudah ada di `.gitignore`.
 
