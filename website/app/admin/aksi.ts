@@ -148,7 +148,7 @@ export async function hapusKamar(fd: FormData) {
 
 // Photos, already resized in the browser.
 const JENIS_FOTO = ['image/jpeg', 'image/png', 'image/webp'];
-const WADAH = ['kamar', 'beranda', 'berandaHp', 'tentang', 'ajakan', 'galeri'];
+const WADAH = ['kamar', 'beranda', 'berandaHp', 'unggulan', 'tentang', 'ajakan', 'galeri'];
 
 export async function unggahFoto(fd: FormData): Promise<{ galat: string }> {
   await wajibMasuk();

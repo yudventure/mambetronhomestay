@@ -9,7 +9,7 @@ import Peta, { koordinat } from '@/components/Peta';
 import { bahasaAktif } from '@/lib/bahasa';
 import { ambilSitus, daftarKamar, daftarLayanan, daftarUlasan, fotoSitus, gambarCadangan } from '@/lib/data';
 import { kamus } from '@/lib/kamus';
-import { dwi, paragraf, pilih, rupiah, tautanWa } from '@/lib/format';
+import { dwi, paragraf, pilih, rupiah, tautanLuar, tautanWa } from '@/lib/format';
 import { KISI, kisiSorotan, rentang } from '@/lib/kisi';
 import { SATUAN } from '@/lib/satuan.mjs';
 import { hariIni, tambahHari } from '@/lib/tanggal';
@@ -17,6 +17,8 @@ import { kursAktif } from '@/lib/uang-server';
 
 const JUDUL = 'text-[clamp(2.1rem,1.5rem+2.4vw,3.25rem)]';
 const WARNA_INISIAL = ['bg-biru-tua', 'bg-laut', 'bg-aksen', 'bg-laut-2'];
+// Reviewer circles, in the colours Booking.com gives the default reviewers.
+const WARNA_WAJAH = ['bg-aksen', 'bg-[#d6336c]', 'bg-[#0a7d33]', 'bg-[#4c7fe0]', 'bg-[#0a7d33]', 'bg-[#5c6bc0]'];
 
 export default async function Beranda() {
   const [b, s, kamar, layanan, ulasan, foto, kurs] = await Promise.all([
@@ -33,41 +35,84 @@ export default async function Beranda() {
   const angka1 = new Intl.NumberFormat(b === 'en' ? 'en-US' : 'id-ID', { minimumFractionDigits: 1, maximumFractionDigits: 1 });
   const g = kisiSorotan(s.sorotan.length);
 
-  const kartuPondok = kamar.map((x, i) => {
-    const f = x.foto[0];
+  // Feature cards under the hero. {harga} in a card text becomes the cheapest
+  // hut's rate, with the foreign currency estimate under it.
+  const termurah = kamar.reduce<(typeof kamar)[number] | undefined>((m, x) => (!m || x.harga < m.harga ? x : m), undefined);
+  const unggulan = s.unggulan.filter((x) => dwi(x.judul, b) || dwi(x.teks, b));
+  const kartuUnggulan = unggulan.map((x, i) => {
+    const f = foto.unggulan[i];
+    const teks = dwi(x.teks, b);
+    const adaHarga = teks.includes('{harga}');
+    const potong = teks.split('{harga}');
     return (
-      <Link key={x.id} href={`/kamar/${x.slug}`}
-        className={`group relative block overflow-hidden rounded-[1.6rem] bg-laut shadow-lembut ring-[5px] ring-white ${kamar.length === 1 ? 'aspect-[2/1]' : 'aspect-[4/3.3]'}`}>
+      <div key={i} className={`relative overflow-hidden rounded-[1.6rem] bg-laut shadow-lembut ring-[5px] ring-white ${unggulan.length === 1 ? 'aspect-[2/1]' : 'aspect-[4/3.3]'}`}>
         {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src={f?.url ?? gambarCadangan(i)} alt="" loading="lazy" width={f?.lebar || 1200} height={f?.tinggi || 800}
-          className="absolute inset-0 size-full object-cover transition-transform duration-700 group-hover:scale-[1.04]" />
-        <div aria-hidden className="absolute inset-0 bg-gradient-to-t from-laut-3/90 via-laut-3/20 to-transparent" />
-        <div className="absolute inset-x-0 bottom-0 flex items-end justify-between gap-4 p-5 text-white">
-          <div>
-            <h3 className="text-[1.6rem] leading-[1.02] text-white">{pilih(b, x.nama, x.nama_en)}</h3>
-            <p className="mt-1 text-sm text-white/80">{k.mulai} {rupiah(x.harga, b)}</p>
-            <Perkiraan idr={x.harga} kurs={kurs} b={b} className="text-white/65" />
+        <img src={f?.url ?? gambarCadangan(i)} alt={f?.keterangan ?? ''} loading="lazy" width={f?.lebar || 1200} height={f?.tinggi || 800}
+          className="absolute inset-0 size-full object-cover" />
+        <div aria-hidden className="absolute inset-0 bg-gradient-to-t from-laut-3/95 via-laut-3/35 to-transparent" />
+        <div className="absolute inset-x-0 bottom-0 p-5 text-white">
+          <div className="flex items-baseline justify-between gap-3">
+            <h3 className="text-[1.6rem] leading-[1.02] text-white">{dwi(x.judul, b)}</h3>
+            <span className="font-judul text-2xl text-white/90">{String(i + 1).padStart(2, '0')}</span>
           </div>
-          <span className="font-judul text-2xl text-white/90">{String(i + 1).padStart(2, '0')}</span>
+          {/* Same height under every title so the titles line up across cards. */}
+          <div className="min-h-[3.9rem]">
+            {teks && (!adaHarga || termurah) && (
+              <p className="mt-1.5 text-sm leading-snug text-white/85">
+                {potong.map((p, j) => (
+                  <span key={j}>
+                    {j > 0 && termurah && <><span className="font-semibold whitespace-nowrap text-white">{rupiah(termurah.harga, b)}</span> {k.perSkema[termurah.skema_harga]}</>}
+                    {p}
+                  </span>
+                ))}
+              </p>
+            )}
+            {adaHarga && termurah && <Perkiraan idr={termurah.harga} kurs={kurs} b={b} className="mt-0.5 text-white/65" />}
+          </div>
         </div>
-      </Link>
+      </div>
     );
   });
+  const skor = Number(s.ulasanSkor.replace(',', '.'));
+  const wajah = s.ulasanWajah.filter((x) => x.nama.trim() || x.huruf.trim()).slice(0, 6);
+  const sumber = s.ulasanSumber.trim();
+  const tautanUlasan = tautanLuar(s.ulasanTautan);
 
   return (
     <>
       <Pahlawan b={b} s={s} foto={foto.beranda[0]} fotoHp={foto.berandaHp[0]} />
 
-      {kamar.length > 0 && (
+      {kartuUnggulan.length > 0 && (
         <section id="pondok" className="relative z-10 mx-auto -mt-16 max-w-6xl scroll-mt-28 px-4 sm:-mt-24 sm:px-6">
           <GeserPondok
-            kartu={kartuPondok}
+            kartu={kartuUnggulan}
             label={k.geser}
             samping={(
               <div className="lg:pr-2">
                 <h2 className="text-[1.75rem]">{dwi(s.kamarJudul, b)}</h2>
                 <p className="mt-2 text-[0.95rem] text-abu">{dwi(s.kamarTeks, b)}</p>
-                {ulasan.length > 0 && (
+                {skor > 0 ? (
+                  <div className="mt-5">
+                    {wajah.length > 0 && (
+                      <div className="flex -space-x-2" aria-hidden>
+                        {wajah.map((x, i) => (
+                          <span key={i} title={x.nama} className={`inline-flex size-9 items-center justify-center rounded-full text-sm font-bold text-white ring-[3px] ring-white ${WARNA_WAJAH[i % WARNA_WAJAH.length]}`}>
+                            {(x.huruf.trim() || x.nama.trim()).charAt(0).toUpperCase()}
+                          </span>
+                        ))}
+                      </div>
+                    )}
+                    <div className="mt-3 flex items-center gap-3">
+                      <span className="rounded-xl rounded-bl-sm bg-laut px-2.5 py-2 font-judul text-xl leading-none text-white tabular-nums">{angka1.format(skor)}</span>
+                      <p className="text-sm leading-tight text-abu">
+                        {sumber && (tautanUlasan
+                          ? <a href={tautanUlasan} target="_blank" rel="noopener" className="block font-bold text-laut hover:underline">{sumber}</a>
+                          : <span className="block font-bold text-laut">{sumber}</span>)}
+                        {k.nilaiTamu(s.ulasanSkala)}
+                      </p>
+                    </div>
+                  </div>
+                ) : ulasan.length > 0 && (
                   <div className="mt-5">
                     <div className="flex -space-x-2" aria-hidden>
                       {ulasan.slice(0, 3).map((u, i) => (

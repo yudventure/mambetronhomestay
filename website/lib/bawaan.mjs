@@ -78,8 +78,41 @@ export const PENGATURAN = [
         bawaan: [],
       },
       { k: 'heroVideo', label: 'Tautan video', jenis: 'teks', bawaan: '', bantuan: 'Tautan video YouTube atau Instagram, diawali https://. Bila diisi, tombol putar muncul di foto utama. Kosongkan bila belum ada.' },
-      { k: 'kamarJudul', label: 'Judul di samping kartu pondok', jenis: 'dua', bantuan: 'Juga dipakai sebagai judul halaman semua pondok.', bawaan: dua('Pilih pondokmu', 'Choose your hut') },
-      { k: 'kamarTeks', label: 'Teks di samping kartu pondok', jenis: 'duaPanjang', bawaan: dua('Semua pondok menghadap laut dan sudah termasuk makan tiga kali sehari.', 'Every hut faces the sea and includes three meals a day.') },
+      {
+        k: 'unggulan', label: 'Kartu keunggulan di bawah foto utama', jenis: 'daftar', tambah: 'Tambah kartu',
+        bantuan: 'Tiga kartu terlihat paling baik. Tulis {harga} di teks untuk menampilkan harga pondok termurah, lengkap dengan perkiraan dalam mata uang asing. Foto tiap kartu diunggah di Foto situs.',
+        isian: [
+          { k: 'judul', label: 'Judul', jenis: 'dua' },
+          { k: 'teks', label: 'Teks', jenis: 'duaPanjang' },
+        ],
+        bawaan: [
+          { judul: dua('Kamar tepi pantai', 'Beachfront huts'), teks: dua('Setiap pondok langsung menghadap ke laut.', 'Every hut looks straight out to sea.') },
+          { judul: dua('Harga terjangkau', 'Affordable rates'), teks: dua('Mulai {harga}.', 'From {harga}.') },
+          { judul: dua('Wifi dan makan', 'Wi-Fi and meals'), teks: dua('Ada wifi, dan makan tiga kali sehari sudah termasuk harga.', 'Wi-Fi on site, and three meals a day are in the rate.') },
+        ],
+      },
+      { k: 'kamarJudul', label: 'Judul di samping kartu keunggulan', jenis: 'dua', bantuan: 'Juga dipakai sebagai judul halaman semua pondok.', bawaan: dua('Pilih pondokmu', 'Choose your hut') },
+      { k: 'kamarTeks', label: 'Teks di samping kartu keunggulan', jenis: 'duaPanjang', bawaan: dua('Semua pondok menghadap laut dan sudah termasuk makan tiga kali sehari.', 'Every hut faces the sea and includes three meals a day.') },
+      { k: 'ulasanSkor', label: 'Nilai ulasan di samping kartu', jenis: 'teks', bawaan: '8,7', bantuan: 'Nilai dari situs ulasan, misalnya 8,7. Kosongkan bila tidak ingin ditampilkan.' },
+      { k: 'ulasanSkala', label: 'Nilai tertinggi di situs ulasan', jenis: 'angka', bawaan: 10, min: 1, max: 100, bantuan: 'Booking.com memakai 10, Google memakai 5.' },
+      { k: 'ulasanSumber', label: 'Nama situs ulasan', jenis: 'teks', bawaan: 'Booking.com' },
+      { k: 'ulasanTautan', label: 'Tautan halaman ulasan', jenis: 'teks', bawaan: '', bantuan: 'Tautan halaman Mambetron di situs ulasan. Bila diisi, nama situs ulasan bisa diklik.' },
+      {
+        k: 'ulasanWajah', label: 'Lingkaran tamu di samping nilai', jenis: 'daftar', tambah: 'Tambah tamu',
+        bantuan: 'Tamu yang mengulas di situs ulasan. Tiap tamu tampil sebagai lingkaran berisi satu huruf, paling banyak enam.',
+        isian: [
+          { k: 'nama', label: 'Nama', jenis: 'teks' },
+          { k: 'huruf', label: 'Huruf di lingkaran', jenis: 'teks', bantuan: 'Kosongkan untuk memakai huruf pertama nama.' },
+        ],
+        bawaan: [
+          { nama: 'Adam', huruf: 'A' },
+          { nama: 'Rijnders', huruf: 'L' },
+          { nama: 'Linda', huruf: 'L' },
+          { nama: 'Justyna', huruf: 'J' },
+          { nama: 'Jeroen', huruf: 'J' },
+          { nama: 'Christopher', huruf: 'C' },
+        ],
+      },
       { k: 'tentangJudul', label: 'Judul bagian tentang kami', jenis: 'dua', bantuan: 'Tampil di samping kotak rencana menginap.', bawaan: dua('Rumah kecil di ujung dermaga', 'A little home at the end of the jetty') },
       {
         k: 'tentangTeks', label: 'Teks tentang kami', jenis: 'duaPanjang', bawaan: dua(

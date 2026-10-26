@@ -19,6 +19,10 @@ export default async function FotoAdmin() {
           <KelolaFoto wadah="berandaHp" foto={foto.berandaHp} catatan="Latar bagian paling atas di layar ponsel. Pakai foto tegak, misalnya 9 banding 16. Hanya foto pertama yang dipakai. Tanpa foto ini, ponsel memakai foto utama di atas bila ada, kalau tidak foto tegak dermaga pondok yang sudah terpasang di situs." />
         </section>
         <section className="kartu p-5 sm:p-6">
+          <h2 className="mb-1 text-2xl">Foto kartu keunggulan</h2>
+          <KelolaFoto wadah="unggulan" foto={foto.unggulan} catatan="Tiga kartu di bawah foto utama, misalnya kamar tepi pantai, harga, serta wifi dan makan. Foto pertama untuk kartu pertama, foto kedua untuk kartu kedua, dan seterusnya. Urutkan dengan tombol panah. Kartu tanpa foto memakai ilustrasi laut. Judul dan teks kartu diubah di Isi situs." />
+        </section>
+        <section className="kartu p-5 sm:p-6">
           <h2 className="mb-1 text-2xl">Foto bagian tentang kami</h2>
           <KelolaFoto wadah="tentang" foto={foto.tentang} catatan="Tampil besar di samping kotak rencana menginap. Hanya foto pertama yang dipakai. Tanpa foto, situs memakai ilustrasi pondok di siang hari." />
         </section>
