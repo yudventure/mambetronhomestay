@@ -149,6 +149,8 @@ const id = {
   },
   kaki: {
     ikuti: 'Ikuti kami',
+    surel: 'Surel',
+    masukOperator: 'Masuk operator',
     pesanLangsung: 'Pesan langsung',
     ketentuan: 'Ketentuan menginap',
     hubungi: 'Hubungi kami',
@@ -314,6 +316,8 @@ const en: Kamus = {
   },
   kaki: {
     ikuti: 'Follow us',
+    surel: 'Email',
+    masukOperator: 'Operator sign in',
     pesanLangsung: 'Book direct',
     ketentuan: 'House rules',
     hubungi: 'Contact us',

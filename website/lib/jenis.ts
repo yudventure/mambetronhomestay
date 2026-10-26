@@ -108,6 +108,9 @@ export type Situs = {
   whatsapp: string;
   email: string;
   instagram: string;
+  facebook: string;
+  tiktok: string;
+  youtube: string;
   alamat: Dua;
   petaKoordinat: string;
   petaTautan: string;

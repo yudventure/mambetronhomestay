@@ -32,6 +32,23 @@ export function waktu(s: string, b: Bahasa = 'id') {
 
 export const nomorWa = (s: string) => s.replace(/[^\d]/g, '').replace(/^0/, '62');
 
+// A WhatsApp number as people read it, +62 813-9084-9237.
+export function tampilWa(s: string) {
+  const n = nomorWa(s);
+  if (!n) return '';
+  const m = n.match(/^62(\d{3})(\d{3,4})(\d{3,4})$/);
+  return m ? `+62 ${m[1]}-${m[2]}-${m[3]}` : `+${n}`;
+}
+
+// An outside link typed in the admin panel. Adds https when missing and
+// drops anything that is not a plain web address.
+export function tautanLuar(s: string) {
+  const t = s.trim();
+  if (!t || /\s/.test(t)) return '';
+  if (/^https?:\/\//i.test(t)) return t;
+  return /^[\w-]+(\.[\w-]+)+(\/|$)/.test(t) ? `https://${t}` : '';
+}
+
 export function tautanWa(nomor: string, pesan = '') {
   const n = nomorWa(nomor);
   if (!n) return '';

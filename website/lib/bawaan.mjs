@@ -40,11 +40,14 @@ export const PENGATURAN = [
   {
     kunci: 'kontak',
     judul: 'Kontak dan lokasi',
-    keterangan: 'Nomor WhatsApp dipakai untuk semua tombol WhatsApp di situs.',
+    keterangan: 'Nomor WhatsApp dipakai untuk semua tombol WhatsApp di situs. Nomor, surel, dan media sosial tampil di kolom Hubungi kami di kaki halaman.',
     isian: [
-      { k: 'whatsapp', label: 'Nomor WhatsApp', jenis: 'teks', bawaan: '', bantuan: 'Tulis dengan kode negara tanpa tanda plus, misalnya 6281234567890.' },
-      { k: 'email', label: 'Surel', jenis: 'teks', bawaan: '' },
-      { k: 'instagram', label: 'Akun Instagram', jenis: 'teks', bawaan: 'mambetronhomestay', bantuan: 'Tanpa tanda @.' },
+      { k: 'whatsapp', label: 'Nomor WhatsApp', jenis: 'teks', bawaan: '6281390849237', bantuan: 'Tulis dengan kode negara tanpa tanda plus, misalnya 6281234567890.' },
+      { k: 'email', label: 'Surel', jenis: 'teks', bawaan: 'halo@mambetronhomestay.com' },
+      { k: 'instagram', label: 'Akun Instagram', jenis: 'teks', bawaan: 'mambetronhomestay', bantuan: 'Tanpa tanda @. Kosongkan bila ikon Instagram tidak ingin ditampilkan.' },
+      { k: 'facebook', label: 'Tautan Facebook', jenis: 'teks', bawaan: 'https://www.facebook.com/', bantuan: 'Tempel tautan lengkap halaman Facebook. Selama belum diganti, ikonnya membuka halaman depan Facebook. Kosongkan bila ikon tidak ingin ditampilkan.' },
+      { k: 'tiktok', label: 'Tautan TikTok', jenis: 'teks', bawaan: 'https://www.tiktok.com/', bantuan: 'Tempel tautan lengkap akun TikTok. Selama belum diganti, ikonnya membuka halaman depan TikTok. Kosongkan bila ikon tidak ingin ditampilkan.' },
+      { k: 'youtube', label: 'Tautan YouTube', jenis: 'teks', bawaan: 'https://www.youtube.com/', bantuan: 'Tempel tautan lengkap kanal YouTube. Selama belum diganti, ikonnya membuka halaman depan YouTube. Kosongkan bila ikon tidak ingin ditampilkan.' },
       { k: 'alamat', label: 'Alamat', jenis: 'duaPanjang', bawaan: dua('', '') },
       { k: 'petaKoordinat', label: 'Titik peta', jenis: 'teks', bawaan: '', bantuan: 'Garis lintang dan bujur dari Google Maps, misalnya -0.4312, 130.6411. Kosongkan bila belum ingin menampilkan peta.' },
       { k: 'petaTautan', label: 'Tautan Google Maps', jenis: 'teks', bawaan: '', bantuan: 'Salin dari tombol Bagikan di Google Maps.' },
@@ -247,6 +250,8 @@ export function rapikan(f, v) {
 // field, so an untouched default stays in the database. A stored value that
 // still equals an old default is treated as unset and takes the current one.
 const BAWAAN_LAMA = {
+  whatsapp: [''],
+  email: [''],
   heroLabel: [dua('Homestay keluarga di Raja Ampat', 'Family homestay in Raja Ampat')],
   heroJudul: [dua('Bangun pagi di atas laut paling biru', 'Wake up above the bluest sea')],
   heroTeks: [

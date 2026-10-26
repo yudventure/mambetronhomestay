@@ -111,11 +111,19 @@ Halaman utama punya empat tempat foto di menu Foto situs. Foto utama tampil penu
 
 ## Bahasa dan mata uang
 
-Tombol berikon bola dunia di kepala halaman membuka pilihan bahasa, Indonesia atau Inggris. Pilihan disimpan di kuki peramban pengunjung.
+Tombol berikon bola dunia di kepala halaman membuka pilihan bahasa, Indonesia atau Inggris. Pilihan disimpan di kuki peramban pengunjung. Kaki halaman tidak punya tombol bahasa lagi.
 
 Harga selalu diisi, ditampilkan, dan dibayar dalam rupiah. Di bawah harga pondok, harga kegiatan, total di formulir pesan, serta total dan uang muka di halaman pesanan ada satu baris kecil berisi perkiraannya dalam dolar Amerika, euro, yen, dan yuan.
 
 Kurs diambil dari kurs acuan Bank Sentral Eropa lewat Frankfurter (`api.frankfurter.app`, tanpa kunci API) dan disimpan 12 jam. Bila server tidak bisa mengambilnya, situs memakai kurs yang diisi di Isi situs, bagian Mata uang, lalu mencoba lagi setelah 30 menit. Kurs otomatis bisa dimatikan di bagian yang sama. Alamat sumber kurs bisa diganti lewat environment variable `KURS_URL` bila perlu.
+
+## Kaki halaman
+
+Kaki halaman punya tiga kolom. Kolom kiri berisi logo dan teks singkat, kolom tengah tautan pemesanan, dan kolom kanan Hubungi kami dengan nomor WhatsApp, surel, dan ikon Instagram, Facebook, TikTok, serta YouTube. Semuanya diisi di Isi situs, bagian Kontak dan lokasi. Ikon yang kolomnya dikosongkan tidak tampil.
+
+Nomor WhatsApp dan surel punya isian bawaan, jadi tampil walau kolomnya di panel masih kosong. Facebook, TikTok, dan YouTube untuk sementara membuka halaman depan masing-masing sampai tautan akun asli diisi.
+
+Di pita paling bawah ada tombol Masuk operator yang membuka `/admin`. Operator yang belum masuk diarahkan ke halaman masuk.
 
 ## Mode pengembang
 
