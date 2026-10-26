@@ -135,6 +135,9 @@ export type Situs = {
   ajakanLabel: Dua;
   ajakanJudul: Dua;
   ajakanTeks: Dua;
+  tutup: boolean;
+  tutupJudul: Dua;
+  tutupTeks: Dua;
   checkIn: string;
   checkOut: string;
   dpPersen: number;

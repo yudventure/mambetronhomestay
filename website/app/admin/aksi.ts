@@ -72,6 +72,20 @@ export async function simpanPengaturan(_: { pesan: string; ok: boolean }, fd: Fo
   return { pesan: 'Tersimpan. Perubahan langsung tampil di situs.', ok: true };
 }
 
+// Developer mode switch on the dashboard. Closes or reopens the public site.
+export async function aturTutup(fd: FormData) {
+  await wajibMasuk();
+  const r = await satu<{ nilai: string }>("SELECT nilai FROM pengaturan WHERE kunci = 'situs'");
+  const baru = gabungSitus(r ? JSON.parse(r.nilai) : {}) as Record<string, unknown>;
+  baru.tutup = fd.get('tutup') === 'ya';
+  await jalankan(
+    "INSERT INTO pengaturan (kunci, nilai) VALUES ('situs', ?) ON DUPLICATE KEY UPDATE nilai = VALUES(nilai)",
+    [JSON.stringify(baru)],
+  );
+  segarkan();
+  redirect(`/admin?ok=${baru.tutup ? 'tutup' : 'buka'}`);
+}
+
 // Rooms.
 function buatSlug(s: string) {
   return s.toLowerCase().normalize('NFKD').replace(/[̀-ͯ]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 70) || 'pondok';

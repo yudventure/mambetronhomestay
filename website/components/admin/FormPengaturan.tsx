@@ -73,6 +73,24 @@ function Kolom({ f, nilai, ubah, awalan }: { f: Isian; nilai: unknown; ubah: (v:
           </div>
         </fieldset>
       );
+    case 'saklar': {
+      const nyala = nilai === true;
+      return (
+        <div>
+          <button type="button" role="switch" id={id} aria-checked={nyala} onClick={() => ubah(!nyala)}
+            className="flex w-full items-center gap-4 rounded-2xl bg-buih px-4 py-3 text-left hover:bg-buih-2">
+            <span aria-hidden className={`relative inline-flex h-7 w-12 shrink-0 rounded-full transition-colors ${nyala ? 'bg-senja' : 'bg-white'}`}>
+              <span className={`absolute top-1 size-5 rounded-full transition-[left] ${nyala ? 'left-6 bg-white' : 'left-1 bg-laut/35'}`} />
+            </span>
+            <span className="font-semibold text-laut">
+              {f.label}
+              <span className="block text-sm font-normal text-abu">{nyala ? 'Menyala' : 'Mati'}</span>
+            </span>
+          </button>
+          {f.bantuan && <p className="bantuan">{f.bantuan}</p>}
+        </div>
+      );
+    }
     case 'daftar': {
       const baris = (Array.isArray(nilai) ? nilai : []) as Nilai[];
       const set = (b: Nilai[]) => ubah(b);

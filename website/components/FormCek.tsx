@@ -1,7 +1,7 @@
 'use client';
 import { useActionState } from 'react';
 import { kirimTanpaReset } from '@/lib/kait';
-import { cariPesananTamu } from '@/app/(situs)/cek-pesanan/aksi';
+import { cariPesananTamu } from '@/app/(tamu)/cek-pesanan/aksi';
 import type { Bahasa } from '@/lib/jenis';
 import { KAMUS } from '@/lib/kamus';
 

@@ -109,6 +109,18 @@ Foto disimpan di database supaya tidak hilang saat deploy ulang. Foto diperkecil
 
 Halaman utama punya tiga tempat foto di menu Foto situs. Foto utama tampil penuh di belakang judul besar, foto tentang kami tampil di samping kotak rencana menginap, dan foto ajakan tampil di kotak berwarna laut. Selama belum ada foto, situs memakai ilustrasi senja, siang, dan pagi di Raja Ampat yang dibuat oleh `scripts/desain/situs.mjs`. Kartu pondok di bawah foto utama memakai foto pertama tiap pondok.
 
+## Mode pengembang
+
+Mode pengembang menutup situs sementara, misalnya selama situs masih disiapkan atau sedang diperbaiki. Nyalakan dan matikan dari kartu di Dasbor, atau dari bagian Mode pengembang di Isi situs. Situs tetap tertutup sampai ada yang membukanya lagi dari panel.
+
+Selama mode ini menyala, pengunjung hanya melihat halaman segera dibuka dengan tombol WhatsApp dan Instagram. Judul dan teksnya bisa diubah di Isi situs. Pemesanan dari pengunjung ditolak, dan halaman diberi tanda supaya tidak masuk Google.
+
+Pengelola yang sudah masuk ke panel tetap melihat situs seperti biasa dan bisa mencoba memesan. Pita jingga di pojok kiri bawah mengingatkan bahwa situs sedang tertutup untuk pengunjung.
+
+Halaman cek pesanan dan halaman pesanan tamu tetap terbuka, supaya tamu yang sudah memesan masih bisa melihat rekening dan status pesanannya.
+
+Status buka dan tutup disimpan di database. Kalau database sedang tidak bisa dibaca, situs memakai isi bawaan dan tampil terbuka, tetapi pemesanan tetap tidak bisa dikirim.
+
 ## Yang bisa diubah dari panel
 
 Semua yang tampil di situs bisa diubah dari panel, yaitu teks setiap bagian halaman utama, pondok beserta harga dan fotonya, kegiatan tambahan, ulasan, foto situs, kontak, titik peta, rekening, uang muka, jam check-in dan check-out, serta ketentuan menginap.

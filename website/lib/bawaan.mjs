@@ -8,6 +8,7 @@
 //   dua         one line, ID + EN   duaPanjang  several lines, ID + EN
 //   angka       whole number        jam         time like 12:00
 //   ikon        icon picker         daftar      repeatable rows of sub fields
+//   saklar      on or off
 
 const dua = (id, en) => ({ id, en });
 
@@ -179,6 +180,23 @@ export const PENGATURAN = [
       },
     ],
   },
+  {
+    kunci: 'tutup',
+    judul: 'Mode pengembang',
+    keterangan: 'Tutup situs sementara selama masih disiapkan atau diperbaiki. Pengunjung hanya melihat halaman segera dibuka, sedangkan kamu yang sudah masuk ke panel tetap melihat dan bisa menguji situs seperti biasa.',
+    isian: [
+      {
+        k: 'tutup', label: 'Tutup situs untuk pengunjung', jenis: 'saklar', bawaan: false,
+        bantuan: 'Tamu yang sudah memesan tetap bisa membuka halaman pesanannya dan halaman cek pesanan.',
+      },
+      { k: 'tutupJudul', label: 'Judul halaman tutup', jenis: 'duaPanjang', bawaan: dua('Segera\ndibuka.', 'Opening\nsoon.'), bantuan: 'Tiap baris tampil sebagai baris sendiri. Baris terakhir berwarna pasir.' },
+      {
+        k: 'tutupTeks', label: 'Teks halaman tutup', jenis: 'duaPanjang', bawaan: dua(
+          'Rumah kecil kami di ujung dermaga sedang disiapkan. Sementara itu, tanyakan tanggal kosong lewat WhatsApp.',
+          'Our little home at the end of the jetty is getting ready. In the meantime, ask about open dates on WhatsApp.'),
+      },
+    ],
+  },
 ];
 
 // Plain object of default values, keyed by field.
@@ -198,6 +216,8 @@ export function rapikan(f, v) {
       return v === undefined ? structuredClone(f.bawaan ?? '') : teks(v);
     case 'dua': case 'duaPanjang':
       return v === undefined ? duaV(f.bawaan) : duaV(v);
+    case 'saklar':
+      return v === undefined ? Boolean(f.bawaan) : v === true || v === 'ya';
     case 'angka': {
       const n = Number(v);
       if (v === undefined || v === '' || !Number.isFinite(n)) return f.bawaan ?? 0;

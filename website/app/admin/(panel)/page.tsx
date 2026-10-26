@@ -1,7 +1,9 @@
 import Link from 'next/link';
 import Ikon from '@/components/Ikon';
 import BarisPesanan from '@/components/admin/BarisPesanan';
-import { JudulAdmin } from '@/components/admin/Kabar';
+import Kabar, { JudulAdmin } from '@/components/admin/Kabar';
+import TombolYakin from '@/components/admin/TombolYakin';
+import { aturTutup } from '@/app/admin/aksi';
 import { baris } from '@/lib/db';
 import { ambilSitus, cariPesanan, daftarKamar, fotoSitus } from '@/lib/data';
 import { alamatSitus, surelDiatur } from '@/lib/env';
@@ -23,7 +25,8 @@ function Angka({ label, nilai, ket, href }: { label: string; nilai: string | num
     : <div className="kartu p-5">{isi}</div>;
 }
 
-export default async function Dasbor() {
+export default async function Dasbor({ searchParams }: { searchParams: Promise<{ ok?: string }> }) {
+  const { ok } = await searchParams;
   const hari = hariIni();
   const sampai = tambahHari(hari, 30);
   const [situs, kamar, foto, aktifRentang, terbaru, [{ menunggu }]] = await Promise.all([
@@ -60,6 +63,40 @@ export default async function Dasbor() {
       <JudulAdmin judul="Selamat datang" teks={`Hari ini ${tanggal(hari, 'id', 'panjang')}, waktu Raja Ampat.`}>
         <Link href="/admin/pesanan/baru" className="tombol tombol-kecil"><Ikon nama="tambah" className="size-4" /> Catat pesanan</Link>
       </JudulAdmin>
+
+      <Kabar ok={ok} pesan={{
+        'ok:tutup': 'Situs ditutup. Pengunjung sekarang melihat halaman segera dibuka.',
+        'ok:buka': 'Situs dibuka lagi untuk semua pengunjung.',
+      }} />
+
+      <section className={`kartu mb-6 flex flex-wrap items-center gap-4 p-5 sm:p-6 ${situs.tutup ? 'ring-2 ring-senja' : ''}`}>
+        <span className={`inline-flex size-12 shrink-0 items-center justify-center rounded-2xl ${situs.tutup ? 'bg-senja text-hitam' : 'bg-buih text-biru-tua'}`}>
+          <Ikon nama={situs.tutup ? 'gembok' : 'globe'} className="size-6" />
+        </span>
+        <div className="mr-auto min-w-0 flex-1 basis-64">
+          <h2 className="text-2xl">{situs.tutup ? 'Mode pengembang menyala' : 'Situs terbuka untuk umum'}</h2>
+          <p className="mt-1 text-abu">
+            {situs.tutup
+              ? 'Pengunjung hanya melihat halaman segera dibuka. Kamu tetap melihat dan bisa menguji situs karena sudah masuk ke panel.'
+              : 'Nyalakan mode pengembang untuk menutup situs sementara selama masih disiapkan atau diperbaiki.'}
+          </p>
+          <Link href="/admin/pengaturan#tutup" className="mt-1 inline-flex items-center gap-1 text-sm font-semibold text-biru-tua hover:underline">
+            Ubah tulisan halaman tutup <Ikon nama="panah" className="size-4" />
+          </Link>
+        </div>
+        <form action={aturTutup}>
+          <input type="hidden" name="tutup" value={situs.tutup ? 'tidak' : 'ya'} />
+          {situs.tutup ? (
+            <TombolYakin tanya="Buka situs lagi untuk semua pengunjung?" className="tombol tombol-kecil">
+              <Ikon nama="globe" className="size-4" /> Buka situs lagi
+            </TombolYakin>
+          ) : (
+            <TombolYakin tanya="Tutup situs untuk pengunjung? Mereka akan melihat halaman segera dibuka sampai situs dibuka lagi." className="tombol tombol-laut tombol-kecil">
+              <Ikon nama="gembok" className="size-4" /> Tutup situs sementara
+            </TombolYakin>
+          )}
+        </form>
+      </section>
 
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
         <Angka label="Menunggu uang muka" nilai={menunggu} ket="Perlu dicek dan dikonfirmasi" href="/admin/pesanan?status=menunggu" />

@@ -6,7 +6,7 @@ import { ambilSitus, daftarKamar, daftarLayanan, pemesananAktif, pesananDariId }
 import { tanggal } from '@/lib/format';
 import { kamus, pesanGalat } from '@/lib/kamus';
 import { GalatPesan, bolehKirim, catatKirim, simpanPesanan } from '@/lib/pesan';
-import { alamatPengunjung } from '@/lib/sesi';
+import { alamatPengunjung, sesiSah } from '@/lib/sesi';
 import { surelPesananBaru } from '@/lib/surel';
 
 export type HasilKirim = { galat: string };
@@ -22,6 +22,8 @@ export async function kirimPesanan(_: HasilKirim, fd: FormData): Promise<HasilKi
   const ip = await alamatPengunjung();
   if (!bolehKirim(ip)) return { galat: pesanGalat(b, 'sibuk') };
   if (!(await pemesananAktif())) return { galat: kamus(b).form.belumAktif };
+  // developer mode closes bookings for visitors, an admin can still test
+  if ((await ambilSitus()).tutup && !(await sesiSah())) return { galat: kamus(b).situsTutup };
 
   const [situs, semuaKamar, layanan] = await Promise.all([ambilSitus(), daftarKamar(), daftarLayanan()]);
   const kamar = semuaKamar.find((k) => k.id === angka(fd, 'kamar')) ?? null;

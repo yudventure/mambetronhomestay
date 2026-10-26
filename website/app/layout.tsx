@@ -45,6 +45,8 @@ export async function generateMetadata(): Promise<Metadata> {
     },
     twitter: { card: 'summary_large_image', title: judul, description: deskripsi, images: ['/merek/og.png'] },
     manifest: '/manifest.webmanifest',
+    // keep search engines away while developer mode is on
+    ...(s.tutup ? { robots: { index: false, follow: false } } : {}),
   };
 }
 
