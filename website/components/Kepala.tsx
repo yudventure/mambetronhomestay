@@ -1,18 +1,16 @@
 import Link from 'next/link';
 import BingkaiKepala from './BingkaiKepala';
 import MenuSeluler from './MenuSeluler';
-import PilihanTampil from './PilihanTampil';
+import PilihanBahasa from './PilihanBahasa';
 import type { Bahasa, Situs } from '@/lib/jenis';
 import { kamus } from '@/lib/kamus';
 import { tautanWa } from '@/lib/format';
-import { konteksUang } from '@/lib/uang-server';
 
 // The group-data-[bening]/kepala variants switch colours while the header
 // floats clear over the hero photo. Tailwind only sees whole class names, so
 // they are written out in full.
-export default async function Kepala({ b, situs }: { b: Bahasa; situs: Situs }) {
+export default function Kepala({ b, situs }: { b: Bahasa; situs: Situs }) {
   const k = kamus(b);
-  const { uang } = await konteksUang();
   const tautan = [
     { href: '/#tentang', label: k.nav.tentang },
     { href: '/kamar', label: k.nav.akomodasi },
@@ -37,7 +35,7 @@ export default async function Kepala({ b, situs }: { b: Bahasa; situs: Situs }) 
             </Link>
           ))}
         </nav>
-        <PilihanTampil b={b} uang={uang} label={k.pilihan} />
+        <PilihanBahasa b={b} label={k.pilihBahasa} />
         <MenuSeluler
           tautan={tautan}
           label={k.menu}

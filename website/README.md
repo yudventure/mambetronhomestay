@@ -111,9 +111,9 @@ Halaman utama punya tiga tempat foto di menu Foto situs. Foto utama tampil penuh
 
 ## Bahasa dan mata uang
 
-Tombol berikon bola dunia di kepala halaman membuka pilihan bahasa (Indonesia atau Inggris) dan mata uang (rupiah, dolar Amerika, euro, yen, atau yuan). Pilihan disimpan di kuki peramban pengunjung.
+Tombol berikon bola dunia di kepala halaman membuka pilihan bahasa, Indonesia atau Inggris. Pilihan disimpan di kuki peramban pengunjung.
 
-Harga tetap diisi dan dibayar dalam rupiah. Bila pengunjung memilih mata uang lain, harga pondok dan kegiatan tampil dalam mata uang itu sebagai perkiraan, dengan harga rupiah di bawahnya. Di formulir pesan dan halaman pesanan, jumlah yang dibayar tetap rupiah dengan perkiraan di bawahnya.
+Harga selalu diisi, ditampilkan, dan dibayar dalam rupiah. Di bawah harga pondok, harga kegiatan, total di formulir pesan, serta total dan uang muka di halaman pesanan ada satu baris kecil berisi perkiraannya dalam dolar Amerika, euro, yen, dan yuan.
 
 Kurs diambil dari kurs acuan Bank Sentral Eropa lewat Frankfurter (`api.frankfurter.app`, tanpa kunci API) dan disimpan 12 jam. Bila server tidak bisa mengambilnya, situs memakai kurs yang diisi di Isi situs, bagian Mata uang, lalu mencoba lagi setelah 30 menit. Kurs otomatis bisa dimatikan di bagian yang sama. Alamat sumber kurs bisa diganti lewat environment variable `KURS_URL` bila perlu.
 

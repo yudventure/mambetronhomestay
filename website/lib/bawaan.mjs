@@ -179,7 +179,7 @@ export const PENGATURAN = [
   {
     kunci: 'uang',
     judul: 'Mata uang',
-    keterangan: 'Harga pondok dan kegiatan diisi dan dibayar dalam rupiah. Tamu bisa melihat perkiraan harga dalam dolar Amerika, euro, yen, dan yuan lewat tombol bahasa dan mata uang di kepala halaman.',
+    keterangan: 'Harga pondok dan kegiatan diisi, ditampilkan, dan dibayar dalam rupiah. Di bawah setiap harga, tamu melihat perkiraannya dalam dolar Amerika, euro, yen, dan yuan.',
     isian: [
       {
         k: 'kursOtomatis', label: 'Perbarui kurs otomatis', jenis: 'saklar', bawaan: true,

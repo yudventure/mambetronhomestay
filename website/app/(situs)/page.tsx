@@ -4,6 +4,7 @@ import CariCepat from '@/components/CariCepat';
 import GeserPondok from '@/components/GeserPondok';
 import Ikon from '@/components/Ikon';
 import Pahlawan from '@/components/Pahlawan';
+import Perkiraan from '@/components/Perkiraan';
 import Peta, { koordinat } from '@/components/Peta';
 import { bahasaAktif } from '@/lib/bahasa';
 import { ambilSitus, daftarKamar, daftarLayanan, daftarUlasan, fotoSitus, gambarCadangan } from '@/lib/data';
@@ -12,15 +13,14 @@ import { dwi, paragraf, pilih, rupiah, tautanWa } from '@/lib/format';
 import { KISI, kisiSorotan, rentang } from '@/lib/kisi';
 import { SATUAN } from '@/lib/satuan.mjs';
 import { hariIni, tambahHari } from '@/lib/tanggal';
-import { asing, nominal } from '@/lib/uang';
-import { konteksUang } from '@/lib/uang-server';
+import { kursAktif } from '@/lib/uang-server';
 
 const JUDUL = 'text-[clamp(2.1rem,1.5rem+2.4vw,3.25rem)]';
 const WARNA_INISIAL = ['bg-biru-tua', 'bg-laut', 'bg-aksen', 'bg-laut-2'];
 
 export default async function Beranda() {
-  const [b, s, kamar, layanan, ulasan, foto, u] = await Promise.all([
-    bahasaAktif(), ambilSitus(), daftarKamar(), daftarLayanan(), daftarUlasan(), fotoSitus(), konteksUang(),
+  const [b, s, kamar, layanan, ulasan, foto, kurs] = await Promise.all([
+    bahasaAktif(), ambilSitus(), daftarKamar(), daftarLayanan(), daftarUlasan(), fotoSitus(), kursAktif(),
   ]);
   const k = kamus(b);
   const wa = tautanWa(s.whatsapp, k.pesanWaUmum);
@@ -45,7 +45,8 @@ export default async function Beranda() {
         <div className="absolute inset-x-0 bottom-0 flex items-end justify-between gap-4 p-5 text-white">
           <div>
             <h3 className="text-[1.6rem] leading-[1.02] text-white">{pilih(b, x.nama, x.nama_en)}</h3>
-            <p className="mt-1 text-sm text-white/80">{k.mulai} {nominal(x.harga, u, b)}</p>
+            <p className="mt-1 text-sm text-white/80">{k.mulai} {rupiah(x.harga, b)}</p>
+            <Perkiraan idr={x.harga} kurs={kurs} b={b} className="text-white/65" />
           </div>
           <span className="font-judul text-2xl text-white/90">{String(i + 1).padStart(2, '0')}</span>
         </div>
@@ -167,9 +168,9 @@ export default async function Beranda() {
                 </div>
                 <p className="mt-3 text-[0.95rem] text-abu">{pilih(b, l.keterangan, l.keterangan_en)}</p>
                 <div className="mt-auto pt-5">
-                  <p className="font-judul text-xl text-laut">{nominal(l.harga, u, b)}</p>
+                  <p className="font-judul text-xl text-laut">{rupiah(l.harga, b)}</p>
                   <p className="text-sm text-abu">{SATUAN[l.satuan][b]}</p>
-                  {asing(u) && <p className="text-xs text-abu">{rupiah(l.harga, b)}</p>}
+                  <Perkiraan idr={l.harga} kurs={kurs} b={b} className="mt-1 text-abu" />
                 </div>
               </div>
             ))}

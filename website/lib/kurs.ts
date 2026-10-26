@@ -3,31 +3,30 @@
 // needed) and kept for 12 hours. When automatic rates are switched off in
 // the admin panel, or the fetch fails, the rates typed in Isi situs are used.
 import { ambilSitus } from './data';
-import type { UangAsing } from './uang';
+import { MATA_UANG, type Kurs as KursUang } from './uang';
 
 const ALAMAT = process.env.KURS_URL || 'https://api.frankfurter.app/latest?from=IDR&to=USD,EUR,JPY,CNY';
 const UMUR = 12 * 3600e3;
 const JEDA_GAGAL = 30 * 60e3;
-const ASING: UangAsing[] = ['USD', 'EUR', 'JPY', 'CNY'];
 
-export type Kurs = { idrPer: Record<UangAsing, number>; sumber: 'otomatis' | 'manual'; tanggal: string };
+export type Kurs = { idrPer: KursUang; sumber: 'otomatis' | 'manual'; tanggal: string };
 
 // Rates from a Frankfurter style reply: { amount, base, date, rates }.
 // Works for any base currency as long as rupiah is among the rates.
-export function bacaKurs(j: unknown): { idrPer: Record<UangAsing, number>; tanggal: string } | null {
+export function bacaKurs(j: unknown): { idrPer: KursUang; tanggal: string } | null {
   const d = j as { amount?: number; base?: string; date?: string; rates?: Record<string, number> } | null;
   if (!d?.rates || !d.base) return null;
   const nilai: Record<string, number> = { ...d.rates, [d.base.toUpperCase()]: Number(d.amount) || 1 };
   if (!(nilai.IDR > 0)) return null;
-  const idrPer = {} as Record<UangAsing, number>;
-  for (const c of ASING) {
+  const idrPer = {} as KursUang;
+  for (const c of MATA_UANG) {
     if (!(nilai[c] > 0)) return null;
     idrPer[c] = nilai.IDR / nilai[c];
   }
   return { idrPer, tanggal: String(d.date ?? '') };
 }
 
-let tersimpan: { idrPer: Record<UangAsing, number>; tanggal: string; diambil: number } | null = null;
+let tersimpan: { idrPer: KursUang; tanggal: string; diambil: number } | null = null;
 let gagalTerakhir = 0;
 let berjalan: Promise<void> | null = null;
 

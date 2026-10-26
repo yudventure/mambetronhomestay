@@ -7,13 +7,8 @@ import type { KodeGalat } from './pesan';
 const id = {
   lewati: 'Lewati ke isi',
   nav: { kamar: 'Pondok', layanan: 'Kegiatan', tentang: 'Tentang', lokasi: 'Lokasi', faq: 'Tanya jawab', cek: 'Cek pesanan', akomodasi: 'Akomodasi', wisata: 'Wisata' },
-  pilihan: {
-    tombol: 'Bahasa dan mata uang',
-    bahasa: 'Bahasa',
-    uang: 'Mata uang',
-    catatan: 'Pembayaran dilakukan dalam rupiah. Harga dalam mata uang lain adalah perkiraan.',
-  },
-  sekitar: (s: string) => `Sekitar ${s}`,
+  pilihBahasa: 'Bahasa',
+  perkiraanKet: 'Perkiraan dalam mata uang lain. Pembayaran tetap dalam rupiah.',
   pesanSekarang: 'Pesan sekarang',
   pesanPendek: 'Pesan',
   menu: 'Menu',
@@ -177,13 +172,8 @@ type Kamus = typeof id;
 const en: Kamus = {
   lewati: 'Skip to content',
   nav: { kamar: 'Huts', layanan: 'Trips', tentang: 'About', lokasi: 'Location', faq: 'FAQ', cek: 'My booking', akomodasi: 'Accommodation', wisata: 'Trips' },
-  pilihan: {
-    tombol: 'Language and currency',
-    bahasa: 'Language',
-    uang: 'Currency',
-    catatan: 'Payment is made in Indonesian rupiah. Prices in other currencies are estimates.',
-  },
-  sekitar: (s: string) => `About ${s}`,
+  pilihBahasa: 'Language',
+  perkiraanKet: 'Estimate in other currencies. Payment is made in rupiah.',
   pesanSekarang: 'Book now',
   pesanPendek: 'Book',
   menu: 'Menu',

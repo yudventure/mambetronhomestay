@@ -9,8 +9,8 @@ import { ambilSitus, pesananDariKode } from '@/lib/data';
 import { dbDiatur } from '@/lib/env';
 import { kamus } from '@/lib/kamus';
 import { dwi, paragraf, rupiah, tanggal, tautanWa } from '@/lib/format';
-import { asing, nominal } from '@/lib/uang';
-import { konteksUang } from '@/lib/uang-server';
+import Perkiraan from '@/components/Perkiraan';
+import { kursAktif } from '@/lib/uang-server';
 import { SATUAN } from '@/lib/satuan.mjs';
 import type { StatusPesanan } from '@/lib/jenis';
 import { KISI2, rentang2 } from '@/lib/kisi';
@@ -39,7 +39,7 @@ export default async function HalamanPesanan({ params, searchParams }: {
   const p = await pesananDariKode(kode).catch(() => null);
   if (!p || !tokenCocok(String(t), p.token)) notFound();
 
-  const [b, situs, u] = await Promise.all([bahasaAktif(), ambilSitus(), konteksUang()]);
+  const [b, situs, kurs] = await Promise.all([bahasaAktif(), ambilSitus(), kursAktif()]);
   const k = kamus(b);
   const h = k.hasil;
   const sisa = Math.max(0, p.total - p.dibayar);
@@ -75,7 +75,7 @@ export default async function HalamanPesanan({ params, searchParams }: {
           <div className="bg-buih px-5 py-6 sm:px-8">
             <h2 className="text-2xl">{k.form.uangMuka(situs.dpPersen)}</h2>
             <p className="mt-1 font-judul text-3xl font-semibold text-laut">{rupiah(p.dp, b)}</p>
-            {asing(u) && <p className="text-sm text-abu">{k.sekitar(nominal(p.dp, u, b))}</p>}
+            <Perkiraan idr={p.dp} kurs={kurs} b={b} className="text-abu" />
             {situs.bank.length > 0 ? (
               <>
                 <p className="mt-4">{h.transfer}</p>
@@ -145,7 +145,7 @@ export default async function HalamanPesanan({ params, searchParams }: {
                 <span className="font-semibold text-laut">{k.form.total}</span>
                 <span className="font-judul text-2xl font-semibold tabular-nums text-laut">{rupiah(p.total, b)}</span>
               </div>
-              {asing(u) && <p className="text-right text-sm text-abu">{k.sekitar(nominal(p.total, u, b))}</p>}
+              <Perkiraan idr={p.total} kurs={kurs} b={b} className="text-right text-abu" />
               {p.dibayar > 0 && (
                 <div className="mt-1 flex justify-between gap-3 text-sm">
                   <span>{h.dibayar}</span><span className="font-bold tabular-nums">{rupiah(p.dibayar, b)}</span>
