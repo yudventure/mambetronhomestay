@@ -52,6 +52,17 @@ export default function DiagnosaDb({ pesan }: { pesan: string }) {
           );
         })}
       </ul>
+      {d.akun && (
+        <div className={`mt-3 rounded-2xl px-4 py-3 text-sm ${d.beda ? 'bg-[#fbe4df] text-merah' : 'bg-buih text-laut'}`}>
+          <span className="block font-mono font-bold">Akun hosting aplikasi</span>
+          <span className="block">{d.akun} di server {d.server}</span>
+          {d.beda && (
+            <span className="mt-1 block font-semibold">
+              Pengguna database berawalan {d.baris.find((b) => b.nama === 'DB_USER')?.nilai.split('_')[0]}, sedangkan aplikasi berjalan di akun {d.akun}. Database ini milik akun hosting lain, jadi tidak bisa dipakai dari sini. Buat database baru dari menu Database milik website ini di hPanel, lalu isi DB_NAME, DB_USER, dan DB_PASSWORD dengan yang baru.
+            </span>
+          )}
+        </div>
+      )}
       {d.berkas.length > 0 && (
         <p className="mt-3 rounded-2xl bg-pasir px-4 py-3 text-sm text-laut">
           Di folder aplikasi ada berkas {d.berkas.join(', ')}. Nilai di hPanel tetap didahulukan, tetapi pastikan berkas itu tidak berisi kata sandi lama.
@@ -68,6 +79,9 @@ export default function DiagnosaDb({ pesan }: { pesan: string }) {
         {!diatur && <li>Di hPanel Hostinger buka Websites, mambetronhomestay.com, Node.js, lalu Environment variables. Isi DB_NAME, DB_USER, dan DB_PASSWORD persis seperti di menu Databases, dengan huruf besar dan garis bawah yang sama.</li>}
         {diatur && saran.some((x) => x.startsWith('Sambungan ke server database sudah sampai')) && (
           <li>Kata sandi pengguna database di hPanel tidak bisa dilihat, hanya bisa disimpan ulang. Buka Databases, tekan titik tiga di baris pengguna {d.baris.find((b) => b.nama === 'DB_USER')?.nilai}, pilih ubah kata sandi, lalu simpan kata sandi pilihanmu sendiri. Isi DB_PASSWORD dengan kata sandi yang sama persis. Setelah keduanya sama, cukup muat ulang halaman ini, tidak perlu Redeploy bila DB_PASSWORD tidak berubah.</li>
+        )}
+        {diatur && saran.some((x) => x.startsWith('Sambungan ke server database sudah sampai')) && (
+          <li>Bila kata sandinya sudah sama tetapi tetap ditolak, server database ini tidak mengenal pengguna itu. Biasanya karena database dibuat dari menu website lain di hPanel. Buat database baru dari website mambetronhomestay.com, menu Database, lalu isi DB_NAME, DB_USER, dan DB_PASSWORD dengan yang baru dan jalankan Redeploy.</li>
         )}
         {diatur && !saran.some((x) => x.startsWith('Sambungan ke server database sudah sampai')) && <li>Periksa lagi DB_PASSWORD dan DB_HOST. Pesan di atas adalah jawaban server database.</li>}
         <li>Simpan, lalu jalankan Redeploy atau mulai ulang aplikasi. Nilai yang baru disimpan terbaca setelah aplikasi berjalan ulang.</li>

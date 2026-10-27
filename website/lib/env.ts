@@ -1,4 +1,5 @@
 import fs from 'fs';
+import os from 'os';
 import path from 'path';
 
 // Environment values with safe defaults. Everything here is read at request
@@ -87,9 +88,22 @@ export function diagnosaDb() {
       return false;
     }
   });
+  // Shared hosting runs the app as the account user, u965833668 or the like,
+  // and prefixes every database user with it. Different prefixes mean the
+  // database belongs to another hosting account or server.
+  let akun = '';
+  try {
+    akun = os.userInfo().username;
+  } catch {
+    akun = process.env.USER ?? '';
+  }
+  const awalan = d.user.match(/^(u\d+)_/)?.[1] ?? '';
   return {
     sandi,
     berkas,
+    akun,
+    server: os.hostname(),
+    beda: Boolean(awalan && /^u\d+$/.test(akun) && awalan !== akun),
     baris: [
       { nama: 'DB_HOST', asal: asal(NAMA_DB.host, true), nilai: d.host, bawaan: 'localhost' },
       { nama: 'DB_PORT', asal: asal(NAMA_DB.port, true), nilai: String(d.port), bawaan: '3306' },
