@@ -86,7 +86,7 @@ export const PENGATURAN = [
       { k: 'ulasanTautan', label: 'Tautan tombol ke situs ulasan', jenis: 'teks', bawaan: 'https://www.booking.com/hotel/id/mambetron-homestay.html', bantuan: 'Tombol Lihat di Booking.com di bawah nilai membuka tautan ini. Bawaannya halaman Mambetron di Booking.com. Bila dikosongkan, tombol membuka halaman semua bungalow.' },
       {
         k: 'ulasanWajah', label: 'Lingkaran tamu di samping nilai', jenis: 'daftar', tambah: 'Tambah tamu',
-        bantuan: 'Tamu yang mengulas di situs ulasan, paling banyak enam. Tiap tamu tampil sebagai lingkaran berisi gambar wajah. Gambar wajah adalah ilustrasi, bukan foto tamu. Nama hanya muncul saat lingkaran disentuh.',
+        bantuan: 'Tamu yang mengulas di situs ulasan, paling banyak enam. Tiap tamu tampil sebagai lingkaran berisi gambar wajah. Gambar wajah di sini adalah ilustrasi. Untuk wajah asli, unggah foto tamu di menu Foto situs, bagian Foto wajah tamu. Begitu ada foto di sana, lingkaran memakai foto itu dan daftar ini tidak dipakai. Nama hanya muncul saat lingkaran disentuh.',
         isian: [
           { k: 'nama', label: 'Nama', jenis: 'teks' },
           { k: 'wajah', label: 'Gambar wajah', jenis: 'wajah', bantuan: 'Tanpa pilihan, wajah dipilih otomatis supaya tidak ada yang kembar berdampingan.' },

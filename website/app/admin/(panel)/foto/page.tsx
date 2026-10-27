@@ -31,6 +31,10 @@ export default async function FotoAdmin() {
           <KelolaFoto wadah="ajakan" foto={foto.ajakan} catatan="Tampil di kotak ajakan berwarna laut. Hanya foto pertama yang dipakai. Tanpa foto, situs memakai ilustrasi pagi." />
         </section>
         <section className="kartu p-5 sm:p-6">
+          <h2 className="mb-1 text-2xl">Foto wajah tamu</h2>
+          <KelolaFoto wadah="tamu" foto={foto.tamu} wajah catatan="Wajah asli tamu di lingkaran kecil samping nilai ulasan di halaman depan, paling banyak enam. Pakai foto tamu yang sudah memberi izin, misalnya foto saat mereka menginap. Foto dipotong bulat di bagian atas tengah, jadi foto wajah dari dada ke atas paling pas. Isi nama tamu di samping fotonya, nama itu muncul saat lingkaran disentuh. Selama belum ada foto di sini, lingkaran memakai gambar wajah ilustrasi dari Isi situs." />
+        </section>
+        <section className="kartu p-5 sm:p-6">
           <h2 className="mb-1 text-2xl">Galeri</h2>
           <KelolaFoto wadah="galeri" foto={foto.galeri} catatan="Kumpulan foto suasana, makanan, laut, dan kegiatan. Bagian galeri tampil bila ada minimal satu foto." />
         </section>

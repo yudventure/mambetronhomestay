@@ -127,13 +127,13 @@ export const daftarUlasan = cache(async (semua = false): Promise<Ulasan[]> => {
 });
 
 // Site photos outside the rooms, grouped by where they appear.
-export type WadahFoto = 'beranda' | 'berandaHp' | 'unggulan' | 'tentang' | 'ajakan' | 'galeri';
+export type WadahFoto = 'beranda' | 'berandaHp' | 'unggulan' | 'tentang' | 'ajakan' | 'galeri' | 'tamu';
 export const fotoSitus = cache(async (): Promise<Record<WadahFoto, Foto[]>> => {
-  const kosong = { beranda: [], berandaHp: [], unggulan: [], tentang: [], ajakan: [], galeri: [] } as Record<WadahFoto, Foto[]>;
+  const kosong = { beranda: [], berandaHp: [], unggulan: [], tentang: [], ajakan: [], galeri: [], tamu: [] } as Record<WadahFoto, Foto[]>;
   if (!dbDiatur()) return kosong;
   try {
     const r = await baris<{ id: number; wadah: WadahFoto; lebar: number; tinggi: number; keterangan: string }>(
-      "SELECT id, wadah, lebar, tinggi, keterangan FROM foto WHERE wadah IN ('beranda', 'berandaHp', 'unggulan', 'tentang', 'ajakan', 'galeri') ORDER BY urutan, id",
+      "SELECT id, wadah, lebar, tinggi, keterangan FROM foto WHERE wadah IN ('beranda', 'berandaHp', 'unggulan', 'tentang', 'ajakan', 'galeri', 'tamu') ORDER BY urutan, id",
     );
     for (const f of r) kosong[f.wadah].push({ id: f.id, lebar: f.lebar, tinggi: f.tinggi, keterangan: f.keterangan, url: urlFoto(f.id) });
     return kosong;

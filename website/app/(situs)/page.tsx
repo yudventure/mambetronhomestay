@@ -56,7 +56,9 @@ export default async function Beranda() {
     </div>
   ));
   const skor = Number(s.ulasanSkor.replace(',', '.'));
-  const wajah = s.ulasanWajah.filter((x) => x.nama.trim() || x.wajah).slice(0, 6);
+  // real guest photos from Foto situs win over the drawn faces from Isi situs
+  const fotoTamu = foto.tamu.slice(0, 6);
+  const wajah = fotoTamu.length ? [] : s.ulasanWajah.filter((x) => x.nama.trim() || x.wajah).slice(0, 6);
   const sumber = s.ulasanSumber.trim();
   const tautanUlasan = tautanLuar(s.ulasanTautan);
 
@@ -74,6 +76,16 @@ export default async function Beranda() {
               <div className="lg:pr-2">
                 {skor > 0 ? (
                   <div>
+                    {fotoTamu.length > 0 && (
+                      <div className="flex -space-x-2" aria-hidden>
+                        {fotoTamu.map((f) => (
+                          <span key={f.id} title={f.keterangan || undefined} className="inline-flex size-10 overflow-hidden rounded-full bg-buih ring-[3px] ring-white">
+                            {/* eslint-disable-next-line @next/next/no-img-element */}
+                            <img src={f.url} alt="" width={80} height={80} loading="lazy" className="size-full object-cover" />
+                          </span>
+                        ))}
+                      </div>
+                    )}
                     {wajah.length > 0 && (
                       <div className="flex -space-x-2" aria-hidden>
                         {wajah.map((x, i) => (

@@ -1,7 +1,8 @@
 'use client';
 // Upload, caption, order and delete photos. Pictures are shrunk in the
 // browser to at most 1800 px and saved as JPEG, so phone photos of 5 to 10 MB
-// become a few hundred kB before they leave the phone.
+// become a few hundred kB before they leave the phone. Guest faces are cut
+// square around the upper middle, where a face sits in most portraits.
 import { useRouter } from 'next/navigation';
 import { useRef, useState } from 'react';
 import Ikon from '../Ikon';
@@ -10,23 +11,28 @@ import { geserFoto, hapusFoto, ubahKeteranganFoto, unggahFoto } from '@/app/admi
 import type { Foto } from '@/lib/jenis';
 
 const SISI = 1800;
+const SISI_WAJAH = 480;
 
-async function kecilkan(berkas: File) {
+async function kecilkan(berkas: File, wajah = false) {
   const url = URL.createObjectURL(berkas);
   try {
     const img = new Image();
     img.decoding = 'async';
     img.src = url;
     await img.decode();
-    const s = Math.min(1, SISI / Math.max(img.naturalWidth, img.naturalHeight));
-    const w = Math.round(img.naturalWidth * s), h = Math.round(img.naturalHeight * s);
+    const iw = img.naturalWidth, ih = img.naturalHeight;
+    const potong = wajah ? Math.min(iw, ih) : 0;
+    // source area, the whole photo or a square a little above the middle
+    const [sx, sy, sw, sh] = wajah ? [(iw - potong) / 2, (ih - potong) * 0.3, potong, potong] : [0, 0, iw, ih];
+    const s = Math.min(1, (wajah ? SISI_WAJAH : SISI) / Math.max(sw, sh));
+    const w = Math.round(sw * s), h = Math.round(sh * s);
     const c = document.createElement('canvas');
     c.width = w;
     c.height = h;
     const g = c.getContext('2d')!;
     g.fillStyle = '#fff';
     g.fillRect(0, 0, w, h);
-    g.drawImage(img, 0, 0, w, h);
+    g.drawImage(img, sx, sy, sw, sh, 0, 0, w, h);
     const blob = await new Promise<Blob | null>((ok) => c.toBlob(ok, 'image/jpeg', 0.84));
     if (!blob) throw new Error('Foto tidak bisa diproses');
     return { berkas: new File([blob], berkas.name.replace(/\.[^.]+$/, '') + '.jpg', { type: 'image/jpeg' }), w, h };
@@ -35,7 +41,8 @@ async function kecilkan(berkas: File) {
   }
 }
 
-export default function KelolaFoto({ wadah, kamarId, foto, catatan }: { wadah: string; kamarId?: number; foto: Foto[]; catatan?: string }) {
+export default function KelolaFoto({ wadah, kamarId, foto, catatan, wajah = false }: { wadah: string; kamarId?: number; foto: Foto[]; catatan?: string; wajah?: boolean }) {
+  const labelKet = wajah ? 'Nama tamu' : 'Keterangan foto';
   const router = useRouter();
   const masukan = useRef<HTMLInputElement>(null);
   const [kabar, setKabar] = useState('');
@@ -50,7 +57,7 @@ export default function KelolaFoto({ wadah, kamarId, foto, catatan }: { wadah: s
     for (let i = 0; i < semua.length; i++) {
       setKabar(`Mengunggah ${i + 1} dari ${semua.length}`);
       try {
-        const k = await kecilkan(semua[i]);
+        const k = await kecilkan(semua[i], wajah);
         const fd = new FormData();
         fd.set('wadah', wadah);
         if (kamarId) fd.set('kamar_id', String(kamarId));
@@ -77,18 +84,19 @@ export default function KelolaFoto({ wadah, kamarId, foto, catatan }: { wadah: s
           {foto.map((f, i) => {
             const sendiri = foto.length % 2 === 1 && i === foto.length - 1;
             return (
-            <li key={f.id} className={`overflow-hidden rounded-2xl bg-buih ${sendiri ? 'sm:col-span-2' : ''}`}>
+            <li key={f.id} className={`overflow-hidden rounded-2xl bg-buih ${sendiri ? 'sm:col-span-2' : ''} ${wajah ? 'flex items-center gap-3 p-3' : ''}`}>
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={f.url} alt={f.keterangan} className={`w-full object-cover ${sendiri ? 'aspect-[4/3] sm:aspect-[2/1]' : 'aspect-[4/3]'}`} loading="lazy" />
-              <div className="grid gap-2 p-3">
+              <img src={f.url} alt={f.keterangan} loading="lazy"
+                className={wajah ? 'size-20 shrink-0 rounded-full object-cover ring-4 ring-white' : `w-full object-cover ${sendiri ? 'aspect-[4/3] sm:aspect-[2/1]' : 'aspect-[4/3]'}`} />
+              <div className={`grid gap-2 ${wajah ? 'min-w-0 flex-1' : 'p-3'}`}>
                 <form action={ubahKeteranganFoto} className="flex gap-2">
                   <input type="hidden" name="id" value={f.id} />
-                  <label className="sr-only" htmlFor={`ket-${f.id}`}>Keterangan foto</label>
-                  <input id={`ket-${f.id}`} name="keterangan" defaultValue={f.keterangan} placeholder="Keterangan foto" className="isian !min-h-10 !py-1.5 text-sm" />
-                  <button className="tombol tombol-putih tombol-kecil shrink-0" title="Simpan keterangan"><Ikon nama="centang" className="size-4" /><span className="sr-only">Simpan</span></button>
+                  <label className="sr-only" htmlFor={`ket-${f.id}`}>{labelKet}</label>
+                  <input id={`ket-${f.id}`} name="keterangan" defaultValue={f.keterangan} placeholder={labelKet} className="isian !min-h-10 !py-1.5 text-sm" />
+                  <button className="tombol tombol-putih tombol-kecil shrink-0" title={wajah ? 'Simpan nama' : 'Simpan keterangan'}><Ikon nama="centang" className="size-4" /><span className="sr-only">Simpan</span></button>
                 </form>
                 <div className="flex items-center gap-2">
-                  {i === 0 && <span className="rounded-full bg-senja px-2.5 py-0.5 text-xs font-bold">Foto utama</span>}
+                  {i === 0 && !wajah && <span className="rounded-full bg-senja px-2.5 py-0.5 text-xs font-bold">Foto utama</span>}
                   <form action={geserFoto} className="ml-auto"><input type="hidden" name="id" value={f.id} /><input type="hidden" name="arah" value="kiri" />
                     <button disabled={i === 0} className="inline-flex size-9 items-center justify-center rounded-full bg-white text-laut disabled:opacity-35" title="Geser ke depan"><Ikon nama="kiri" className="size-4" /><span className="sr-only">Geser ke depan</span></button></form>
                   <form action={geserFoto}><input type="hidden" name="id" value={f.id} /><input type="hidden" name="arah" value="kanan" />
