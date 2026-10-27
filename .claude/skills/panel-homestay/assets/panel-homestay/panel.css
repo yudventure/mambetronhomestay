@@ -1,0 +1,116 @@
+/* Panel pengelola homestay, gaya meja pengelola DAMPIER.
+   Tempel ke stylesheet utama situs (Tailwind 4) setelah @import "tailwindcss".
+   Situs lain cukup mengganti enam nilai --color-panel-* di bawah. */
+
+@theme {
+  /* Warna merek tergelap. Menu aktif, kartu sapaan, tombol utama, judul. */
+  --color-panel-utama: #0b3b4a;
+  /* Sedikit lebih terang dari utama. Hover tombol, batang grafik. */
+  --color-panel-utama-2: #13566a;
+  /* Warna merek yang masih terbaca di atas putih (kontras 4.5:1). Label kecil, tautan. */
+  --color-panel-aksen: #036f87;
+  /* Rona tipis merek. Kartu HARI INI, baris pesanan baru, lencana. */
+  --color-panel-lembut: #e6f4f6;
+  /* Abu dingin untuk latar blok di dalam kartu. Jangan krem. */
+  --color-panel-latar: #f3f6f8;
+  /* Garis rambut bingkai kartu dan cincin tombol putih. */
+  --color-panel-garis: #e2e9ed;
+
+  /* Nama warna situs yang dipakai kode panel. Situs yang belum punya nama
+     ini cukup memakai nilai di bawah. Di dalam .panel semuanya diarahkan
+     ke token panel. */
+  --color-laut: #0b3b4a;
+  --color-laut-2: #13566a;
+  --color-biru: #0497b2;
+  --color-biru-tua: #036f87;
+  --color-aksen: #037f96;
+  --color-buih: #e3f4f7;
+  --color-buih-2: #cbe9ef;
+  --color-senja: #f27a3d;
+  --color-pasir: #f7dfa8;
+  /* Rona terang merek untuk alis di atas kartu sapaan gelap. */
+  --color-sorot: #8fdce8;
+  --color-abu: #5b6b70;
+  --color-merah: #b03826;
+  --color-hitam: #161616;
+
+  --shadow-lembut: 0 8px 28px rgb(11 59 74 / 0.09);
+  --shadow-angkat: 0 18px 44px rgb(11 59 74 / 0.16);
+  --shadow-tipis: 0 2px 10px rgb(11 59 74 / 0.07);
+}
+
+@layer components {
+  .tombol {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5em;
+    min-height: 3rem;
+    padding: 0.7em 1.5em;
+    border-radius: 999px;
+    background: var(--tombol-latar, var(--color-aksen));
+    color: #fff;
+    font-weight: 700;
+    line-height: 1.2;
+    text-align: center;
+    text-decoration: none;
+    transition: background-color 0.15s, box-shadow 0.15s, color 0.15s;
+    cursor: pointer;
+  }
+  .tombol:hover { background: var(--tombol-latar-2, var(--color-biru-tua)); box-shadow: var(--shadow-tipis); }
+  .tombol:disabled { opacity: 0.55; cursor: not-allowed; box-shadow: none; }
+  .tombol-laut { background: var(--color-laut); color: #fff; }
+  .tombol-laut:hover { background: var(--color-laut-2); }
+  .tombol-putih { background: #fff; color: var(--color-laut); box-shadow: inset 0 0 0 2px var(--color-buih-2); }
+  .tombol-putih:hover { background: var(--color-buih); }
+  .tombol-biru { background: var(--color-biru-tua); color: #fff; }
+  .tombol-biru:hover { background: var(--color-biru); }
+  .tombol-kecil { min-height: 2.5rem; padding: 0.45em 1.1em; font-size: 0.9375rem; }
+  .tombol-merah { background: #fbe4df; color: var(--color-merah); }
+  .tombol-merah:hover { background: #f7d2ca; }
+
+  .label-kecil { font-size: 0.8125rem; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: var(--color-biru-tua); }
+
+  .isian {
+    display: block;
+    width: 100%;
+    min-height: 3rem;
+    padding: 0.65rem 0.9rem;
+    border-radius: 0.85rem;
+    border: 1.5px solid #c9dcdc;
+    background: #fff;
+    color: var(--color-hitam);
+    font: inherit;
+    font-size: 1rem;
+    transition: border-color 0.15s, box-shadow 0.15s;
+  }
+  .isian:focus { outline: none; border-color: var(--color-biru); box-shadow: 0 0 0 3px rgb(4 151 178 / 0.2); }
+  textarea.isian { min-height: 6.5rem; resize: vertical; }
+  .label-isian { display: block; margin-bottom: 0.35rem; font-weight: 600; font-size: 0.9375rem; color: var(--color-laut); }
+  .bantuan { margin-top: 0.3rem; font-size: 0.875rem; color: var(--color-abu); }
+
+  .kartu { background: #fff; border-radius: 1.25rem; box-shadow: var(--shadow-lembut); }
+
+  /* Di dalam panel nama warna situs menunjuk ke token panel, jadi halaman
+     admin yang ditulis dengan laut dan buih ikut tema panel, dan tombol
+     polos memakai warna gelap panel. */
+  .panel {
+    --color-laut: var(--color-panel-utama);
+    --color-laut-2: var(--color-panel-utama-2);
+    --color-biru-tua: var(--color-panel-aksen);
+    --color-buih: var(--color-panel-latar);
+    --color-buih-2: var(--color-panel-lembut);
+    --color-biru: var(--color-panel-aksen);
+    --tombol-latar: var(--color-panel-utama);
+    --tombol-latar-2: var(--color-panel-utama-2);
+  }
+  .panel .tombol-putih { box-shadow: inset 0 0 0 1px var(--color-panel-garis); }
+  .panel .isian { border-color: color-mix(in srgb, var(--color-panel-utama) 15%, var(--color-panel-garis)); }
+  .panel .isian:focus { border-color: var(--color-panel-aksen); box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-panel-aksen) 22%, transparent); }
+  /* Kartu di halaman putih memakai garis rambut, bukan bayangan. */
+  .panel .kartu { box-shadow: none; border: 1px solid var(--color-panel-garis); border-radius: 1.25rem; }
+  .panel .label-kecil { font-size: 0.6875rem; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; color: var(--color-panel-aksen); }
+}
+
+/* Lembar menu ponsel. svh supaya tidak tertutup bilah peramban, vh cadangan. */
+.tinggi-lembar { max-height: 88vh; max-height: 88svh; }

@@ -21,7 +21,7 @@
   --color-buih-2: #cbe9ef;
   --color-embun: #f1f8f9;
   --color-abu: #5b6b70;
-  --color-merah: #c2412d;
+  --color-merah: #b03826;
 
   --font-judul: var(--font-londrina), "Arial Narrow", "Trebuchet MS", system-ui, sans-serif;
   --font-teks: var(--font-jakarta), "Segoe UI", system-ui, -apple-system, sans-serif;
@@ -36,7 +36,7 @@
      Another homestay only swaps these five values. */
   --color-panel-utama: #0b3b4a;
   --color-panel-utama-2: #13566a;
-  --color-panel-aksen: #037f96;
+  --color-panel-aksen: #036f87;
   --color-panel-lembut: #e6f4f6;
   --color-panel-latar: #f3f6f8;
   --color-panel-garis: #e2e9ed;
@@ -141,10 +141,13 @@
     --color-biru-tua: var(--color-panel-aksen);
     --color-buih: var(--color-panel-latar);
     --color-buih-2: var(--color-panel-lembut);
+    --color-biru: var(--color-panel-aksen);
     --tombol-latar: var(--color-panel-utama);
     --tombol-latar-2: var(--color-panel-utama-2);
   }
   .panel .tombol-putih { box-shadow: inset 0 0 0 1px var(--color-panel-garis); }
+  .panel .isian { border-color: color-mix(in srgb, var(--color-panel-utama) 15%, var(--color-panel-garis)); }
+  .panel .isian:focus { border-color: var(--color-panel-aksen); box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-panel-aksen) 22%, transparent); }
   .panel .kartu { box-shadow: none; border: 1px solid var(--color-panel-garis); border-radius: 1.25rem; }
   .panel .label-kecil { font-size: 0.6875rem; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; color: var(--color-panel-aksen); }
 

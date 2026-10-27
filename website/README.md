@@ -139,7 +139,7 @@ Di pita paling bawah ada tombol Masuk operator yang membuka `/admin`. Operator y
 
 ## Masuk panel, surel pemberitahuan, dan ganti kata sandi
 
-Panel dibuka dengan surel dan kata sandi. Surel yang boleh masuk hanya `EMAIL_ADMIN` milik pemilik dan `EMAIL_DEVELOPER` milik pengembang, keduanya diisi di hPanel, tidak bisa ditambah dari panel. Semua akun mula-mula memakai `ADMIN_PASSWORD`, lalu masing-masing bisa membuat kata sandi sendiri lewat kode surel. Di menu panel tertulis akun yang sedang masuk.
+Panel dibuka dengan surel dan kata sandi. Surel yang boleh masuk hanya `EMAIL_ADMIN` milik pemilik dan `EMAIL_DEVELOPER` milik pengembang, keduanya diisi di hPanel, tidak bisa ditambah dari panel. Semua akun mula-mula memakai `ADMIN_PASSWORD`, lalu masing-masing bisa membuat kata sandi sendiri lewat kode surel. Akun yang sedang masuk tertulis di menu akun di pojok kanan atas panel.
 
 Bila `SMTP_HOST`, `SMTP_USER`, dan `SMTP_PASSWORD` terisi, setiap pesanan baru dikirimkan ke `EMAIL_ADMIN`, dan tamu yang mengisi surel mendapat salinan pesanannya. Surel dikirim setelah halaman pesanan tampil, jadi tamu tidak ikut menunggu, dan pesanan tetap tersimpan walau surel gagal.
 
@@ -149,7 +149,7 @@ Kata sandi baru disimpan sebagai hash scrypt di tabel `admin_akun` dan mengganti
 
 ## Mode pengembang
 
-Mode pengembang menutup situs sementara, misalnya selama situs masih disiapkan atau sedang diperbaiki. Nyalakan dan matikan dari kartu di Dasbor, atau dari bagian Mode pengembang di Isi situs. Situs tetap tertutup sampai ada yang membukanya lagi dari panel.
+Mode pengembang menutup situs sementara, misalnya selama situs masih disiapkan atau sedang diperbaiki. Nyalakan dan matikan dari kartu Status situs di Ringkasan, atau dari bagian Mode pengembang di Isi situs. Situs tetap tertutup sampai ada yang membukanya lagi dari panel.
 
 Selama mode ini menyala, pengunjung hanya melihat halaman segera dibuka dengan tombol WhatsApp dan Instagram. Judul dan teksnya bisa diubah di Isi situs. Pemesanan dari pengunjung ditolak, dan halaman diberi tanda supaya tidak masuk Google.
 
@@ -158,6 +158,14 @@ Pengelola yang sudah masuk ke panel tetap melihat situs seperti biasa dan bisa m
 Halaman cek pesanan dan halaman pesanan tamu tetap terbuka, supaya tamu yang sudah memesan masih bisa melihat rekening dan status pesanannya.
 
 Status buka dan tutup disimpan di database. Kalau database sedang tidak bisa dibaca, situs memakai isi bawaan dan tampil terbuka, tetapi pemesanan tetap tidak bisa dikirim.
+
+## Tampilan panel dan statistik pengunjung
+
+Panel mengikuti gaya meja pengelola DAMPIER. Bilah atas putih dengan lonceng pesanan menunggu dan menu akun, menu samping putih dengan kartu HARI INI, lalu halaman Ringkasan berisi kartu sapaan dengan jam WIT, enam angka bulan ini, statistik pengunjung, pesanan yang perlu dikejar, tamu yang akan tiba, dan meja pesanan. Kalender menampilkan tamu dan tanggal tutup per hari. Di ponsel menu samping menjadi lembar dari bawah.
+
+Warna panel diatur enam token `--color-panel-*` di `app/globals.css`. Homestay lain cukup mengganti enam nilai itu, logo, dan isi pengaturan. Caranya dibukukan sebagai skill di `.claude/skills/panel-homestay/` di akar repo, lengkap dengan salinan kode, pemeriksa warna (`scripts/cek-token.mjs`), dan langkah memasang.
+
+Statistik pengunjung dihitung situs sendiri di tabel `kunjungan`, tanpa layanan luar. Tidak ada cookie dan alamat IP tidak disimpan. Setiap pengunjung dicatat sebagai sidik acak yang berganti tiap hari, jadi satu orang dihitung sekali sehari dan tidak bisa dilacak dari hari ke hari. Pengunjung yang menyalakan Do Not Track atau GPC, robot, dan pengelola yang sedang masuk panel tidak dihitung. Negara diambil dari header hosting bila tersedia, bila tidak ditebak dari bahasa peramban, jadi angkanya perkiraan. Data lebih tua dari 400 hari dihapus sendiri.
 
 ## Yang bisa diubah dari panel
 
