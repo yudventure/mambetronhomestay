@@ -11,6 +11,7 @@ import { ambilSitus, angkaRingkasan, cariPesanan, daftarKamar, hitungPesanan } f
 import { alamatSitus, surelDiatur } from '@/lib/env';
 import { bulanTahun, rentangTanggal, rupiah, rupiahRingkas, tanggal } from '@/lib/format';
 import { sesiAkun } from '@/lib/sesi';
+import { blokLuar, cariBentrok, pastikanSegar, type BlokLuar, type Bentrok } from '@/lib/sinkron';
 import { ZONA, daftarMalam, hariIni, selisihHari, tambahHari } from '@/lib/tanggal';
 
 export const metadata = { title: 'Ringkasan' };
@@ -52,7 +53,8 @@ export default async function Ringkasan({ searchParams }: { searchParams: Promis
   const sampai = tambahHari(hari, 30);
   const q = (sp.q ?? '').trim().slice(0, 80);
   const status = ['menunggu', 'dikonfirmasi', 'lunas', 'selesai', 'batal'].includes(sp.status ?? '') ? sp.status : undefined;
-  const [situs, kamar, rentang, angka, meja, jumlahMeja, surel] = await Promise.all([
+  pastikanSegar().catch(() => {});
+  const [situs, kamar, rentang, angka, meja, jumlahMeja, surel, luar, bentrok] = await Promise.all([
     ambilSitus(),
     daftarKamar(true),
     cariPesanan({ dari: hari, sampai, urut: 'tiba', batas: 1000 }),
@@ -60,6 +62,8 @@ export default async function Ringkasan({ searchParams }: { searchParams: Promis
     cariPesanan({ q: q || undefined, status, batas: 10 }),
     hitungPesanan({ q: q || undefined, status }),
     sesiAkun(),
+    blokLuar(hari, sampai).catch(() => [] as BlokLuar[]),
+    cariBentrok(hari, tambahHari(hari, 180)).catch(() => [] as Bentrok[]),
   ]);
   const peran = akunDari(surel)?.peran === 'pengembang' ? 'Pengembang' : 'Pemilik';
   const hidup = rentang.filter((p) => p.status !== 'batal');
@@ -68,7 +72,15 @@ export default async function Ringkasan({ searchParams }: { searchParams: Promis
   const menginap = hidup.filter((p) => p.check_in <= hari && p.check_out > hari);
   const tamuMalamIni = menginap.reduce((a, p) => a + p.dewasa + p.anak, 0);
   const unitAktif = kamar.filter((k) => k.aktif).reduce((a, k) => a + k.jumlah_unit, 0);
-  const malamTerisi = hidup.reduce((a, p) => a + daftarMalam(p.check_in < hari ? hari : p.check_in, p.check_out > sampai ? sampai : p.check_out).length * p.jumlah_kamar, 0);
+  // a unit counts once a night, whether booked here or on a booking site
+  const aktif = kamar.filter((k) => k.aktif);
+  const luarAda = luar.filter((b) => aktif.some((k) => k.id === b.kamar_id && b.unit <= k.jumlah_unit));
+  const terisi = (kamarId: number, unit: number, m: string) => Math.min(unit,
+    hidup.filter((p) => p.kamar_id === kamarId && p.check_in <= m && p.check_out > m).reduce((a, p) => a + p.jumlah_kamar, 0)
+    + new Set(luarAda.filter((b) => b.kamar_id === kamarId && b.mulai <= m && b.selesai > m).map((b) => b.unit)).size);
+  const malamTerisi = aktif.reduce((a, k) => a + daftarMalam(hari, sampai).reduce((s, m) => s + terisi(k.id, k.jumlah_unit, m), 0), 0);
+  const terisiMalamIni = aktif.reduce((a, k) => a + terisi(k.id, k.jumlah_unit, hari), 0);
+  const luarMalamIni = luarAda.filter((b) => b.mulai <= hari && b.selesai > hari);
   const okupansi = unitAktif ? Math.round((malamTerisi / (unitAktif * 30)) * 100) : 0;
   const tibaTerdekat = hidup.filter((p) => p.check_in >= hari).slice(0, 3);
   const perhatian = hidup.filter((p) =>
@@ -130,9 +142,20 @@ export default async function Ringkasan({ searchParams }: { searchParams: Promis
       <section className="kartu flex flex-wrap items-start justify-between gap-4 p-5 sm:p-6">
         <div className="min-w-0 flex-1 basis-80">
           <p className="label-kecil">Perlu perhatian</p>
-          <h2 className="mt-1 text-[1.4rem] text-panel-utama">{perhatian.length ? `${perhatian.length} pesanan perlu ditindaklanjuti` : 'Tidak ada yang perlu dikejar'}</h2>
-          {perhatian.length ? (
+          <h2 className="mt-1 text-[1.4rem] text-panel-utama">
+            {perhatian.length + bentrok.length ? `${perhatian.length + bentrok.length} hal perlu ditindaklanjuti` : 'Tidak ada yang perlu dikejar'}
+          </h2>
+          {perhatian.length + bentrok.length ? (
             <ul className="mt-3 grid gap-2">
+              {bentrok.map((b) => (
+                <li key={`b${b.kamar_id}-${b.mulai}`}>
+                  <Link href="/admin/sinkron" className="flex flex-wrap items-center gap-x-3 gap-y-1 rounded-2xl bg-[#fde3dc] px-4 py-3 hover:bg-[#f9d6cc]">
+                    <span className="font-semibold text-panel-utama">{b.nama}</span>
+                    <span className="text-sm text-panel-utama/80">{rentangTanggal(b.mulai, b.selesai)}</span>
+                    <span className="ml-auto text-sm font-semibold text-merah">{b.terpakai} pemesanan untuk {b.unit} unit, bentrok dengan OTA</span>
+                  </Link>
+                </li>
+              ))}
               {perhatian.map((p) => (
                 <li key={p.id}>
                   <Link href={`/admin/pesanan/${p.id}`} className="flex flex-wrap items-center gap-x-3 gap-y-1 rounded-2xl bg-panel-latar px-4 py-3 hover:bg-panel-lembut">
@@ -170,14 +193,20 @@ export default async function Ringkasan({ searchParams }: { searchParams: Promis
           ) : 'Tamu yang akan datang dalam 30 hari tampil di sini.'}
         </KartuKecil>
 
-        <KartuKecil label="Malam ini" judul={menginap.length ? `${menginap.reduce((a, p) => a + p.jumlah_kamar, 0)} dari ${unitAktif} pondok terisi` : 'Semua pondok kosong'}
+        <KartuKecil label="Malam ini" judul={terisiMalamIni ? `${terisiMalamIni} dari ${unitAktif} pondok terisi` : 'Semua pondok kosong'}
           tombol={<Link href="/admin/kamar" className={tombolGaris}>Buka pondok <Ikon nama="panah" className="size-4" /></Link>}>
-          {menginap.length ? (
+          {menginap.length + luarMalamIni.length ? (
             <ul className="grid gap-2">
               {menginap.slice(0, 3).map((p) => (
                 <li key={p.id} className="flex items-baseline justify-between gap-3">
                   <span className="min-w-0 truncate font-semibold text-panel-utama">{p.nama}</span>
                   <span className="shrink-0 text-sm">{p.kamar_nama}</span>
+                </li>
+              ))}
+              {luarMalamIni.slice(0, Math.max(0, 3 - menginap.length)).map((b, i) => (
+                <li key={`l${b.sambungan_id}-${i}`} className="flex items-baseline justify-between gap-3">
+                  <span className="min-w-0 truncate font-semibold text-panel-utama">Tamu {b.nama}</span>
+                  <span className="shrink-0 text-sm">unit {b.unit}</span>
                 </li>
               ))}
             </ul>

@@ -8,6 +8,7 @@ import KalenderKamar from '@/components/KalenderKamar';
 import KartuKamar from '@/components/KartuKamar';
 import { bahasaAktif } from '@/lib/bahasa';
 import { ambilSitus, daftarKamar, gambarCadangan, kamarDariSlug, pemesananAktif, sisaKamar } from '@/lib/data';
+import { pastikanSegar } from '@/lib/sinkron';
 import { kamus } from '@/lib/kamus';
 import { paragraf, pilih, rupiah, tautanWa } from '@/lib/format';
 import { hariIni, tambahHari } from '@/lib/tanggal';
@@ -31,6 +32,7 @@ export async function generateMetadata({ params }: P): Promise<Metadata> {
 export default async function HalamanPondok({ params }: P) {
   const { slug } = await params;
   const [b, situs, semua, aktif, kurs] = await Promise.all([bahasaAktif(), ambilSitus(), daftarKamar(), pemesananAktif(), kursAktif()]);
+  if (aktif) pastikanSegar().catch(() => {});
   const i = semua.findIndex((x) => x.slug === slug);
   if (i < 0) notFound();
   const km = semua[i];
@@ -109,7 +111,7 @@ export default async function HalamanPondok({ params }: P) {
         <Bagian latar={aktif ? 'putih' : 'buih'}>
           <h2 className="mb-8 text-3xl">{k.semuaPondok}</h2>
           <div className={`${KISI} gap-6`}>
-            {lain.map((x, j) => <KartuKamar key={x.id} kamar={x} b={b} kurs={kurs} i={semua.indexOf(x)} className={rentang(lain.length, j)} />)}
+            {lain.map((x, j) => <KartuKamar key={x.id} kamar={x} b={b} kurs={kurs} i={semua.indexOf(x)} lebar={lain.length === 1} className={rentang(lain.length, j)} />)}
           </div>
         </Bagian>
       )}

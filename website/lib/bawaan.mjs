@@ -321,35 +321,24 @@ export function gabungSitus(simpanan) {
 // Rooms, extras and settings put in an empty database the first time.
 export const KAMAR_AWAL = [
   {
-    slug: 'pondok-laguna', nama: 'Pondok Laguna', nama_en: 'Lagoon Hut',
-    ringkas: 'Pondok panggung di atas air dengan teras menghadap laguna.',
-    ringkas_en: 'A stilt hut over the water with a terrace facing the lagoon.',
-    deskripsi: 'Pondok kayu berdiri di atas tiang, dengan teras pribadi tepat di atas laguna. Dari kasur kamu bisa mendengar ombak kecil memukul tiang rumah.\n\nCocok untuk pasangan yang ingin bangun melihat matahari terbit lalu langsung turun berenang.',
-    deskripsi_en: 'A wooden hut on stilts with a private terrace right above the lagoon. From bed you can hear small waves lapping at the posts.\n\nMade for couples who want to wake up to the sunrise and slip straight into the water.',
-    fasilitas: ['Kasur ganda dengan kelambu', 'Kipas angin', 'Teras pribadi di atas air', 'Kamar mandi bersama', 'Handuk dan sabun'],
-    fasilitas_en: ['Double bed with mosquito net', 'Fan', 'Private terrace over the water', 'Shared bathroom', 'Towels and soap'],
-    harga: 550000, harga_anak: null, skema_harga: 'orang', kapasitas: 2, jumlah_unit: 2, min_malam: 1, urutan: 1,
+    slug: 'pondok-tepi-pantai', nama: 'Pondok Tepi Pantai', nama_en: 'Beachfront Hut',
+    ringkas: 'Tujuh pondok dengan tipe dan ukuran yang sama, semuanya di tepi pantai menghadap laut.',
+    ringkas_en: 'Seven huts of the same type and size, all on the beach facing the sea.',
+    deskripsi: 'Semua pondok kami sama tipe dan ukurannya, dan semuanya berdiri di tepi pantai menghadap langsung ke laut. Jadi pondok mana pun yang kamu dapat, pemandangannya sama.\n\nHarga sudah termasuk makan tiga kali sehari, dan wifi tersedia untuk tamu.',
+    deskripsi_en: 'All our huts share the same type and size, and every one stands on the beach facing straight out to sea. Whichever hut you get, the view is the same.\n\nThe rate includes three meals a day, and Wi-Fi is available for guests.',
+    fasilitas: ['Di tepi pantai', 'Menghadap langsung ke laut', 'Makan tiga kali sehari', 'Wifi'],
+    fasilitas_en: ['Right on the beach', 'Facing straight out to sea', 'Three meals a day', 'Wi-Fi'],
+    harga: 550000, harga_anak: null, skema_harga: 'orang', kapasitas: 2, jumlah_unit: 7, min_malam: 1, urutan: 1,
   },
-  {
-    slug: 'pondok-senja', nama: 'Pondok Senja', nama_en: 'Sunset Hut',
-    ringkas: 'Di pasir putih menghadap barat, tempat terbaik melihat matahari terbenam.',
-    ringkas_en: 'On the white sand facing west, the best seat for the sunset.',
-    deskripsi: 'Pondok di tepi pantai dengan pintu yang terbuka langsung ke pasir. Sore hari langit di depan pondok berubah jingga, persis seperti warna tombol pesan kami.\n\nAda kamar mandi dalam, jadi cocok untuk tamu yang ingin sedikit lebih nyaman.',
-    deskripsi_en: 'A beachfront hut whose door opens straight onto the sand. In the late afternoon the sky in front turns orange, just like our booking button.\n\nIt has its own bathroom, a good pick if you like a little extra comfort.',
-    fasilitas: ['Kasur ganda atau dua kasur tunggal', 'Kamar mandi dalam', 'Kipas angin', 'Kelambu', 'Kursi santai di pantai'],
-    fasilitas_en: ['Double or twin beds', 'Private bathroom', 'Fan', 'Mosquito net', 'Beach loungers'],
-    harga: 600000, harga_anak: null, skema_harga: 'orang', kapasitas: 2, jumlah_unit: 1, min_malam: 1, urutan: 2,
-  },
-  {
-    slug: 'pondok-keluarga', nama: 'Pondok Keluarga', nama_en: 'Family Hut',
-    ringkas: 'Dua kamar tidur dan ruang duduk untuk keluarga atau rombongan kecil.',
-    ringkas_en: 'Two bedrooms and a sitting room for families or small groups.',
-    deskripsi: 'Pondok terbesar kami dengan dua kamar tidur yang berbagi ruang duduk dan teras panjang. Anak-anak bisa bermain di pasir sementara orang tua bersantai di teras.\n\nAnak di bawah 12 tahun mendapat harga khusus.',
-    deskripsi_en: 'Our largest hut, with two bedrooms sharing a sitting room and a long terrace. Kids can play on the sand while parents relax on the terrace.\n\nChildren under 12 get a special rate.',
-    fasilitas: ['Dua kamar tidur', 'Ruang duduk', 'Teras panjang', 'Kamar mandi dalam', 'Kelambu dan kipas angin'],
-    fasilitas_en: ['Two bedrooms', 'Sitting room', 'Long terrace', 'Private bathroom', 'Mosquito nets and fans'],
-    harga: 500000, harga_anak: 250000, skema_harga: 'orang', kapasitas: 4, jumlah_unit: 1, min_malam: 2, urutan: 3,
-  },
+];
+
+// The three sample huts the site shipped with before the real rooms were
+// known. A database that still holds exactly these, untouched and unbooked
+// apart from the first, is moved to KAMAR_AWAL once (lib/db.ts).
+export const KAMAR_LAMA = [
+  { slug: 'pondok-laguna', nama: 'Pondok Laguna', harga: 550000 },
+  { slug: 'pondok-senja', nama: 'Pondok Senja', harga: 600000 },
+  { slug: 'pondok-keluarga', nama: 'Pondok Keluarga', harga: 500000 },
 ];
 
 export const LAYANAN_AWAL = [

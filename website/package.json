@@ -10,7 +10,8 @@
     "start:node": "node server.js",
     "db:migrasi": "node scripts/migrasi.mjs",
     "db:sql": "node scripts/migrasi.mjs --sql > database/skema.sql",
-    "cek": "tsc --noEmit"
+    "cek": "tsc --noEmit",
+    "uji": "node --test lib/*.test.mjs"
   },
   "engines": {
     "node": ">=20.9.0"

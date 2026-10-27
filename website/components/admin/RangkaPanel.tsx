@@ -26,6 +26,7 @@ function menu(menunggu: number): Butir[] {
     { href: '/admin', label: 'Ringkasan', ikon: 'dasbor' },
     { href: '/admin/pesanan', label: 'Pesanan', ikon: 'tiket', lencana: menunggu },
     { href: '/admin/kalender', label: 'Kalender', ikon: 'kalender' },
+    { href: '/admin/sinkron', label: 'Sinkron OTA', ikon: 'sinkron' },
     { href: '/admin/kamar', label: 'Pondok', ikon: 'kamar' },
     { href: '/admin/layanan', label: 'Kegiatan', ikon: 'perahu' },
     { href: '/admin/ulasan', label: 'Ulasan', ikon: 'bintang' },

@@ -134,6 +134,40 @@ export const SKEMA = [
   KEY kunjungan_waktu (waktu)
 ) ${T}`,
 
+  // Calendar sync with booking sites and travel agents. One row per link,
+  // tied to one unit of one hut type. token makes the export link, url is
+  // the calendar read from the other site (empty for an export-only link).
+  `CREATE TABLE IF NOT EXISTS kalender_sambungan (
+  id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  kamar_id INT UNSIGNED NOT NULL,
+  unit TINYINT UNSIGNED NOT NULL DEFAULT 1,
+  nama VARCHAR(80) NOT NULL,
+  url VARCHAR(1000) NOT NULL DEFAULT '',
+  token CHAR(32) NOT NULL,
+  dicoba DATETIME NULL,
+  berhasil DATETIME NULL,
+  galat VARCHAR(300) NOT NULL DEFAULT '',
+  jumlah INT UNSIGNED NOT NULL DEFAULT 0,
+  dibuat TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  UNIQUE KEY sambungan_token (token),
+  KEY sambungan_unit (kamar_id, unit)
+) ${T}`,
+
+  // Nights taken on the other site, as read at the last sync. selesai is
+  // the check-out day and is not a night.
+  `CREATE TABLE IF NOT EXISTS kalender_luar (
+  id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  sambungan_id INT UNSIGNED NOT NULL,
+  kamar_id INT UNSIGNED NOT NULL,
+  unit TINYINT UNSIGNED NOT NULL DEFAULT 1,
+  mulai DATE NOT NULL,
+  selesai DATE NOT NULL,
+  uid VARCHAR(255) NOT NULL DEFAULT '',
+  ringkas VARCHAR(200) NOT NULL DEFAULT '',
+  KEY luar_tanggal (kamar_id, mulai, selesai),
+  KEY luar_sambungan (sambungan_id)
+) ${T}`,
+
   // One row per admin e-mail. The password set through the e-mail code,
   // stored as a scrypt hash, and the pending code with its expiry and counters.
   `CREATE TABLE IF NOT EXISTS admin_akun (

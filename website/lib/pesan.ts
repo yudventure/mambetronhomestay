@@ -3,6 +3,7 @@
 import crypto from 'crypto';
 import { transaksi, type Baris, type Hasil } from './db';
 import { sisaKamar } from './data';
+import { pastikanSegar } from './sinkron';
 import { hitungHarga } from './harga';
 import type { Bahasa, Kamar, Layanan, Situs, StatusPesanan } from './jenis';
 import { daftarMalam, hariIni, sahTanggal, selisihHari, tambahHari } from './tanggal';
@@ -73,6 +74,9 @@ export async function simpanPesanan(m: MasukanPesan, kamar: Kamar, layananAda: L
   const pilihan = layananAda.filter((l) => m.layanan.includes(l.id));
   const h = hitungHarga(kamar, { malam, jumlahKamar: m.jumlahKamar, dewasa: m.dewasa, anak: m.anak, layanan: pilihan, dpPersen: situs.dpPersen });
   const token = crypto.randomBytes(16).toString('hex');
+  // nights sold on a booking site a moment ago should already count, but a
+  // slow site never holds the guest for more than a few seconds
+  await pastikanSegar(6000).catch(() => {});
 
   return transaksi(async (c) => {
     await c.query<Baris[]>('SELECT id FROM kamar WHERE id = ? FOR UPDATE', [kamar.id]);

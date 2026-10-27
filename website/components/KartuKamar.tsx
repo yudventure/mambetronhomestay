@@ -7,19 +7,21 @@ import { gambarCadangan } from '@/lib/data';
 import Perkiraan from './Perkiraan';
 import type { Kurs } from '@/lib/uang';
 
-export default function KartuKamar({ kamar, b, kurs, i, className = '' }: { kamar: Kamar; b: Bahasa; kurs: Kurs; i: number; className?: string }) {
+// A lone card spans the full row, so from md up it lies on its side with the
+// photo beside the text instead of a photo as wide as the page.
+export default function KartuKamar({ kamar, b, kurs, i, lebar = false, className = '' }: { kamar: Kamar; b: Bahasa; kurs: Kurs; i: number; lebar?: boolean; className?: string }) {
   const k = kamus(b);
   const foto = kamar.foto[0];
   const nama = pilih(b, kamar.nama, kamar.nama_en);
   return (
-    <article className={`kartu group flex flex-col overflow-hidden transition-shadow hover:shadow-angkat ${className}`}>
-      <Link href={`/kamar/${kamar.slug}`} className="relative block aspect-[4/3] overflow-hidden bg-buih" tabIndex={-1} aria-hidden>
+    <article className={`kartu group flex flex-col overflow-hidden transition-shadow hover:shadow-angkat ${lebar ? 'md:flex-row' : ''} ${className}`}>
+      <Link href={`/kamar/${kamar.slug}`} className={`relative block aspect-[4/3] overflow-hidden bg-buih ${lebar ? 'md:aspect-auto md:min-h-[24rem] md:w-1/2 md:shrink-0' : ''}`} tabIndex={-1} aria-hidden>
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img src={foto?.url ?? gambarCadangan(i)} alt="" loading="lazy" width={foto?.lebar || 1200} height={foto?.tinggi || 800}
-          className="size-full object-cover transition-transform duration-500 group-hover:scale-[1.03]" />
+          className={`size-full object-cover transition-transform duration-500 group-hover:scale-[1.03] ${lebar ? 'md:absolute md:inset-0' : ''}`} />
       </Link>
-      <div className="flex flex-1 flex-col p-5 sm:p-6">
-        <h3 className="text-2xl">
+      <div className={`flex flex-1 flex-col p-5 sm:p-6 ${lebar ? 'md:p-10' : ''}`}>
+        <h3 className={lebar ? 'text-2xl md:text-4xl' : 'text-2xl'}>
           <Link href={`/kamar/${kamar.slug}`} className="hover:text-biru-tua">{nama}</Link>
         </h3>
         <p className="mt-2 text-abu">{pilih(b, kamar.ringkas, kamar.ringkas_en)}</p>

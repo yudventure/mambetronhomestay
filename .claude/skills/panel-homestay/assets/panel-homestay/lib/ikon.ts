@@ -35,6 +35,7 @@ export const IKON: Record<string, string> = {
   kalender: 'M6 5h12a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2ZM4 10h16M8.5 3v4M15.5 3v4',
   orang: 'M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8ZM4.5 20.5a7.5 7.5 0 0 1 15 0',
   centang: 'M5 12.5l4.5 4.5L19 7.5',
+  sinkron: 'M19.5 9A8 8 0 0 0 5 7.5M4.5 4v3.5H8M4.5 15a8 8 0 0 0 14.5 1.5M19.5 20v-3.5H16',
   tambah: 'M12 5v14M5 12h14',
   kurang: 'M5 12h14',
   keluar: 'M15 4h3a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-3M10 16l4-4-4-4M14 12H4',

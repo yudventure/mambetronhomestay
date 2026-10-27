@@ -109,7 +109,7 @@ Perintah lain yang tersedia sebagai berikut.
 
 ## Cara kerja pemesanan
 
-Setiap jenis pondok punya jumlah unit. Satu malam penuh bila unit yang terpesan ditambah tanggal tutup sudah sama dengan jumlah unit. Pesanan berstatus apa pun kecuali Dibatalkan ikut menahan pondok. Saat tamu mengirim pesanan, baris pondok dikunci di database selama pemeriksaan, jadi dua tamu tidak bisa mendapat unit terakhir di malam yang sama.
+Setiap jenis pondok punya jumlah unit. Mambetron punya satu jenis, Pondok Tepi Pantai, dengan tujuh unit yang sama tipe dan ukurannya dan semuanya menghadap pantai. Satu malam penuh bila unit yang terpesan di situs ini, unit yang terisi dari OTA lewat sinkron kalender, dan tanggal tutup sudah sama dengan jumlah unit. Pesanan berstatus apa pun kecuali Dibatalkan ikut menahan pondok. Saat tamu mengirim pesanan, baris pondok dikunci di database selama pemeriksaan, jadi dua tamu tidak bisa mendapat unit terakhir di malam yang sama.
 
 Harga dihitung per orang per malam atau per pondok per malam, sesuai pilihan di panel. Anak di bawah 12 tahun bisa diberi harga sendiri. Uang muka dihitung dari persen di menu Isi situs dan dibulatkan ke atas per seribu rupiah.
 
@@ -120,6 +120,33 @@ Foto disimpan di database supaya tidak hilang saat deploy ulang. Foto diperkecil
 Halaman utama punya lima tempat foto di menu Foto situs. Foto utama tampil penuh di belakang judul besar di komputer dan tablet, foto utama untuk ponsel menggantikannya di layar di bawah 768 piksel, foto kartu keunggulan mengisi tiga kartu di bawah foto utama sesuai urutannya, foto tentang kami tampil di samping kotak rencana menginap, dan foto ajakan tampil di kotak berwarna laut. Selama belum ada foto unggahan, foto utama memakai foto mendatar pondok di tepi pantai (`public/foto/pondok-tepi-air.jpg`) dan ponsel memakai foto tegak dermaga pondok (`public/foto/dermaga-pondok.jpg`). Bila foto bawaan ini diganti, beri nama berkas baru. CDN Hostinger dan peramban bisa terus menampilkan foto lama selama namanya sama. Bila hanya foto utama yang diunggah, ponsel ikut memakainya. Foto tentang kami dan foto ajakan memakai ilustrasi siang dan pagi di Raja Ampat yang dibuat oleh `scripts/desain/situs.mjs`, dan kartu keunggulan tanpa foto memakai ilustrasi laut `public/merek/kamar-1.svg` sampai `kamar-3.svg`.
 
 Judul dan teks kartu keunggulan diisi di Isi situs, bagian Halaman utama. Tulisan `{harga}` di teks kartu diganti otomatis dengan harga pondok termurah beserta perkiraannya dalam mata uang asing. Di samping kartu tampil nilai ulasan dari Booking.com (bawaannya 8,7 dari 10), lingkaran huruf para tamu yang mengulas, dan tombol Lihat di Booking.com. Tombol itu membuka halaman Mambetron di Booking.com (`https://www.booking.com/hotel/id/mambetron-homestay.html`), tanpa kode pelacak sehingga Booking.com memilih bahasa sesuai peramban pengunjung. Nilai, nama situs ulasan, tautan tombol, dan daftar tamunya diubah di bagian yang sama.
+
+## Pondok bawaan
+
+Database baru langsung berisi Pondok Tepi Pantai dengan tujuh unit. Harga bawaannya Rp 550.000 per orang per malam untuk dua orang, ganti di menu Pondok sesuai harga sebenarnya, begitu juga foto dan teksnya.
+
+Database yang masih berisi tiga pondok contoh dari versi lama (Pondok Laguna, Pondok Senja, Pondok Keluarga) dipindah sekali secara otomatis saat situs pertama terhubung. Pondok Laguna menjadi Pondok Tepi Pantai lengkap dengan foto dan pesanannya, dua contoh lainnya dihapus. Pemindahan ini dilewati bila contoh itu sudah diganti namanya, ditambah pondok lain, atau Pondok Senja dan Pondok Keluarga sudah punya pesanan atau foto. Dalam keadaan itu ubah pondoknya sendiri di menu Pondok.
+
+## Sinkron kalender dengan OTA dan agen perjalanan
+
+Menu Sinkron OTA di panel menghubungkan kalender setiap unit dengan Booking.com, Airbnb, Agoda, Google Calendar, atau agen perjalanan lewat tautan iCal. Kalender iCal hanya tahu terisi atau kosong, jadi setiap sambungan dipasang untuk satu unit. Unit yang dijual di dua situs mendapat dua sambungan.
+
+Setiap sambungan menukar dua tautan. Tautan dari panel (berakhiran `.ics`) ditempel di menu sinkron kalender situs itu, supaya situs itu menutup malam yang sudah terisi di sini. Tautan ekspor iCal dari situs itu ditempel di kolom tautan kalender di panel, supaya malam yang terjual di sana tertutup di sini. Untuk agen perjalanan cukup tautan dari panel saja, agen bisa membukanya di Google Calendar.
+
+Pemesanan di situs ini tidak membawa nomor unit. Situs membaginya ke unit yang kosong, menghindari malam yang sudah terisi dari OTA, lalu menutup unit itu di tautan ekspornya. Tautan setiap sambungan tidak memuat malam yang datang dari sambungan itu sendiri, jadi blokir tidak memantul bolak-balik. Tautan ekspor hanya berisi malam yang terisi, tanpa nama tamu, harga, atau kontak.
+
+Kalender situs lain dibaca setiap 15 menit selama aplikasi menyala, setiap kali halaman pesan atau kalender dibuka bila bacaan terakhir sudah lewat 15 menit, dan sekali lagi sebelum pesanan baru disimpan. Tombol Sinkronkan sekarang membaca semuanya saat itu juga. Situs pemesanan membaca tautan kita sesuai jadwal mereka sendiri, biasanya 30 menit sampai beberapa jam, jadi masih ada jeda kecil. Bila malam yang sama terjual di dua tempat melebihi tujuh unit, halaman Sinkron OTA dan kotak Perlu perhatian di Ringkasan menandainya supaya tamunya bisa dihubungi.
+
+Tautan yang gagal dibaca (situs tidak menjawab, tautan sudah diganti, atau isinya bukan kalender) diberi pesan di sambungannya, dan malam dari bacaan terakhir yang berhasil tetap ditutup. Bila tautan dari panel tersebar ke orang yang salah, pakai Buat tautan baru lalu tempel tautan baru di situs itu.
+
+Hal yang perlu diketahui tentang tiap situs, sesuai keadaan Oktober 2026.
+
+- Booking.com hanya menyinkronkan tipe kamar yang berisi satu unit. Bila tujuh pondok dijual sebagai satu tipe berisi tujuh, iklannya perlu dipecah menjadi tujuh tipe satu unit, atau pakai channel manager. Tanyakan ke Booking.com dulu.
+- Airbnb menyinkronkan per iklan, satu iklan untuk satu unit.
+- Agoda Homes punya impor dan ekspor iCal. Untuk Agoda YCS tanyakan ke Agoda.
+- Traveloka dan Tiket.com tidak memakai iCal. Tanggalnya ditutup manual di sana atau lewat channel manager.
+
+Tabelnya `kalender_sambungan` (tautan per unit) dan `kalender_luar` (malam yang terbaca dari situs lain). Pembaca iCal ada di `lib/ical.mjs` dengan uji `npm run uji`, aturan sinkron di `lib/sinkron.ts`, tautan ekspor di `app/ical/[berkas]/route.ts`.
 
 ## Bahasa dan mata uang
 

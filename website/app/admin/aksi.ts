@@ -13,6 +13,7 @@ import { pesanGalat } from '@/lib/kamus';
 import { tanggal } from '@/lib/format';
 import { alamatPengunjung, bolehMencoba, buatSesi, catatGagal, hapusSesi, lupakanGagal, sandiCocok, sandiDiatur, wajibMasuk } from '@/lib/sesi';
 import { daftarMalam, sahTanggal, selisihHari } from '@/lib/tanggal';
+import { GalatSinkron, buatToken, rapikanUrl, sinkronSatu, sinkronSemua, type Sambungan } from '@/lib/sinkron';
 
 const teks = (fd: FormData, k: string, n = 2000) => String(fd.get(k) ?? '').trim().slice(0, n);
 const bulat = (fd: FormData, k: string) => {
@@ -142,6 +143,8 @@ export async function hapusKamar(fd: FormData) {
   }
   await jalankan("DELETE FROM foto WHERE wadah = 'kamar' AND kamar_id = ?", [id]);
   await jalankan('DELETE FROM tutup WHERE kamar_id = ?', [id]);
+  await jalankan('DELETE FROM kalender_luar WHERE kamar_id = ?', [id]);
+  await jalankan('DELETE FROM kalender_sambungan WHERE kamar_id = ?', [id]);
   await jalankan('DELETE FROM kamar WHERE id = ?', [id]);
   segarkan();
   redirect('/admin/kamar?hapus=1');
@@ -260,6 +263,74 @@ export async function hapusTutup(fd: FormData) {
   await wajibMasuk();
   await jalankan('DELETE FROM tutup WHERE id = ?', [bulat(fd, 'id')]);
   segarkan();
+}
+
+// Calendar sync links. Each belongs to one unit of one hut type.
+const urlSambungan = (fd: FormData) => {
+  try {
+    return { url: rapikanUrl(teks(fd, 'url', 1200)) };
+  } catch (e) {
+    return { galat: e instanceof GalatSinkron ? e.kode : 'url-baca' };
+  }
+};
+
+export async function tambahSambungan(fd: FormData) {
+  await wajibMasuk();
+  // the unit picker sends "kamar_id-unit"
+  const [kamarId, unit] = teks(fd, 'unit', 20).split('-').map((x) => Number.parseInt(x, 10) || 0);
+  const nama = teks(fd, 'nama', 80);
+  const km = await kamarDariId(kamarId);
+  if (!km || unit < 1 || unit > km.jumlah_unit) redirect('/admin/sinkron?galat=unit');
+  if (!nama) redirect('/admin/sinkron?galat=nama');
+  const u = urlSambungan(fd);
+  if ('galat' in u) redirect(`/admin/sinkron?galat=${u.galat}`);
+  const r = await jalankan('INSERT INTO kalender_sambungan (kamar_id, unit, nama, url, token) VALUES (?, ?, ?, ?, ?)', [kamarId, unit, nama, u.url, buatToken()]);
+  if (u.url) await sinkronSatu({ id: r.insertId, kamar_id: kamarId, unit, url: u.url });
+  segarkan();
+  redirect(`/admin/sinkron?ok=tambah&baru=${r.insertId}#sambungan-${r.insertId}`);
+}
+
+export async function ubahSambungan(fd: FormData) {
+  await wajibMasuk();
+  const id = bulat(fd, 'id');
+  const s = await satu<Sambungan>('SELECT id, kamar_id, unit, url FROM kalender_sambungan WHERE id = ?', [id]);
+  if (!s) redirect('/admin/sinkron');
+  const nama = teks(fd, 'nama', 80);
+  if (!nama) redirect(`/admin/sinkron?galat=nama#sambungan-${id}`);
+  const u = urlSambungan(fd);
+  if ('galat' in u) redirect(`/admin/sinkron?galat=${u.galat}#sambungan-${id}`);
+  await jalankan('UPDATE kalender_sambungan SET nama = ?, url = ? WHERE id = ?', [nama, u.url, id]);
+  if (!u.url) {
+    await jalankan('DELETE FROM kalender_luar WHERE sambungan_id = ?', [id]);
+    await jalankan("UPDATE kalender_sambungan SET galat = '', jumlah = 0, berhasil = NULL, dicoba = NULL WHERE id = ?", [id]);
+  } else if (u.url !== s.url) await sinkronSatu({ ...s, url: u.url });
+  segarkan();
+  redirect(`/admin/sinkron?ok=ubah#sambungan-${id}`);
+}
+
+export async function hapusSambungan(fd: FormData) {
+  await wajibMasuk();
+  const id = bulat(fd, 'id');
+  await jalankan('DELETE FROM kalender_luar WHERE sambungan_id = ?', [id]);
+  await jalankan('DELETE FROM kalender_sambungan WHERE id = ?', [id]);
+  segarkan();
+  redirect('/admin/sinkron?ok=hapus');
+}
+
+// A new export link, for when the old one reached the wrong hands. The site
+// that used the old link has to get the new one.
+export async function gantiTautanSambungan(fd: FormData) {
+  await wajibMasuk();
+  const id = bulat(fd, 'id');
+  await jalankan('UPDATE kalender_sambungan SET token = ? WHERE id = ?', [buatToken(), id]);
+  redirect(`/admin/sinkron?ok=token#sambungan-${id}`);
+}
+
+export async function sinkronkanSekarang() {
+  await wajibMasuk();
+  await sinkronSemua({ paksa: true });
+  segarkan();
+  redirect('/admin/sinkron?ok=sinkron');
 }
 
 // Bookings.

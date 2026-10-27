@@ -1,6 +1,6 @@
 ---
 name: panel-homestay
-description: Panel pengelola (dashboard admin) homestay bergaya meja pengelola DAMPIER, dibangun untuk Mambetron Homestay (mambetronhomestay.com) dan siap dipakai ulang di situs homestay lain milik pemilik yang sama. Bilah atas putih dengan lonceng dan menu akun, menu samping putih dengan kartu HARI INI, kartu sapaan gelap dengan jam WIT langsung, enam angka ringkasan, statistik pengunjung website tanpa cookie, meja pesanan dengan cari dan saring status, kalender bulan dengan chip tamu dan tanggal tutup, lembar menu dari bawah di ponsel, tema warna lewat enam token. Pakai SETIAP KALI pemilik meminta dashboard admin, panel pengelola, halaman admin, "admin seperti DAMPIER", "admin seperti Mambetron", meja pesanan, kalender pemesanan, statistik pengunjung di panel, atau membangun dan menata ulang admin untuk homestay, penginapan, guesthouse, dive center, atau situs pemesanan lain, bahkan kalau kata "skill" tidak disebut.
+description: Panel pengelola (dashboard admin) homestay bergaya meja pengelola DAMPIER, dibangun untuk Mambetron Homestay (mambetronhomestay.com) dan siap dipakai ulang di situs homestay lain milik pemilik yang sama. Bilah atas putih dengan lonceng dan menu akun, menu samping putih dengan kartu HARI INI, kartu sapaan gelap dengan jam WIT langsung, enam angka ringkasan, statistik pengunjung website tanpa cookie, meja pesanan dengan cari dan saring status, kalender bulan dengan chip tamu, unit terisi, dan tanggal tutup, sinkron kalender iCal per unit dengan Booking.com, Airbnb, Agoda, dan agen perjalanan, lembar menu dari bawah di ponsel, tema warna lewat enam token. Pakai SETIAP KALI pemilik meminta dashboard admin, panel pengelola, halaman admin, "admin seperti DAMPIER", "admin seperti Mambetron", meja pesanan, kalender pemesanan, sinkron kalender OTA, iCal, channel ke Booking.com atau Airbnb, statistik pengunjung di panel, atau membangun dan menata ulang admin untuk homestay, penginapan, guesthouse, dive center, atau situs pemesanan lain, bahkan kalau kata "skill" tidak disebut.
 ---
 
 # Panel pengelola homestay
@@ -26,12 +26,14 @@ tata letaknya.
 | `assets/panel-homestay/app/admin/(panel)/kalender/page.tsx` | Kalender bulan mulai Senin, chip per hari, rincian tanggal, tutup tanggal. |
 | `assets/panel-homestay/app/admin/(panel)/pesanan/page.tsx` | Daftar pesanan dengan pil status dan "Hanya yang akan datang". |
 | `assets/panel-homestay/lib/statistik.ts`, `app/api/kunjungan/route.ts`, `components/Kunjungan.tsx` | Penghitung kunjungan milik situs sendiri. |
+| `assets/panel-homestay/lib/sinkron.ts`, `lib/ical.mjs`, `app/ical/[berkas]/route.ts`, `app/admin/(panel)/sinkron/page.tsx`, `instrumentation.ts` | Sinkron kalender iCal per unit dengan OTA dan agen. Baca, simpan, bagi unit, ekspor tanpa pantulan, cari bentrok. Uji `node --test lib/*.test.mjs`. |
 | `assets/panel-homestay/lib/*.ts`, `database/skema.sql`, `app/globals.css` | Pendukung dari Mambetron (tanggal, format, kait, data, ikon, skema) sebagai acuan. |
 | `scripts/cek-token.mjs` | Memeriksa enam warna panel. Kontras setiap pasangan yang muncul di panel, dan menolak krem keabuan. |
 | `scripts/perbarui-aset.sh` | Menyalin ulang semua berkas di atas dari repo Mambetron setelah panel di sana berubah. |
 | `references/anatomi.md` | Rincian tiap bagian panel, ukuran, perilaku, dan alasannya. |
 | `references/memasang.md` | Langkah memasang di situs homestay baru, kontrak data, daftar yang wajib diganti per homestay, uji Playwright. |
 | `references/tema.md` | Cara memilih enam warna panel dari logo homestay baru dan memeriksanya. |
+| `references/sinkron.md` | Cara kerja sinkron kalender OTA, data, pembagian unit, jadwal baca, uji dengan OTA tiruan. |
 | `references/aturan-pemilik.md` | Aturan tulisan, tata letak, ponsel, dan laporan yang berlaku di semua situs pemilik. |
 
 ## Memasang di situs baru (ringkas)
@@ -79,6 +81,13 @@ rusak (16 pemeriksaan) di Chromium Linux.
   sedang masuk tidak dihitung, robot disaring. Negara dari header host
   kalau ada, kalau tidak ditebak dari bahasa peramban. Katakan itu ke
   pemilik.
+- **Sinkron kalender per unit.** iCal hanya tahu terisi atau kosong, jadi
+  satu sambungan untuk satu unit. Ekspor sebuah sambungan tidak memuat malam
+  yang datang dari sambungan itu sendiri, supaya blokir tidak memantul.
+  Bacaan yang gagal tidak membuka malam dari bacaan terakhir yang berhasil.
+  Tautan ekspor tidak memuat nama tamu. Katakan ke pemilik bahwa Booking.com
+  hanya menyinkronkan tipe kamar satu unit, dan Traveloka serta Tiket.com
+  tidak memakai iCal. Lihat `references/sinkron.md`.
 - **Panel tetap terbuka saat database bermasalah.** Rangka dan halaman
   memakai nilai kosong dan menampilkan petunjuk database, bukan halaman
   galat. Lihat `references/anatomi.md` bagian "Database bermasalah".

@@ -20,7 +20,7 @@ export default async function DaftarPondok() {
       <JudulBagian label={situs.nama} judul={dwi(situs.kamarJudul, b)} teks={dwi(situs.kamarTeks, b)} />
       {kamar.length ? (
         <div className={`${KISI} gap-6`}>
-          {kamar.map((x, i) => <KartuKamar key={x.id} kamar={x} b={b} kurs={kurs} i={i} className={rentang(kamar.length, i)} />)}
+          {kamar.map((x, i) => <KartuKamar key={x.id} kamar={x} b={b} kurs={kurs} i={i} lebar={kamar.length === 1} className={rentang(kamar.length, i)} />)}
         </div>
       ) : (
         <p className="kartu p-6 text-lg">{k.tidakAdaPondok}</p>

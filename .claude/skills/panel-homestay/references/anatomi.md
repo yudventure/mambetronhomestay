@@ -12,8 +12,9 @@ dikirim pemilik. Semua ukuran di bawah sudah dicoba di Mambetron pada
 4. Statistik pengunjung
 5. Meja pesanan
 6. Kalender
-7. Halaman lain
-8. Database bermasalah
+7. Sinkron OTA
+8. Halaman lain
+9. Database bermasalah
 
 ## 1. Rangka
 
@@ -47,7 +48,7 @@ kartu **HARI INI** `bg-panel-lembut` berisi satu kalimat utuh, misalnya
 "2 tamu tiba dan 1 pulang hari ini. 1 pesanan menunggu konfirmasi uang
 muka."
 
-Menu Mambetron. Ringkasan, Pesanan, Kalender, Pondok, Kegiatan, Ulasan,
+Menu Mambetron. Ringkasan, Pesanan, Kalender, Sinkron OTA, Pondok, Kegiatan, Ulasan,
 Situs web (Isi situs, Foto situs), Akun & kata sandi. Homestay lain
 mengganti isi `menu()` sesuai halaman yang ia punya.
 
@@ -155,19 +156,47 @@ Dikonfirmasi, Lunas, Selesai, Dibatalkan) dan pil "Hanya yang akan datang".
 - Kisi tujuh kolom mulai Senin di wadah `rounded-[1.75rem] bg-panel-latar`,
   sel hari putih bersudut. Hari di luar bulan pucat. Hari ini lingkaran
   penuh gelap, tanggal terpilih `ring-2`.
-- Chip per hari di layar `sm` ke atas. "{Homestay} penuh" atau "{Pondok}
-  penuh" `bg-panel-lembut`, "Tutup · alasan" merah muda, "Pondok · Nama
-  tamu" dengan titik status (jingga menunggu, aksen untuk yang lain), lalu
-  "+N lagi". Kisi chip `grid-cols-[minmax(0,1fr)]` dan `min-w-0` supaya
-  teks panjang terpotong, bukan melebarkan sel.
-- Di ponsel chip diganti titik kecil atau bilah penuh (semua penuh), dan
+- Di samping angka tanggal, jumlah unit terisi ("3/7") di layar `sm` ke
+  atas. Unit dihitung sekali per malam, dari situs ini maupun dari OTA.
+- Chip per hari di layar `sm` ke atas. "Penuh" `bg-panel-lembut`, "Tutup ·
+  alasan" merah muda, nama tamu dengan titik status (jingga menunggu, aksen
+  untuk yang lain, ditambah "×N" bila memesan beberapa unit), "Booking.com ·
+  unit 1" ungu untuk malam dari OTA, lalu "+N lagi". Dengan satu jenis
+  pondok chip cukup memuat nama tamu, dengan beberapa jenis "Pondok · Nama".
+  Kisi chip `grid-cols-[minmax(0,1fr)]` dan `min-w-0` supaya teks panjang
+  terpotong, bukan melebarkan sel.
+- Di ponsel chip diganti titik kecil (ungu untuk OTA) atau bilah penuh, dan
   legenda di bawah kisi ikut berubah bentuk.
-- Rincian tanggal terpilih. Tiba, Pulang, Menginap malam ini, catatan
+- Rincian tanggal terpilih. Tiba, Pulang, Menginap malam ini, kotak ungu
+  "Terisi dari OTA" (situs, unit, rentang, ringkasan dari OTA), catatan
   tutup, tombol tutup rincian.
 - Kartu "Tutup tanggal". Formulir di kiri, daftar tanggal tutup dengan
   tombol hapus bulat di kanan.
 
-## 7. Halaman lain
+## 7. Sinkron OTA
+
+`app/admin/(panel)/sinkron/page.tsx`, menu "Sinkron OTA" di bawah Kalender.
+
+- Kepala dengan tombol "Sinkronkan sekarang".
+- Kotak merah "Ada malam yang terjual lebih dari jumlah unit" bila ada
+  bentrok, berisi pondok, rentang, dan "8 pemesanan untuk 7 unit".
+- Dua kolom di layar `xl`. Kartu "Tambah sambungan" (pilihan unit dengan
+  keterangan "belum tersambung", nama situs dengan saran, tautan dari situs
+  itu yang boleh kosong) dan kotak lembut "Cara kerja" dengan tiga langkah
+  bernomor.
+- "Kalender per unit", kartu per unit dalam dua kolom (`items-start`, kartu
+  terakhir yang sendirian melebar penuh). Setiap sambungan berupa blok latar
+  dengan nama situs, chip status (Tersambung hijau, Gagal dibaca merah,
+  Belum dibaca pasir, Hanya mengirim lembut), jumlah yang terbaca dan
+  waktunya, pesan galat, tautan untuk ditempel dengan tombol Salin, dan
+  lipatan "Ubah sambungan" berisi formulir, Buat tautan baru, dan Hapus.
+- Kotak "Yang perlu diketahui tentang tiap situs" (Booking.com, Airbnb,
+  Agoda, Traveloka dan Tiket.com, agen perjalanan).
+
+Ringkasan juga ikut. Ubin keterisian dan kartu Malam ini menghitung unit
+dari OTA, dan bentrok masuk kotak Perlu perhatian.
+
+## 8. Halaman lain
 
 Halaman Pondok, Kegiatan, Ulasan, Isi situs, Foto situs, detail pesanan,
 pesanan manual, dan ganti sandi tidak perlu ditulis ulang. Mereka memakai
@@ -175,7 +204,7 @@ pesanan manual, dan ganti sandi tidak perlu ditulis ulang. Mereka memakai
 `buih`, `biru-tua`). Di dalam `.panel` nama-nama itu diarahkan ke token
 panel oleh `panel.css`, jadi mereka ikut tema tanpa disentuh.
 
-## 8. Database bermasalah
+## 9. Database bermasalah
 
 Rangka memanggil `cekDb()` dan menampilkan `DiagnosaDb` di atas isi kalau
 database belum terhubung. Fungsi rangka (`ringkasPanel`) dan statistik

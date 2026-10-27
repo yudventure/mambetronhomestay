@@ -4,7 +4,7 @@
 import fs from 'fs';
 import mysql from 'mysql2/promise';
 import { SKEMA } from './skema.mjs';
-import { KAMAR_AWAL, LAYANAN_AWAL, situsBawaan } from './bawaan.mjs';
+import { KAMAR_AWAL, KAMAR_LAMA, LAYANAN_AWAL, situsBawaan } from './bawaan.mjs';
 import { dbDiatur, envDb } from './env';
 
 export class DbBelumDiatur extends Error {
@@ -103,15 +103,45 @@ function pasangPool(e: Env, c: Cara, kunci: string) {
 // How the pool reached the server, for the health check.
 export const caraTerhubung = () => S.cara ?? '';
 
+type BarisAngka = mysql.RowDataPacket & { n: number };
+
+// Moves a database that still holds the three sample huts to the real rooms,
+// once. The first hut keeps its id, photos and bookings and becomes the new
+// type, the other two go only when nobody booked them and they have no
+// photos. Anything the owner already changed is left alone.
+async function pindahKamarLama(pool: mysql.Pool) {
+  const [r] = await pool.query<mysql.ResultSetHeader>("INSERT IGNORE INTO pengaturan (kunci, nilai) VALUES ('kamar-awal-2', '1')");
+  if (r.affectedRows !== 1) return;
+  const [ada] = await pool.query<(mysql.RowDataPacket & { id: number; slug: string; nama: string; harga: number })[]>('SELECT id, slug, nama, harga FROM kamar');
+  const lama = KAMAR_LAMA.map((l) => ada.find((k) => k.slug === l.slug && k.nama === l.nama));
+  if (ada.length !== KAMAR_LAMA.length || lama.some((k) => !k)) return;
+  const [utama, ...sisa] = lama as NonNullable<(typeof lama)[number]>[];
+  const ids = sisa.map((k) => k.id);
+  const [[p]] = await pool.query<BarisAngka[]>('SELECT COUNT(*) AS n FROM pesanan WHERE kamar_id IN (?)', [ids]);
+  const [[f]] = await pool.query<BarisAngka[]>("SELECT COUNT(*) AS n FROM foto WHERE wadah = 'kamar' AND kamar_id IN (?)", [ids]);
+  if (p.n > 0 || f.n > 0) return;
+  const k = KAMAR_AWAL[0];
+  await pool.query(
+    `UPDATE kamar SET slug = ?, nama = ?, nama_en = ?, ringkas = ?, ringkas_en = ?, deskripsi = ?, deskripsi_en = ?, fasilitas = ?,
+      fasilitas_en = ?, harga = ?, harga_anak = ?, skema_harga = ?, kapasitas = ?, jumlah_unit = ?, min_malam = ?, urutan = ? WHERE id = ?`,
+    [k.slug, k.nama, k.nama_en, k.ringkas, k.ringkas_en, k.deskripsi, k.deskripsi_en, k.fasilitas.join('\n'), k.fasilitas_en.join('\n'),
+      utama.harga === KAMAR_LAMA[0].harga ? k.harga : utama.harga, k.harga_anak, k.skema_harga, k.kapasitas, k.jumlah_unit, k.min_malam,
+      k.urutan, utama.id],
+  );
+  await pool.query('DELETE FROM tutup WHERE kamar_id IN (?)', [ids]);
+  await pool.query('DELETE FROM kamar WHERE id IN (?)', [ids]);
+}
+
 async function siapkan(pool: mysql.Pool) {
   for (const sql of SKEMA) await pool.query(sql);
+  await pindahKamarLama(pool);
   // the first process to claim this row fills the empty database
   const [r] = await pool.query<mysql.ResultSetHeader>(
     "INSERT IGNORE INTO pengaturan (kunci, nilai) VALUES ('benih', '1')",
   );
   if (r.affectedRows !== 1) return;
   await pool.query('INSERT IGNORE INTO pengaturan (kunci, nilai) VALUES (?, ?)', ['situs', JSON.stringify(situsBawaan())]);
-  const [[{ n }]] = await pool.query<(mysql.RowDataPacket & { n: number })[]>('SELECT COUNT(*) AS n FROM kamar');
+  const [[{ n }]] = await pool.query<BarisAngka[]>('SELECT COUNT(*) AS n FROM kamar');
   if (n === 0) {
     for (const k of KAMAR_AWAL) {
       await pool.query(

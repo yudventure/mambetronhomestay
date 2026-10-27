@@ -128,6 +128,35 @@ CREATE TABLE IF NOT EXISTS kunjungan (
   KEY kunjungan_waktu (waktu)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+CREATE TABLE IF NOT EXISTS kalender_sambungan (
+  id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  kamar_id INT UNSIGNED NOT NULL,
+  unit TINYINT UNSIGNED NOT NULL DEFAULT 1,
+  nama VARCHAR(80) NOT NULL,
+  url VARCHAR(1000) NOT NULL DEFAULT '',
+  token CHAR(32) NOT NULL,
+  dicoba DATETIME NULL,
+  berhasil DATETIME NULL,
+  galat VARCHAR(300) NOT NULL DEFAULT '',
+  jumlah INT UNSIGNED NOT NULL DEFAULT 0,
+  dibuat TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  UNIQUE KEY sambungan_token (token),
+  KEY sambungan_unit (kamar_id, unit)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS kalender_luar (
+  id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  sambungan_id INT UNSIGNED NOT NULL,
+  kamar_id INT UNSIGNED NOT NULL,
+  unit TINYINT UNSIGNED NOT NULL DEFAULT 1,
+  mulai DATE NOT NULL,
+  selesai DATE NOT NULL,
+  uid VARCHAR(255) NOT NULL DEFAULT '',
+  ringkas VARCHAR(200) NOT NULL DEFAULT '',
+  KEY luar_tanggal (kamar_id, mulai, selesai),
+  KEY luar_sambungan (sambungan_id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 CREATE TABLE IF NOT EXISTS admin_akun (
   surel VARCHAR(190) NOT NULL PRIMARY KEY,
   sandi VARCHAR(255) NOT NULL DEFAULT '',

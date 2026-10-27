@@ -145,7 +145,8 @@ export const fotoSitus = cache(async (): Promise<Record<WadahFoto, Foto[]>> => {
 
 // Rooms left per night. Only nights with fewer than all units free are
 // listed, a missing night means every unit is free. The end date is the
-// check-out day and is not counted.
+// check-out day and is not counted. Nights taken on a booking site through
+// calendar sync count once per unit, however many links report them.
 export type PetaSisa = Record<string, number>;
 
 export async function sisaKamar(
@@ -164,7 +165,7 @@ export async function sisaKamar(
     }
     return baris<T>(sql, nilai);
   };
-  const [pesanan, tutup] = await Promise.all([
+  const [pesanan, tutup, luar] = await Promise.all([
     tanya<{ kamar_id: number; check_in: string; check_out: string; jumlah_kamar: number }>(
       `SELECT kamar_id, check_in, check_out, jumlah_kamar FROM pesanan
        WHERE status <> 'batal' AND check_in < ? AND check_out > ? AND kamar_id IN (?)${o.kecuali ? ' AND id <> ?' : ''}`,
@@ -173,6 +174,10 @@ export async function sisaKamar(
     tanya<{ kamar_id: number | null; mulai: string; akhir: string }>(
       'SELECT kamar_id, mulai, akhir FROM tutup WHERE mulai < ? AND akhir >= ? AND (kamar_id IS NULL OR kamar_id IN (?))',
       [sampai, dari, ids],
+    ),
+    tanya<{ kamar_id: number; unit: number; mulai: string; selesai: string }>(
+      'SELECT kamar_id, unit, mulai, selesai FROM kalender_luar WHERE kamar_id IN (?) AND mulai < ? AND selesai > ?',
+      [ids, sampai, dari],
     ),
   ]);
   const unit = new Map(kamar.map((k) => [k.id, k.jumlah_unit]));
@@ -185,6 +190,20 @@ export async function sisaKamar(
     const a = p.check_in > dari ? p.check_in : dari;
     const b = p.check_out < sampai ? p.check_out : sampai;
     for (const m of daftarMalam(a, b)) kurangi(p.kamar_id, m, p.jumlah_kamar);
+  }
+  const unitLuar = new Map<string, Set<number>>();
+  for (const l of luar) {
+    if (l.unit < 1 || l.unit > (unit.get(l.kamar_id) ?? 0)) continue;
+    const a = l.mulai > dari ? l.mulai : dari;
+    const b = l.selesai < sampai ? l.selesai : sampai;
+    for (const m of daftarMalam(a, b)) {
+      const k = `${l.kamar_id}|${m}`;
+      unitLuar.set(k, (unitLuar.get(k) ?? new Set()).add(l.unit));
+    }
+  }
+  for (const [k, u] of unitLuar) {
+    const [id, m] = k.split('|');
+    kurangi(Number(id), m, u.size);
   }
   for (const t of tutup) {
     const a = t.mulai > dari ? t.mulai : dari;

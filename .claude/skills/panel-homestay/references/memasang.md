@@ -28,8 +28,11 @@ panel, surel, dan petunjuk database ikut sekaligus.
    `logo-utama.svg` untuk halaman masuk) dan teks `alt` di
    `RangkaPanel.tsx`, `app/admin/masuk/page.tsx`, `app/admin/sandi/page.tsx`.
 4. Ganti nama, kontak, dan isi bawaan di `lib/bawaan.mjs`. Nama homestay di
-   kartu sapaan, salam WhatsApp, dan kartu penuh di kalender diambil dari
-   `situs.nama`, jadi ikut berubah.
+   kartu sapaan dan salam WhatsApp diambil dari `situs.nama`, jadi ikut
+   berubah.
+   Pondok bawaan ada di `KAMAR_AWAL` (jenis, jumlah unit, harga). Kosongkan
+   `KAMAR_LAMA` di situs baru, daftar itu hanya untuk memindah tiga pondok
+   contoh Mambetron versi lama.
 5. Kalau homestay tidak di zona WIT, ganti `ZONA` di `lib/tanggal.ts`
    (`Asia/Makassar` untuk WITA, `Asia/Jakarta` untuk WIB), selisih
    `INTERVAL 9 HOUR` di `angkaRingkasan` (`lib/data.ts`) menjadi 8 atau 7,
@@ -64,14 +67,20 @@ data ke loader-nya sendiri.
    `galat`, dan ikon tombol menu ponsel di `RangkaPanel.tsx`.
 4. Sambungkan data lewat kontrak di bagian 4. Fungsi Mambetron ada di
    `assets/panel-homestay/lib/data.ts` sebagai contoh SQL.
-5. Pasang statistik. Tabel `kunjungan` (di `database/skema.sql`),
+5. Pasang sinkron kalender bila homestay itu menjual di OTA. Tabel
+   `kalender_sambungan` dan `kalender_luar`, `lib/ical.mjs`,
+   `lib/sinkron.ts`, rute `app/ical/[berkas]/route.ts`, halaman
+   `app/admin/(panel)/sinkron/page.tsx`, aksi sambungan di `app/admin/aksi.ts`,
+   `instrumentation.ts`, dan baris `kalender_luar` di `sisaKamar`. Rincinya di
+   `sinkron.md`.
+6. Pasang statistik. Tabel `kunjungan` (di `database/skema.sql`),
    `lib/statistik.ts`, rute `app/api/kunjungan/route.ts`, dan
    `<Kunjungan />` di kerangka situs publik (bukan di admin). Rute memakai
    `sesiSah` untuk melewati pengelola dan `alamatPengunjung` untuk IP. Ganti
    dengan fungsi sesi situs itu.
-6. Salin halaman `page.tsx` Ringkasan, `pesanan/page.tsx`, dan
+7. Salin halaman `page.tsx` Ringkasan, `pesanan/page.tsx`, dan
    `kalender/page.tsx`, lalu ganti impor ke fungsi situs itu.
-7. Halaman admin lama situs itu cukup diberi `JudulAdmin` dan `.kartu`.
+8. Halaman admin lama situs itu cukup diberi `JudulAdmin` dan `.kartu`.
    Warna lama yang memakai nama lain dipetakan di blok `.panel`.
 
 ## 4. Kontrak data
@@ -95,6 +104,7 @@ kamus.
 | `daftarKamar(true)` | ubin keterisian, kalender, persiapan | unit dengan `nama`, `aktif`, `jumlah_unit`, `foto` |
 | `statistikSitus(hari, rentang, pilih)` | statistik | lihat tipe `Statistik` di `lib/statistik.ts` |
 | `ambilSitus()` | sapaan, salam WhatsApp | paling tidak `nama` |
+| `blokLuar(dari, sampai)`, `cariBentrok(dari, sampai)` | kalender, Ringkasan, Sinkron OTA | malam dari OTA per unit dan bentrok, lihat `sinkron.md` |
 
 Tanggal selalu teks `YYYY-MM-DD` dalam zona situs (`hariIni()`), bukan
 objek `Date`, supaya tidak bergeser di server berzona UTC.

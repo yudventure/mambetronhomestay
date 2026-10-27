@@ -3,6 +3,7 @@ import Bagian from '@/components/Bagian';
 import FormPesan, { type KamarForm } from '@/components/FormPesan';
 import { bahasaAktif } from '@/lib/bahasa';
 import { ambilSitus, daftarKamar, daftarLayanan, gambarCadangan, pemesananAktif, sisaKamar } from '@/lib/data';
+import { pastikanSegar } from '@/lib/sinkron';
 import { kamus } from '@/lib/kamus';
 import { tautanWa } from '@/lib/format';
 import { kursAktif } from '@/lib/uang-server';
@@ -25,6 +26,7 @@ export default async function Pesan({ searchParams }: { searchParams: Promise<Re
   const awal = tambahHari(hari, situs.jedaHari);
   const akhir = tambahHari(hari, situs.batasHari);
 
+  if (aktif) await pastikanSegar(2500).catch(() => {});
   const peta = aktif ? await sisaKamar(kamar, hari, tambahHari(akhir, 61)).catch(() => new Map()) : new Map();
   const sisa: Record<number, Record<string, number>> = Object.fromEntries(peta);
 
