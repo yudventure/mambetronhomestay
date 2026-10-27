@@ -33,8 +33,9 @@ export default async function Pesan({ searchParams }: { searchParams: Promise<Re
   const km = kamar.find((x) => x.slug === sp.kamar) ?? kamar[0];
   let masuk = sahTanggal(sp.masuk) && sp.masuk >= awal && sp.masuk <= akhir ? sp.masuk : '';
   let keluar = masuk && sahTanggal(sp.keluar) && sp.keluar > masuk ? sp.keluar : '';
-  const jumlahKamar = km ? angka(sp.pondok, 1, km.jumlah_unit, 1) : 1;
   const tamu = angka(sp.tamu, 1, 20, 2);
+  // without a bungalow count, enough bungalows for the guests from the home page
+  const jumlahKamar = !km ? 1 : sp.pondok ? angka(sp.pondok, 1, km.jumlah_unit, 1) : Math.min(km.jumlah_unit, Math.ceil(tamu / Math.max(1, km.kapasitas)));
   const kap = km ? km.kapasitas * jumlahKamar : 2;
   if (km && masuk && keluar) {
     const p = sisa[km.id] ?? {};

@@ -154,7 +154,11 @@ Tabelnya `kalender_sambungan` (tautan per unit) dan `kalender_luar` (malam yang 
 
 ## Tanggal yang dibawa dan foto besar
 
-Kotak rencana menginap di halaman utama mewajibkan tanggal tiba dan pulang, dan tanggal pulang otomatis terisi sehari setelah tanggal tiba. Tanggal yang dipilih di halaman utama, di kalender halaman bungalow, atau di formulir pesan disimpan di peramban pengunjung itu saja (selama 14 hari), jadi halaman berikutnya sudah membuka tanggal yang sama tanpa perlu memilih ulang. Bila malam yang dipilih ternyata sudah penuh, formulir pesan memberi tahu dan meminta tanggal lain.
+Kotak rencana menginap di halaman utama mewajibkan tanggal tiba dan pulang. Kolom tanggal tidak memakai pemilih tanggal bawaan peramban, tetapi membuka kalender Mambetron yang sama dengan halaman pesan. Di layar lebar kalender muncul sebagai jendela dua bulan di tengah layar, di HP sebagai lembar dari bawah dengan satu bulan. Malam yang penuh tercoret merah dan tidak bisa dipilih, jadi tamu langsung melihat tanggal yang kosong. Setelah tanggal pulang diketuk, kalender menutup sendiri dan kotak menampilkan hari, tanggal, dan jumlah malam.
+
+Jumlah tamu diubah dengan tombol − dan +, paling banyak sebanyak kapasitas semua bungalow (7 bungalow kali 2 orang, jadi 14). Kalender menghitung berapa bungalow yang dibutuhkan, misalnya 5 tamu butuh 3 bungalow, dan malam yang sisa bungalownya kurang ikut tercoret. Bila jumlah tamu dinaikkan sampai tanggal yang sudah dipilih tidak cukup lagi, kotak memberi tahu dan meminta tanggal lain. Halaman pesan lalu terbuka dengan tanggal, jumlah tamu, dan jumlah bungalow itu.
+
+Tanggal yang dipilih di halaman utama, di kalender halaman bungalow, atau di formulir pesan disimpan di peramban pengunjung itu saja (selama 14 hari), jadi halaman berikutnya sudah membuka tanggal yang sama tanpa perlu memilih ulang. Bila malam yang dipilih ternyata sudah penuh, formulir pesan memberi tahu dan meminta tanggal lain.
 
 Foto bungalow dan foto galeri di halaman utama bisa diketuk untuk dibuka layar penuh. Tombol Ukuran asli menampilkan foto dengan ukuran sebenarnya untuk digeser, panah atau usapan pindah ke foto lain, Esc atau ketukan di samping foto menutupnya. Kartu foto di bawah foto utama tetap tidak bisa diklik.
 

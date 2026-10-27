@@ -26,6 +26,10 @@ berlaku juga di panel, kecuali situs itu punya aturan sendiri yang berbeda.
 - **Nomor atau ikon, pilih satu** di satu butir.
 - Tanpa hiasan garis putus-putus berpanah.
 - Pemilik tidak suka warna krem keabuan. Latar panel abu dingin.
+- Jangan pakai pemilih tanggal bawaan peramban (`input type=date`) di
+  situs publik. Pakai kalender sendiri yang bermerek, yang langsung
+  mencoret malam penuh (contoh `CariCepat.tsx` dan `Kalender.tsx` di
+  Mambetron). Jumlah tamu memakai tombol − dan +, bukan `select`.
 
 ## Ponsel
 

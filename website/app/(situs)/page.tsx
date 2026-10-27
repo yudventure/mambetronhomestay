@@ -9,7 +9,7 @@ import Pahlawan from '@/components/Pahlawan';
 import Perkiraan from '@/components/Perkiraan';
 import Peta, { koordinat } from '@/components/Peta';
 import { bahasaAktif } from '@/lib/bahasa';
-import { ambilSitus, daftarLayanan, daftarUlasan, fotoSitus, gambarCadangan } from '@/lib/data';
+import { ambilSitus, daftarKamar, daftarLayanan, daftarUlasan, fotoSitus, gambarCadangan, pemesananAktif, sisaKamar } from '@/lib/data';
 import { kamus } from '@/lib/kamus';
 import { dwi, paragraf, pilih, rupiah, tautanLuar, tautanWa } from '@/lib/format';
 import { KISI, kisiSorotan, rentang } from '@/lib/kisi';
@@ -21,12 +21,22 @@ const JUDUL = 'text-[clamp(2.1rem,1.5rem+2.4vw,3.25rem)]';
 const WARNA_INISIAL = ['bg-biru-tua', 'bg-laut', 'bg-aksen', 'bg-laut-2'];
 
 export default async function Beranda() {
-  const [b, s, layanan, ulasan, foto, kurs] = await Promise.all([
-    bahasaAktif(), ambilSitus(), daftarLayanan(), daftarUlasan(), fotoSitus(), kursAktif(),
+  const [b, s, layanan, ulasan, foto, kurs, kamar, aktif] = await Promise.all([
+    bahasaAktif(), ambilSitus(), daftarLayanan(), daftarUlasan(), fotoSitus(), kursAktif(), daftarKamar(), pemesananAktif(),
   ]);
   const k = kamus(b);
   const wa = tautanWa(s.whatsapp, k.pesanWaUmum);
   const hari = hariIni();
+  const awal = tambahHari(hari, s.jedaHari);
+  const akhir = tambahHari(hari, s.batasHari);
+
+  // Free bungalows per night over every type for the planner calendar. A
+  // night is listed only when some unit is taken, as in sisaKamar.
+  const peta = aktif && kamar.length ? await sisaKamar(kamar, hari, tambahHari(akhir, 61)).catch(() => new Map()) : new Map();
+  const unit = kamar.reduce((n, x) => n + x.jumlah_unit, 0);
+  const sisa: Record<string, number> = {};
+  for (const x of kamar) for (const d of Object.keys(peta.get(x.id) ?? {})) sisa[d] = 0;
+  for (const d of Object.keys(sisa)) sisa[d] = kamar.reduce((n, x) => n + (peta.get(x.id)?.[d] ?? x.jumlah_unit), 0);
   const tentangFoto = foto.tentang[0];
   const ajakanFoto = foto.ajakan[0];
   const titik = koordinat(s.petaKoordinat);
@@ -130,7 +140,9 @@ export default async function Beranda() {
               width={tentangFoto?.lebar || 1600} height={tentangFoto?.tinggi || 1200} loading="lazy"
               className="aspect-[4/3] w-full rounded-[1.75rem] object-cover lg:ml-auto lg:aspect-[16/12] lg:w-[74%]" />
             <div className="relative mx-auto -mt-24 w-[calc(100%-2rem)] max-w-sm lg:absolute lg:top-[6%] lg:left-0 lg:mx-0 lg:mt-0 lg:w-[17.5rem]">
-              <CariCepat b={b} awal={tambahHari(hari, s.jedaHari)} akhir={tambahHari(hari, s.batasHari)} checkIn={s.checkIn} checkOut={s.checkOut} />
+              <CariCepat b={b} awal={awal} akhir={akhir} checkIn={s.checkIn} checkOut={s.checkOut} sisa={sisa} unit={Math.max(1, unit)}
+                kapasitas={Math.max(1, ...kamar.map((x) => x.kapasitas))} minMalam={kamar.length ? Math.max(1, Math.min(...kamar.map((x) => x.min_malam))) : 1}
+                maksTamu={kamar.length ? Math.min(20, kamar.reduce((n, x) => n + x.kapasitas * x.jumlah_unit, 0)) : 6} />
             </div>
           </div>
         </div>
