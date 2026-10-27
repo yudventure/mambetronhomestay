@@ -7,7 +7,7 @@ import Pahlawan from '@/components/Pahlawan';
 import Perkiraan from '@/components/Perkiraan';
 import Peta, { koordinat } from '@/components/Peta';
 import { bahasaAktif } from '@/lib/bahasa';
-import { ambilSitus, daftarKamar, daftarLayanan, daftarUlasan, fotoSitus, gambarCadangan } from '@/lib/data';
+import { ambilSitus, daftarLayanan, daftarUlasan, fotoSitus, gambarCadangan } from '@/lib/data';
 import { kamus } from '@/lib/kamus';
 import { dwi, paragraf, pilih, rupiah, tautanLuar, tautanWa } from '@/lib/format';
 import { KISI, kisiSorotan, rentang } from '@/lib/kisi';
@@ -21,8 +21,8 @@ const WARNA_INISIAL = ['bg-biru-tua', 'bg-laut', 'bg-aksen', 'bg-laut-2'];
 const WARNA_WAJAH = ['bg-aksen', 'bg-[#d6336c]', 'bg-[#0a7d33]', 'bg-[#4c7fe0]', 'bg-[#0a7d33]', 'bg-[#5c6bc0]'];
 
 export default async function Beranda() {
-  const [b, s, kamar, layanan, ulasan, foto, kurs] = await Promise.all([
-    bahasaAktif(), ambilSitus(), daftarKamar(), daftarLayanan(), daftarUlasan(), fotoSitus(), kursAktif(),
+  const [b, s, layanan, ulasan, foto, kurs] = await Promise.all([
+    bahasaAktif(), ambilSitus(), daftarLayanan(), daftarUlasan(), fotoSitus(), kursAktif(),
   ]);
   const k = kamus(b);
   const wa = tautanWa(s.whatsapp, k.pesanWaUmum);
@@ -35,44 +35,16 @@ export default async function Beranda() {
   const angka1 = new Intl.NumberFormat(b === 'en' ? 'en-US' : 'id-ID', { minimumFractionDigits: 1, maximumFractionDigits: 1 });
   const g = kisiSorotan(s.sorotan.length);
 
-  // Feature cards under the hero. {harga} in a card text becomes the cheapest
-  // hut's rate, with the foreign currency estimate under it.
-  const termurah = kamar.reduce<(typeof kamar)[number] | undefined>((m, x) => (!m || x.harga < m.harga ? x : m), undefined);
-  const unggulan = s.unggulan.filter((x) => dwi(x.judul, b) || dwi(x.teks, b));
-  const kartuUnggulan = unggulan.map((x, i) => {
-    const f = foto.unggulan[i];
-    const teks = dwi(x.teks, b);
-    const adaHarga = teks.includes('{harga}');
-    const potong = teks.split('{harga}');
-    return (
-      <div key={i} className={`relative overflow-hidden rounded-[1.6rem] bg-laut shadow-lembut ring-[5px] ring-white ${unggulan.length === 1 ? 'aspect-[2/1]' : 'aspect-[4/3.3]'}`}>
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src={f?.url ?? gambarCadangan(i)} alt={f?.keterangan ?? ''} loading="lazy" width={f?.lebar || 1200} height={f?.tinggi || 800}
-          className="absolute inset-0 size-full object-cover" />
-        <div aria-hidden className="absolute inset-0 bg-gradient-to-t from-laut-3/95 via-laut-3/35 to-transparent" />
-        <div className="absolute inset-x-0 bottom-0 p-5 text-white">
-          <div className="flex items-baseline justify-between gap-3">
-            <h3 className="text-[1.6rem] leading-[1.02] text-white">{dwi(x.judul, b)}</h3>
-            <span className="font-judul text-2xl text-white/90">{String(i + 1).padStart(2, '0')}</span>
-          </div>
-          {/* Same height under every title so the titles line up across cards. */}
-          <div className="min-h-[3.9rem]">
-            {teks && (!adaHarga || termurah) && (
-              <p className="mt-1.5 text-sm leading-snug text-white/85">
-                {potong.map((p, j) => (
-                  <span key={j}>
-                    {j > 0 && termurah && <><span className="font-semibold whitespace-nowrap text-white">{rupiah(termurah.harga, b)}</span> {k.perSkema[termurah.skema_harga]}</>}
-                    {p}
-                  </span>
-                ))}
-              </p>
-            )}
-            {adaHarga && termurah && <Perkiraan idr={termurah.harga} kurs={kurs} b={b} className="mt-0.5 text-white/65" />}
-          </div>
-        </div>
-      </div>
-    );
-  });
+  // Photo cards under the hero, one per photo in Foto situs, plain and not
+  // clickable. Until photos are uploaded three sea illustrations hold the place.
+  const fotoKartu = foto.unggulan.length ? foto.unggulan : [undefined, undefined, undefined];
+  const kartuUnggulan = fotoKartu.map((f, i) => (
+    <div key={f?.id ?? i} className={`overflow-hidden rounded-[1.6rem] bg-buih shadow-lembut ring-[5px] ring-white ${fotoKartu.length === 1 ? 'aspect-[2/1]' : 'aspect-[4/3.3]'}`}>
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img src={f?.url ?? gambarCadangan(i)} alt={f?.keterangan ?? ''} loading="lazy" width={f?.lebar || 1200} height={f?.tinggi || 800}
+        className="size-full object-cover" />
+    </div>
+  ));
   const skor = Number(s.ulasanSkor.replace(',', '.'));
   const wajah = s.ulasanWajah.filter((x) => x.nama.trim() || x.huruf.trim()).slice(0, 6);
   const sumber = s.ulasanSumber.trim();
@@ -83,7 +55,7 @@ export default async function Beranda() {
       <Pahlawan b={b} s={s} foto={foto.beranda[0]} fotoHp={foto.berandaHp[0]} />
 
       {kartuUnggulan.length > 0 && (
-        <section id="pondok" className="relative z-10 mx-auto -mt-16 max-w-6xl scroll-mt-28 px-4 sm:-mt-24 sm:px-6">
+        <section id="pondok" className="relative z-10 mx-auto -mt-10 max-w-6xl scroll-mt-28 px-4 sm:-mt-14 sm:px-6">
           <h2 className="sr-only">{k.unggulanJudul}</h2>
           <GeserPondok
             kartu={kartuUnggulan}

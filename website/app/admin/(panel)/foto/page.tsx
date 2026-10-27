@@ -20,7 +20,7 @@ export default async function FotoAdmin() {
         </section>
         <section className="kartu p-5 sm:p-6">
           <h2 className="mb-1 text-2xl">Foto kartu keunggulan</h2>
-          <KelolaFoto wadah="unggulan" foto={foto.unggulan} catatan="Tiga kartu di bawah foto utama, misalnya kamar tepi pantai, harga, serta wifi dan makan. Foto pertama untuk kartu pertama, foto kedua untuk kartu kedua, dan seterusnya. Urutkan dengan tombol panah. Kartu tanpa foto memakai ilustrasi laut. Judul dan teks kartu diubah di Isi situs." />
+          <KelolaFoto wadah="unggulan" foto={foto.unggulan} catatan="Kartu foto polos di bawah foto utama, tanpa tulisan dan tidak bisa diklik. Satu foto menjadi satu kartu, tiga foto paling pas. Urutkan dengan tombol panah. Selama belum ada foto, tiga kartu memakai ilustrasi laut. Isi keterangan foto supaya pembaca layar tahu isinya." />
         </section>
         <section className="kartu p-5 sm:p-6">
           <h2 className="mb-1 text-2xl">Foto bagian tentang kami</h2>

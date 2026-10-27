@@ -1,5 +1,5 @@
 'use client';
-// Row of room cards that overlaps the bottom of the hero. It scrolls sideways
+// Row of photo cards that overlaps the bottom of the hero by 3.5rem. It scrolls sideways
 // when there are more cards than fit, with arrow buttons beside it. The
 // column on the right holds the section text.
 import { useEffect, useRef, useState } from 'react';
@@ -47,9 +47,10 @@ export default function GeserPondok({ kartu, samping, label }: {
           <li key={i} className={`shrink-0 snap-start ${lebar(kartu.length)}`}>{x}</li>
         ))}
       </ul>
-      <div className="relative lg:pt-[8rem]">
+      {/* the side column starts just under the hero, below the arrows when there are any */}
+      <div className={`relative ${bisaGeser ? 'lg:pt-[8.25rem]' : 'lg:pt-[5.5rem]'}`}>
         {bisaGeser && (
-          <div className="mb-6 hidden gap-2 sm:flex lg:absolute lg:top-[4.6rem] lg:left-0 lg:mb-0">
+          <div className="mb-6 hidden gap-2 sm:flex lg:absolute lg:top-[4.5rem] lg:left-0 lg:mb-0">
             <button type="button" onClick={() => geser(-1)} disabled={ujung.awal} aria-label={label.sebelum}
               className="inline-flex size-11 items-center justify-center rounded-full bg-white text-laut shadow-lembut transition-opacity hover:bg-buih disabled:opacity-40">
               <Ikon nama="kiri" className="size-5" />

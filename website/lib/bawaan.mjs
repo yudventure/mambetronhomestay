@@ -78,19 +78,6 @@ export const PENGATURAN = [
         bawaan: [],
       },
       { k: 'heroVideo', label: 'Tautan video', jenis: 'teks', bawaan: '', bantuan: 'Tautan video YouTube atau Instagram, diawali https://. Bila diisi, tombol putar muncul di foto utama. Kosongkan bila belum ada.' },
-      {
-        k: 'unggulan', label: 'Kartu keunggulan di bawah foto utama', jenis: 'daftar', tambah: 'Tambah kartu',
-        bantuan: 'Tiga kartu terlihat paling baik. Tulis {harga} di teks untuk menampilkan harga pondok termurah, lengkap dengan perkiraan dalam mata uang asing. Foto tiap kartu diunggah di Foto situs.',
-        isian: [
-          { k: 'judul', label: 'Judul', jenis: 'dua' },
-          { k: 'teks', label: 'Teks', jenis: 'duaPanjang' },
-        ],
-        bawaan: [
-          { judul: dua('Kamar tepi pantai', 'Beachfront huts'), teks: dua('Setiap pondok langsung menghadap ke laut.', 'Every hut looks straight out to sea.') },
-          { judul: dua('Harga terjangkau', 'Affordable rates'), teks: dua('Mulai {harga}.', 'From {harga}.') },
-          { judul: dua('Wifi dan makan', 'Wi-Fi and meals'), teks: dua('Ada wifi, dan makan tiga kali sehari sudah termasuk harga.', 'Wi-Fi on site, and three meals a day are in the rate.') },
-        ],
-      },
       { k: 'kamarJudul', label: 'Judul halaman semua pondok', jenis: 'dua', bawaan: dua('Pilih pondokmu', 'Choose your hut') },
       { k: 'kamarTeks', label: 'Teks halaman semua pondok', jenis: 'duaPanjang', bawaan: dua('Semua pondok menghadap laut dan sudah termasuk makan tiga kali sehari.', 'Every hut faces the sea and includes three meals a day.') },
       { k: 'ulasanSkor', label: 'Nilai ulasan di samping kartu', jenis: 'teks', bawaan: '8,7', bantuan: 'Nilai dari situs ulasan, misalnya 8,7. Kosongkan bila tidak ingin ditampilkan.' },

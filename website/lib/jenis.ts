@@ -121,7 +121,6 @@ export type Situs = {
   heroVideo: string;
   sorotanJudul: Dua;
   sorotan: Sorotan[];
-  unggulan: { judul: Dua; teks: Dua }[];
   kamarJudul: Dua;
   kamarTeks: Dua;
   ulasanSkor: string;
