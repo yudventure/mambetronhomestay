@@ -57,7 +57,7 @@ export default async function UbahKamar({ params, searchParams }: { params: Prom
           <input type="hidden" name="id" value={k.id} />
           <Dua label="Nama pondok" nama="nama" k={k} wajib />
           <Dua label="Ringkasan di kartu pondok" nama="ringkas" k={k} panjang />
-          <Dua label="Deskripsi lengkap" nama="deskripsi" k={k} panjang bantuan="Pisahkan paragraf dengan satu baris kosong." />
+          <Dua label="Deskripsi lengkap" nama="deskripsi" k={k} panjang bantuan="Pisahkan paragraf dengan satu baris kosong. Awali baris dengan ## untuk subjudul, dan apit kata dengan ** supaya tebal, misalnya **Snorkeling di depan bungalow**." />
           <Dua label="Fasilitas" nama="fasilitas" k={k} panjang bantuan="Satu fasilitas per baris. Urutan bahasa Inggris mengikuti bahasa Indonesia." />
 
           <fieldset className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">

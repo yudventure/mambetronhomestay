@@ -1,7 +1,7 @@
 'use client';
 // Booking form with live availability and price.
 import Link from 'next/link';
-import { useActionState, useMemo, useState } from 'react';
+import { useActionState, useEffect, useMemo, useState } from 'react';
 import Ikon from './Ikon';
 import Kalender from './Kalender';
 import { kirimTanpaReset } from '@/lib/kait';
@@ -10,7 +10,8 @@ import type { Bahasa, Kamar, Layanan } from '@/lib/jenis';
 import { KAMUS } from '@/lib/kamus';
 import { SATUAN } from '@/lib/satuan.mjs';
 import { hitungHarga } from '@/lib/harga';
-import { pilih, rupiah, tanggal } from '@/lib/format';
+import { pilih, rentangTanggal, rupiah, tanggal } from '@/lib/format';
+import { bacaRencana, simpanRencana } from '@/lib/rencana';
 import Perkiraan from './Perkiraan';
 import type { Kurs } from '@/lib/uang';
 import { daftarMalam, selisihHari } from '@/lib/tanggal';
@@ -29,6 +30,9 @@ type Props = {
   wa: string;
   kurs: Kurs;
   mula: { kamarId: number; masuk: string; keluar: string; dewasa: number; anak: number; jumlahKamar: number };
+  // dates that came in the link and could not be kept, null when none came
+  ditolak: { masuk: string; keluar: string } | null;
+  dariTautan: boolean;
 };
 
 function Kotak({ judul, children }: { judul: string; children: React.ReactNode }) {
@@ -64,7 +68,7 @@ function Hitung({ label, ket, nilai, min, maks, ubah, kurang, tambah }: {
   );
 }
 
-export default function FormPesan({ b, kamar, layanan, sisa, awal, akhir, dpPersen, aktif, wa, kurs, mula }: Props) {
+export default function FormPesan({ b, kamar, layanan, sisa, awal, akhir, dpPersen, aktif, wa, kurs, mula, ditolak, dariTautan }: Props) {
   const k = KAMUS[b];
   const f = k.form;
   const [hasil, aksi, sedang] = useActionState<HasilKirim, FormData>(kirimPesanan, { galat: '' });
@@ -81,6 +85,25 @@ export default function FormPesan({ b, kamar, layanan, sisa, awal, akhir, dpPers
 
   const km = kamar.find((x) => x.id === kamarId) ?? kamar[0];
   const sisaKm = useMemo(() => sisa[km?.id] ?? {}, [sisa, km]);
+  // bumped when remembered dates are restored, so the calendar opens on that month
+  const [pulih, setPulih] = useState(0);
+
+  // no dates in the link, take the stay picked on the home page or a room page
+  useEffect(() => {
+    if (dariTautan || mula.masuk || !km) return;
+    const r = bacaRencana();
+    if (!r || r.masuk < awal || r.masuk > akhir || (sisaKm[r.masuk] ?? km.jumlah_unit) < jumlahKamar) return;
+    setMasuk(r.masuk);
+    setKeluar(cocok(r.masuk, r.keluar, km.jumlah_unit, jumlahKamar, sisaKm, km.min_malam) ? r.keluar : '');
+    const kap = km.kapasitas * jumlahKamar;
+    setDewasa(Math.max(1, Math.min(r.tamu, kap)));
+    setPulih((n) => n + 1);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    if (masuk) simpanRencana({ masuk, keluar, tamu: dewasa + anak });
+  }, [masuk, keluar, dewasa, anak]);
 
   // keep the chosen dates only while every night still fits
   function cocok(masukBaru: string, keluarBaru: string, unit: number, butuh: number, peta: Record<string, number>, minM: number) {
@@ -161,7 +184,12 @@ export default function FormPesan({ b, kamar, layanan, sisa, awal, akhir, dpPers
           </fieldset>
 
           <div className="mt-6">
-            <Kalender b={b} sisa={sisaKm} unit={km.jumlah_unit} butuh={jumlahKamar} minMalam={km.min_malam}
+            {ditolak && !keluar && (
+              <p role="alert" className="mb-4 rounded-2xl bg-[#fde3dc] px-4 py-3 text-sm font-semibold text-merah">
+                {f.tanggalDitolak(ditolak.keluar ? rentangTanggal(ditolak.masuk, ditolak.keluar, b) : tanggal(ditolak.masuk, b))}
+              </p>
+            )}
+            <Kalender key={pulih} b={b} sisa={sisaKm} unit={km.jumlah_unit} butuh={jumlahKamar} minMalam={km.min_malam}
               awal={awal} akhir={akhir} masuk={masuk} keluar={keluar}
               onPilih={(a, z) => { setMasuk(a); setKeluar(z); }} />
           </div>

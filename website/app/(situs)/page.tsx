@@ -4,6 +4,7 @@ import CariCepat from '@/components/CariCepat';
 import GeserPondok from '@/components/GeserPondok';
 import Ikon from '@/components/Ikon';
 import Wajah from '@/components/Wajah';
+import GaleriBeranda from '@/components/GaleriBeranda';
 import Pahlawan from '@/components/Pahlawan';
 import Perkiraan from '@/components/Perkiraan';
 import Peta, { koordinat } from '@/components/Peta';
@@ -200,15 +201,7 @@ export default async function Beranda() {
       {foto.galeri.length > 0 && (
         <Bagian className="!pt-0">
           <JudulBagian judul={dwi(s.galeriJudul, b)} />
-          <div className="columns-2 gap-4 md:columns-3">
-            {foto.galeri.map((f) => (
-              <figure key={f.id} className="mb-4 break-inside-avoid">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={f.url} alt={f.keterangan} width={f.lebar} height={f.tinggi} loading="lazy" className="w-full rounded-3xl" />
-                {f.keterangan && <figcaption className="mt-1.5 text-sm text-abu">{f.keterangan}</figcaption>}
-              </figure>
-            ))}
-          </div>
+          <GaleriBeranda b={b} foto={foto.galeri} />
         </Bagian>
       )}
 

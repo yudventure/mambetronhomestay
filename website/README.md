@@ -127,6 +127,8 @@ Database baru langsung berisi Pondok Tepi Pantai dengan tujuh unit. Harga bawaan
 
 Database yang masih berisi tiga pondok contoh dari versi lama (Pondok Laguna, Pondok Senja, Pondok Keluarga) dipindah sekali secara otomatis saat situs pertama terhubung. Pondok Laguna menjadi Pondok Tepi Pantai lengkap dengan foto dan pesanannya, dua contoh lainnya dihapus. Pemindahan ini dilewati bila contoh itu sudah diganti namanya, ditambah pondok lain, atau Pondok Senja dan Pondok Keluarga sudah punya pesanan atau foto. Dalam keadaan itu ubah pondoknya sendiri di menu Pondok.
 
+Teks pondok, bagian tentang kami, dan empat keunggulan di halaman utama mengikuti deskripsi Mambetron di DAMPIER (tujuh bungalow di sisi barat Pulau Kri dekat dermaga Yenkoranu, makan dari dapur keluarga, listrik genset sore dan malam, internet terbatas, jemputan perahu dari Waisai). Teks yang masih sama dengan teks bawaan versi sebelumnya diganti sekali secara otomatis, teks yang sudah diubah di panel tidak disentuh. Di deskripsi pondok, baris yang diawali `## ` menjadi subjudul dan kata yang diapit `**` dicetak tebal.
+
 ## Sinkron kalender dengan OTA dan agen perjalanan
 
 Menu Sinkron OTA di panel menghubungkan kalender setiap unit dengan Booking.com, Airbnb, Agoda, Google Calendar, atau agen perjalanan lewat tautan iCal. Kalender iCal hanya tahu terisi atau kosong, jadi setiap sambungan dipasang untuk satu unit. Unit yang dijual di dua situs mendapat dua sambungan.
@@ -147,6 +149,12 @@ Hal yang perlu diketahui tentang tiap situs, sesuai keadaan Oktober 2026.
 - Traveloka dan Tiket.com tidak memakai iCal. Tanggalnya ditutup manual di sana atau lewat channel manager.
 
 Tabelnya `kalender_sambungan` (tautan per unit) dan `kalender_luar` (malam yang terbaca dari situs lain). Pembaca iCal ada di `lib/ical.mjs` dengan uji `npm run uji`, aturan sinkron di `lib/sinkron.ts`, tautan ekspor di `app/ical/[berkas]/route.ts`.
+
+## Tanggal yang dibawa dan foto besar
+
+Kotak rencana menginap di halaman utama mewajibkan tanggal tiba dan pulang, dan tanggal pulang otomatis terisi sehari setelah tanggal tiba. Tanggal yang dipilih di halaman utama, di kalender halaman pondok, atau di formulir pesan disimpan di peramban pengunjung itu saja (selama 14 hari), jadi halaman berikutnya sudah membuka tanggal yang sama tanpa perlu memilih ulang. Bila malam yang dipilih ternyata sudah penuh, formulir pesan memberi tahu dan meminta tanggal lain.
+
+Foto pondok dan foto galeri di halaman utama bisa diketuk untuk dibuka layar penuh. Tombol Ukuran asli menampilkan foto dengan ukuran sebenarnya untuk digeser, panah atau usapan pindah ke foto lain, Esc atau ketukan di samping foto menutupnya. Kartu foto di bawah foto utama tetap tidak bisa diklik.
 
 ## Bahasa dan mata uang
 

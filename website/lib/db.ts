@@ -4,7 +4,7 @@
 import fs from 'fs';
 import mysql from 'mysql2/promise';
 import { SKEMA } from './skema.mjs';
-import { KAMAR_AWAL, KAMAR_LAMA, LAYANAN_AWAL, situsBawaan } from './bawaan.mjs';
+import { KAMAR_AWAL, KAMAR_LAMA, KAMAR_TEKS_LAMA, LAYANAN_AWAL, situsBawaan } from './bawaan.mjs';
 import { dbDiatur, envDb } from './env';
 
 export class DbBelumDiatur extends Error {
@@ -132,9 +132,25 @@ async function pindahKamarLama(pool: mysql.Pool) {
   await pool.query('DELETE FROM kamar WHERE id IN (?)', [ids]);
 }
 
+// Room texts still equal to the first release take the current ones, once.
+// A text the owner changed is not touched.
+async function perbaruiTeksKamar(pool: mysql.Pool) {
+  const [r] = await pool.query<mysql.ResultSetHeader>("INSERT IGNORE INTO pengaturan (kunci, nilai) VALUES ('kamar-teks-2', '1')");
+  if (r.affectedRows !== 1) return;
+  const k = KAMAR_AWAL[0];
+  const baru: Record<keyof typeof KAMAR_TEKS_LAMA, string> = {
+    ringkas: k.ringkas, ringkas_en: k.ringkas_en, deskripsi: k.deskripsi, deskripsi_en: k.deskripsi_en,
+    fasilitas: k.fasilitas.join('\n'), fasilitas_en: k.fasilitas_en.join('\n'),
+  };
+  for (const [kolom, lama] of Object.entries(KAMAR_TEKS_LAMA) as [keyof typeof KAMAR_TEKS_LAMA, string][]) {
+    await pool.query(`UPDATE kamar SET ${kolom} = ? WHERE ${kolom} = ?`, [baru[kolom], lama]);
+  }
+}
+
 async function siapkan(pool: mysql.Pool) {
   for (const sql of SKEMA) await pool.query(sql);
   await pindahKamarLama(pool);
+  await perbaruiTeksKamar(pool);
   // the first process to claim this row fills the empty database
   const [r] = await pool.query<mysql.ResultSetHeader>(
     "INSERT IGNORE INTO pengaturan (kunci, nilai) VALUES ('benih', '1')",

@@ -103,8 +103,8 @@ export const PENGATURAN = [
       { k: 'tentangJudul', label: 'Judul bagian tentang kami', jenis: 'dua', bantuan: 'Tampil di samping kotak rencana menginap.', bawaan: dua('Rumah kecil di ujung dermaga', 'A little home at the end of the jetty') },
       {
         k: 'tentangTeks', label: 'Teks tentang kami', jenis: 'duaPanjang', bawaan: dua(
-          'Mambetron Homestay adalah rumah singgah keluarga di Raja Ampat. Maskot kami, Mambe, adalah kuskus, hewan pemalu bermata besar yang suka mengintip dari balik dahan hutan pulau.\n\nDi sini hari dimulai dengan matahari terbit di atas laut dan ditutup dengan obrolan di dermaga. Tidak ada yang terburu-buru. Kamu cukup datang, kami yang urus sisanya.',
-          'Mambetron Homestay is a family guesthouse in Raja Ampat. Our mascot Mambe is a cuscus, the shy big-eyed animal that peeks out from the branches of the island forest.\n\nDays here start with sunrise over the sea and end with stories on the jetty. Nobody is in a hurry. Just come, we will take care of the rest.'),
+          'Mambetron Homestay punya tujuh bungalow di tepi pantai sisi barat Pulau Kri, dekat dermaga Yenkoranu, dengan karang penuh ikan tepat di depan beranda. Kri adalah pulau kecil di tengah titik selam paling terkenal di Raja Ampat, sekitar satu jam naik perahu dari Waisai.\n\nTuan rumahnya keluarga setempat, dan tamu menyebut mereka ramah dan suka membantu. Makan tiga kali sehari dimasak di dapur keluarga, biasanya ikan segar, nasi, tempe, sayur, dan sambal.',
+          "Mambetron Homestay has seven beachfront bungalows on the west side of Kri Island, near the Yenkoranu jetty, with a fish-filled reef right in front of the verandas. Kri is a small island in the middle of Raja Ampat's most famous dive sites, about an hour by boat from Waisai.\n\nYour hosts are a local family, and guests describe them as friendly and helpful. Three meals a day are cooked in the family kitchen, usually fresh fish, rice, tempeh, vegetables and sambal."),
       },
       { k: 'sorotanJudul', label: 'Judul bagian keunggulan', jenis: 'dua', bantuan: 'Tidak tampil di layar. Dibaca oleh pembaca layar dan mesin pencari.', bawaan: dua('Kenapa menginap di sini', 'Why stay with us') },
       {
@@ -115,10 +115,10 @@ export const PENGATURAN = [
           { k: 'teks', label: 'Teks', jenis: 'duaPanjang' },
         ],
         bawaan: [
-          { ikon: 'snorkel', judul: dua('Karang di depan rumah', 'A reef at the doorstep'), teks: dua('Turun dari dermaga dan langsung berenang bersama ikan karang, penyu, dan kadang hiu sirip hitam.', 'Step off the jetty and swim with reef fish, turtles and the odd blacktip shark.') },
-          { ikon: 'makan', judul: dua('Makan tiga kali sehari', 'Three meals a day'), teks: dua('Masakan rumahan dengan ikan segar, sayur kebun, dan sambal buatan mama. Sudah termasuk dalam harga.', 'Home cooking with fresh fish, garden greens and homemade sambal. Included in the rate.') },
-          { ikon: 'perahu', judul: dua('Dijemput di Waisai', 'Pickup in Waisai'), teks: dua('Kabari jadwal kapal cepatmu, kami menunggu di pelabuhan dengan perahu.', 'Tell us your ferry time and we will wait at the harbour with our boat.') },
-          { ikon: 'hati', judul: dua('Tuan rumah yang hangat', 'Warm hosts'), teks: dua('Kami mengenal setiap sudut pulau dan senang berbagi cerita kampung.', 'We know every corner of the island and love sharing village stories.') },
+          { ikon: 'snorkel', judul: dua('Karang di depan bungalow', 'A reef at the doorstep'), teks: dua('Snorkeling langsung dari depan bungalow, di karang yang membentang dari dermaga Yenkoranu.', 'Snorkel right off the bungalows, on a reef that runs from the Yenkoranu jetty.') },
+          { ikon: 'makan', judul: dua('Makan tiga kali sehari', 'Three meals a day'), teks: dua('Dimasak di dapur keluarga, biasanya ikan segar, nasi, tempe, sayur, dan sambal.', 'Cooked in the family kitchen, usually fresh fish, rice, tempeh, vegetables and sambal.') },
+          { ikon: 'perahu', judul: dua('Jemputan perahu', 'Boat pickup'), teks: dua('Kri sekitar satu jam naik perahu dari Waisai. Kabari jadwal kapal cepatmu dari Sorong, perahu kami siapkan.', 'Kri is about an hour by boat from Waisai. Share your fast ferry time from Sorong and we will have the boat ready.') },
+          { ikon: 'hati', judul: dua('Tuan rumah yang hangat', 'Warm hosts'), teks: dua('Keluarga setempat yang menurut tamu ramah dan suka membantu.', 'A local family that guests describe as friendly and helpful.') },
         ],
       },
       { k: 'ajakanLabel', label: 'Label kecil di kotak ajakan', jenis: 'dua', bawaan: dua('Pesan langsung', 'Book direct') },
@@ -270,6 +270,15 @@ export function rapikan(f, v) {
 // field, so an untouched default stays in the database. A stored value that
 // still equals an old default is treated as unset and takes the current one.
 const BAWAAN_LAMA = {
+  tentangTeks: [dua(
+    'Mambetron Homestay adalah rumah singgah keluarga di Raja Ampat. Maskot kami, Mambe, adalah kuskus, hewan pemalu bermata besar yang suka mengintip dari balik dahan hutan pulau.\n\nDi sini hari dimulai dengan matahari terbit di atas laut dan ditutup dengan obrolan di dermaga. Tidak ada yang terburu-buru. Kamu cukup datang, kami yang urus sisanya.',
+    'Mambetron Homestay is a family guesthouse in Raja Ampat. Our mascot Mambe is a cuscus, the shy big-eyed animal that peeks out from the branches of the island forest.\n\nDays here start with sunrise over the sea and end with stories on the jetty. Nobody is in a hurry. Just come, we will take care of the rest.')],
+  sorotan: [[
+    { ikon: 'snorkel', judul: dua('Karang di depan rumah', 'A reef at the doorstep'), teks: dua('Turun dari dermaga dan langsung berenang bersama ikan karang, penyu, dan kadang hiu sirip hitam.', 'Step off the jetty and swim with reef fish, turtles and the odd blacktip shark.') },
+    { ikon: 'makan', judul: dua('Makan tiga kali sehari', 'Three meals a day'), teks: dua('Masakan rumahan dengan ikan segar, sayur kebun, dan sambal buatan mama. Sudah termasuk dalam harga.', 'Home cooking with fresh fish, garden greens and homemade sambal. Included in the rate.') },
+    { ikon: 'perahu', judul: dua('Dijemput di Waisai', 'Pickup in Waisai'), teks: dua('Kabari jadwal kapal cepatmu, kami menunggu di pelabuhan dengan perahu.', 'Tell us your ferry time and we will wait at the harbour with our boat.') },
+    { ikon: 'hati', judul: dua('Tuan rumah yang hangat', 'Warm hosts'), teks: dua('Kami mengenal setiap sudut pulau dan senang berbagi cerita kampung.', 'We know every corner of the island and love sharing village stories.') },
+  ]],
   ulasanWajah: [[
     { nama: 'Adam', huruf: 'A' }, { nama: 'Rijnders', huruf: 'L' }, { nama: 'Linda', huruf: 'L' },
     { nama: 'Justyna', huruf: 'J' }, { nama: 'Jeroen', huruf: 'J' }, { nama: 'Christopher', huruf: 'C' },
@@ -313,15 +322,27 @@ export function gabungSitus(simpanan) {
 export const KAMAR_AWAL = [
   {
     slug: 'pondok-tepi-pantai', nama: 'Pondok Tepi Pantai', nama_en: 'Beachfront Hut',
-    ringkas: 'Tujuh pondok dengan tipe dan ukuran yang sama, semuanya di tepi pantai menghadap laut.',
-    ringkas_en: 'Seven huts of the same type and size, all on the beach facing the sea.',
-    deskripsi: 'Semua pondok kami sama tipe dan ukurannya, dan semuanya berdiri di tepi pantai menghadap langsung ke laut. Jadi pondok mana pun yang kamu dapat, pemandangannya sama.\n\nHarga sudah termasuk makan tiga kali sehari, dan wifi tersedia untuk tamu.',
-    deskripsi_en: 'All our huts share the same type and size, and every one stands on the beach facing straight out to sea. Whichever hut you get, the view is the same.\n\nThe rate includes three meals a day, and Wi-Fi is available for guests.',
-    fasilitas: ['Di tepi pantai', 'Menghadap langsung ke laut', 'Makan tiga kali sehari', 'Wifi'],
-    fasilitas_en: ['Right on the beach', 'Facing straight out to sea', 'Three meals a day', 'Wi-Fi'],
+    ringkas: 'Tujuh bungalow di tepi pantai Pulau Kri, masing-masing untuk dua orang, dengan kamar mandi dalam dan beranda menghadap laut.',
+    ringkas_en: 'Seven beachfront bungalows on Kri Island, each sleeping two, with a private bathroom and a sea-facing veranda.',
+    deskripsi: 'Tujuh bungalow di tepi pantai sisi barat Pulau Kri, dekat dermaga Yenkoranu, dengan karang penuh ikan tepat di depan beranda. Kri adalah pulau kecil di tengah titik selam paling terkenal di Raja Ampat, sekitar satu jam naik perahu dari Waisai.\n\n## Bungalow\nKetujuh bungalow berdiri langsung di pantai, masing-masing untuk dua orang, dengan kamar mandi dalam dan beranda menghadap laut. Saat air pasang, laut bisa sampai dekat bungalow. Bungalownya sederhana, tanpa AC dan air panas, dibuat untuk tamu yang mencari kehidupan pulau, bukan resor. Tamu bilang bungalownya lapang dan bersih.\n\n## Makan, listrik, dan internet\nMakan tiga kali sehari dimasak di dapur keluarga, biasanya ikan segar, nasi, tempe, sayur, dan sambal. Tamu bilang masakannya enak dan segar, walau menunya sederhana dan sering berulang. Listrik dari genset pada sore dan malam hari. Internet terbatas, jadi bersiaplah lebih sering luring.\n\n## Kegiatan\n**Snorkeling langsung dari depan bungalow**, di karang yang membentang dari dermaga Yenkoranu sampai depan Mambetron. Tamu menyebutnya salah satu karang tepi pantai terbaik di Raja Ampat. Cape Kri dan Sardine Reef, dua titik selam terkenal, ada di dekatnya, dan penyelaman bisa diatur dengan dive center di Kri. Perjalanan perahu ke tempat sekitar, seperti melihat cenderawasih atau ke Kali Biru, juga bisa diatur. Sepakati harganya sebelum berangkat.\n\n## Cara ke sini\nKri hanya bisa dicapai dengan perahu, sekitar satu jam dari Waisai. Tanyakan jemputan perahu saat memesan, dan kabari jadwal kapal cepatmu dari Sorong supaya perahu bisa disiapkan.\n\n## Perlu diketahui\nTuan rumahmu keluarga setempat, dan tamu menyebut mereka ramah dan suka membantu. Bawa uang tunai secukupnya karena tidak ada ATM di pulau. Mohon bawa kembali sampah plastik ke Waisai.',
+    deskripsi_en: "Seven beachfront bungalows on the west side of Kri Island, near the Yenkoranu jetty, with a fish-filled reef right in front of the verandas. Kri is a small island in the middle of Raja Ampat's most famous dive sites, about an hour by boat from Waisai.\n\n## The bungalows\nAll seven bungalows sit right on the beach, each sleeping two, with a private bathroom and a sea-facing veranda. At high tide the sea can come close to the bungalows. They are simple, with no air conditioning or hot water, made for guests who want island life rather than a resort. Guests say the bungalows are spacious and clean.\n\n## Meals, power and internet\nThree meals a day are cooked in the family kitchen, usually fresh fish, rice, tempeh, vegetables and sambal. Guests say the food is tasty and fresh, though the menu is simple and often repeats. Power comes from a generator in the evening and at night. Internet is limited, so plan to be offline more often.\n\n## Things to do\n**Snorkel right off the bungalows**, on a reef that runs from the Yenkoranu jetty to the front of Mambetron. Guests call it one of the best shore reefs in Raja Ampat. Cape Kri and Sardine Reef, two famous dive sites, are close by, and dives can be arranged with a dive centre on Kri. Boat trips to nearby spots, such as birds of paradise or Kali Biru, can be arranged. Agree on the price before you go.\n\n## Getting there\nKri can only be reached by boat, about an hour from Waisai. Ask us about a boat pickup when you book, and share your fast ferry schedule from Sorong so the boat can be ready.\n\n## Good to know\nYour hosts are a local family, and guests describe them as friendly and helpful. Bring enough cash, as there is no ATM on the island. Please take plastic waste back to Waisai.",
+    fasilitas: ['Di tepi pantai', 'Beranda menghadap laut', 'Kamar mandi dalam', 'Makan tiga kali sehari', 'Listrik genset sore dan malam', 'Internet terbatas'],
+    fasilitas_en: ['Right on the beach', 'Sea-facing veranda', 'Private bathroom', 'Three meals a day', 'Generator power in the evening and at night', 'Limited internet'],
     harga: 550000, harga_anak: null, skema_harga: 'orang', kapasitas: 2, jumlah_unit: 7, min_malam: 1, urutan: 1,
   },
 ];
+
+// Room texts of the first release of KAMAR_AWAL. A room whose text still
+// equals these takes the current text once (lib/db.ts), so the description
+// from the DAMPIER listing reaches sites that never edited it.
+export const KAMAR_TEKS_LAMA = {
+  ringkas: 'Tujuh pondok dengan tipe dan ukuran yang sama, semuanya di tepi pantai menghadap laut.',
+  ringkas_en: 'Seven huts of the same type and size, all on the beach facing the sea.',
+  deskripsi: 'Semua pondok kami sama tipe dan ukurannya, dan semuanya berdiri di tepi pantai menghadap langsung ke laut. Jadi pondok mana pun yang kamu dapat, pemandangannya sama.\n\nHarga sudah termasuk makan tiga kali sehari, dan wifi tersedia untuk tamu.',
+  deskripsi_en: 'All our huts share the same type and size, and every one stands on the beach facing straight out to sea. Whichever hut you get, the view is the same.\n\nThe rate includes three meals a day, and Wi-Fi is available for guests.',
+  fasilitas: 'Di tepi pantai\nMenghadap langsung ke laut\nMakan tiga kali sehari\nWifi',
+  fasilitas_en: 'Right on the beach\nFacing straight out to sea\nThree meals a day\nWi-Fi',
+};
 
 // The three sample huts the site shipped with before the real rooms were
 // known. A database that still holds exactly these, untouched and unbooked

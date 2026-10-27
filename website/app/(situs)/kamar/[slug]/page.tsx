@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import Bagian from '@/components/Bagian';
 import Galeri from '@/components/Galeri';
+import TeksPanjang from '@/components/TeksPanjang';
 import Ikon from '@/components/Ikon';
 import KalenderKamar from '@/components/KalenderKamar';
 import KartuKamar from '@/components/KartuKamar';
@@ -10,7 +11,7 @@ import { bahasaAktif } from '@/lib/bahasa';
 import { ambilSitus, daftarKamar, gambarCadangan, kamarDariSlug, pemesananAktif, sisaKamar } from '@/lib/data';
 import { pastikanSegar } from '@/lib/sinkron';
 import { kamus } from '@/lib/kamus';
-import { paragraf, pilih, rupiah, tautanWa } from '@/lib/format';
+import { pilih, rupiah, tautanWa } from '@/lib/format';
 import { hariIni, tambahHari } from '@/lib/tanggal';
 import { KISI, rentang } from '@/lib/kisi';
 import Perkiraan from '@/components/Perkiraan';
@@ -53,7 +54,7 @@ export default async function HalamanPondok({ params }: P) {
           <Ikon nama="kiri" className="size-4" /> {k.semuaPondok}
         </Link>
         <div className="mt-5 grid gap-8 lg:grid-cols-[1.25fr_1fr] lg:gap-12">
-          <Galeri foto={km.foto} cadangan={gambarCadangan(i)} nama={nama} />
+          <Galeri b={b} foto={km.foto} cadangan={gambarCadangan(i)} nama={nama} />
           <div>
             <h1 className="text-[clamp(2.2rem,1.7rem+2vw,3.25rem)]">{nama}</h1>
             <p className="mt-3 text-lg text-abu">{pilih(b, km.ringkas, km.ringkas_en)}</p>
@@ -80,7 +81,7 @@ export default async function HalamanPondok({ params }: P) {
 
         <div className="mt-12 grid gap-10 lg:grid-cols-[1.25fr_1fr] lg:gap-12">
           <div className="prosa text-lg">
-            {paragraf(pilih(b, km.deskripsi, km.deskripsi_en)).map((p, j) => <p key={j}>{p}</p>)}
+            <TeksPanjang teks={pilih(b, km.deskripsi, km.deskripsi_en)} />
           </div>
           {fasilitas.length > 0 && (
             <div>

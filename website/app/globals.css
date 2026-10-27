@@ -164,7 +164,7 @@
   .bingkai { border-radius: 1.75rem; }
   @media (min-width: 640px) { .bingkai { border-radius: 2.25rem; } }
 
-  .prosa p + p { margin-top: 1em; }
+  .prosa > * + * { margin-top: 1em; }
 }
 
 /* Sideways card rows scroll without a visible bar, arrows sit beside them. */

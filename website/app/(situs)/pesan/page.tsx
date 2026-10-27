@@ -42,6 +42,11 @@ export default async function Pesan({ searchParams }: { searchParams: Promise<Re
     if (!muat) keluar = '';
   }
   if (km && masuk && (sisa[km.id]?.[masuk] ?? km.jumlah_unit) < jumlahKamar) masuk = keluar = '';
+  // dates from the home page that cannot be kept get a notice instead of vanishing
+  const dariTautan = sahTanggal(sp.masuk);
+  const ditolak = dariTautan && (!masuk || (sahTanggal(sp.keluar) && !keluar))
+    ? { masuk: sp.masuk as string, keluar: sahTanggal(sp.keluar) && sp.keluar > (sp.masuk as string) ? sp.keluar : '' }
+    : null;
 
   const daftar: KamarForm[] = kamar.map((x, i) => ({
     id: x.id, slug: x.slug, nama: x.nama, nama_en: x.nama_en, harga: x.harga, harga_anak: x.harga_anak, skema_harga: x.skema_harga,
@@ -70,6 +75,8 @@ export default async function Pesan({ searchParams }: { searchParams: Promise<Re
         aktif={aktif}
         wa={tautanWa(situs.whatsapp, k.pesanWaUmum)}
         mula={{ kamarId: km?.id ?? 0, masuk, keluar, dewasa: Math.min(tamu, kap), anak: 0, jumlahKamar }}
+        ditolak={ditolak}
+        dariTautan={dariTautan}
       />
     </Bagian>
   );
