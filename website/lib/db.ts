@@ -4,7 +4,7 @@
 import fs from 'fs';
 import mysql from 'mysql2/promise';
 import { SKEMA } from './skema.mjs';
-import { KAMAR_AWAL, KAMAR_LAMA, KAMAR_TEKS_LAMA, LAYANAN_AWAL, situsBawaan } from './bawaan.mjs';
+import { KAMAR_AWAL, KAMAR_LAMA, KAMAR_NAMA_LAMA, KAMAR_TEKS_LAMA, LAYANAN_AWAL, situsBawaan } from './bawaan.mjs';
 import { dbDiatur, envDb } from './env';
 
 export class DbBelumDiatur extends Error {
@@ -147,10 +147,21 @@ async function perbaruiTeksKamar(pool: mysql.Pool) {
   }
 }
 
+// The huts became bungalows. Only the untouched default name changes, the
+// address (slug) stays so shared links keep working.
+async function namaBungalow(pool: mysql.Pool) {
+  const [r] = await pool.query<mysql.ResultSetHeader>("INSERT IGNORE INTO pengaturan (kunci, nilai) VALUES ('kamar-bungalow', '1')");
+  if (r.affectedRows !== 1) return;
+  for (const [kolom, [lama, baru]] of Object.entries(KAMAR_NAMA_LAMA)) {
+    await pool.query(`UPDATE kamar SET ${kolom} = ? WHERE ${kolom} = ?`, [baru, lama]);
+  }
+}
+
 async function siapkan(pool: mysql.Pool) {
   for (const sql of SKEMA) await pool.query(sql);
   await pindahKamarLama(pool);
   await perbaruiTeksKamar(pool);
+  await namaBungalow(pool);
   // the first process to claim this row fills the empty database
   const [r] = await pool.query<mysql.ResultSetHeader>(
     "INSERT IGNORE INTO pengaturan (kunci, nilai) VALUES ('benih', '1')",

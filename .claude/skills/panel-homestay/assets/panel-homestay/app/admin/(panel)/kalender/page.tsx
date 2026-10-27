@@ -151,7 +151,7 @@ export default async function KalenderAdmin({ searchParams }: { searchParams: Pr
           <li className="inline-flex items-center gap-2"><span className="size-2 rounded-full bg-panel-aksen" />Dikonfirmasi atau lunas</li>
           <li className="inline-flex items-center gap-2"><span className="size-2 rounded-full bg-senja" />Menunggu uang muka</li>
           <li className="inline-flex items-center gap-2"><span className={`size-2 rounded-full ${UNGU}`} />Terisi dari OTA</li>
-          <li className="inline-flex items-center gap-2"><span className="h-2 w-4 rounded-full bg-panel-lembut ring-1 ring-panel-utama/20 max-sm:h-1.5 max-sm:bg-panel-utama max-sm:ring-0" />Semua pondok penuh</li>
+          <li className="inline-flex items-center gap-2"><span className="h-2 w-4 rounded-full bg-panel-lembut ring-1 ring-panel-utama/20 max-sm:h-1.5 max-sm:bg-panel-utama max-sm:ring-0" />Semua bungalow penuh</li>
           <li className="inline-flex items-center gap-2"><span className="h-2 w-4 rounded-full bg-[#fde3dc] max-sm:size-2 max-sm:bg-merah" />Tutup</li>
         </ul>
       </div>
@@ -191,7 +191,7 @@ export default async function KalenderAdmin({ searchParams }: { searchParams: Pr
                 {detail.luar.map((b, i) => (
                   <li key={`${b.sambungan_id}-${b.mulai}-${i}`} className="rounded-xl bg-white px-3 py-2">
                     <span className="flex items-center gap-2 font-semibold text-panel-utama"><span className={`size-2 shrink-0 rounded-full ${UNGU}`} />{b.nama}, unit {b.unit}</span>
-                    <span className="block text-sm text-abu">{kamar.find((k) => k.id === b.kamar_id)?.nama ?? 'Pondok'}, {rentangTanggal(b.mulai, b.selesai)}{b.ringkas ? `, ${b.ringkas}` : ''}</span>
+                    <span className="block text-sm text-abu">{kamar.find((k) => k.id === b.kamar_id)?.nama ?? 'Bungalow'}, {rentangTanggal(b.mulai, b.selesai)}{b.ringkas ? `, ${b.ringkas}` : ''}</span>
                   </li>
                 ))}
               </ul>
@@ -200,7 +200,7 @@ export default async function KalenderAdmin({ searchParams }: { searchParams: Pr
           )}
           {detail.tutup.length > 0 && (
             <p className="mt-3 rounded-2xl bg-[#fde3dc] px-4 py-3 text-sm font-semibold text-merah">
-              Ditutup untuk {detail.tutup.map((t) => (t.kamar_id ? kamar.find((k) => k.id === t.kamar_id)?.nama ?? 'pondok terhapus' : 'semua pondok')).join(', ')}
+              Ditutup untuk {detail.tutup.map((t) => (t.kamar_id ? kamar.find((k) => k.id === t.kamar_id)?.nama ?? 'bungalow terhapus' : 'semua bungalow')).join(', ')}
             </p>
           )}
         </section>
@@ -214,9 +214,9 @@ export default async function KalenderAdmin({ searchParams }: { searchParams: Pr
           <form action={tambahTutup} className="grid gap-3 sm:grid-cols-2">
             <input type="hidden" name="kembali" value={kembali} />
             <div className="sm:col-span-2">
-              <label className="label-isian" htmlFor="kamar_id">Pondok</label>
+              <label className="label-isian" htmlFor="kamar_id">Bungalow</label>
               <select id="kamar_id" name="kamar_id" className="isian" defaultValue={pondok ? String(pondok.id) : ''}>
-                <option value="">Semua pondok</option>
+                <option value="">Semua bungalow</option>
                 {kamar.map((k) => <option key={k.id} value={k.id}>{k.nama}</option>)}
               </select>
             </div>
@@ -230,7 +230,7 @@ export default async function KalenderAdmin({ searchParams }: { searchParams: Pr
               {tutup.filter((t) => t.akhir >= hari).map((t) => (
                 <li key={t.id} className="flex items-center gap-3 rounded-2xl bg-panel-latar px-4 py-2.5">
                   <span className="min-w-0 flex-1">
-                    <span className="block font-semibold text-panel-utama">{t.kamar_id ? kamar.find((k) => k.id === t.kamar_id)?.nama ?? 'Pondok terhapus' : 'Semua pondok'}</span>
+                    <span className="block font-semibold text-panel-utama">{t.kamar_id ? kamar.find((k) => k.id === t.kamar_id)?.nama ?? 'Bungalow terhapus' : 'Semua bungalow'}</span>
                     <span className="block text-sm text-abu">{tanggal(t.mulai, 'id')} sampai {tanggal(t.akhir, 'id')}{t.alasan ? `, ${t.alasan}` : ''}</span>
                   </span>
                   <form action={hapusTutup}><input type="hidden" name="id" value={t.id} />

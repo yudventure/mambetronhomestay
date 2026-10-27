@@ -38,7 +38,7 @@ panel, surel, dan petunjuk database ikut sekaligus.
    `INTERVAL 9 HOUR` di `angkaRingkasan` (`lib/data.ts`) menjadi 8 atau 7,
    dan tulisan "WIT" di `JamLangsung.tsx`, `StatistikSitus.tsx`, dan fungsi
    `waktu()` di `lib/format.ts`.
-6. Sesuaikan isi. Sebutan "Pondok" (menu, kalender, ubin, persiapan situs)
+6. Sesuaikan isi. Sebutan "Bungalow" di Mambetron (menu, kalender, ubin, persiapan situs)
    diganti sebutan homestay itu (Kamar, Bungalow, Cottage). Menu `menu()`
    di `RangkaPanel.tsx` mengikuti halaman yang ada.
 7. Jalankan build dan uji (bagian 6).

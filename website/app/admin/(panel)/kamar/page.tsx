@@ -6,17 +6,17 @@ import { rupiah } from '@/lib/format';
 import { KAMUS } from '@/lib/kamus';
 import { KISI, rentang } from '@/lib/kisi';
 
-export const metadata = { title: 'Pondok' };
+export const metadata = { title: 'Bungalow' };
 
 export default async function KamarAdmin({ searchParams }: { searchParams: Promise<Record<string, string | undefined>> }) {
   const sp = await searchParams;
   const kamar = await daftarKamar(true);
   return (
     <>
-      <JudulAdmin judul="Pondok" teks="Nama, harga, foto, dan jumlah unit tiap jenis pondok.">
-        <Link href="/admin/kamar/baru" className="tombol tombol-kecil"><Ikon nama="tambah" className="size-4" /> Tambah pondok</Link>
+      <JudulAdmin judul="Bungalow" teks="Nama, harga, foto, dan jumlah unit tiap jenis bungalow.">
+        <Link href="/admin/kamar/baru" className="tombol tombol-kecil"><Ikon nama="tambah" className="size-4" /> Tambah bungalow</Link>
       </JudulAdmin>
-      <Kabar ok={sp.hapus ? 'hapus' : undefined} pesan={{ 'ok:hapus': 'Pondok sudah dihapus.' }} />
+      <Kabar ok={sp.hapus ? 'hapus' : undefined} pesan={{ 'ok:hapus': 'Bungalow sudah dihapus.' }} />
       <div className={`${KISI} gap-5`}>
         {kamar.map((k, i) => (
           <Link key={k.id} href={`/admin/kamar/${k.id}`} className={`kartu block overflow-hidden transition-shadow hover:shadow-angkat ${rentang(kamar.length, i)}`}>
@@ -34,7 +34,7 @@ export default async function KamarAdmin({ searchParams }: { searchParams: Promi
           </Link>
         ))}
       </div>
-      {!kamar.length && <p className="rounded-2xl bg-white px-4 py-6 text-center text-abu">Belum ada pondok. Tambahkan yang pertama.</p>}
+      {!kamar.length && <p className="rounded-2xl bg-white px-4 py-6 text-center text-abu">Belum ada bungalow. Tambahkan yang pertama.</p>}
     </>
   );
 }

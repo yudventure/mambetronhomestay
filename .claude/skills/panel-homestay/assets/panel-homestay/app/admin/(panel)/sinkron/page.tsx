@@ -119,7 +119,7 @@ export default async function HalamanSinkron({ searchParams }: { searchParams: P
         'ok:hapus': 'Sambungan dihapus.',
         'ok:token': 'Tautan baru dibuat. Tempel tautan ini di situs itu, tautan lama sudah tidak bekerja.',
         'ok:sinkron': 'Semua kalender sudah dibaca ulang.',
-        'galat:unit': 'Pilih unit pondok dulu.',
+        'galat:unit': 'Pilih unit bungalow dulu.',
         'galat:nama': 'Tulis nama situsnya, misalnya Booking.com.',
         'galat:url-baca': 'Tautan kalender tidak terbaca. Salin ulang tautan iCal dari situs itu.',
         'galat:url-https': 'Tautan kalender harus diawali https.',
@@ -175,7 +175,7 @@ export default async function HalamanSinkron({ searchParams }: { searchParams: P
               <button className="tombol tombol-kecil justify-self-start"><Ikon nama="tambah" className="size-4" /> Tambah sambungan</button>
             </form>
           ) : (
-            <p className="mt-4 rounded-2xl bg-panel-latar px-4 py-3 text-abu">Belum ada pondok. Tambahkan pondok dulu di menu Pondok.</p>
+            <p className="mt-4 rounded-2xl bg-panel-latar px-4 py-3 text-abu">Belum ada bungalow. Tambahkan bungalow dulu di menu Bungalow.</p>
           )}
         </section>
 
@@ -198,7 +198,7 @@ export default async function HalamanSinkron({ searchParams }: { searchParams: P
       {yatim.length > 0 && (
         <section className="mt-6 rounded-[1.5rem] bg-pasir/60 p-5 sm:p-6">
           <h2 className="text-[1.4rem] text-panel-utama">Sambungan untuk unit yang sudah tidak ada</h2>
-          <p className="mt-1 text-[0.9375rem] text-laut">Jumlah unit pondok dikurangi atau pondoknya dihapus. Situs lain melihat unit ini selalu penuh sampai sambungannya dihapus.</p>
+          <p className="mt-1 text-[0.9375rem] text-laut">Jumlah unit bungalow dikurangi atau bungalownya dihapus. Situs lain melihat unit ini selalu penuh sampai sambungannya dihapus.</p>
           <ul className="mt-3 grid gap-3">{yatim.map((s) => <Sambung key={s.id} s={s} asal={asal} baru={s.id === baru} />)}</ul>
         </section>
       )}
@@ -224,7 +224,7 @@ export default async function HalamanSinkron({ searchParams }: { searchParams: P
         <h2 className="mt-1 text-[1.6rem] text-panel-utama">Yang perlu diketahui tentang tiap situs</h2>
         <p className="mt-2 text-[0.9375rem] text-abu">Sinkron lewat iCal hanya membawa malam yang terisi, bukan harga, nama tamu, atau jumlah unit.</p>
         <ul className="mt-4 grid gap-3 text-[0.9375rem] md:grid-cols-2">
-          <li className="rounded-2xl bg-white px-4 py-3"><span className="block font-semibold text-panel-utama">Booking.com</span>Sinkron kalender di Booking.com hanya untuk tipe kamar yang berisi satu unit. Bila ketujuh pondok dijual sebagai satu tipe berisi tujuh, Booking.com perlu mengubahnya menjadi tujuh tipe satu unit, atau pakai channel manager. Tanyakan ke tim Booking.com sebelum mengubah iklan.</li>
+          <li className="rounded-2xl bg-white px-4 py-3"><span className="block font-semibold text-panel-utama">Booking.com</span>Sinkron kalender di Booking.com hanya untuk tipe kamar yang berisi satu unit. Bila ketujuh bungalow dijual sebagai satu tipe berisi tujuh, Booking.com perlu mengubahnya menjadi tujuh tipe satu unit, atau pakai channel manager. Tanyakan ke tim Booking.com sebelum mengubah iklan.</li>
           <li className="rounded-2xl bg-white px-4 py-3"><span className="block font-semibold text-panel-utama">Airbnb</span>Satu iklan Airbnb punya satu kalender. Sambungkan satu iklan ke satu unit di sini.</li>
           <li className="rounded-2xl bg-white px-4 py-3"><span className="block font-semibold text-panel-utama">Agoda</span>Agoda Homes punya impor dan ekspor iCal. Untuk iklan hotel di Agoda YCS, tanyakan ke Agoda apakah iCal tersedia.</li>
           <li className="rounded-2xl bg-white px-4 py-3"><span className="block font-semibold text-panel-utama">Traveloka dan Tiket.com</span>Keduanya tidak memakai tautan iCal. Tutup tanggalnya manual di sana, atau pakai channel manager.</li>

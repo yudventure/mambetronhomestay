@@ -14,16 +14,16 @@ export default function FormManual({ kamar, layanan, hari }: { kamar: Pick<Kamar
   return (
     <form onSubmit={kirimTanpaReset(aksi)} className="grid gap-6 xl:grid-cols-2">
       <section className="kartu grid gap-4 p-5 sm:grid-cols-2 sm:p-6">
-        <h2 className="text-2xl sm:col-span-2">Pondok dan tanggal</h2>
+        <h2 className="text-2xl sm:col-span-2">Bungalow dan tanggal</h2>
         <div className="sm:col-span-2">
-          <label className="label-isian" htmlFor="kamar">Pondok</label>
+          <label className="label-isian" htmlFor="kamar">Bungalow</label>
           <select id="kamar" name="kamar" className="isian" required>
             {kamar.map((k) => <option key={k.id} value={k.id}>{k.nama} ({k.jumlah_unit} unit, muat {k.kapasitas}){k.aktif ? '' : ', nonaktif'}</option>)}
           </select>
         </div>
         <div><label className="label-isian" htmlFor="masuk">Tiba</label><input id="masuk" name="masuk" type="date" defaultValue={hari} required className="isian" /></div>
         <div><label className="label-isian" htmlFor="keluar">Pulang</label><input id="keluar" name="keluar" type="date" required className="isian" /></div>
-        <div><label className="label-isian" htmlFor="jumlahKamar">Jumlah pondok</label><input id="jumlahKamar" name="jumlahKamar" type="number" min={1} defaultValue={1} className="isian" /></div>
+        <div><label className="label-isian" htmlFor="jumlahKamar">Jumlah bungalow</label><input id="jumlahKamar" name="jumlahKamar" type="number" min={1} defaultValue={1} className="isian" /></div>
         <div className="grid grid-cols-2 gap-3">
           <div><label className="label-isian" htmlFor="dewasa">Dewasa</label><input id="dewasa" name="dewasa" type="number" min={1} defaultValue={2} className="isian" /></div>
           <div><label className="label-isian" htmlFor="anak">Anak</label><input id="anak" name="anak" type="number" min={0} defaultValue={0} className="isian" /></div>

@@ -92,7 +92,7 @@ export default async function Ringkasan({ searchParams }: { searchParams: Promis
   const daftarCek = [
     { ok: Boolean(situs.whatsapp), teks: 'Isi nomor WhatsApp homestay', href: '/admin/pengaturan#kontak' },
     { ok: situs.bank.length > 0, teks: 'Isi rekening untuk uang muka', href: '/admin/pengaturan#pemesanan' },
-    { ok: kamar.length > 0 && kamar.every((k) => k.foto.length > 0), teks: 'Unggah foto setiap pondok', href: '/admin/kamar' },
+    { ok: kamar.length > 0 && kamar.every((k) => k.foto.length > 0), teks: 'Unggah foto setiap bungalow', href: '/admin/kamar' },
     { ok: Boolean(situs.petaKoordinat), teks: 'Isi titik peta lokasi homestay', href: '/admin/pengaturan#kontak' },
     { ok: Boolean(alamatSitus()), teks: 'Isi SITE_URL di environment variables hPanel', href: '' },
     { ok: surelDiatur(), teks: 'Atur surel untuk pemberitahuan pesanan dan kode ganti kata sandi', href: '' },
@@ -133,7 +133,7 @@ export default async function Ringkasan({ searchParams }: { searchParams: Promis
           ket={angka.masuk ? `${Math.round((angka.dikonfirmasi / angka.masuk) * 100)}% dari pesanan masuk` : 'Belum ada pesanan bulan ini'} />
         <Angka label="Menunggu konfirmasi" nilai={angka.menunggu} ket={angka.menunggu ? 'Cek uang muka lalu konfirmasi' : 'Semua sudah ditanggapi'} baik={!angka.menunggu} href="/admin/pesanan?status=menunggu" />
         <Angka label="Tiba hari ini" nilai={tiba.length} ket={`${pulang.length} pulang, ${tamuMalamIni} tamu menginap malam ini`} />
-        <Angka label="Keterisian 30 hari" nilai={`${okupansi}%`} ket={`${malamTerisi} dari ${unitAktif * 30} malam pondok terisi`} href="/admin/kalender" />
+        <Angka label="Keterisian 30 hari" nilai={`${okupansi}%`} ket={`${malamTerisi} dari ${unitAktif * 30} malam bungalow terisi`} href="/admin/kalender" />
         <Angka label={`Nilai pesanan · ${bulan}`} nilai={<><span className="sm:hidden">{rupiahRingkas(angka.nilai)}</span><span className="max-sm:hidden">{rupiah(angka.nilai)}</span></>} ket={`${rupiah(angka.dibayar)} sudah dibayar`} baik={angka.nilai > 0 && angka.dibayar >= angka.nilai} />
       </div>
 
@@ -193,8 +193,8 @@ export default async function Ringkasan({ searchParams }: { searchParams: Promis
           ) : 'Tamu yang akan datang dalam 30 hari tampil di sini.'}
         </KartuKecil>
 
-        <KartuKecil label="Malam ini" judul={terisiMalamIni ? `${terisiMalamIni} dari ${unitAktif} pondok terisi` : 'Semua pondok kosong'}
-          tombol={<Link href="/admin/kamar" className={tombolGaris}>Buka pondok <Ikon nama="panah" className="size-4" /></Link>}>
+        <KartuKecil label="Malam ini" judul={terisiMalamIni ? `${terisiMalamIni} dari ${unitAktif} bungalow terisi` : 'Semua bungalow kosong'}
+          tombol={<Link href="/admin/kamar" className={tombolGaris}>Buka bungalow <Ikon nama="panah" className="size-4" /></Link>}>
           {menginap.length + luarMalamIni.length ? (
             <ul className="grid gap-2">
               {menginap.slice(0, 3).map((p) => (

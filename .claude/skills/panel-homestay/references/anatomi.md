@@ -48,7 +48,7 @@ kartu **HARI INI** `bg-panel-lembut` berisi satu kalimat utuh, misalnya
 "2 tamu tiba dan 1 pulang hari ini. 1 pesanan menunggu konfirmasi uang
 muka."
 
-Menu Mambetron. Ringkasan, Pesanan, Kalender, Sinkron OTA, Pondok, Kegiatan, Ulasan,
+Menu Mambetron. Ringkasan, Pesanan, Kalender, Sinkron OTA, Bungalow, Kegiatan, Ulasan,
 Situs web (Isi situs, Foto situs), Akun & kata sandi. Homestay lain
 mengganti isi `menu()` sesuai halaman yang ia punya.
 

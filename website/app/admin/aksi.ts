@@ -90,7 +90,7 @@ export async function aturTutup(fd: FormData) {
 
 // Rooms.
 function buatSlug(s: string) {
-  return s.toLowerCase().normalize('NFKD').replace(/[̀-ͯ]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 70) || 'pondok';
+  return s.toLowerCase().normalize('NFKD').replace(/[̀-ͯ]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 70) || 'bungalow';
 }
 
 export async function simpanKamar(fd: FormData) {

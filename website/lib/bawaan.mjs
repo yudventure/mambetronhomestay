@@ -31,8 +31,8 @@ export const PENGATURAN = [
       { k: 'seoJudul', label: 'Judul di Google', jenis: 'dua', bawaan: dua('Mambetron Homestay Raja Ampat, pesan langsung', 'Mambetron Homestay Raja Ampat, book direct') },
       {
         k: 'seoDeskripsi', label: 'Deskripsi di Google', jenis: 'duaPanjang', bawaan: dua(
-          'Homestay keluarga di Raja Ampat. Pondok kayu di tepi laut, makan tiga kali sehari, jemputan dari Waisai, dan karang di depan dermaga. Pesan langsung dari situs resmi.',
-          'A family homestay in Raja Ampat. Wooden huts by the sea, three meals a day, pickup from Waisai and a reef right off the jetty. Book direct on the official site.'),
+          'Homestay keluarga di Raja Ampat. Bungalow kayu di tepi laut, makan tiga kali sehari, jemputan dari Waisai, dan karang di depan dermaga. Pesan langsung dari situs resmi.',
+          'A family homestay in Raja Ampat. Wooden bungalows by the sea, three meals a day, pickup from Waisai and a reef right off the jetty. Book direct on the official site.'),
       },
       { k: 'kakiTeks', label: 'Teks di kaki halaman', jenis: 'duaPanjang', bawaan: dua('Homestay keluarga di Raja Ampat. Dikelola dengan sepenuh hati, untuk laut yang tetap biru.', 'A family homestay in Raja Ampat. Run with heart, for a sea that stays blue.') },
     ],
@@ -78,12 +78,12 @@ export const PENGATURAN = [
         bawaan: [],
       },
       { k: 'heroVideo', label: 'Tautan video', jenis: 'teks', bawaan: '', bantuan: 'Tautan video YouTube atau Instagram, diawali https://. Bila diisi, tombol putar muncul di foto utama. Kosongkan bila belum ada.' },
-      { k: 'kamarJudul', label: 'Judul halaman semua pondok', jenis: 'dua', bawaan: dua('Pilih pondokmu', 'Choose your hut') },
-      { k: 'kamarTeks', label: 'Teks halaman semua pondok', jenis: 'duaPanjang', bawaan: dua('Semua pondok menghadap laut dan sudah termasuk makan tiga kali sehari.', 'Every hut faces the sea and includes three meals a day.') },
+      { k: 'kamarJudul', label: 'Judul halaman semua bungalow', jenis: 'dua', bawaan: dua('Pilih bungalowmu', 'Choose your bungalow') },
+      { k: 'kamarTeks', label: 'Teks halaman semua bungalow', jenis: 'duaPanjang', bawaan: dua('Semua bungalow menghadap laut dan sudah termasuk makan tiga kali sehari.', 'Every bungalow faces the sea and includes three meals a day.') },
       { k: 'ulasanSkor', label: 'Nilai ulasan di samping kartu', jenis: 'teks', bawaan: '8,7', bantuan: 'Nilai dari situs ulasan, misalnya 8,7. Kosongkan bila tidak ingin ditampilkan.' },
       { k: 'ulasanSkala', label: 'Nilai tertinggi di situs ulasan', jenis: 'angka', bawaan: 10, min: 1, max: 100, bantuan: 'Booking.com memakai 10, Google memakai 5.' },
       { k: 'ulasanSumber', label: 'Nama situs ulasan', jenis: 'teks', bawaan: 'Booking.com' },
-      { k: 'ulasanTautan', label: 'Tautan tombol ke situs ulasan', jenis: 'teks', bawaan: 'https://www.booking.com/hotel/id/mambetron-homestay.html', bantuan: 'Tombol Lihat di Booking.com di bawah nilai membuka tautan ini. Bawaannya halaman Mambetron di Booking.com. Bila dikosongkan, tombol membuka halaman semua pondok.' },
+      { k: 'ulasanTautan', label: 'Tautan tombol ke situs ulasan', jenis: 'teks', bawaan: 'https://www.booking.com/hotel/id/mambetron-homestay.html', bantuan: 'Tombol Lihat di Booking.com di bawah nilai membuka tautan ini. Bawaannya halaman Mambetron di Booking.com. Bila dikosongkan, tombol membuka halaman semua bungalow.' },
       {
         k: 'ulasanWajah', label: 'Lingkaran tamu di samping nilai', jenis: 'daftar', tambah: 'Tambah tamu',
         bantuan: 'Tamu yang mengulas di situs ulasan, paling banyak enam. Tiap tamu tampil sebagai lingkaran berisi gambar wajah. Gambar wajah adalah ilustrasi, bukan foto tamu. Nama hanya muncul saat lingkaran disentuh.',
@@ -123,7 +123,7 @@ export const PENGATURAN = [
       },
       { k: 'ajakanLabel', label: 'Label kecil di kotak ajakan', jenis: 'dua', bawaan: dua('Pesan langsung', 'Book direct') },
       { k: 'ajakanJudul', label: 'Judul kotak ajakan', jenis: 'dua', bawaan: dua('Laut sudah menunggu', 'The sea is waiting') },
-      { k: 'ajakanTeks', label: 'Teks kotak ajakan', jenis: 'duaPanjang', bawaan: dua('Cek tanggal kosong dan amankan pondokmu sekarang.', 'Check open dates and secure your hut now.') },
+      { k: 'ajakanTeks', label: 'Teks kotak ajakan', jenis: 'duaPanjang', bawaan: dua('Cek tanggal kosong dan amankan bungalowmu sekarang.', 'Check open dates and secure your bungalow now.') },
       { k: 'layananJudul', label: 'Judul bagian kegiatan', jenis: 'dua', bawaan: dua('Kegiatan dan antar jemput', 'Trips and transfers') },
       { k: 'layananTeks', label: 'Teks bagian kegiatan', jenis: 'duaPanjang', bawaan: dua('Tambahkan saat memesan atau tanyakan langsung ke kami.', 'Add them when you book or just ask us.') },
       { k: 'galeriJudul', label: 'Judul bagian galeri foto', jenis: 'dua', bawaan: dua('Sehari di Mambetron', 'A day at Mambetron') },
@@ -136,7 +136,7 @@ export const PENGATURAN = [
           { k: 'teks', label: 'Teks', jenis: 'duaPanjang' },
         ],
         bawaan: [
-          { judul: dua('Pilih pondok dan tanggal', 'Pick a hut and dates'), teks: dua('Lihat tanggal kosong di kalender lalu isi data tamu.', 'Check open dates on the calendar and fill in guest details.') },
+          { judul: dua('Pilih bungalow dan tanggal', 'Pick a bungalow and dates'), teks: dua('Lihat tanggal kosong di kalender lalu isi data tamu.', 'Check open dates on the calendar and fill in guest details.') },
           { judul: dua('Bayar uang muka', 'Pay the deposit'), teks: dua('Transfer uang muka ke rekening yang tertera di halaman pesanan.', 'Transfer the deposit to the account shown on your booking page.') },
           { judul: dua('Kirim bukti lewat WhatsApp', 'Send the receipt on WhatsApp'), teks: dua('Kami mengonfirmasi pesananmu dan mengatur jemputan di Waisai.', 'We confirm your booking and arrange your pickup in Waisai.') },
         ],
@@ -155,7 +155,7 @@ export const PENGATURAN = [
           { k: 'jawab', label: 'Jawaban', jenis: 'duaPanjang' },
         ],
         bawaan: [
-          { tanya: dua('Apakah harga sudah termasuk makan?', 'Are meals included?'), jawab: dua('Ya. Harga pondok sudah termasuk makan pagi, siang, dan malam, juga air minum, teh, dan kopi.', 'Yes. The rate includes breakfast, lunch and dinner, plus drinking water, tea and coffee.') },
+          { tanya: dua('Apakah harga sudah termasuk makan?', 'Are meals included?'), jawab: dua('Ya. Harga bungalow sudah termasuk makan pagi, siang, dan malam, juga air minum, teh, dan kopi.', 'Yes. The rate includes breakfast, lunch and dinner, plus drinking water, tea and coffee.') },
           { tanya: dua('Bagaimana listrik dan sinyal?', 'What about power and phone signal?'), jawab: dua('Listrik menyala dari sore sampai pagi. Sinyal telepon terbatas, jadi kabari keluarga sebelum menyeberang.', 'Power runs from late afternoon until morning. Phone signal is limited, so let your family know before you cross.') },
           { tanya: dua('Bagaimana cara membayar?', 'How do I pay?'), jawab: dua('Setelah memesan, transfer uang muka ke rekening yang tertera lalu kirim bukti lewat WhatsApp. Sisanya dibayar saat tiba.', 'After booking, transfer the deposit to the account shown and send the receipt on WhatsApp. Pay the rest when you arrive.') },
           { tanya: dua('Bisakah membatalkan pesanan?', 'Can I cancel?'), jawab: dua('Bisa. Aturan pengembalian uang muka ada di halaman ketentuan menginap.', 'Yes. The deposit refund rules are on the house rules page.') },
@@ -189,8 +189,8 @@ export const PENGATURAN = [
       },
       {
         k: 'pesanTerima', label: 'Ucapan setelah tamu memesan', jenis: 'duaPanjang', bawaan: dua(
-          'Terima kasih, pesananmu sudah kami terima. Pondok kami tahan sambil menunggu uang muka.',
-          'Thank you, we have your booking. We are holding the hut for you while we wait for the deposit.'),
+          'Terima kasih, pesananmu sudah kami terima. Bungalow kami tahan sambil menunggu uang muka.',
+          'Thank you, we have your booking. We are holding the bungalow for you while we wait for the deposit.'),
       },
       {
         k: 'ketentuan', label: 'Ketentuan menginap', jenis: 'duaPanjang', bawaan: dua(
@@ -202,7 +202,7 @@ export const PENGATURAN = [
   {
     kunci: 'uang',
     judul: 'Mata uang',
-    keterangan: 'Harga pondok dan kegiatan diisi, ditampilkan, dan dibayar dalam rupiah. Di bawah setiap harga, tamu melihat perkiraannya dalam dolar Amerika, euro, yen, dan yuan.',
+    keterangan: 'Harga bungalow dan kegiatan diisi, ditampilkan, dan dibayar dalam rupiah. Di bawah setiap harga, tamu melihat perkiraannya dalam dolar Amerika, euro, yen, dan yuan.',
     isian: [
       {
         k: 'kursOtomatis', label: 'Perbarui kurs otomatis', jenis: 'saklar', bawaan: true,
@@ -305,6 +305,25 @@ const BAWAAN_LAMA = {
     { ikon: 'hati', teks: dua('Hangat', 'Warm') },
   ]],
 };
+
+// The huts were renamed bungalows in October 2026. A default stored before
+// that still says pondok or hut and takes the current wording.
+const idLama = (t) => t.replace(/Bungalow/g, 'Pondok').replace(/bungalow/g, 'pondok');
+const enLama = (t) => t.replace(/Bungalows/g, 'Huts').replace(/bungalows/g, 'huts').replace(/Bungalow/g, 'Hut').replace(/bungalow/g, 'hut');
+function sebelumBungalow(v) {
+  if (typeof v === 'string') return idLama(v);
+  if (Array.isArray(v)) return v.map(sebelumBungalow);
+  if (v && typeof v === 'object') {
+    const k = Object.keys(v);
+    if (k.length === 2 && 'id' in v && 'en' in v) return { id: idLama(v.id), en: enLama(v.en) };
+    return Object.fromEntries(Object.entries(v).map(([a, b]) => [a, sebelumBungalow(b)]));
+  }
+  return v;
+}
+for (const f of PENGATURAN.flatMap((g) => g.isian)) {
+  const lama = sebelumBungalow(f.bawaan);
+  if (JSON.stringify(lama) !== JSON.stringify(f.bawaan)) (BAWAAN_LAMA[f.k] ??= []).push(lama);
+}
 const sama = (a, b) => JSON.stringify(a) === JSON.stringify(b);
 
 export function gabungSitus(simpanan) {
@@ -321,7 +340,7 @@ export function gabungSitus(simpanan) {
 // Rooms, extras and settings put in an empty database the first time.
 export const KAMAR_AWAL = [
   {
-    slug: 'pondok-tepi-pantai', nama: 'Pondok Tepi Pantai', nama_en: 'Beachfront Hut',
+    slug: 'bungalow-tepi-pantai', nama: 'Bungalow Tepi Pantai', nama_en: 'Beachfront Bungalow',
     ringkas: 'Tujuh bungalow di tepi pantai Pulau Kri, masing-masing untuk dua orang, dengan kamar mandi dalam dan beranda menghadap laut.',
     ringkas_en: 'Seven beachfront bungalows on Kri Island, each sleeping two, with a private bathroom and a sea-facing veranda.',
     deskripsi: 'Tujuh bungalow di tepi pantai sisi barat Pulau Kri, dekat dermaga Yenkoranu, dengan karang penuh ikan tepat di depan beranda. Kri adalah pulau kecil di tengah titik selam paling terkenal di Raja Ampat, sekitar satu jam naik perahu dari Waisai.\n\n## Bungalow\nKetujuh bungalow berdiri langsung di pantai, masing-masing untuk dua orang, dengan kamar mandi dalam dan beranda menghadap laut. Saat air pasang, laut bisa sampai dekat bungalow. Bungalownya sederhana, tanpa AC dan air panas, dibuat untuk tamu yang mencari kehidupan pulau, bukan resor. Tamu bilang bungalownya lapang dan bersih.\n\n## Makan, listrik, dan internet\nMakan tiga kali sehari dimasak di dapur keluarga, biasanya ikan segar, nasi, tempe, sayur, dan sambal. Tamu bilang masakannya enak dan segar, walau menunya sederhana dan sering berulang. Listrik dari genset pada sore dan malam hari. Internet terbatas, jadi bersiaplah lebih sering luring.\n\n## Kegiatan\n**Snorkeling langsung dari depan bungalow**, di karang yang membentang dari dermaga Yenkoranu sampai depan Mambetron. Tamu menyebutnya salah satu karang tepi pantai terbaik di Raja Ampat. Cape Kri dan Sardine Reef, dua titik selam terkenal, ada di dekatnya, dan penyelaman bisa diatur dengan dive center di Kri. Perjalanan perahu ke tempat sekitar, seperti melihat cenderawasih atau ke Kali Biru, juga bisa diatur. Sepakati harganya sebelum berangkat.\n\n## Cara ke sini\nKri hanya bisa dicapai dengan perahu, sekitar satu jam dari Waisai. Tanyakan jemputan perahu saat memesan, dan kabari jadwal kapal cepatmu dari Sorong supaya perahu bisa disiapkan.\n\n## Perlu diketahui\nTuan rumahmu keluarga setempat, dan tamu menyebut mereka ramah dan suka membantu. Bawa uang tunai secukupnya karena tidak ada ATM di pulau. Mohon bawa kembali sampah plastik ke Waisai.',
@@ -331,6 +350,9 @@ export const KAMAR_AWAL = [
     harga: 550000, harga_anak: null, skema_harga: 'orang', kapasitas: 2, jumlah_unit: 7, min_malam: 1, urutan: 1,
   },
 ];
+
+// Names of the first release of KAMAR_AWAL, renamed once to bungalow (lib/db.ts).
+export const KAMAR_NAMA_LAMA = { nama: ['Pondok Tepi Pantai', 'Bungalow Tepi Pantai'], nama_en: ['Beachfront Hut', 'Beachfront Bungalow'] };
 
 // Room texts of the first release of KAMAR_AWAL. A room whose text still
 // equals these takes the current text once (lib/db.ts), so the description

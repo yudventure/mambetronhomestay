@@ -1,6 +1,6 @@
 # Situs pemesanan Mambetron Homestay
 
-Situs ini dibuat dengan Next.js 16.2, Tailwind CSS 4, dan database MySQL. Isinya halaman utama, daftar pondok, pemesanan dengan kalender tanggal kosong, halaman pesanan untuk tamu, dan panel pengelola di `/admin`. Bahasa Indonesia dan Inggris.
+Situs ini dibuat dengan Next.js 16.2, Tailwind CSS 4, dan database MySQL. Isinya halaman utama, daftar bungalow, pemesanan dengan kalender tanggal kosong, halaman pesanan untuk tamu, dan panel pengelola di `/admin`. Bahasa Indonesia dan Inggris.
 
 Situs tetap bisa dibangun dan dibuka walau environment variables masih kosong. Tanpa database, situs tampil dengan isi bawaan dan tombol kirim pesanan belum aktif. Setelah database diisi, tabel dan isi awal dibuat sendiri pada kunjungan pertama.
 
@@ -33,7 +33,7 @@ Langkahnya sebagai berikut. Nama menu di hPanel bisa sedikit berbeda karena Host
 3. Isi pengaturan build seperti tabel di bawah.
 4. Isi environment variables. Salin daftar dari `.env.example`, lalu isi nilainya. Minimal isi `DB_NAME`, `DB_USER`, `DB_PASSWORD`, dan `ADMIN_PASSWORD`.
 5. Jalankan deploy. Setelah selesai, buka `https://domainmu/api/sehat`. Bila tertulis `"database":"terhubung"` dan `"panelPengelola":"siap"`, situs sudah siap.
-6. Buka `https://domainmu/admin`, masuk dengan `ADMIN_PASSWORD`, lalu ikuti daftar di dasbor. Isi nomor WhatsApp, rekening, foto pondok, dan periksa semua teks bawaan.
+6. Buka `https://domainmu/admin`, masuk dengan `ADMIN_PASSWORD`, lalu ikuti daftar di dasbor. Isi nomor WhatsApp, rekening, foto bungalow, dan periksa semua teks bawaan.
 
 | Isian di hPanel | Nilai |
 | --- | --- |
@@ -109,25 +109,27 @@ Perintah lain yang tersedia sebagai berikut.
 
 ## Cara kerja pemesanan
 
-Setiap jenis pondok punya jumlah unit. Mambetron punya satu jenis, Pondok Tepi Pantai, dengan tujuh unit yang sama tipe dan ukurannya dan semuanya menghadap pantai. Satu malam penuh bila unit yang terpesan di situs ini, unit yang terisi dari OTA lewat sinkron kalender, dan tanggal tutup sudah sama dengan jumlah unit. Pesanan berstatus apa pun kecuali Dibatalkan ikut menahan pondok. Saat tamu mengirim pesanan, baris pondok dikunci di database selama pemeriksaan, jadi dua tamu tidak bisa mendapat unit terakhir di malam yang sama.
+Setiap jenis bungalow punya jumlah unit. Mambetron punya satu jenis, Bungalow Tepi Pantai (Beachfront Bungalow), dengan tujuh unit yang sama tipe dan ukurannya dan semuanya menghadap pantai. Satu malam penuh bila unit yang terpesan di situs ini, unit yang terisi dari OTA lewat sinkron kalender, dan tanggal tutup sudah sama dengan jumlah unit. Pesanan berstatus apa pun kecuali Dibatalkan ikut menahan bungalow. Saat tamu mengirim pesanan, baris bungalow dikunci di database selama pemeriksaan, jadi dua tamu tidak bisa mendapat unit terakhir di malam yang sama.
 
-Harga dihitung per orang per malam atau per pondok per malam, sesuai pilihan di panel. Anak di bawah 12 tahun bisa diberi harga sendiri. Uang muka dihitung dari persen di menu Isi situs dan dibulatkan ke atas per seribu rupiah.
+Harga dihitung per orang per malam atau per bungalow per malam, sesuai pilihan di panel. Anak di bawah 12 tahun bisa diberi harga sendiri. Uang muka dihitung dari persen di menu Isi situs dan dibulatkan ke atas per seribu rupiah.
 
 Tamu mendapat halaman pesanan dengan tautan rahasia. Dari sana tamu melihat rekening, menyalin nomor, dan mengirim bukti transfer lewat WhatsApp. Pengelola menandai uang muka diterima, lunas, atau selesai dari panel.
 
 Foto disimpan di database supaya tidak hilang saat deploy ulang. Foto diperkecil di peramban menjadi paling lebar 1800 piksel sebelum diunggah.
 
-Halaman utama punya lima tempat foto di menu Foto situs. Foto utama tampil penuh di belakang judul besar di komputer dan tablet, foto utama untuk ponsel menggantikannya di layar di bawah 768 piksel, foto kartu keunggulan mengisi kartu foto di bawah foto utama sesuai urutannya, foto tentang kami tampil di samping kotak rencana menginap, dan foto ajakan tampil di kotak berwarna laut. Selama belum ada foto unggahan, foto utama memakai foto mendatar pondok di tepi pantai (`public/foto/pondok-tepi-air.jpg`) dan ponsel memakai foto tegak dermaga pondok (`public/foto/dermaga-pondok.jpg`). Bila foto bawaan ini diganti, beri nama berkas baru. CDN Hostinger dan peramban bisa terus menampilkan foto lama selama namanya sama. Bila hanya foto utama yang diunggah, ponsel ikut memakainya. Foto tentang kami dan foto ajakan memakai ilustrasi siang dan pagi di Raja Ampat yang dibuat oleh `scripts/desain/situs.mjs`, dan kartu keunggulan tanpa foto memakai ilustrasi laut `public/merek/kamar-1.svg` sampai `kamar-3.svg`.
+Halaman utama punya lima tempat foto di menu Foto situs. Foto utama tampil penuh di belakang judul besar di komputer dan tablet, foto utama untuk ponsel menggantikannya di layar di bawah 768 piksel, foto kartu keunggulan mengisi kartu foto di bawah foto utama sesuai urutannya, foto tentang kami tampil di samping kotak rencana menginap, dan foto ajakan tampil di kotak berwarna laut. Selama belum ada foto unggahan, foto utama memakai foto mendatar bungalow di tepi pantai (`public/foto/pondok-tepi-air.jpg`) dan ponsel memakai foto tegak dermaga bungalow (`public/foto/dermaga-pondok.jpg`). Bila foto bawaan ini diganti, beri nama berkas baru. CDN Hostinger dan peramban bisa terus menampilkan foto lama selama namanya sama. Bila hanya foto utama yang diunggah, ponsel ikut memakainya. Foto tentang kami dan foto ajakan memakai ilustrasi siang dan pagi di Raja Ampat yang dibuat oleh `scripts/desain/situs.mjs`, dan kartu keunggulan tanpa foto memakai ilustrasi laut `public/merek/kamar-1.svg` sampai `kamar-3.svg`.
 
 Kartu keunggulan adalah kartu foto polos, tanpa judul, teks, atau nomor, dan tidak bisa diklik. Satu foto di Foto situs, bagian Foto kartu keunggulan, menjadi satu kartu, urutannya mengikuti urutan foto. Keterangan foto dipakai sebagai teks pengganti untuk pembaca layar. Kartu menumpang sedikit di bagian bawah foto utama. Di samping kartu tampil nilai ulasan dari Booking.com (bawaannya 8,7 dari 10), gambar wajah para tamu yang mengulas (ilustrasi, bukan foto tamu, dipilih per tamu dari sepuluh gambar di Isi situs), dan tombol Lihat di Booking.com. Tombol itu membuka halaman Mambetron di Booking.com (`https://www.booking.com/hotel/id/mambetron-homestay.html`), tanpa kode pelacak sehingga Booking.com memilih bahasa sesuai peramban pengunjung. Nilai, nama situs ulasan, tautan tombol, dan daftar tamunya diubah di bagian yang sama.
 
-## Pondok bawaan
+## Bungalow bawaan
 
-Database baru langsung berisi Pondok Tepi Pantai dengan tujuh unit. Harga bawaannya Rp 550.000 per orang per malam untuk dua orang, ganti di menu Pondok sesuai harga sebenarnya, begitu juga foto dan teksnya.
+Database baru langsung berisi Bungalow Tepi Pantai dengan tujuh unit. Harga bawaannya Rp 550.000 per orang per malam untuk dua orang, ganti di menu Bungalow sesuai harga sebenarnya, begitu juga foto dan teksnya.
 
-Database yang masih berisi tiga pondok contoh dari versi lama (Pondok Laguna, Pondok Senja, Pondok Keluarga) dipindah sekali secara otomatis saat situs pertama terhubung. Pondok Laguna menjadi Pondok Tepi Pantai lengkap dengan foto dan pesanannya, dua contoh lainnya dihapus. Pemindahan ini dilewati bila contoh itu sudah diganti namanya, ditambah pondok lain, atau Pondok Senja dan Pondok Keluarga sudah punya pesanan atau foto. Dalam keadaan itu ubah pondoknya sendiri di menu Pondok.
+Database yang masih berisi tiga bungalow contoh dari versi lama (Pondok Laguna, Pondok Senja, Pondok Keluarga) dipindah sekali secara otomatis saat situs pertama terhubung. Pondok Laguna menjadi Bungalow Tepi Pantai lengkap dengan foto dan pesanannya, dua contoh lainnya dihapus. Pemindahan ini dilewati bila contoh itu sudah diganti namanya, ditambah bungalow lain, atau Pondok Senja dan Pondok Keluarga sudah punya pesanan atau foto. Dalam keadaan itu ubah bungalownya sendiri di menu Bungalow.
 
-Teks pondok, bagian tentang kami, dan empat keunggulan di halaman utama mengikuti deskripsi Mambetron di DAMPIER (tujuh bungalow di sisi barat Pulau Kri dekat dermaga Yenkoranu, makan dari dapur keluarga, listrik genset sore dan malam, internet terbatas, jemputan perahu dari Waisai). Teks yang masih sama dengan teks bawaan versi sebelumnya diganti sekali secara otomatis, teks yang sudah diubah di panel tidak disentuh. Di deskripsi pondok, baris yang diawali `## ` menjadi subjudul dan kata yang diapit `**` dicetak tebal.
+Teks bungalow, bagian tentang kami, dan empat keunggulan di halaman utama mengikuti deskripsi Mambetron di DAMPIER (tujuh bungalow di sisi barat Pulau Kri dekat dermaga Yenkoranu, makan dari dapur keluarga, listrik genset sore dan malam, internet terbatas, jemputan perahu dari Waisai). Teks yang masih sama dengan teks bawaan versi sebelumnya diganti sekali secara otomatis, teks yang sudah diubah di panel tidak disentuh. Di deskripsi bungalow, baris yang diawali `## ` menjadi subjudul dan kata yang diapit `**` dicetak tebal.
+
+Sebutan pondok dan hut di situs, panel, dan surel diganti bungalow, mengikuti DAMPIER. Nama bungalow bawaan yang belum diubah (Pondok Tepi Pantai, Beachfront Hut) ikut berganti sekali secara otomatis, alamat halamannya tidak berubah supaya tautan lama tetap bekerja. Teks pengaturan bawaan yang masih memakai kata lama juga berganti, teks yang ditulis sendiri di panel tidak disentuh.
 
 ## Sinkron kalender dengan OTA dan agen perjalanan
 
@@ -143,7 +145,7 @@ Tautan yang gagal dibaca (situs tidak menjawab, tautan sudah diganti, atau isiny
 
 Hal yang perlu diketahui tentang tiap situs, sesuai keadaan Oktober 2026.
 
-- Booking.com hanya menyinkronkan tipe kamar yang berisi satu unit. Bila tujuh pondok dijual sebagai satu tipe berisi tujuh, iklannya perlu dipecah menjadi tujuh tipe satu unit, atau pakai channel manager. Tanyakan ke Booking.com dulu.
+- Booking.com hanya menyinkronkan tipe kamar yang berisi satu unit. Bila tujuh bungalow dijual sebagai satu tipe berisi tujuh, iklannya perlu dipecah menjadi tujuh tipe satu unit, atau pakai channel manager. Tanyakan ke Booking.com dulu.
 - Airbnb menyinkronkan per iklan, satu iklan untuk satu unit.
 - Agoda Homes punya impor dan ekspor iCal. Untuk Agoda YCS tanyakan ke Agoda.
 - Traveloka dan Tiket.com tidak memakai iCal. Tanggalnya ditutup manual di sana atau lewat channel manager.
@@ -152,15 +154,15 @@ Tabelnya `kalender_sambungan` (tautan per unit) dan `kalender_luar` (malam yang 
 
 ## Tanggal yang dibawa dan foto besar
 
-Kotak rencana menginap di halaman utama mewajibkan tanggal tiba dan pulang, dan tanggal pulang otomatis terisi sehari setelah tanggal tiba. Tanggal yang dipilih di halaman utama, di kalender halaman pondok, atau di formulir pesan disimpan di peramban pengunjung itu saja (selama 14 hari), jadi halaman berikutnya sudah membuka tanggal yang sama tanpa perlu memilih ulang. Bila malam yang dipilih ternyata sudah penuh, formulir pesan memberi tahu dan meminta tanggal lain.
+Kotak rencana menginap di halaman utama mewajibkan tanggal tiba dan pulang, dan tanggal pulang otomatis terisi sehari setelah tanggal tiba. Tanggal yang dipilih di halaman utama, di kalender halaman bungalow, atau di formulir pesan disimpan di peramban pengunjung itu saja (selama 14 hari), jadi halaman berikutnya sudah membuka tanggal yang sama tanpa perlu memilih ulang. Bila malam yang dipilih ternyata sudah penuh, formulir pesan memberi tahu dan meminta tanggal lain.
 
-Foto pondok dan foto galeri di halaman utama bisa diketuk untuk dibuka layar penuh. Tombol Ukuran asli menampilkan foto dengan ukuran sebenarnya untuk digeser, panah atau usapan pindah ke foto lain, Esc atau ketukan di samping foto menutupnya. Kartu foto di bawah foto utama tetap tidak bisa diklik.
+Foto bungalow dan foto galeri di halaman utama bisa diketuk untuk dibuka layar penuh. Tombol Ukuran asli menampilkan foto dengan ukuran sebenarnya untuk digeser, panah atau usapan pindah ke foto lain, Esc atau ketukan di samping foto menutupnya. Kartu foto di bawah foto utama tetap tidak bisa diklik.
 
 ## Bahasa dan mata uang
 
 Tombol berikon bola dunia di kepala halaman membuka pilihan bahasa, Indonesia atau Inggris. Pilihan disimpan di kuki peramban pengunjung. Kaki halaman tidak punya tombol bahasa lagi.
 
-Harga selalu diisi, ditampilkan, dan dibayar dalam rupiah. Di bawah harga pondok, harga kegiatan, total di formulir pesan, serta total dan uang muka di halaman pesanan ada satu baris kecil berisi perkiraannya dalam dolar Amerika, euro, yen, dan yuan.
+Harga selalu diisi, ditampilkan, dan dibayar dalam rupiah. Di bawah harga bungalow, harga kegiatan, total di formulir pesan, serta total dan uang muka di halaman pesanan ada satu baris kecil berisi perkiraannya dalam dolar Amerika, euro, yen, dan yuan.
 
 Kurs diambil dari kurs acuan Bank Sentral Eropa lewat Frankfurter (`api.frankfurter.app`, tanpa kunci API) dan disimpan 12 jam. Bila server tidak bisa mengambilnya, situs memakai kurs yang diisi di Isi situs, bagian Mata uang, lalu mencoba lagi setelah 30 menit. Kurs otomatis bisa dimatikan di bagian yang sama. Alamat sumber kurs bisa diganti lewat environment variable `KURS_URL` bila perlu.
 
@@ -204,6 +206,6 @@ Statistik pengunjung dihitung situs sendiri di tabel `kunjungan`, tanpa layanan 
 
 ## Yang bisa diubah dari panel
 
-Semua yang tampil di situs bisa diubah dari panel, yaitu teks setiap bagian halaman utama, pondok beserta harga dan fotonya, kegiatan tambahan, ulasan, foto situs, kontak, titik peta, rekening, uang muka, jam check-in dan check-out, serta ketentuan menginap.
+Semua yang tampil di situs bisa diubah dari panel, yaitu teks setiap bagian halaman utama, bungalow beserta harga dan fotonya, kegiatan tambahan, ulasan, foto situs, kontak, titik peta, rekening, uang muka, jam check-in dan check-out, serta ketentuan menginap.
 
 Pengecualiannya teks tombol dan label formulir, misalnya Pesan sekarang, Rencanakan liburanmu, atau Nomor WhatsApp. Teks itu ada di `lib/kamus.ts` dan perlu diubah lewat kode. Hiasan merek seperti wajah Mambe di kotak rencana menginap dan gambar hammock samar di kotak ajakan juga tetap.

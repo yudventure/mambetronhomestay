@@ -18,10 +18,10 @@ const PESAN = {
   ok: 'Perubahan tersimpan.',
   'ok:baru': 'Pesanan baru sudah dicatat.',
   'ok:jadwal': 'Jadwal sudah diubah dan harga dihitung ulang dengan tarif sekarang.',
-  'galat:penuh': 'Tanggal itu sudah penuh untuk pondok ini, jadi perubahan tidak disimpan.',
+  'galat:penuh': 'Tanggal itu sudah penuh untuk bungalow ini, jadi perubahan tidak disimpan.',
   'galat:tanggal': 'Tanggal tiba dan pulang belum benar.',
-  'galat:kamar': 'Pondok tidak ditemukan.',
-  'galat:jumlah': 'Jumlah pondok melebihi unit yang ada.',
+  'galat:kamar': 'Bungalow tidak ditemukan.',
+  'galat:jumlah': 'Jumlah bungalow melebihi unit yang ada.',
   'galat:yakin': 'Ketik HAPUS dengan huruf besar untuk menghapus pesanan.',
 };
 
@@ -71,7 +71,7 @@ export default async function RincianPesanan({ params, searchParams }: {
               <Data label="Asal">{p.negara || 'Tidak diisi'}</Data>
               <Data label="Tiba">{tanggal(p.check_in, 'id', 'panjang')}</Data>
               <Data label="Pulang">{tanggal(p.check_out, 'id', 'panjang')}</Data>
-              <Data label="Pondok">{p.kamar_nama}, {p.jumlah_kamar} pondok, {p.malam} malam</Data>
+              <Data label="Bungalow">{p.kamar_nama}, {p.jumlah_kamar} bungalow, {p.malam} malam</Data>
               <Data label="Tamu">{KAMUS.id.hasil.tamu(p.dewasa, p.anak)}</Data>
               <Data label="Rencana tiba">{p.kedatangan || 'Tidak diisi'}</Data>
               <Data label="Bahasa tamu">{p.bahasa === 'en' ? 'Inggris' : 'Indonesia'}</Data>
@@ -111,19 +111,19 @@ export default async function RincianPesanan({ params, searchParams }: {
           </section>
 
           <section className="kartu p-5 sm:p-6">
-            <h2 className="text-2xl">Ubah jadwal atau pondok</h2>
-            <p className="mt-1 text-sm text-abu">Ketersediaan diperiksa lagi dan harga dihitung ulang dengan tarif pondok sekarang.</p>
+            <h2 className="text-2xl">Ubah jadwal atau bungalow</h2>
+            <p className="mt-1 text-sm text-abu">Ketersediaan diperiksa lagi dan harga dihitung ulang dengan tarif bungalow sekarang.</p>
             <form key={`${p.kamar_id}|${p.check_in}|${p.check_out}|${p.jumlah_kamar}|${p.dewasa}|${p.anak}`} action={ubahJadwal} className="mt-4 grid gap-4 sm:grid-cols-2">
               <input type="hidden" name="id" value={p.id} />
               <div className="sm:col-span-2">
-                <label className="label-isian" htmlFor="kamar_id">Pondok</label>
+                <label className="label-isian" htmlFor="kamar_id">Bungalow</label>
                 <select id="kamar_id" name="kamar_id" defaultValue={p.kamar_id} className="isian">
                   {kamar.map((k) => <option key={k.id} value={k.id}>{k.nama}{k.aktif ? '' : ' (nonaktif)'}</option>)}
                 </select>
               </div>
               <div><label className="label-isian" htmlFor="masuk">Tiba</label><input id="masuk" name="masuk" type="date" defaultValue={p.check_in} required className="isian" /></div>
               <div><label className="label-isian" htmlFor="keluar">Pulang</label><input id="keluar" name="keluar" type="date" defaultValue={p.check_out} required className="isian" /></div>
-              <div><label className="label-isian" htmlFor="jumlah_kamar">Jumlah pondok</label><input id="jumlah_kamar" name="jumlah_kamar" type="number" min={1} defaultValue={p.jumlah_kamar} className="isian" /></div>
+              <div><label className="label-isian" htmlFor="jumlah_kamar">Jumlah bungalow</label><input id="jumlah_kamar" name="jumlah_kamar" type="number" min={1} defaultValue={p.jumlah_kamar} className="isian" /></div>
               <div className="grid grid-cols-2 gap-3">
                 <div><label className="label-isian" htmlFor="dewasa">Dewasa</label><input id="dewasa" name="dewasa" type="number" min={1} defaultValue={p.dewasa} className="isian" /></div>
                 <div><label className="label-isian" htmlFor="anak">Anak</label><input id="anak" name="anak" type="number" min={0} defaultValue={p.anak} className="isian" /></div>
@@ -151,7 +151,7 @@ export default async function RincianPesanan({ params, searchParams }: {
               )}
               {p.status !== 'batal' && (
                 <form action={tandaiPesanan}><input type="hidden" name="id" value={p.id} /><input type="hidden" name="apa" value="batal" />
-                  <TombolYakin tanya="Batalkan pesanan ini? Pondok akan terbuka lagi untuk tamu lain." className="tombol tombol-merah w-full">Batalkan pesanan</TombolYakin></form>
+                  <TombolYakin tanya="Batalkan pesanan ini? Bungalow akan terbuka lagi untuk tamu lain." className="tombol tombol-merah w-full">Batalkan pesanan</TombolYakin></form>
               )}
             </div>
           </section>

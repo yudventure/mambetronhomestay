@@ -6,10 +6,10 @@ export default function PilihPondok({ kamar, nilai, bulan }: { kamar: { id: numb
   const router = useRouter();
   return (
     <label className="relative">
-      <span className="sr-only">Pondok</span>
+      <span className="sr-only">Bungalow</span>
       <select value={nilai} onChange={(e) => router.push(`/admin/kalender?bulan=${bulan}${e.target.value ? `&pondok=${e.target.value}` : ''}`)}
         className="isian !h-11 !min-h-0 !w-auto !rounded-full !py-0 font-semibold text-panel-utama">
-        <option value="">Semua pondok</option>
+        <option value="">Semua bungalow</option>
         {kamar.map((k) => <option key={k.id} value={k.id}>{k.nama}</option>)}
       </select>
     </label>

@@ -259,8 +259,8 @@ export async function feedSambungan(token: string) {
   const host = (alamatSitus().replace(/^https?:\/\//, '') || 'mambetronhomestay.com').replace(/\/.*/, '');
   const namaSitus = host.split('.')[0];
   return buatIcal({
-    nama: `${kamar?.nama ?? 'Pondok'} unit ${s.unit} untuk ${s.nama}`,
-    prodid: `-//${namaSitus}//Kalender pondok//ID`,
+    nama: `${kamar?.nama ?? 'Bungalow'} unit ${s.unit} untuk ${s.nama}`,
+    prodid: `-//${namaSitus}//Kalender bungalow//ID`,
     acara: rangkai(malam).map((r) => ({ uid: `${s.id}-${r.mulai}@${host}`, mulai: r.mulai, selesai: r.selesai, ringkas: 'Tidak tersedia' })),
   });
 }
