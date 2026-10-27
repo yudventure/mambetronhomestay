@@ -17,8 +17,9 @@ export default function Pahlawan({ b, s, foto, fotoHp }: { b: Bahasa; s: Situs; 
     <section className="px-3 pt-2 sm:px-4 sm:pt-3">
       <div className="bingkai relative isolate overflow-hidden bg-laut-3">
         <LatarPahlawan foto={foto} fotoHp={fotoHp} />
-        <div aria-hidden className="absolute inset-0 -z-10 bg-gradient-to-b from-black/10 via-black/0 via-25% to-black/20" />
-        <div aria-hidden className="absolute inset-0 -z-10 bg-black/30 lg:bg-transparent lg:bg-gradient-to-r lg:from-black/70 lg:via-black/35 lg:via-35% lg:to-transparent lg:to-60%" />
+        {/* dark behind the text on the left, the right of the photo left bright */}
+        <div aria-hidden className="absolute inset-0 -z-10 bg-gradient-to-r from-black/65 via-black/45 via-45% to-black/10 lg:from-black/85 lg:via-black/65 lg:via-35% lg:to-transparent lg:to-65%" />
+        {kata.length > 0 && <div aria-hidden className="absolute inset-0 -z-10 bg-gradient-to-t from-black/35 to-transparent to-30%" />}
 
         <div className="mx-auto flex min-h-[34rem] max-w-6xl flex-col px-5 pt-14 pb-24 sm:min-h-[40rem] sm:px-8 sm:pt-20 sm:pb-36 lg:min-h-[42.5rem]">
           {dwi(s.heroLabel, b) && <p className="label-kecil !text-sorot">{dwi(s.heroLabel, b)}</p>}

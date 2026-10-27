@@ -51,7 +51,7 @@ export default async function Beranda() {
   // it off the outer sides of the first and last card.
   const fotoKartu = foto.unggulan.length ? foto.unggulan : [undefined, undefined, undefined];
   const kartuUnggulan = fotoKartu.map((f, i) => (
-    <div key={f?.id ?? i} className={`overflow-hidden rounded-[1.6rem] border-[5px] border-white bg-buih shadow-lembut ${fotoKartu.length === 1 ? 'aspect-[2/1]' : 'aspect-[4/3.3]'}`}>
+    <div key={f?.id ?? i} className={`overflow-hidden rounded-[1.6rem] border-[5px] border-white bg-buih ${fotoKartu.length === 1 ? 'aspect-[2/1]' : 'aspect-[4/3.3]'}`}>
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img src={f?.url ?? gambarCadangan(i)} alt={f?.keterangan ?? ''} loading="lazy" width={f?.lebar || 1200} height={f?.tinggi || 800}
         className="size-full object-cover" />
