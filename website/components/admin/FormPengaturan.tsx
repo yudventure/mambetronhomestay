@@ -2,6 +2,7 @@
 // Settings form built from one section of PENGATURAN in lib/bawaan.mjs.
 import { useActionState, useState } from 'react';
 import Ikon from '../Ikon';
+import Wajah, { WAJAH } from '../Wajah';
 import { simpanPengaturan } from '@/app/admin/aksi';
 import { IKON_LABEL } from '@/lib/bawaan.mjs';
 
@@ -71,6 +72,25 @@ function Kolom({ f, nilai, ubah, awalan }: { f: Isian; nilai: unknown; ubah: (v:
               </button>
             ))}
           </div>
+        </fieldset>
+      );
+    case 'wajah':
+      return (
+        <fieldset>
+          <legend className="label-isian">{f.label}</legend>
+          <div className="flex flex-wrap gap-2">
+            <button type="button" onClick={() => ubah('')} aria-pressed={!nilai}
+              className={`inline-flex h-12 items-center rounded-full px-4 text-sm font-semibold ${!nilai ? 'bg-biru-tua text-white' : 'bg-white text-laut ring-1 ring-buih-2 hover:bg-buih'}`}>
+              Otomatis
+            </button>
+            {Object.entries(WAJAH).map(([n, w]) => (
+              <button key={n} type="button" onClick={() => ubah(n)} title={w.label} aria-pressed={nilai === n}
+                className={`inline-flex size-12 items-center justify-center rounded-full ${nilai === n ? 'ring-[3px] ring-biru-tua ring-offset-2' : 'ring-1 ring-buih-2 hover:ring-biru-tua/50'}`}>
+                <Wajah kunci={n} className="size-full rounded-full" /><span className="sr-only">{w.label}</span>
+              </button>
+            ))}
+          </div>
+          {f.bantuan && <p className="bantuan">{f.bantuan}</p>}
         </fieldset>
       );
     case 'saklar': {

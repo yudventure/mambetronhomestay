@@ -127,7 +127,7 @@ export type Situs = {
   ulasanSkala: number;
   ulasanSumber: string;
   ulasanTautan: string;
-  ulasanWajah: { nama: string; huruf: string }[];
+  ulasanWajah: { nama: string; wajah: string }[];
   tentangJudul: Dua;
   tentangTeks: Dua;
   galeriJudul: Dua;

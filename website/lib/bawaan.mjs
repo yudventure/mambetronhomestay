@@ -86,18 +86,18 @@ export const PENGATURAN = [
       { k: 'ulasanTautan', label: 'Tautan tombol ke situs ulasan', jenis: 'teks', bawaan: 'https://www.booking.com/hotel/id/mambetron-homestay.html', bantuan: 'Tombol Lihat di Booking.com di bawah nilai membuka tautan ini. Bawaannya halaman Mambetron di Booking.com. Bila dikosongkan, tombol membuka halaman semua pondok.' },
       {
         k: 'ulasanWajah', label: 'Lingkaran tamu di samping nilai', jenis: 'daftar', tambah: 'Tambah tamu',
-        bantuan: 'Tamu yang mengulas di situs ulasan. Tiap tamu tampil sebagai lingkaran berisi satu huruf, paling banyak enam.',
+        bantuan: 'Tamu yang mengulas di situs ulasan, paling banyak enam. Tiap tamu tampil sebagai lingkaran berisi gambar wajah. Gambar wajah adalah ilustrasi, bukan foto tamu. Nama hanya muncul saat lingkaran disentuh.',
         isian: [
           { k: 'nama', label: 'Nama', jenis: 'teks' },
-          { k: 'huruf', label: 'Huruf di lingkaran', jenis: 'teks', bantuan: 'Kosongkan untuk memakai huruf pertama nama.' },
+          { k: 'wajah', label: 'Gambar wajah', jenis: 'wajah', bantuan: 'Tanpa pilihan, wajah dipilih otomatis supaya tidak ada yang kembar berdampingan.' },
         ],
         bawaan: [
-          { nama: 'Adam', huruf: 'A' },
-          { nama: 'Rijnders', huruf: 'L' },
-          { nama: 'Linda', huruf: 'L' },
-          { nama: 'Justyna', huruf: 'J' },
-          { nama: 'Jeroen', huruf: 'J' },
-          { nama: 'Christopher', huruf: 'C' },
+          { nama: 'Adam', wajah: 'a' },
+          { nama: 'Rijnders', wajah: 'f' },
+          { nama: 'Linda', wajah: 'b' },
+          { nama: 'Justyna', wajah: 'c' },
+          { nama: 'Jeroen', wajah: 'd' },
+          { nama: 'Christopher', wajah: 'h' },
         ],
       },
       { k: 'tentangJudul', label: 'Judul bagian tentang kami', jenis: 'dua', bantuan: 'Tampil di samping kotak rencana menginap.', bawaan: dua('Rumah kecil di ujung dermaga', 'A little home at the end of the jetty') },
@@ -246,7 +246,7 @@ const duaV = (v, b) => (v && typeof v === 'object' ? { id: teks(v.id), en: teks(
 // Clean one value against its field, falling back to the default.
 export function rapikan(f, v) {
   switch (f.jenis) {
-    case 'teks': case 'panjang': case 'jam': case 'ikon':
+    case 'teks': case 'panjang': case 'jam': case 'ikon': case 'wajah':
       return v === undefined ? structuredClone(f.bawaan ?? '') : teks(v);
     case 'dua': case 'duaPanjang':
       return v === undefined ? duaV(f.bawaan) : duaV(v);
@@ -270,6 +270,10 @@ export function rapikan(f, v) {
 // field, so an untouched default stays in the database. A stored value that
 // still equals an old default is treated as unset and takes the current one.
 const BAWAAN_LAMA = {
+  ulasanWajah: [[
+    { nama: 'Adam', huruf: 'A' }, { nama: 'Rijnders', huruf: 'L' }, { nama: 'Linda', huruf: 'L' },
+    { nama: 'Justyna', huruf: 'J' }, { nama: 'Jeroen', huruf: 'J' }, { nama: 'Christopher', huruf: 'C' },
+  ]],
   ulasanTautan: ['', 'https://www.booking.com/searchresults.html?ss=Mambetron+Homestay'],
   whatsapp: [''],
   email: [''],

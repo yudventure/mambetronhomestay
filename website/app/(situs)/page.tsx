@@ -3,6 +3,7 @@ import Bagian, { JudulBagian } from '@/components/Bagian';
 import CariCepat from '@/components/CariCepat';
 import GeserPondok from '@/components/GeserPondok';
 import Ikon from '@/components/Ikon';
+import Wajah from '@/components/Wajah';
 import Pahlawan from '@/components/Pahlawan';
 import Perkiraan from '@/components/Perkiraan';
 import Peta, { koordinat } from '@/components/Peta';
@@ -17,8 +18,6 @@ import { kursAktif } from '@/lib/uang-server';
 
 const JUDUL = 'text-[clamp(2.1rem,1.5rem+2.4vw,3.25rem)]';
 const WARNA_INISIAL = ['bg-biru-tua', 'bg-laut', 'bg-aksen', 'bg-laut-2'];
-// Reviewer circles, in the colours Booking.com gives the default reviewers.
-const WARNA_WAJAH = ['bg-aksen', 'bg-[#d6336c]', 'bg-[#0a7d33]', 'bg-[#4c7fe0]', 'bg-[#0a7d33]', 'bg-[#5c6bc0]'];
 
 export default async function Beranda() {
   const [b, s, layanan, ulasan, foto, kurs] = await Promise.all([
@@ -46,7 +45,7 @@ export default async function Beranda() {
     </div>
   ));
   const skor = Number(s.ulasanSkor.replace(',', '.'));
-  const wajah = s.ulasanWajah.filter((x) => x.nama.trim() || x.huruf.trim()).slice(0, 6);
+  const wajah = s.ulasanWajah.filter((x) => x.nama.trim() || x.wajah).slice(0, 6);
   const sumber = s.ulasanSumber.trim();
   const tautanUlasan = tautanLuar(s.ulasanTautan);
 
@@ -67,8 +66,8 @@ export default async function Beranda() {
                     {wajah.length > 0 && (
                       <div className="flex -space-x-2" aria-hidden>
                         {wajah.map((x, i) => (
-                          <span key={i} title={x.nama} className={`inline-flex size-9 items-center justify-center rounded-full text-sm font-bold text-white ring-[3px] ring-white ${WARNA_WAJAH[i % WARNA_WAJAH.length]}`}>
-                            {(x.huruf.trim() || x.nama.trim()).charAt(0).toUpperCase()}
+                          <span key={i} title={x.nama} className="inline-flex size-10 overflow-hidden rounded-full ring-[3px] ring-white">
+                            <Wajah kunci={x.wajah} i={i} className="size-full" />
                           </span>
                         ))}
                       </div>
