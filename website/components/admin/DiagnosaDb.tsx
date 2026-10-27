@@ -7,7 +7,7 @@ import { dbDiatur, diagnosaDb } from '@/lib/env';
 export function saranDb(pesan: string) {
   const p = pesan.toLowerCase();
   const saran: string[] = [];
-  if (p.includes('access denied')) saran.push('Server database menolak nama pengguna atau kata sandinya. Samakan DB_PASSWORD dengan kata sandi database di hPanel, menu Databases, tombol titik tiga, ubah kata sandi. Lalu jalankan Redeploy.');
+  if (p.includes('access denied')) saran.push('Sambungan ke server database sudah sampai, tetapi kata sandi untuk pengguna database ini ditolak. Kata sandi di DB_PASSWORD belum sama dengan kata sandi pengguna database di hPanel.');
   if (p.includes('unknown database')) saran.push('Nama database tidak ditemukan. Periksa DB_NAME, harus sama persis dengan nama di menu Databases.');
   if (/econnrefused|enoent|etimedout|enotfound|ehostunreach|can't connect/.test(p)) saran.push('Ada alamat yang tidak bisa dijangkau. Bila semua alamat gagal, buka menu Databases di hPanel, lihat host MySQL yang tertulis di sana, lalu isi DB_HOST dengan host itu.');
   return saran;
@@ -38,12 +38,25 @@ export default function DiagnosaDb({ pesan }: { pesan: string }) {
               <span className={`block text-sm ${kosong && wajib ? 'font-semibold text-merah' : 'text-laut/80'}`}>
                 {kosong
                   ? wajib ? 'Kosong atau tidak terbaca' : `Kosong, memakai bawaan ${x.bawaan}`
-                  : `${x.nama === 'DB_PASSWORD' ? 'Terisi' : x.nilai}${x.asal !== x.nama ? `, dibaca dari ${x.asal}` : ''}`}
+                  : `${x.nama === 'DB_PASSWORD' ? `Terisi, ${d.sandi.panjang} karakter` : x.nilai}${x.asal !== x.nama ? `, dibaca dari ${x.asal}` : ''}`}
               </span>
+              {x.nama === 'DB_PASSWORD' && !kosong && (
+                <span className="mt-1 block text-xs text-laut/70">
+                  Cocokkan jumlah karakternya dengan kata sandi database kamu.
+                  {d.sandi.spasi && ' Ada spasi atau baris baru di awal atau akhir, sudah dibuang otomatis.'}
+                  {d.sandi.kutip && ' Nilainya diapit tanda kutip, tanda kutipnya sudah dibuang otomatis.'}
+                  {d.sandi.simbol && ' Kata sandi ini memuat simbol seperti $, #, tanda kutip, atau garis miring terbalik. Simbol seperti itu kadang berubah saat disimpan sebagai environment variable.'}
+                </span>
+              )}
             </li>
           );
         })}
       </ul>
+      {d.berkas.length > 0 && (
+        <p className="mt-3 rounded-2xl bg-pasir px-4 py-3 text-sm text-laut">
+          Di folder aplikasi ada berkas {d.berkas.join(', ')}. Nilai di hPanel tetap didahulukan, tetapi pastikan berkas itu tidak berisi kata sandi lama.
+        </p>
+      )}
       {d.mirip.length > 0 && (
         <p className="mt-3 rounded-2xl bg-pasir px-4 py-3 text-sm text-laut">
           Ada variabel lain yang mirip pengaturan database, mungkin salah tulis. Namanya {d.mirip.join(', ')}.
@@ -53,7 +66,10 @@ export default function DiagnosaDb({ pesan }: { pesan: string }) {
       <h2 className="mt-6 text-xl">Cara memperbaiki</h2>
       <ol className="mt-3 list-decimal space-y-2 pl-5">
         {!diatur && <li>Di hPanel Hostinger buka Websites, mambetronhomestay.com, Node.js, lalu Environment variables. Isi DB_NAME, DB_USER, dan DB_PASSWORD persis seperti di menu Databases, dengan huruf besar dan garis bawah yang sama.</li>}
-        {diatur && <li>Periksa lagi DB_PASSWORD dan DB_HOST. Pesan di atas adalah jawaban server database.</li>}
+        {diatur && saran.some((x) => x.startsWith('Sambungan ke server database sudah sampai')) && (
+          <li>Kata sandi pengguna database di hPanel tidak bisa dilihat, hanya bisa disimpan ulang. Buka Databases, tekan titik tiga di baris pengguna {d.baris.find((b) => b.nama === 'DB_USER')?.nilai}, pilih ubah kata sandi, lalu simpan kata sandi pilihanmu sendiri. Isi DB_PASSWORD dengan kata sandi yang sama persis. Setelah keduanya sama, cukup muat ulang halaman ini, tidak perlu Redeploy bila DB_PASSWORD tidak berubah.</li>
+        )}
+        {diatur && !saran.some((x) => x.startsWith('Sambungan ke server database sudah sampai')) && <li>Periksa lagi DB_PASSWORD dan DB_HOST. Pesan di atas adalah jawaban server database.</li>}
         <li>Simpan, lalu jalankan Redeploy atau mulai ulang aplikasi. Nilai yang baru disimpan terbaca setelah aplikasi berjalan ulang.</li>
         <li>Muat ulang halaman ini. Tabel dan isi awal dibuat sendiri saat situs pertama kali terhubung.</li>
       </ol>

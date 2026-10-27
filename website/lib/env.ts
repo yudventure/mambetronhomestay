@@ -1,8 +1,19 @@
+import fs from 'fs';
+import path from 'path';
+
 // Environment values with safe defaults. Everything here is read at request
 // time, so values filled in later in hPanel take effect after a restart
 // without a new build.
 
 const baca = (k: string, cadangan = '') => (process.env[k] ?? '').trim() || cadangan;
+
+// A password as typed in hPanel, without spaces or a line break copied along
+// at either end and without one pair of quotes around it.
+export function rapiSandi(v: string) {
+  const s = v.trim();
+  return s.match(/^(['"])([\s\S]*)\1$/)?.[2] ?? s;
+}
+const sandiEnv = (k: string) => rapiSandi(process.env[k] ?? '');
 
 // Database names. DB_* is what the README asks for, the others are names
 // other guides use. The first filled one wins, then DATABASE_URL.
@@ -37,8 +48,7 @@ function dariUrl() {
 
 export function envDb() {
   const u = dariUrl();
-  // passwords are not trimmed, a space can be part of one
-  const sandi = NAMA_DB.password.map((k) => process.env[k] ?? '').find((v) => v !== '');
+  const sandi = NAMA_DB.password.map(sandiEnv).find((v) => v !== '');
   return {
     host: pertama(NAMA_DB.host) || u?.host || 'localhost',
     port: Number(pertama(NAMA_DB.port) || u?.port || '3306') || 3306,
@@ -63,7 +73,23 @@ export function diagnosaDb() {
   const asal = (nama: readonly string[], dariUrlJuga: boolean) =>
     nama.find((k) => (process.env[k] ?? '').trim() !== '') ?? (u && dariUrlJuga ? 'DATABASE_URL' : '');
   const dikenal = new Set<string>([...Object.values(NAMA_DB).flat(), 'DATABASE_URL']);
+  const mentah = NAMA_DB.password.map((k) => process.env[k] ?? '').find((v) => v.trim() !== '') ?? '';
+  const sandi = {
+    panjang: rapiSandi(mentah).length,
+    spasi: mentah !== mentah.trim(),
+    kutip: rapiSandi(mentah) !== mentah.trim(),
+    simbol: /[$#\\`'"]/.test(rapiSandi(mentah)),
+  };
+  const berkas = ['.env', '.env.local', '.env.production', '.env.production.local'].filter((f) => {
+    try {
+      return fs.statSync(path.join(process.cwd(), f)).isFile();
+    } catch {
+      return false;
+    }
+  });
   return {
+    sandi,
+    berkas,
     baris: [
       { nama: 'DB_HOST', asal: asal(NAMA_DB.host, true), nilai: d.host, bawaan: 'localhost' },
       { nama: 'DB_PORT', asal: asal(NAMA_DB.port, true), nilai: String(d.port), bawaan: '3306' },
@@ -75,7 +101,7 @@ export function diagnosaDb() {
   };
 }
 
-export const sandiAdmin = () => process.env.ADMIN_PASSWORD ?? '';
+export const sandiAdmin = () => sandiEnv('ADMIN_PASSWORD');
 
 export function rahasiaSesi() {
   const s = baca('SESSION_SECRET');
@@ -94,7 +120,7 @@ export function envSurel() {
     host: baca('SMTP_HOST'),
     port,
     user: baca('SMTP_USER'),
-    password: process.env.SMTP_PASSWORD ?? '',
+    password: sandiEnv('SMTP_PASSWORD'),
     dari: baca('EMAIL_FROM') || baca('SMTP_USER'),
     admin: baca('EMAIL_ADMIN'),
   };
