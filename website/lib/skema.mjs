@@ -120,6 +120,20 @@ export const SKEMA = [
   dibuat TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ${T}`,
 
+  // One row per page view on the public site. No IP address is stored, the
+  // visitor column is a hash that changes every day, so a visitor can be
+  // counted once per day but never followed across days.
+  `CREATE TABLE IF NOT EXISTS kunjungan (
+  id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  tanggal DATE NOT NULL,
+  waktu DATETIME NOT NULL,
+  pengunjung CHAR(16) NOT NULL,
+  jalur VARCHAR(190) NOT NULL DEFAULT '',
+  negara CHAR(2) NOT NULL DEFAULT '',
+  KEY kunjungan_tanggal (tanggal),
+  KEY kunjungan_waktu (waktu)
+) ${T}`,
+
   // One row per admin e-mail. The password set through the e-mail code,
   // stored as a scrypt hash, and the pending code with its expiry and counters.
   `CREATE TABLE IF NOT EXISTS admin_akun (

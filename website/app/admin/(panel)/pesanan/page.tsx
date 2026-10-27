@@ -1,8 +1,8 @@
 import Link from 'next/link';
 import Ikon from '@/components/Ikon';
-import BarisPesanan from '@/components/admin/BarisPesanan';
+import { BarisMeja } from '@/components/admin/MejaPesanan';
 import Kabar, { JudulAdmin } from '@/components/admin/Kabar';
-import { cariPesanan } from '@/lib/data';
+import { ambilSitus, cariPesanan } from '@/lib/data';
 import { KAMUS } from '@/lib/kamus';
 import { hariIni } from '@/lib/tanggal';
 
@@ -22,7 +22,7 @@ export default async function DaftarPesanan({ searchParams }: { searchParams: Pr
   const status = TAB.some((t) => t.kunci === sp.status) ? sp.status ?? '' : '';
   const q = (sp.q ?? '').trim().slice(0, 60);
   const akanDatang = sp.waktu === 'datang';
-  const pesanan = await cariPesanan({ status: status || undefined, q: q || undefined, dari: akanDatang ? hariIni() : undefined, urut: akanDatang ? 'tiba' : 'dibuat', batas: 300 });
+  const [situs, pesanan] = await Promise.all([ambilSitus(), cariPesanan({ status: status || undefined, q: q || undefined, dari: akanDatang ? hariIni() : undefined, urut: akanDatang ? 'tiba' : 'dibuat', batas: 300 })]);
   const tautan = (o: Record<string, string>) => {
     const u = new URLSearchParams({ ...(status ? { status } : {}), ...(q ? { q } : {}), ...(akanDatang ? { waktu: 'datang' } : {}), ...o });
     for (const [k, v] of [...u.entries()]) if (!v) u.delete(k);
@@ -32,34 +32,39 @@ export default async function DaftarPesanan({ searchParams }: { searchParams: Pr
 
   return (
     <>
-      <JudulAdmin judul="Pesanan" teks="Pesanan dari situs dan yang dicatat sendiri.">
-        <Link href="/admin/pesanan/baru" className="tombol tombol-kecil"><Ikon nama="tambah" className="size-4" /> Catat pesanan</Link>
+      <JudulAdmin judul="Pesanan" teks="Pesanan dari situs dan yang dicatat sendiri. Yang masuk dalam sehari terakhir ditandai baru.">
+        <Link href="/admin/pesanan/baru" className="tombol tombol-laut tombol-kecil !bg-panel-utama"><Ikon nama="tambah" className="size-4" /> Tambah pesanan manual</Link>
       </JudulAdmin>
       <Kabar ok={sp.hapus ? 'hapus' : undefined} pesan={{ 'ok:hapus': 'Pesanan sudah dihapus.' }} />
 
       <form className="mb-4 flex flex-wrap gap-2" action="/admin/pesanan">
         {status && <input type="hidden" name="status" value={status} />}
         {akanDatang && <input type="hidden" name="waktu" value="datang" />}
-        <label htmlFor="q" className="sr-only">Cari</label>
-        <input id="q" name="q" defaultValue={q} placeholder="Cari kode, nama, nomor, atau surel" className="isian max-w-md flex-1" />
-        <button className="tombol tombol-laut tombol-kecil"><Ikon nama="cari" className="size-4" /> Cari</button>
+        <label className="relative min-w-0 flex-1 basis-64">
+          <span className="sr-only">Cari</span>
+          <Ikon nama="cari" className="pointer-events-none absolute top-1/2 left-4 size-4 -translate-y-1/2 text-abu" />
+          <input id="q" name="q" defaultValue={q} placeholder="Cari kode, nama, atau nomor" className="isian !rounded-full !pl-11" />
+        </label>
+        <button className="tombol tombol-putih tombol-kecil !rounded-full">Cari</button>
       </form>
 
       <div className="mb-5 flex flex-wrap gap-2">
         {TAB.map((t) => (
-          <Link key={t.kunci} href={tautan({ status: t.kunci })} className={`rounded-full px-4 py-2 text-sm font-bold ${status === t.kunci ? 'bg-laut text-white' : 'bg-white text-laut hover:bg-buih-2'}`}>
+          <Link key={t.kunci} href={tautan({ status: t.kunci })} aria-current={status === t.kunci ? 'true' : undefined}
+            className={`rounded-full px-4 py-2 text-sm font-semibold ${status === t.kunci ? 'bg-panel-utama text-white' : 'bg-white text-panel-utama ring-1 ring-panel-garis hover:bg-panel-latar'}`}>
             {t.label}
           </Link>
         ))}
-        <Link href={tautan({ waktu: akanDatang ? '' : 'datang' })} className={`rounded-full px-4 py-2 text-sm font-bold ${akanDatang ? 'bg-biru-tua text-white' : 'bg-white text-biru-tua hover:bg-buih-2'}`}>
+        <Link href={tautan({ waktu: akanDatang ? '' : 'datang' })} className={`rounded-full px-4 py-2 text-sm font-semibold ${akanDatang ? 'bg-panel-aksen text-white' : 'bg-white text-panel-aksen ring-1 ring-panel-garis hover:bg-panel-latar'}`}>
           {akanDatang ? 'Urut menurut tanggal tiba' : 'Hanya yang akan datang'}
         </Link>
       </div>
 
+      <p className="mb-3 text-sm text-abu">{pesanan.length} pesanan</p>
       {pesanan.length ? (
-        <div className="grid gap-2">{pesanan.map((p) => <BarisPesanan key={p.id} p={p} />)}</div>
+        <ul className="grid gap-3">{pesanan.map((p) => <BarisMeja key={p.id} p={p} homestay={situs.nama} />)}</ul>
       ) : (
-        <p className="rounded-2xl bg-white px-4 py-6 text-center text-abu">Tidak ada pesanan yang cocok.</p>
+        <p className="rounded-2xl bg-panel-latar px-4 py-6 text-center text-abu">Tidak ada pesanan yang cocok.</p>
       )}
     </>
   );

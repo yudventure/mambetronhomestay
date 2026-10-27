@@ -1,5 +1,7 @@
 // Message strip after an admin action, driven by ?ok= and ?galat= in the URL.
 import Ikon from '../Ikon';
+import { bulanTahun } from '@/lib/format';
+import { hariIni } from '@/lib/tanggal';
 
 export default function Kabar({ ok, galat, pesan }: { ok?: string; galat?: string; pesan: Record<string, string> }) {
   const teks = galat ? pesan[`galat:${galat}`] ?? pesan.galat ?? 'Ada yang belum benar.' : ok ? pesan[`ok:${ok}`] ?? pesan.ok ?? 'Tersimpan.' : '';
@@ -11,12 +13,14 @@ export default function Kabar({ ok, galat, pesan }: { ok?: string; galat?: strin
   );
 }
 
-export function JudulAdmin({ judul, teks, children }: { judul: string; teks?: string; children?: React.ReactNode }) {
+// Page title with the MEJA PENGELOLA eyebrow and the current month.
+export function JudulAdmin({ judul, teks, label, children }: { judul: string; teks?: string; label?: string; children?: React.ReactNode }) {
   return (
-    <div className="mb-6 flex flex-wrap items-end justify-between gap-4">
+    <div className="mb-7 flex flex-wrap items-end justify-between gap-4">
       <div>
-        <h1 className="text-3xl sm:text-4xl">{judul}</h1>
-        {teks && <p className="mt-1 max-w-2xl text-abu">{teks}</p>}
+        <p className="label-kecil !text-panel-utama">{label ?? `Meja pengelola · ${bulanTahun(hariIni(), 'id')}`}</p>
+        <h1 className="mt-2 text-[2.4rem] leading-[1.02] text-panel-utama sm:text-5xl">{judul}</h1>
+        {teks && <p className="mt-2 max-w-2xl text-[1.0625rem] text-abu">{teks}</p>}
       </div>
       {children && <div className="flex flex-wrap gap-2">{children}</div>}
     </div>

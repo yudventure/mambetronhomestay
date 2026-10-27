@@ -18,7 +18,7 @@ export default function DiagnosaDb({ pesan }: { pesan: string }) {
   const diatur = dbDiatur();
   const saran = saranDb(pesan);
   return (
-    <div className="kartu max-w-3xl p-6 sm:p-8">
+    <div className="kartu p-6 sm:p-8 [&_p]:max-w-3xl">
       <h1 className="text-3xl">Database belum terhubung</h1>
       <p className="mt-3 text-abu [overflow-wrap:anywhere]">{pesan}</p>
       {saran.length > 0 && (

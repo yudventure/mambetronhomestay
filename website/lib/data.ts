@@ -5,7 +5,7 @@ import { KAMAR_AWAL, LAYANAN_AWAL, gabungSitus } from './bawaan.mjs';
 import { baris, satu, type Koneksi, type Baris } from './db';
 import { dbDiatur } from './env';
 import type { Foto, Kamar, Layanan, Pesanan, Situs, Ulasan } from './jenis';
-import { daftarMalam, tambahHari } from './tanggal';
+import { awalBulan, daftarMalam, tambahBulan, tambahHari } from './tanggal';
 
 const urlFoto = (id: number) => `/api/foto/${id}`;
 const baris2 = (s: string | null | undefined) => (s ?? '').split('\n').map((x) => x.trim()).filter(Boolean);
@@ -255,4 +255,96 @@ export async function cariPesanan(o: { status?: string; q?: string; dari?: strin
 export type Tutup = { id: number; kamar_id: number | null; mulai: string; akhir: string; alasan: string };
 export async function daftarTutup(dari: string) {
   return baris<Tutup>('SELECT id, kamar_id, mulai, akhir, alasan FROM tutup WHERE akhir >= ? ORDER BY mulai', [dari]);
+}
+
+// Counts for the admin shell, the menu badge, the bell and the HARI INI card.
+export type RingkasPanel = {
+  menunggu: number;
+  tiba: number;
+  pulang: number;
+  menginap: number;
+  daftarMenunggu: { id: number; kode: string; nama: string; check_in: string; dibuat: string }[];
+};
+export const ringkasPanel = cache(async (hari: string): Promise<RingkasPanel> => {
+  const kosong: RingkasPanel = { menunggu: 0, tiba: 0, pulang: 0, menginap: 0, daftarMenunggu: [] };
+  if (!dbDiatur()) return kosong;
+  try {
+    const [[h], daftar] = await Promise.all([
+      baris<{ menunggu: number; tiba: number; pulang: number; menginap: number }>(
+        `SELECT
+          SUM(status = 'menunggu') AS menunggu,
+          SUM(status <> 'batal' AND check_in = ?) AS tiba,
+          SUM(status <> 'batal' AND check_out = ?) AS pulang,
+          SUM(status <> 'batal' AND check_in <= ? AND check_out > ?) AS menginap
+        FROM pesanan`,
+        [hari, hari, hari, hari],
+      ),
+      baris<{ id: number; kode: string; nama: string; check_in: string; dibuat: string }>(
+        "SELECT id, kode, nama, check_in, dibuat FROM pesanan WHERE status = 'menunggu' ORDER BY dibuat DESC LIMIT 6",
+      ),
+    ]);
+    return {
+      menunggu: Number(h?.menunggu ?? 0),
+      tiba: Number(h?.tiba ?? 0),
+      pulang: Number(h?.pulang ?? 0),
+      menginap: Number(h?.menginap ?? 0),
+      daftarMenunggu: daftar,
+    };
+  } catch (e) {
+    catat(e, 'ringkas panel');
+    return kosong;
+  }
+});
+
+// Figures for the dashboard. Booking times are stored in UTC, a month in Raja
+// Ampat starts nine hours earlier in UTC.
+export type AngkaRingkasan = {
+  masuk: number;
+  masukLalu: number;
+  dikonfirmasi: number;
+  nilai: number;
+  dibayar: number;
+  menunggu: number;
+};
+export async function angkaRingkasan(hari: string): Promise<AngkaRingkasan> {
+  const awal = awalBulan(hari);
+  const lalu = tambahBulan(awal, -1);
+  const [[r]] = await Promise.all([
+    baris<Record<keyof AngkaRingkasan, number | null>>(
+      `SELECT
+        SUM(dibuat >= DATE_SUB(?, INTERVAL 9 HOUR)) AS masuk,
+        SUM(dibuat >= DATE_SUB(?, INTERVAL 9 HOUR) AND dibuat < DATE_SUB(?, INTERVAL 9 HOUR)) AS masukLalu,
+        SUM(dibuat >= DATE_SUB(?, INTERVAL 9 HOUR) AND status IN ('dikonfirmasi', 'lunas', 'selesai')) AS dikonfirmasi,
+        SUM(IF(dibuat >= DATE_SUB(?, INTERVAL 9 HOUR) AND status <> 'batal', total, 0)) AS nilai,
+        SUM(IF(dibuat >= DATE_SUB(?, INTERVAL 9 HOUR) AND status <> 'batal', dibayar, 0)) AS dibayar,
+        SUM(status = 'menunggu') AS menunggu
+      FROM pesanan`,
+      [awal, lalu, awal, awal, awal, awal],
+    ),
+  ]);
+  return {
+    masuk: Number(r?.masuk ?? 0),
+    masukLalu: Number(r?.masukLalu ?? 0),
+    dikonfirmasi: Number(r?.dikonfirmasi ?? 0),
+    nilai: Number(r?.nilai ?? 0),
+    dibayar: Number(r?.dibayar ?? 0),
+    menunggu: Number(r?.menunggu ?? 0),
+  };
+}
+
+// How many bookings match the search on the booking desk.
+export async function hitungPesanan(o: { status?: string; q?: string }) {
+  const syarat: string[] = [];
+  const nilai: unknown[] = [];
+  if (o.status) {
+    syarat.push('status = ?');
+    nilai.push(o.status);
+  }
+  if (o.q) {
+    syarat.push('(kode LIKE ? OR nama LIKE ? OR email LIKE ? OR telepon LIKE ?)');
+    const q = `%${o.q}%`;
+    nilai.push(q, q, q, q);
+  }
+  const r = await satu<{ n: number }>(`SELECT COUNT(*) AS n FROM pesanan ${syarat.length ? `WHERE ${syarat.join(' AND ')}` : ''}`, nilai);
+  return Number(r?.n ?? 0);
 }

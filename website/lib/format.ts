@@ -8,6 +8,12 @@ export function rupiah(n: number, b: Bahasa = 'id') {
   return b === 'en' ? `IDR ${angka}` : `Rp ${angka}`;
 }
 
+// Short rupiah for narrow tiles, 5.100.000 reads Rp 5,1 jt.
+export function rupiahRingkas(n: number) {
+  const [bagi, satuan] = n >= 1e9 ? [1e9, ' M'] : n >= 1e6 ? [1e6, ' jt'] : n >= 1e3 ? [1e3, ' rb'] : [1, ''];
+  return `Rp ${new Intl.NumberFormat('id-ID', { maximumFractionDigits: 1 }).format(n / bagi)}${satuan}`;
+}
+
 const utc = (s: string) => new Date(`${s.slice(0, 10)}T00:00:00Z`);
 
 export function tanggal(s: string, b: Bahasa = 'id', gaya: 'pendek' | 'panjang' | 'hari' | 'polos' = 'pendek') {
@@ -17,6 +23,14 @@ export function tanggal(s: string, b: Bahasa = 'id', gaya: 'pendek' | 'panjang' 
         : gaya === 'polos' ? { day: 'numeric', month: 'long', year: 'numeric' }
           : { day: 'numeric', month: 'short', year: 'numeric' };
   return new Intl.DateTimeFormat(lokal(b), { ...o, timeZone: 'UTC' }).format(utc(s));
+}
+
+// 14–16 Nov 2026, 30 Okt–2 Nov 2026, written tight as the house style asks.
+export function rentangTanggal(a: string, b: string, bh: Bahasa = 'id') {
+  const f = (s: string, o: Intl.DateTimeFormatOptions) => new Intl.DateTimeFormat(lokal(bh), { ...o, timeZone: 'UTC' }).format(utc(s));
+  const tahun = b.slice(0, 4);
+  if (a.slice(0, 7) === b.slice(0, 7)) return `${Number(a.slice(8))}–${f(b, { day: 'numeric', month: 'short' })} ${tahun}`;
+  return `${f(a, { day: 'numeric', month: 'short' })}–${f(b, { day: 'numeric', month: 'short' })} ${tahun}`;
 }
 
 export function bulanTahun(s: string, b: Bahasa = 'id') {
