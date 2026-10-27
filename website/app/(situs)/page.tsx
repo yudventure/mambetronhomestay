@@ -47,9 +47,11 @@ export default async function Beranda() {
 
   // Photo cards under the hero, one per photo in Foto situs, plain and not
   // clickable. Until photos are uploaded three sea illustrations hold the place.
+  // The white frame is a border, not a ring, so the scrolling row cannot clip
+  // it off the outer sides of the first and last card.
   const fotoKartu = foto.unggulan.length ? foto.unggulan : [undefined, undefined, undefined];
   const kartuUnggulan = fotoKartu.map((f, i) => (
-    <div key={f?.id ?? i} className={`overflow-hidden rounded-[1.6rem] bg-buih shadow-lembut ring-[5px] ring-white ${fotoKartu.length === 1 ? 'aspect-[2/1]' : 'aspect-[4/3.3]'}`}>
+    <div key={f?.id ?? i} className={`overflow-hidden rounded-[1.6rem] border-[5px] border-white bg-buih shadow-lembut ${fotoKartu.length === 1 ? 'aspect-[2/1]' : 'aspect-[4/3.3]'}`}>
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img src={f?.url ?? gambarCadangan(i)} alt={f?.keterangan ?? ''} loading="lazy" width={f?.lebar || 1200} height={f?.tinggi || 800}
         className="size-full object-cover" />
