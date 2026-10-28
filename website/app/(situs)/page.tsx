@@ -145,11 +145,6 @@ export default async function Beranda() {
             <div className="prosa mt-5 text-laut/80">
               {paragraf(dwi(s.tentangTeks, b)).map((p, i) => <p key={i}>{p}</p>)}
             </div>
-            <div className="mt-8">
-              {wa
-                ? <a href={wa} target="_blank" rel="noopener" className="tombol tombol-garis"><Ikon nama="chat" className="size-4" /> {k.tanyaWa}</a>
-                : <Link href="/#lokasi" className="tombol tombol-garis">{k.nav.lokasi}</Link>}
-            </div>
           </div>
           {video.length > 0 ? (
             <VideoTentang b={b} video={video} sampulCadangan={tentangFoto?.url ?? '/merek/adegan-siang.svg'} />
