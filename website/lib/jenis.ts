@@ -143,9 +143,6 @@ export type Situs = {
   caraSampai: Dua;
   faqJudul: Dua;
   faq: Faq[];
-  ajakanLabel: Dua;
-  ajakanJudul: Dua;
-  ajakanTeks: Dua;
   uangBawaan: string;
   kursOtomatis: boolean;
   kursUSD: number;

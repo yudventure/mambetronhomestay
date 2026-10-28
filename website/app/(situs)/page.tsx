@@ -40,7 +40,6 @@ export default async function Beranda() {
   for (const d of Object.keys(sisa)) sisa[d] = kamar.reduce((n, x) => n + (peta.get(x.id)?.[d] ?? x.jumlah_unit), 0);
   const tentangFoto = foto.tentang[0];
   const video = await siapkanVideo(s.tentangVideo.slice(0, 3));
-  const ajakanFoto = foto.ajakan[0];
   const titik = koordinat(s.petaKoordinat);
   const tautanPeta = s.petaTautan || (titik ? `https://www.google.com/maps?q=${titik.lat},${titik.lng}` : '');
   const rata = ulasan.length ? ulasan.reduce((n, u) => n + u.bintang, 0) / ulasan.length : 0;
@@ -185,27 +184,6 @@ export default async function Beranda() {
           </div>
         </section>
       )}
-
-      <section className="pb-16 md:pb-24">
-        <div className="mx-auto max-w-6xl px-4 sm:px-6">
-          <div className="bingkai relative isolate overflow-hidden bg-laut p-3 sm:p-4 lg:grid lg:grid-cols-[1.15fr_1fr] lg:items-center lg:gap-6">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={ajakanFoto?.url ?? '/merek/adegan-pagi.svg'} alt={ajakanFoto?.keterangan ?? ''} aria-hidden={ajakanFoto ? undefined : true}
-              width={ajakanFoto?.lebar || 1600} height={ajakanFoto?.tinggi || 1100} loading="lazy"
-              className="aspect-[16/10] w-full rounded-[1.4rem] object-cover sm:rounded-[1.75rem]" />
-            <div className="px-3 pt-8 pb-6 sm:px-6 lg:py-10 lg:pr-12">
-              {dwi(s.ajakanLabel, b) && <p className="text-sm font-semibold tracking-wide text-sorot">{dwi(s.ajakanLabel, b)}</p>}
-              <h2 className={`mt-3 text-white ${JUDUL}`}>{dwi(s.ajakanJudul, b)}</h2>
-              <p className="mt-4 max-w-md text-white/80">{dwi(s.ajakanTeks, b)}</p>
-              <div className="mt-7 flex flex-wrap gap-3">
-                <Link href="/pesan" className="tombol tombol-garis-putih">{k.cekTanggal}</Link>
-              </div>
-            </div>
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="/merek/simbol-putih.svg" alt="" aria-hidden width={400} height={300} className="pointer-events-none absolute -right-16 -bottom-10 -z-10 w-80 opacity-[0.07]" />
-          </div>
-        </div>
-      </section>
 
       {layanan.length > 0 && (
         <Bagian id="kegiatan" className="!pt-0">
