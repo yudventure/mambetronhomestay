@@ -1,9 +1,10 @@
 'use client';
-// Stay planner on the home page, a plain GET form into /pesan. The
+// Stay planner on the home page, a plain GET form into /pesan, which sends
+// the visitor on to DAMPIER while bookings go through DAMPIER. The
 // availability calendar, the same one as the booking page, is shown open
 // right away, so full nights show before the visitor commits. Both dates are
 // required, and the choice is remembered in this browser for the next pages.
-import { useCallback, useEffect, useState, type FormEvent } from 'react';
+import { useCallback, useEffect, useState, type FormEvent, type ReactNode } from 'react';
 import Ikon from './Ikon';
 import Kalender from './Kalender';
 import KotakTanggal from './KotakTanggal';
@@ -24,12 +25,15 @@ type Props = {
   kapasitas: number;
   minMalam: number;
   maksTamu: number;
+  // button words and a line under the button while bookings go through DAMPIER
+  tombol?: string;
+  catatan?: ReactNode;
 };
 type Rentang = { masuk: string; keluar: string };
 
 const KOSONG: Rentang = { masuk: '', keluar: '' };
 
-export default function CariCepat({ b, awal, akhir, checkIn, checkOut, sisa, unit, kapasitas, minMalam, maksTamu }: Props) {
+export default function CariCepat({ b, awal, akhir, checkIn, checkOut, sisa, unit, kapasitas, minMalam, maksTamu, tombol, catatan }: Props) {
   const k = kamus(b);
   const t = k.rencanaTanggal;
   const [{ masuk, keluar }, setRentang] = useState<Rentang>(KOSONG);
@@ -124,7 +128,8 @@ export default function CariCepat({ b, awal, akhir, checkIn, checkOut, sisa, uni
             <Ikon nama="tambah" className="size-4" />
           </button>
         </div>
-        <button className="tombol h-full min-h-14 w-full">{k.cekKetersediaan}</button>
+        <button className="tombol h-full min-h-14 w-full">{tombol || k.cekKetersediaan}</button>
+        {catatan && <div className="text-center sm:col-span-2 xl:col-span-1">{catatan}</div>}
         {galat && <p role="alert" className="rounded-2xl bg-[#fde3dc] px-4 py-3 text-sm font-semibold text-merah sm:col-span-2 xl:col-span-1">{galat}</p>}
         <div className="grid grid-cols-2 items-end gap-2 pt-1 text-xs text-abu sm:col-span-2 xl:col-span-1">
           <p>{k.checkInOut.masuk}<span className="block text-sm font-semibold text-laut">{checkIn}</span></p>

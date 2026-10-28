@@ -153,6 +153,9 @@ export type Situs = {
   tutup: boolean;
   tutupJudul: Dua;
   tutupTeks: Dua;
+  dampierTautan: string;
+  dampierTombol: Dua;
+  dampierTeks: Dua;
   checkIn: string;
   checkOut: string;
   dpPersen: number;

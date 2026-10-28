@@ -21,6 +21,11 @@ export const IKON_PILIHAN = Object.keys(IKON_LABEL);
 
 // The about video the owner sent, a TikTok from DAMPIER media. New sites get
 // it as the default, lib/db.ts puts it in once on sites that have no video yet.
+// The Mambetron listing on DAMPIER (listing 106), with the tags DAMPIER's
+// panel puts on a partner site's book button, so these bookings show as
+// Situs mitra there.
+export const DAMPIER_AWAL = 'https://thedampier.com/id/layanan/mambetron-homestay-106?utm_source=mambetron-homestay&utm_medium=situs-mitra&utm_campaign=tombol-pesan&utm_content=106';
+
 export const VIDEO_AWAL = [{ url: 'https://www.tiktok.com/@thedampiermedia/video/7699821441662930182', judul: '' }];
 
 export const PENGATURAN = [
@@ -172,7 +177,7 @@ export const PENGATURAN = [
         bawaan: [
           { tanya: dua('Apakah harga sudah termasuk makan?', 'Are meals included?'), jawab: dua('Ya. Harga bungalow sudah termasuk makan pagi, siang, dan malam, juga air minum, teh, dan kopi.', 'Yes. The rate includes breakfast, lunch and dinner, plus drinking water, tea and coffee.') },
           { tanya: dua('Bagaimana listrik dan sinyal?', 'What about power and phone signal?'), jawab: dua('Listrik menyala dari sore sampai pagi. Sinyal telepon terbatas, jadi kabari keluarga sebelum menyeberang.', 'Power runs from late afternoon until morning. Phone signal is limited, so let your family know before you cross.') },
-          { tanya: dua('Bagaimana cara membayar?', 'How do I pay?'), jawab: dua('Setelah memesan, transfer total pembayaran ke rekening yang tertera lalu kirim bukti lewat WhatsApp.', 'After booking, transfer the full amount to the account shown and send the receipt on WhatsApp.') },
+          { tanya: dua('Bagaimana cara membayar?', 'How do I pay?'), jawab: dua('Pesan dan bayar lunas di halaman DAMPIER, mitra pemesanan online kami, dengan kartu, QRIS, virtual account bank, dompet digital, atau PayPal.', 'Book and pay in full on the DAMPIER page, our online booking partner, by card, QRIS, bank virtual account, e-wallet or PayPal.') },
           { tanya: dua('Bisakah membatalkan pesanan?', 'Can I cancel?'), jawab: dua('Tergantung paket harga yang kamu pilih saat memesan. Syarat ganti tanggal dan pembatalan tiap paket tertulis di halaman pesan dan di halaman pesananmu.', 'It depends on the rate you pick when booking. The date change and cancellation terms of each rate are shown on the booking form and on your booking page.') },
         ],
       },
@@ -181,8 +186,14 @@ export const PENGATURAN = [
   {
     kunci: 'pemesanan',
     judul: 'Pemesanan dan pembayaran',
-    keterangan: 'Jam tiba dan pulang, pembayaran, paket harga, rekening, dan ketentuan menginap.',
+    keterangan: 'Pemesanan lewat DAMPIER, jam tiba dan pulang, pembayaran, paket harga, rekening, dan ketentuan menginap.',
     isian: [
+      {
+        k: 'dampierTautan', label: 'Tautan listing di DAMPIER', jenis: 'teks', bawaan: DAMPIER_AWAL,
+        bantuan: 'Selama terisi, semua tombol pesan di situs ini membuka listing Mambetron di DAMPIER dengan tanggal dan jumlah tamu yang dipilih, lalu tamu memesan dan membayar lunas di DAMPIER. Tautan baru bisa disalin dari panel DAMPIER, menu Mitra dan listing, Listing mitra, Tombol pesan di situs mitra, Tautan langsung. Kosongkan untuk kembali memakai formulir pesan situs ini dan pembayaran transfer ke rekening di bawah.',
+      },
+      { k: 'dampierTombol', label: 'Tulisan tombol pesan lewat DAMPIER', jenis: 'dua', bawaan: dua('Pesan lewat DAMPIER', 'Book with DAMPIER') },
+      { k: 'dampierTeks', label: 'Kalimat di bawah tombol pesan', jenis: 'dua', bawaan: dua('Pemesanan online dikelola oleh DAMPIER', 'Online bookings managed by DAMPIER'), bantuan: 'Kata DAMPIER yang pertama menjadi tautan ke thedampier.com.' },
       { k: 'checkIn', label: 'Jam check-in', jenis: 'jam', bawaan: '12:00' },
       { k: 'checkOut', label: 'Jam check-out', jenis: 'jam', bawaan: '10:00' },
       {
@@ -373,6 +384,11 @@ for (const f of PENGATURAN.flatMap((g) => g.isian)) {
 // Defaults from before full payment and rate tiers, when the site asked for a deposit.
 const SEBELUM_LUNAS = {"dpPersen": 30, "faq": [{"tanya": {"id": "Apakah harga sudah termasuk makan?", "en": "Are meals included?"}, "jawab": {"id": "Ya. Harga bungalow sudah termasuk makan pagi, siang, dan malam, juga air minum, teh, dan kopi.", "en": "Yes. The rate includes breakfast, lunch and dinner, plus drinking water, tea and coffee."}}, {"tanya": {"id": "Bagaimana listrik dan sinyal?", "en": "What about power and phone signal?"}, "jawab": {"id": "Listrik menyala dari sore sampai pagi. Sinyal telepon terbatas, jadi kabari keluarga sebelum menyeberang.", "en": "Power runs from late afternoon until morning. Phone signal is limited, so let your family know before you cross."}}, {"tanya": {"id": "Bagaimana cara membayar?", "en": "How do I pay?"}, "jawab": {"id": "Setelah memesan, transfer uang muka ke rekening yang tertera lalu kirim bukti lewat WhatsApp. Sisanya dibayar saat tiba.", "en": "After booking, transfer the deposit to the account shown and send the receipt on WhatsApp. Pay the rest when you arrive."}}, {"tanya": {"id": "Bisakah membatalkan pesanan?", "en": "Can I cancel?"}, "jawab": {"id": "Bisa. Aturan pengembalian uang muka ada di halaman ketentuan menginap.", "en": "Yes. The deposit refund rules are on the house rules page."}}], "catatanBayar": {"id": "Transfer uang muka dalam 24 jam setelah memesan, lalu kirim bukti transfer lewat WhatsApp. Sisa pembayaran dilunasi saat tiba, tunai atau transfer.", "en": "Transfer the deposit within 24 hours of booking, then send the receipt on WhatsApp. Pay the balance when you arrive, in cash or by transfer."}, "pesanTerima": {"id": "Terima kasih, pesananmu sudah kami terima. Bungalow kami tahan sambil menunggu uang muka.", "en": "Thank you, we have your booking. We are holding the bungalow for you while we wait for the deposit."}, "ketentuan": {"id": "Jam tiba dan pulang bisa disesuaikan dengan jadwal kapal. Kabari kami bila jadwalmu berubah.\n\nPembatalan 14 hari atau lebih sebelum tiba, uang muka kembali penuh. Pembatalan kurang dari 14 hari, uang muka tidak kembali tetapi bisa dipakai untuk tanggal lain dalam satu tahun.\n\nJaga laut kita. Jangan menginjak atau mengambil karang, dan bawa pulang sampah plastikmu.", "en": "Arrival and departure times can follow the ferry schedule. Let us know if your plans change.\n\nCancel 14 days or more before arrival and the deposit is refunded in full. Cancel later and the deposit is not refunded, but you can use it for other dates within a year.\n\nLook after our sea. Do not stand on or take coral, and take your plastic home with you."}};
 for (const [k, v] of Object.entries(SEBELUM_LUNAS)) (BAWAAN_LAMA[k] ??= []).push(v, sebelumBungalow(v));
+// The questions from before bookings went through DAMPIER, when guests paid by transfer.
+const faqTransfer = PENGATURAN.flatMap((g) => g.isian).find((f) => f.k === 'faq').bawaan.map((x) => (x.tanya.en === 'How do I pay?'
+  ? { ...x, jawab: dua('Setelah memesan, transfer total pembayaran ke rekening yang tertera lalu kirim bukti lewat WhatsApp.', 'After booking, transfer the full amount to the account shown and send the receipt on WhatsApp.') }
+  : x));
+BAWAAN_LAMA.faq.push(faqTransfer, sebelumBungalow(faqTransfer));
 const sama = (a, b) => JSON.stringify(a) === JSON.stringify(b);
 
 export function gabungSitus(simpanan) {

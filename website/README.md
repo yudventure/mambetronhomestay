@@ -107,6 +107,16 @@ Perintah lain yang tersedia sebagai berikut.
 | `npm run db:sql` | Menulis ulang `database/skema.sql` dari `lib/skema.mjs` |
 | `npm run cek` | Memeriksa tipe TypeScript |
 
+## Pemesanan lewat DAMPIER
+
+Pemesanan online Mambetron dikelola oleh DAMPIER, memakai tombol pesan untuk situs mitra yang disediakan DAMPIER. Tamu tetap memilih tanggal dan jumlah tamu di situs ini, di kalender halaman utama atau halaman bungalow. Tombol Pesan lewat DAMPIER lalu membuka listing Mambetron di DAMPIER (`https://thedampier.com/<bahasa>/layanan/mambetron-homestay-106`) dengan tanggal dan jumlah tamu yang sama, dan tamu memesan serta membayar lunas di sana dengan kartu, QRIS, virtual account, dompet digital, atau PayPal. Akun pembayaran DAMPIER tidak dipasang di situs ini. Di bawah tombol tertulis Pemesanan online dikelola oleh DAMPIER, dengan kata DAMPIER yang membuka thedampier.com.
+
+Semua jalan ke formulir pesan ikut diteruskan ke DAMPIER, termasuk tautan Pesan sekarang di kaki halaman dan kartu kegiatan. Tautannya membawa tanda `utm_source=mambetron-homestay`, `utm_medium=situs-mitra`, `utm_campaign=tombol-pesan`, dan `utm_content=106`, jadi pesanannya tercatat dari Situs mitra di Meja permintaan dan Laporan DAMPIER. Bahasa listing mengikuti bahasa pengunjung.
+
+Tautan listing, tulisan tombol, dan kalimat di bawahnya diubah di Isi situs, bagian Pemesanan dan pembayaran. Tautan baru bisa disalin dari panel DAMPIER, menu Mitra dan listing, Listing mitra, Tombol pesan di situs mitra, Tautan langsung. Bila tautan listing dikosongkan, situs kembali memakai formulir pesannya sendiri dengan pembayaran transfer ke rekening, seperti yang dijelaskan di bagian berikut.
+
+Supaya tanggal tidak terpesan dua kali, sambungkan kalender tiap unit dengan kalender mitra DAMPIER di menu Sinkron OTA, sama seperti OTA lain. Tautan ekspor iCal dari kalender mitra DAMPIER ditempel di sambungan unit di sini, dan tautan `.ics` unit dari panel ini ditempel di kolom impor iCal kamar yang sama di kalender mitra DAMPIER.
+
 ## Cara kerja pemesanan
 
 Setiap jenis bungalow punya jumlah unit. Mambetron punya satu jenis, Bungalow Tepi Pantai (Beachfront Bungalow), dengan tujuh unit yang sama tipe dan ukurannya dan semuanya menghadap pantai. Satu malam penuh bila unit yang terpesan di situs ini, unit yang terisi dari OTA lewat sinkron kalender, dan tanggal tutup sudah sama dengan jumlah unit. Pesanan berstatus apa pun kecuali Dibatalkan ikut menahan bungalow. Saat tamu mengirim pesanan, baris bungalow dikunci di database selama pemeriksaan, jadi dua tamu tidak bisa mendapat unit terakhir di malam yang sama.
