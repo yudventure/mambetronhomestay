@@ -106,6 +106,15 @@ export const PENGATURAN = [
           'Mambetron Homestay punya tujuh bungalow di tepi pantai sisi barat Pulau Kri, dekat dermaga Yenkoranu, dengan karang penuh ikan tepat di depan beranda. Kri adalah pulau kecil di tengah titik selam paling terkenal di Raja Ampat, sekitar satu jam naik perahu dari Waisai.\n\nTuan rumahnya keluarga setempat, dan tamu menyebut mereka ramah dan suka membantu. Makan tiga kali sehari dimasak di dapur keluarga, biasanya ikan segar, nasi, tempe, sayur, dan sambal.',
           "Mambetron Homestay has seven beachfront bungalows on the west side of Kri Island, near the Yenkoranu jetty, with a fish-filled reef right in front of the verandas. Kri is a small island in the middle of Raja Ampat's most famous dive sites, about an hour by boat from Waisai.\n\nYour hosts are a local family, and guests describe them as friendly and helpful. Three meals a day are cooked in the family kitchen, usually fresh fish, rice, tempeh, vegetables and sambal."),
       },
+      {
+        k: 'tentangVideo', label: 'Video tentang kami', jenis: 'daftar', tambah: 'Tambah video',
+        bantuan: 'Tautan YouTube, YouTube Shorts, Instagram Reels, atau TikTok, paling banyak tiga, menggantikan foto di samping teks tentang kami. Video pertama tampil paling tinggi di tengah, video kedua di kiri dan ketiga di kanan lebih pendek, lalu membesar saat disentuh kursor. Di HP video digeser ke samping. Video tegak paling pas. Tanpa video, bagian ini memakai foto tentang kami dari Foto situs.',
+        isian: [
+          { k: 'url', label: 'Tautan video', jenis: 'teks' },
+          { k: 'judul', label: 'Judul singkat', jenis: 'teks', bantuan: 'Untuk pembaca layar, tidak tampil di halaman. Boleh dikosongkan.' },
+        ],
+        bawaan: [],
+      },
       { k: 'sorotanJudul', label: 'Judul bagian keunggulan', jenis: 'dua', bantuan: 'Tidak tampil di layar. Dibaca oleh pembaca layar dan mesin pencari.', bawaan: dua('Kenapa menginap di sini', 'Why stay with us') },
       {
         k: 'sorotan', label: 'Keunggulan', jenis: 'daftar', tambah: 'Tambah keunggulan',

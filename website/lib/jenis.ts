@@ -132,6 +132,7 @@ export type Situs = {
   ulasanWajah: { nama: string; wajah: string }[];
   tentangJudul: Dua;
   tentangTeks: Dua;
+  tentangVideo: { url: string; judul: string }[];
   galeriJudul: Dua;
   layananJudul: Dua;
   layananTeks: Dua;

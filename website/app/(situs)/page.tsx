@@ -4,6 +4,7 @@ import CariCepat from '@/components/CariCepat';
 import GeserPondok from '@/components/GeserPondok';
 import Ikon from '@/components/Ikon';
 import Wajah from '@/components/Wajah';
+import VideoTentang from '@/components/VideoTentang';
 import GaleriBeranda from '@/components/GaleriBeranda';
 import Pahlawan from '@/components/Pahlawan';
 import Perkiraan from '@/components/Perkiraan';
@@ -16,6 +17,7 @@ import { KISI, kisiSorotan, rentang } from '@/lib/kisi';
 import { SATUAN } from '@/lib/satuan.mjs';
 import { hariIni, tambahHari } from '@/lib/tanggal';
 import { kursAktif } from '@/lib/uang-server';
+import { siapkanVideo } from '@/lib/video-server';
 
 const JUDUL = 'text-[clamp(2.1rem,1.5rem+2.4vw,3.25rem)]';
 const WARNA_INISIAL = ['bg-biru-tua', 'bg-laut', 'bg-aksen', 'bg-laut-2'];
@@ -38,6 +40,7 @@ export default async function Beranda() {
   for (const x of kamar) for (const d of Object.keys(peta.get(x.id) ?? {})) sisa[d] = 0;
   for (const d of Object.keys(sisa)) sisa[d] = kamar.reduce((n, x) => n + (peta.get(x.id)?.[d] ?? x.jumlah_unit), 0);
   const tentangFoto = foto.tentang[0];
+  const video = await siapkanVideo(s.tentangVideo.slice(0, 3));
   const ajakanFoto = foto.ajakan[0];
   const titik = koordinat(s.petaKoordinat);
   const tautanPeta = s.petaTautan || (titik ? `https://www.google.com/maps?q=${titik.lat},${titik.lng}` : '');
@@ -148,10 +151,14 @@ export default async function Beranda() {
                 : <Link href="/#lokasi" className="tombol tombol-garis">{k.nav.lokasi}</Link>}
             </div>
           </div>
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={tentangFoto?.url ?? '/merek/adegan-siang.svg'} alt={tentangFoto?.keterangan ?? ''} aria-hidden={tentangFoto ? undefined : true}
-            width={tentangFoto?.lebar || 1600} height={tentangFoto?.tinggi || 1200} loading="lazy"
-            className="aspect-[4/3] w-full rounded-[1.75rem] object-cover lg:aspect-[16/11]" />
+          {video.length > 0 ? (
+            <VideoTentang b={b} video={video} sampulCadangan={tentangFoto?.url ?? '/merek/adegan-siang.svg'} />
+          ) : (
+            /* eslint-disable-next-line @next/next/no-img-element */
+            <img src={tentangFoto?.url ?? '/merek/adegan-siang.svg'} alt={tentangFoto?.keterangan ?? ''} aria-hidden={tentangFoto ? undefined : true}
+              width={tentangFoto?.lebar || 1600} height={tentangFoto?.tinggi || 1200} loading="lazy"
+              className="aspect-[4/3] w-full rounded-[1.75rem] object-cover lg:aspect-[16/11]" />
+          )}
         </div>
         {/* stay planner with the calendar open, under the about text and photo */}
         <div className="mx-auto mt-12 max-w-6xl px-4 sm:px-6 md:mt-16">

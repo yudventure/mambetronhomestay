@@ -170,6 +170,14 @@ Hal yang perlu diketahui tentang tiap situs, sesuai keadaan Oktober 2026.
 
 Tabelnya `kalender_sambungan` (tautan per unit) dan `kalender_luar` (malam yang terbaca dari situs lain). Pembaca iCal ada di `lib/ical.mjs` dengan uji `npm run uji`, aturan sinkron di `lib/sinkron.ts`, tautan ekspor di `app/ical/[berkas]/route.ts`.
 
+## Video tentang kami
+
+Foto di samping teks tentang kami bisa diganti video. Isi tautannya di Isi situs, bagian halaman utama, isian Video tentang kami, paling banyak tiga. Tautan yang dikenali adalah YouTube (video biasa dan Shorts), Instagram (post dan Reels), dan TikTok, termasuk tautan pendek `vm.tiktok.com`. Di atas isian itu panel menulis platform tiap tautan, atau memberi tahu bila tautannya belum dikenali.
+
+Di layar lebar video pertama tampil paling tinggi di tengah, video kedua di kiri dan ketiga di kanan lebih pendek. Video yang disentuh kursor membesar, dan saat kursor pergi video tengah kembali paling tinggi. Di HP dan tablet video berjajar dan bisa digeser, video di tengah layar besar dan tetangganya lebih kecil di kiri dan kanan. Ketukan pada video samping membawanya ke tengah, titik di bawahnya juga bisa diketuk.
+
+Setiap video mula-mula tampil sebagai sampul dengan tombol putar. Pemutar YouTube, TikTok, atau Instagram baru dimuat saat sampul diketuk, satu video sekaligus, supaya halaman utama tetap ringan. Sampul YouTube diambil dari YouTube, sampul TikTok dari layanan oEmbed TikTok (disimpan enam jam), dan Instagram tidak memberi sampul tanpa kunci API, jadi video Instagram memakai foto tentang kami dari Foto situs sebagai sampul. Bingkai video tegak, jadi Shorts, Reels, dan TikTok paling pas. Video YouTube mendatar tetap bisa diputar, dengan bidang hitam di atas dan bawah. Tanpa tautan video, bagian ini memakai foto seperti sebelumnya.
+
 ## Tanggal yang dibawa dan foto besar
 
 Kotak Rencanakan liburanmu di halaman utama, di bawah teks dan foto tentang kami, langsung berisi kalender Mambetron yang sama dengan halaman pesan, tanpa pemilih tanggal bawaan peramban. Di layar lebar kalender menampilkan dua bulan, di HP satu bulan. Malam yang penuh tercoret merah dan tidak bisa dipilih, jadi tamu langsung melihat tanggal yang kosong. Tanggal tiba dan pulang wajib diisi. Di layar lebar, kolom di samping kalender menulis tanggal tiba, tanggal pulang, dan jumlah malamnya.

@@ -5,6 +5,7 @@ import { ambilSitus } from '@/lib/data';
 import { rupiah, tanggal } from '@/lib/format';
 import { ambilKurs } from '@/lib/kurs';
 import { NAMA_UANG } from '@/lib/uang';
+import { NAMA_PLATFORM, bacaVideo } from '@/lib/video';
 
 export const metadata = { title: 'Isi situs' };
 
@@ -30,6 +31,22 @@ export default async function Pengaturan() {
                   {(['USD', 'EUR', 'JPY', 'CNY'] as const).map((c) => (
                     <li key={c}>1 {NAMA_UANG[c].id.charAt(0).toLowerCase() + NAMA_UANG[c].id.slice(1)} sama dengan {rupiah(Math.round(kurs.idrPer[c]))}</li>
                   ))}
+                </ul>
+              </div>
+            )}
+            {g.isian.some((f) => f.k === 'tentangVideo') && (situs.tentangVideo as { url: string }[]).some((x) => x.url.trim()) && (
+              <div className="mb-6 rounded-2xl bg-buih px-4 py-3">
+                <p className="font-semibold text-laut">Video tentang kami yang terbaca</p>
+                <ul className="mt-2 grid gap-1 text-sm text-laut">
+                  {(situs.tentangVideo as { url: string }[]).filter((x) => x.url.trim()).map((x, i) => {
+                    const v = bacaVideo(x.url);
+                    const pendek = /^https?:\/\/((vm|vt)\.tiktok\.com|(www\.)?tiktok\.com\/t)\//i.test(x.url.trim());
+                    return (
+                      <li key={i} className={v || pendek ? '' : 'font-semibold text-merah'}>
+                        Video {i + 1} {v ? NAMA_PLATFORM[v.jenis] : pendek ? 'TikTok, tautan pendek dibuka saat halaman tampil' : 'belum dikenali, periksa tautannya'}{i >= 3 ? ', tidak tampil karena paling banyak tiga' : ''}
+                      </li>
+                    );
+                  })}
                 </ul>
               </div>
             )}
