@@ -13,7 +13,7 @@ import { bahasaAktif } from '@/lib/bahasa';
 import { ambilSitus, daftarKamar, daftarLayanan, daftarUlasan, fotoSitus, gambarCadangan, pemesananAktif, sisaKamar } from '@/lib/data';
 import { kamus } from '@/lib/kamus';
 import { dwi, paragraf, tautanLuar, tautanWa } from '@/lib/format';
-import { KISI, kisiSorotan, rentang } from '@/lib/kisi';
+import { KISI, rentang } from '@/lib/kisi';
 import { hariIni, tambahHari } from '@/lib/tanggal';
 import { kursAktif } from '@/lib/uang-server';
 import { siapkanVideo } from '@/lib/video-server';
@@ -44,7 +44,6 @@ export default async function Beranda() {
   const tautanPeta = s.petaTautan || (titik ? `https://www.google.com/maps?q=${titik.lat},${titik.lng}` : '');
   const rata = ulasan.length ? ulasan.reduce((n, u) => n + u.bintang, 0) / ulasan.length : 0;
   const angka1 = new Intl.NumberFormat(b === 'en' ? 'en-US' : 'id-ID', { minimumFractionDigits: 1, maximumFractionDigits: 1 });
-  const g = kisiSorotan(s.sorotan.length);
 
   // Photo cards under the hero, one per photo in Foto situs, plain and not
   // clickable. Until photos are uploaded three sea illustrations hold the place.
@@ -166,25 +165,6 @@ export default async function Beranda() {
         </div>
       </section>
 
-      {s.sorotan.length > 0 && (
-        <section className="pb-16 md:pb-24">
-          <div className="mx-auto max-w-6xl px-4 sm:px-6">
-            <h2 className="sr-only">{dwi(s.sorotanJudul, b)}</h2>
-            <div className={`${g.induk} gap-4`}>
-              {s.sorotan.map((x, i) => (
-                <div key={i} className={`rounded-3xl bg-embun p-6 ${g.anak(i)}`}>
-                  <div className="flex items-center gap-3">
-                    <Ikon nama={x.ikon} className="size-7 shrink-0 text-biru-tua" tebal={1.5} />
-                    <h3 className="text-xl">{dwi(x.judul, b)}</h3>
-                  </div>
-                  <p className="mt-3 text-[0.95rem] text-abu">{dwi(x.teks, b)}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-      )}
-
       {layanan.length > 0 && (
         <Bagian id="kegiatan" className="!pt-0">
           <JudulBagian judul={dwi(s.layananJudul, b)} teks={dwi(s.layananTeks, b)} />
@@ -230,22 +210,6 @@ export default async function Beranda() {
               </figure>
             ))}
           </div>
-        </Bagian>
-      )}
-
-      {s.langkah.length > 0 && (
-        <Bagian className="!pt-0">
-          <JudulBagian judul={dwi(s.caraJudul, b)} />
-          <ol className={`${KISI} gap-4`}>
-            {s.langkah.map((x, i) => (
-              <li key={i} className={`rounded-3xl bg-embun p-6 ${rentang(s.langkah.length, i)}`}>
-                <span className="font-judul text-4xl text-biru">{String(i + 1).padStart(2, '0')}</span>
-                <h3 className="mt-3 text-xl">{dwi(x.judul, b)}</h3>
-                <p className="mt-2 text-[0.95rem] text-abu">{dwi(x.teks, b)}</p>
-              </li>
-            ))}
-          </ol>
-          <Link href="/pesan" className="tombol mt-8">{k.pesanSekarang} <Ikon nama="panah" className="size-4" /></Link>
         </Bagian>
       )}
 

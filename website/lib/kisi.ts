@@ -13,13 +13,6 @@ export function rentang(n: number, i: number) {
   return k.join(' ');
 }
 
-// Two-column variant for short lists like highlights or bank accounts.
+// Two-column variant for short lists like sync units or bank accounts.
 export const KISI2 = 'grid grid-cols-1 md:grid-cols-2';
 export const rentang2 = (n: number, i: number) => (n % 2 === 1 && i === n - 1 ? 'md:col-span-2' : '');
-
-// Highlights sit four across when they divide evenly, otherwise they use
-// the same three column rules as the cards.
-export function kisiSorotan(n: number) {
-  if (n % 4 === 0) return { induk: 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4', anak: () => '' };
-  return { induk: KISI, anak: (i: number) => rentang(n, i) };
-}

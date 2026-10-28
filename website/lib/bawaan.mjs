@@ -119,38 +119,10 @@ export const PENGATURAN = [
         ],
         bawaan: VIDEO_AWAL,
       },
-      { k: 'sorotanJudul', label: 'Judul bagian keunggulan', jenis: 'dua', bantuan: 'Tidak tampil di layar. Dibaca oleh pembaca layar dan mesin pencari.', bawaan: dua('Kenapa menginap di sini', 'Why stay with us') },
-      {
-        k: 'sorotan', label: 'Keunggulan', jenis: 'daftar', tambah: 'Tambah keunggulan',
-        isian: [
-          { k: 'ikon', label: 'Ikon', jenis: 'ikon' },
-          { k: 'judul', label: 'Judul', jenis: 'dua' },
-          { k: 'teks', label: 'Teks', jenis: 'duaPanjang' },
-        ],
-        bawaan: [
-          { ikon: 'snorkel', judul: dua('Karang di depan bungalow', 'A reef at the doorstep'), teks: dua('Snorkeling langsung dari depan bungalow, di karang yang membentang dari dermaga Yenkoranu.', 'Snorkel right off the bungalows, on a reef that runs from the Yenkoranu jetty.') },
-          { ikon: 'makan', judul: dua('Makan tiga kali sehari', 'Three meals a day'), teks: dua('Dimasak di dapur keluarga, biasanya ikan segar, nasi, tempe, sayur, dan sambal.', 'Cooked in the family kitchen, usually fresh fish, rice, tempeh, vegetables and sambal.') },
-          { ikon: 'perahu', judul: dua('Jemputan perahu', 'Boat pickup'), teks: dua('Kri sekitar satu jam naik perahu dari Waisai. Kabari jadwal kapal cepatmu dari Sorong, perahu kami siapkan.', 'Kri is about an hour by boat from Waisai. Share your fast ferry time from Sorong and we will have the boat ready.') },
-          { ikon: 'hati', judul: dua('Tuan rumah yang hangat', 'Warm hosts'), teks: dua('Keluarga setempat yang menurut tamu ramah dan suka membantu.', 'A local family that guests describe as friendly and helpful.') },
-        ],
-      },
       { k: 'layananJudul', label: 'Judul bagian kegiatan', jenis: 'dua', bawaan: dua('Kegiatan dan antar jemput', 'Trips and transfers') },
       { k: 'layananTeks', label: 'Teks bagian kegiatan', jenis: 'duaPanjang', bawaan: dua('Tambahkan saat memesan atau tanyakan langsung ke kami.', 'Add them when you book or just ask us.') },
       { k: 'galeriJudul', label: 'Judul bagian galeri foto', jenis: 'dua', bawaan: dua('Sehari di Mambetron', 'A day at Mambetron') },
       { k: 'ulasanJudul', label: 'Judul bagian ulasan', jenis: 'dua', bawaan: dua('Kata tamu', 'What guests say') },
-      { k: 'caraJudul', label: 'Judul bagian cara memesan', jenis: 'dua', bawaan: dua('Cara memesan', 'How to book') },
-      {
-        k: 'langkah', label: 'Langkah memesan', jenis: 'daftar', tambah: 'Tambah langkah',
-        isian: [
-          { k: 'judul', label: 'Judul', jenis: 'dua' },
-          { k: 'teks', label: 'Teks', jenis: 'duaPanjang' },
-        ],
-        bawaan: [
-          { judul: dua('Pilih bungalow dan tanggal', 'Pick a bungalow and dates'), teks: dua('Lihat tanggal kosong di kalender lalu isi data tamu.', 'Check open dates on the calendar and fill in guest details.') },
-          { judul: dua('Bayar penuh', 'Pay in full'), teks: dua('Transfer total pembayaran ke rekening yang tertera di halaman pesanan.', 'Transfer the full amount to the account shown on your booking page.') },
-          { judul: dua('Kirim bukti lewat WhatsApp', 'Send the receipt on WhatsApp'), teks: dua('Kami mengonfirmasi pesananmu dan mengatur jemputan di Waisai.', 'We confirm your booking and arrange your pickup in Waisai.') },
-        ],
-      },
       { k: 'lokasiJudul', label: 'Judul bagian lokasi', jenis: 'dua', bawaan: dua('Cara ke sini', 'Getting here') },
       {
         k: 'caraSampai', label: 'Petunjuk perjalanan', jenis: 'duaPanjang', bawaan: dua(
@@ -316,12 +288,6 @@ const BAWAAN_LAMA = {
   tentangTeks: [dua(
     'Mambetron Homestay adalah rumah singgah keluarga di Raja Ampat. Maskot kami, Mambe, adalah kuskus, hewan pemalu bermata besar yang suka mengintip dari balik dahan hutan pulau.\n\nDi sini hari dimulai dengan matahari terbit di atas laut dan ditutup dengan obrolan di dermaga. Tidak ada yang terburu-buru. Kamu cukup datang, kami yang urus sisanya.',
     'Mambetron Homestay is a family guesthouse in Raja Ampat. Our mascot Mambe is a cuscus, the shy big-eyed animal that peeks out from the branches of the island forest.\n\nDays here start with sunrise over the sea and end with stories on the jetty. Nobody is in a hurry. Just come, we will take care of the rest.')],
-  sorotan: [[
-    { ikon: 'snorkel', judul: dua('Karang di depan rumah', 'A reef at the doorstep'), teks: dua('Turun dari dermaga dan langsung berenang bersama ikan karang, penyu, dan kadang hiu sirip hitam.', 'Step off the jetty and swim with reef fish, turtles and the odd blacktip shark.') },
-    { ikon: 'makan', judul: dua('Makan tiga kali sehari', 'Three meals a day'), teks: dua('Masakan rumahan dengan ikan segar, sayur kebun, dan sambal buatan mama. Sudah termasuk dalam harga.', 'Home cooking with fresh fish, garden greens and homemade sambal. Included in the rate.') },
-    { ikon: 'perahu', judul: dua('Dijemput di Waisai', 'Pickup in Waisai'), teks: dua('Kabari jadwal kapal cepatmu, kami menunggu di pelabuhan dengan perahu.', 'Tell us your ferry time and we will wait at the harbour with our boat.') },
-    { ikon: 'hati', judul: dua('Tuan rumah yang hangat', 'Warm hosts'), teks: dua('Kami mengenal setiap sudut pulau dan senang berbagi cerita kampung.', 'We know every corner of the island and love sharing village stories.') },
-  ]],
   ulasanWajah: [[
     { nama: 'Adam', huruf: 'A' }, { nama: 'Rijnders', huruf: 'L' }, { nama: 'Linda', huruf: 'L' },
     { nama: 'Justyna', huruf: 'J' }, { nama: 'Jeroen', huruf: 'J' }, { nama: 'Christopher', huruf: 'C' },
@@ -368,7 +334,7 @@ for (const f of PENGATURAN.flatMap((g) => g.isian)) {
   if (JSON.stringify(lama) !== JSON.stringify(f.bawaan)) (BAWAAN_LAMA[f.k] ??= []).push(lama);
 }
 // Defaults from before full payment and rate tiers, when the site asked for a deposit.
-const SEBELUM_LUNAS = {"dpPersen": 30, "langkah": [{"judul": {"id": "Pilih bungalow dan tanggal", "en": "Pick a bungalow and dates"}, "teks": {"id": "Lihat tanggal kosong di kalender lalu isi data tamu.", "en": "Check open dates on the calendar and fill in guest details."}}, {"judul": {"id": "Bayar uang muka", "en": "Pay the deposit"}, "teks": {"id": "Transfer uang muka ke rekening yang tertera di halaman pesanan.", "en": "Transfer the deposit to the account shown on your booking page."}}, {"judul": {"id": "Kirim bukti lewat WhatsApp", "en": "Send the receipt on WhatsApp"}, "teks": {"id": "Kami mengonfirmasi pesananmu dan mengatur jemputan di Waisai.", "en": "We confirm your booking and arrange your pickup in Waisai."}}], "faq": [{"tanya": {"id": "Apakah harga sudah termasuk makan?", "en": "Are meals included?"}, "jawab": {"id": "Ya. Harga bungalow sudah termasuk makan pagi, siang, dan malam, juga air minum, teh, dan kopi.", "en": "Yes. The rate includes breakfast, lunch and dinner, plus drinking water, tea and coffee."}}, {"tanya": {"id": "Bagaimana listrik dan sinyal?", "en": "What about power and phone signal?"}, "jawab": {"id": "Listrik menyala dari sore sampai pagi. Sinyal telepon terbatas, jadi kabari keluarga sebelum menyeberang.", "en": "Power runs from late afternoon until morning. Phone signal is limited, so let your family know before you cross."}}, {"tanya": {"id": "Bagaimana cara membayar?", "en": "How do I pay?"}, "jawab": {"id": "Setelah memesan, transfer uang muka ke rekening yang tertera lalu kirim bukti lewat WhatsApp. Sisanya dibayar saat tiba.", "en": "After booking, transfer the deposit to the account shown and send the receipt on WhatsApp. Pay the rest when you arrive."}}, {"tanya": {"id": "Bisakah membatalkan pesanan?", "en": "Can I cancel?"}, "jawab": {"id": "Bisa. Aturan pengembalian uang muka ada di halaman ketentuan menginap.", "en": "Yes. The deposit refund rules are on the house rules page."}}], "catatanBayar": {"id": "Transfer uang muka dalam 24 jam setelah memesan, lalu kirim bukti transfer lewat WhatsApp. Sisa pembayaran dilunasi saat tiba, tunai atau transfer.", "en": "Transfer the deposit within 24 hours of booking, then send the receipt on WhatsApp. Pay the balance when you arrive, in cash or by transfer."}, "pesanTerima": {"id": "Terima kasih, pesananmu sudah kami terima. Bungalow kami tahan sambil menunggu uang muka.", "en": "Thank you, we have your booking. We are holding the bungalow for you while we wait for the deposit."}, "ketentuan": {"id": "Jam tiba dan pulang bisa disesuaikan dengan jadwal kapal. Kabari kami bila jadwalmu berubah.\n\nPembatalan 14 hari atau lebih sebelum tiba, uang muka kembali penuh. Pembatalan kurang dari 14 hari, uang muka tidak kembali tetapi bisa dipakai untuk tanggal lain dalam satu tahun.\n\nJaga laut kita. Jangan menginjak atau mengambil karang, dan bawa pulang sampah plastikmu.", "en": "Arrival and departure times can follow the ferry schedule. Let us know if your plans change.\n\nCancel 14 days or more before arrival and the deposit is refunded in full. Cancel later and the deposit is not refunded, but you can use it for other dates within a year.\n\nLook after our sea. Do not stand on or take coral, and take your plastic home with you."}};
+const SEBELUM_LUNAS = {"dpPersen": 30, "faq": [{"tanya": {"id": "Apakah harga sudah termasuk makan?", "en": "Are meals included?"}, "jawab": {"id": "Ya. Harga bungalow sudah termasuk makan pagi, siang, dan malam, juga air minum, teh, dan kopi.", "en": "Yes. The rate includes breakfast, lunch and dinner, plus drinking water, tea and coffee."}}, {"tanya": {"id": "Bagaimana listrik dan sinyal?", "en": "What about power and phone signal?"}, "jawab": {"id": "Listrik menyala dari sore sampai pagi. Sinyal telepon terbatas, jadi kabari keluarga sebelum menyeberang.", "en": "Power runs from late afternoon until morning. Phone signal is limited, so let your family know before you cross."}}, {"tanya": {"id": "Bagaimana cara membayar?", "en": "How do I pay?"}, "jawab": {"id": "Setelah memesan, transfer uang muka ke rekening yang tertera lalu kirim bukti lewat WhatsApp. Sisanya dibayar saat tiba.", "en": "After booking, transfer the deposit to the account shown and send the receipt on WhatsApp. Pay the rest when you arrive."}}, {"tanya": {"id": "Bisakah membatalkan pesanan?", "en": "Can I cancel?"}, "jawab": {"id": "Bisa. Aturan pengembalian uang muka ada di halaman ketentuan menginap.", "en": "Yes. The deposit refund rules are on the house rules page."}}], "catatanBayar": {"id": "Transfer uang muka dalam 24 jam setelah memesan, lalu kirim bukti transfer lewat WhatsApp. Sisa pembayaran dilunasi saat tiba, tunai atau transfer.", "en": "Transfer the deposit within 24 hours of booking, then send the receipt on WhatsApp. Pay the balance when you arrive, in cash or by transfer."}, "pesanTerima": {"id": "Terima kasih, pesananmu sudah kami terima. Bungalow kami tahan sambil menunggu uang muka.", "en": "Thank you, we have your booking. We are holding the bungalow for you while we wait for the deposit."}, "ketentuan": {"id": "Jam tiba dan pulang bisa disesuaikan dengan jadwal kapal. Kabari kami bila jadwalmu berubah.\n\nPembatalan 14 hari atau lebih sebelum tiba, uang muka kembali penuh. Pembatalan kurang dari 14 hari, uang muka tidak kembali tetapi bisa dipakai untuk tanggal lain dalam satu tahun.\n\nJaga laut kita. Jangan menginjak atau mengambil karang, dan bawa pulang sampah plastikmu.", "en": "Arrival and departure times can follow the ferry schedule. Let us know if your plans change.\n\nCancel 14 days or more before arrival and the deposit is refunded in full. Cancel later and the deposit is not refunded, but you can use it for other dates within a year.\n\nLook after our sea. Do not stand on or take coral, and take your plastic home with you."}};
 for (const [k, v] of Object.entries(SEBELUM_LUNAS)) (BAWAAN_LAMA[k] ??= []).push(v, sebelumBungalow(v));
 const sama = (a, b) => JSON.stringify(a) === JSON.stringify(b);
 
