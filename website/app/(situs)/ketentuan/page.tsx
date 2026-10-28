@@ -4,6 +4,7 @@ import { bahasaAktif } from '@/lib/bahasa';
 import { ambilSitus } from '@/lib/data';
 import { kamus } from '@/lib/kamus';
 import { dwi, paragraf } from '@/lib/format';
+import { daftarPaket } from '@/lib/paket';
 
 export async function generateMetadata(): Promise<Metadata> {
   return { title: kamus(await bahasaAktif()).kaki.ketentuan };
@@ -12,6 +13,7 @@ export async function generateMetadata(): Promise<Metadata> {
 export default async function Ketentuan() {
   const [b, situs] = await Promise.all([bahasaAktif(), ambilSitus()]);
   const k = kamus(b);
+  const paket = daftarPaket(situs);
   return (
     <Bagian lebar="max-w-3xl" className="!pt-10 md:!pt-14">
       <p className="label-kecil">{situs.nama}</p>
@@ -29,6 +31,19 @@ export default async function Ketentuan() {
       <div className="prosa mt-8 text-lg">
         {paragraf(dwi(situs.ketentuan, b)).map((p, i) => <p key={i}>{p}</p>)}
       </div>
+      {paket.length > 0 && (
+        <section className="mt-10">
+          <h2 className="text-2xl">{k.form.paketJudul}</h2>
+          <div className="mt-4 grid gap-3">
+            {paket.map((x, i) => (
+              <div key={i} className="rounded-2xl bg-embun px-5 py-4">
+                <p className="font-judul text-xl font-semibold text-laut">{dwi(x.nama, b)}</p>
+                {dwi(x.syarat, b) && <p className="mt-1 text-abu">{dwi(x.syarat, b)}</p>}
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
       <div className="prosa mt-8 rounded-3xl bg-buih p-6 text-laut">
         {paragraf(dwi(situs.catatanBayar, b)).map((p, i) => <p key={i}>{p}</p>)}
       </div>

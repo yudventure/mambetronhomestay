@@ -11,7 +11,8 @@ import type { Bahasa, Kamar, Layanan } from '@/lib/jenis';
 import { KAMUS } from '@/lib/kamus';
 import { SATUAN } from '@/lib/satuan.mjs';
 import { hitungHarga } from '@/lib/harga';
-import { pilih, rentangTanggal, rupiah, tanggal } from '@/lib/format';
+import { dwi, pilih, rentangTanggal, rupiah, tanggal } from '@/lib/format';
+import type { Paket } from '@/lib/paket';
 import { bacaRencana, simpanRencana } from '@/lib/rencana';
 import Perkiraan from './Perkiraan';
 import type { Kurs } from '@/lib/uang';
@@ -27,6 +28,7 @@ type Props = {
   awal: string;
   akhir: string;
   dpPersen: number;
+  paket: Paket[];
   aktif: boolean;
   wa: string;
   kurs: Kurs;
@@ -69,7 +71,7 @@ function Hitung({ label, ket, nilai, min, maks, ubah, kurang, tambah }: {
   );
 }
 
-export default function FormPesan({ b, kamar, layanan, sisa, awal, akhir, dpPersen, aktif, wa, kurs, mula, ditolak, dariTautan }: Props) {
+export default function FormPesan({ b, kamar, layanan, sisa, awal, akhir, dpPersen, paket, aktif, wa, kurs, mula, ditolak, dariTautan }: Props) {
   const k = KAMUS[b];
   const f = k.form;
   const [hasil, aksi, sedang] = useActionState<HasilKirim, FormData>(kirimPesanan, { galat: '' });
@@ -83,6 +85,8 @@ export default function FormPesan({ b, kamar, layanan, sisa, awal, akhir, dpPers
   const [pilihan, setPilihan] = useState<number[]>([]);
   const [data, setData] = useState({ nama: '', telepon: '', email: '', negara: '', kedatangan: '', catatan: '' });
   const [setuju, setSetuju] = useState(false);
+  const [paketI, setPaketI] = useState(0);
+  const pk = paket[paketI] ?? null;
 
   const km = kamar.find((x) => x.id === kamarId) ?? kamar[0];
   const sisaKm = useMemo(() => sisa[km?.id] ?? {}, [sisa, km]);
@@ -140,7 +144,9 @@ export default function FormPesan({ b, kamar, layanan, sisa, awal, akhir, dpPers
   const kapasitas = km ? km.kapasitas * jumlahKamar : 0;
   const malam = masuk && keluar ? selisihHari(masuk, keluar) : 0;
   const terpilih = layanan.filter((l) => pilihan.includes(l.id));
-  const harga = km ? hitungHarga(km, { malam, jumlahKamar, dewasa, anak, layanan: terpilih, dpPersen }) : null;
+  const harga = km ? hitungHarga(km, { malam, jumlahKamar, dewasa, anak, layanan: terpilih, dpPersen, persenPaket: pk?.persen }) : null;
+  // the bungalow part of the stay under each rate, for the rate cards
+  const hargaPaket = (p: Paket) => (km && malam > 0 ? hitungHarga(km, { malam, jumlahKamar, dewasa, anak, layanan: [], dpPersen, persenPaket: p.persen }).biayaKamar : 0);
   const siap = aktif && Boolean(km && masuk && keluar && malam > 0);
   const tampilKalender = !masuk || !keluar || tahan;
 
@@ -173,6 +179,8 @@ export default function FormPesan({ b, kamar, layanan, sisa, awal, akhir, dpPers
       <input type="hidden" name="jumlahKamar" value={jumlahKamar} />
       <input type="hidden" name="dewasa" value={dewasa} />
       <input type="hidden" name="anak" value={anak} />
+      {pk && <input type="hidden" name="paket" value={paketI} />}
+      {pk && <input type="hidden" name="paket_nama" value={pk.nama.id} />}
       {pilihan.map((id) => <input key={id} type="hidden" name="layanan" value={id} />)}
       <div className="hidden" aria-hidden>
         <label>Situs web<input name="situs_web" tabIndex={-1} autoComplete="off" defaultValue="" /></label>
@@ -242,6 +250,31 @@ export default function FormPesan({ b, kamar, layanan, sisa, awal, akhir, dpPers
             <p className="text-sm text-abu">{k.muat(kapasitas)}</p>
           </div>
         </Kotak>
+
+        {paket.length > 0 && (
+          <Kotak judul={f.bagianPaket}>
+            <fieldset className="grid gap-3">
+              <legend className="sr-only">{f.bagianPaket}</legend>
+              {paket.map((x, i) => {
+                const on = i === paketI;
+                const biaya = hargaPaket(x);
+                return (
+                  <label key={i} className={`grid cursor-pointer grid-cols-[auto_1fr] items-start gap-x-3 gap-y-2 rounded-2xl p-4 transition-colors sm:grid-cols-[auto_1fr_auto] ${on ? 'bg-buih ring-2 ring-biru' : 'ring-1 ring-buih-2 hover:bg-buih'}`}>
+                    <input type="radio" name="pilih_paket" className="mt-1 size-5 shrink-0 accent-[#036f87]" checked={on} onChange={() => setPaketI(i)} />
+                    <span className="min-w-0">
+                      <span className="block font-judul text-lg font-semibold leading-tight text-laut">{dwi(x.nama, b)}</span>
+                      {dwi(x.syarat, b) && <span className="mt-1 block text-sm text-abu">{dwi(x.syarat, b)}</span>}
+                    </span>
+                    <span className="col-start-2 text-sm sm:col-start-3 sm:text-right">
+                      {biaya > 0 && <span className="block font-bold tabular-nums text-laut">{rupiah(biaya, b)}</span>}
+                      <span className="block text-abu">{x.persen > 0 ? f.paketTambah(x.persen) : f.paketDasar}</span>
+                    </span>
+                  </label>
+                );
+              })}
+            </fieldset>
+          </Kotak>
+        )}
 
         {layanan.length > 0 && (
           <Kotak judul={f.bagianLayanan}>
@@ -315,7 +348,7 @@ export default function FormPesan({ b, kamar, layanan, sisa, awal, akhir, dpPers
         {malam > 0 && harga ? (
           <div className="mt-5 grid gap-3 text-[0.9375rem]">
             <div className="flex justify-between gap-3">
-              <span>{pilih(b, km.nama, km.nama_en)}<span className="block text-sm text-abu">{f.malam(malam)}</span></span>
+              <span>{pilih(b, km.nama, km.nama_en)}<span className="block text-sm text-abu">{f.malam(malam)}{pk ? `, ${dwi(pk.nama, b)}` : ''}</span></span>
               <span className="font-semibold tabular-nums">{rupiah(harga.biayaKamar, b)}</span>
             </div>
             {harga.rincian.map((r) => (
@@ -330,7 +363,8 @@ export default function FormPesan({ b, kamar, layanan, sisa, awal, akhir, dpPers
                 <span className="font-judul text-2xl font-semibold tabular-nums text-laut">{rupiah(harga.total, b)}</span>
               </div>
               <Perkiraan idr={harga.total} kurs={kurs} b={b} className="text-right text-abu" />
-              {harga.dp > 0 && (
+              {harga.dp > 0 && harga.dp >= harga.total && <p className="mt-1 text-sm text-abu">{f.bayarPenuh}</p>}
+              {harga.dp > 0 && harga.dp < harga.total && (
                 <>
                   <div className="mt-1 flex justify-between gap-3 text-sm">
                     <span>{f.uangMuka(dpPersen)}</span>

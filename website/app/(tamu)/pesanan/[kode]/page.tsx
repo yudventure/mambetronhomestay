@@ -73,7 +73,7 @@ export default async function HalamanPesanan({ params, searchParams }: {
 
         {perluBayar && (
           <div className="bg-buih px-5 py-6 sm:px-8">
-            <h2 className="text-2xl">{k.form.uangMuka(situs.dpPersen)}</h2>
+            <h2 className="text-2xl">{p.dp >= p.total ? h.totalBayar : k.form.uangMuka(situs.dpPersen)}</h2>
             <p className="mt-1 font-judul text-3xl font-semibold text-laut">{rupiah(p.dp, b)}</p>
             <Perkiraan idr={p.dp} kurs={kurs} b={b} className="text-abu" />
             {situs.bank.length > 0 ? (
@@ -127,11 +127,18 @@ export default async function HalamanPesanan({ params, searchParams }: {
               <dd className="font-semibold text-laut">{p.nama}</dd>
               <dd className="text-sm text-abu">{h.tamu(p.dewasa, p.anak)}</dd>
             </div>
+            {p.paket && (
+              <div className="rounded-2xl bg-buih px-4 py-3 sm:col-span-2">
+                <dt className="text-sm text-abu">{h.paket}</dt>
+                <dd className="font-semibold text-laut">{dwi(p.paket.nama, b)}</dd>
+                {dwi(p.paket.syarat, b) && <dd className="text-sm text-abu">{dwi(p.paket.syarat, b)}</dd>}
+              </div>
+            )}
           </dl>
 
           <div className="mt-6 grid gap-3 text-[0.9375rem]">
             <div className="flex justify-between gap-3">
-              <span>{p.kamar_nama}<span className="block text-sm text-abu">{k.form.malam(p.malam)}</span></span>
+              <span>{p.kamar_nama}<span className="block text-sm text-abu">{k.form.malam(p.malam)}{p.paket ? `, ${dwi(p.paket.nama, b)}` : ''}</span></span>
               <span className="font-semibold tabular-nums">{rupiah(p.biaya_kamar, b)}</span>
             </div>
             {p.rincian.map((r) => (

@@ -4,6 +4,7 @@ import FormPesan, { type KamarForm } from '@/components/FormPesan';
 import { bahasaAktif } from '@/lib/bahasa';
 import { ambilSitus, daftarKamar, daftarLayanan, gambarCadangan, pemesananAktif, sisaKamar } from '@/lib/data';
 import { pastikanSegar } from '@/lib/sinkron';
+import { daftarPaket } from '@/lib/paket';
 import { kamus } from '@/lib/kamus';
 import { tautanWa } from '@/lib/format';
 import { kursAktif } from '@/lib/uang-server';
@@ -73,6 +74,7 @@ export default async function Pesan({ searchParams }: { searchParams: Promise<Re
         awal={awal}
         akhir={akhir}
         dpPersen={situs.dpPersen}
+        paket={daftarPaket(situs)}
         aktif={aktif}
         wa={tautanWa(situs.whatsapp, k.pesanWaUmum)}
         mula={{ kamarId: km?.id ?? 0, masuk, keluar, dewasa: Math.min(tamu, kap), anak: 0, jumlahKamar }}

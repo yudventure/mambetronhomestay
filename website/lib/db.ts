@@ -3,7 +3,7 @@
 // database needs no manual import.
 import fs from 'fs';
 import mysql from 'mysql2/promise';
-import { SKEMA } from './skema.mjs';
+import { SKEMA, tambahKolom } from './skema.mjs';
 import { KAMAR_AWAL, KAMAR_LAMA, KAMAR_NAMA_LAMA, KAMAR_TEKS_LAMA, LAYANAN_AWAL, situsBawaan } from './bawaan.mjs';
 import { dbDiatur, envDb } from './env';
 
@@ -159,6 +159,7 @@ async function namaBungalow(pool: mysql.Pool) {
 
 async function siapkan(pool: mysql.Pool) {
   for (const sql of SKEMA) await pool.query(sql);
+  await tambahKolom(async (sql: string, nilai: unknown[]) => (await pool.query(sql, nilai))[0] as unknown[]);
   await pindahKamarLama(pool);
   await perbaruiTeksKamar(pool);
   await namaBungalow(pool);

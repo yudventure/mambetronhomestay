@@ -38,6 +38,8 @@ export async function kirimPesanan(_: HasilKirim, fd: FormData): Promise<HasilKi
       dewasa: angka(fd, 'dewasa'),
       anak: angka(fd, 'anak') || 0,
       layanan: fd.getAll('layanan').map((v) => Number(v)).filter(Number.isFinite),
+      paket: fd.has('paket') ? angka(fd, 'paket') : undefined,
+      paketNama: fd.has('paket_nama') ? teks(fd, 'paket_nama') : undefined,
       nama: teks(fd, 'nama'),
       email: teks(fd, 'email'),
       telepon: teks(fd, 'telepon'),

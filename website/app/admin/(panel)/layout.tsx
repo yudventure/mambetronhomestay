@@ -13,7 +13,7 @@ function kalimatHariIni(r: RingkasPanel, dbOk: boolean) {
   if (!dbOk) return 'Database belum terhubung, jadi pesanan belum bisa ditampilkan.';
   const tamu = [r.tiba && `${r.tiba} pesanan tiba`, r.pulang && `${r.pulang} pulang`].filter(Boolean).join(' dan ');
   const awal = tamu ? `${tamu.charAt(0).toUpperCase()}${tamu.slice(1)} hari ini.` : 'Tidak ada tamu yang tiba atau pulang hari ini.';
-  const tunggu = r.menunggu ? ` ${r.menunggu} pesanan menunggu konfirmasi uang muka.` : ' Semua pesanan sudah ditanggapi.';
+  const tunggu = r.menunggu ? ` ${r.menunggu} pesanan menunggu konfirmasi pembayaran.` : ' Semua pesanan sudah ditanggapi.';
   return awal + tunggu;
 }
 

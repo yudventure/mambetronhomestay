@@ -88,6 +88,7 @@ export const SKEMA = [
   dp INT UNSIGNED NOT NULL DEFAULT 0,
   dibayar INT UNSIGNED NOT NULL DEFAULT 0,
   rincian LONGTEXT NULL,
+  paket TEXT NULL,
   bahasa CHAR(2) NOT NULL DEFAULT 'id',
   status VARCHAR(16) NOT NULL DEFAULT 'menunggu',
   sumber VARCHAR(16) NOT NULL DEFAULT 'situs',
@@ -185,6 +186,23 @@ export const SKEMA = [
 ];
 
 // The whole schema as one SQL file, for import through phpMyAdmin.
+// Columns added after the first release. CREATE TABLE above already has
+// them for new databases, older ones get them here on start.
+export const KOLOM_TAMBAHAN = [
+  ['pesanan', 'paket', 'TEXT NULL AFTER rincian'],
+];
+
+// query(sql, values) resolves to the rows of a SELECT.
+export async function tambahKolom(query) {
+  for (const [tabel, kolom, jenis] of KOLOM_TAMBAHAN) {
+    const ada = await query(
+      'SELECT 1 FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = ? AND COLUMN_NAME = ?',
+      [tabel, kolom],
+    );
+    if (!ada.length) await query(`ALTER TABLE ${tabel} ADD COLUMN ${kolom} ${jenis}`, []);
+  }
+}
+
 export function sqlLengkap() {
   return `-- Skema database Mambetron Homestay.
 -- Situs membuat tabel ini sendiri saat pertama terhubung, berkas ini hanya

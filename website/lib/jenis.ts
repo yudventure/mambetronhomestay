@@ -84,6 +84,8 @@ export type Pesanan = {
   dp: number;
   dibayar: number;
   rincian: BarisLayanan[];
+  // rate tier with its terms as booked, null for bookings without one
+  paket: { nama: Dua; syarat: Dua; persen: number } | null;
   bahasa: Bahasa;
   status: StatusPesanan;
   sumber: string;
@@ -155,6 +157,7 @@ export type Situs = {
   checkIn: string;
   checkOut: string;
   dpPersen: number;
+  paketHarga: { nama: Dua; syarat: Dua; persen: number | string }[];
   batasHari: number;
   jedaHari: number;
   bank: Rekening[];

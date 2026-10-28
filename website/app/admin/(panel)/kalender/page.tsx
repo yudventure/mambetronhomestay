@@ -149,7 +149,7 @@ export default async function KalenderAdmin({ searchParams }: { searchParams: Pr
         </ol>
         <ul className="flex flex-wrap gap-x-5 gap-y-1 px-2 pt-3 pb-1 text-xs text-abu sm:text-sm">
           <li className="inline-flex items-center gap-2"><span className="size-2 rounded-full bg-panel-aksen" />Dikonfirmasi atau lunas</li>
-          <li className="inline-flex items-center gap-2"><span className="size-2 rounded-full bg-senja" />Menunggu uang muka</li>
+          <li className="inline-flex items-center gap-2"><span className="size-2 rounded-full bg-senja" />Menunggu pembayaran</li>
           <li className="inline-flex items-center gap-2"><span className={`size-2 rounded-full ${UNGU}`} />Terisi dari OTA</li>
           <li className="inline-flex items-center gap-2"><span className="h-2 w-4 rounded-full bg-panel-lembut ring-1 ring-panel-utama/20 max-sm:h-1.5 max-sm:bg-panel-utama max-sm:ring-0" />Semua bungalow penuh</li>
           <li className="inline-flex items-center gap-2"><span className="h-2 w-4 rounded-full bg-[#fde3dc] max-sm:size-2 max-sm:bg-merah" />Tutup</li>

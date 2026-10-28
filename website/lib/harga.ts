@@ -13,12 +13,15 @@ export function jumlahSatuan(satuan: Satuan, tamu: number, malam: number) {
 
 export function hitungHarga(
   kamar: Pick<Kamar, 'harga' | 'harga_anak' | 'skema_harga'>,
-  o: { malam: number; jumlahKamar: number; dewasa: number; anak: number; layanan: Layanan[]; dpPersen: number },
+  o: { malam: number; jumlahKamar: number; dewasa: number; anak: number; layanan: Layanan[]; dpPersen: number; persenPaket?: number },
 ) {
   const malam = Math.max(0, o.malam);
-  const biayaKamar = kamar.skema_harga === 'kamar'
+  const dasar = kamar.skema_harga === 'kamar'
     ? kamar.harga * o.jumlahKamar * malam
     : (kamar.harga * o.dewasa + (kamar.harga_anak ?? kamar.harga) * o.anak) * malam;
+  // a rate tier adds its percentage to the bungalow part only, rounded to whole thousands
+  const persen = o.persenPaket ?? 0;
+  const biayaKamar = persen > 0 ? Math.round((dasar * (100 + persen)) / 100 / 1000) * 1000 : dasar;
   const tamu = o.dewasa + o.anak;
   const rincian: BarisLayanan[] = o.layanan.map((l) => {
     const jumlah = jumlahSatuan(l.satuan, tamu, malam);

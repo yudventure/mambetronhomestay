@@ -3,7 +3,7 @@
 //   npm run db:sql         write database/skema.sql for import through phpMyAdmin
 // The site does the same on its first database call, so this is optional.
 import { createRequire } from 'module';
-import { SKEMA, sqlLengkap } from '../lib/skema.mjs';
+import { SKEMA, sqlLengkap, tambahKolom } from '../lib/skema.mjs';
 import { KAMAR_AWAL, LAYANAN_AWAL, situsBawaan } from '../lib/bawaan.mjs';
 
 if (process.argv.includes('--sql')) {
@@ -25,6 +25,7 @@ const db = await mysql.createConnection({
   database: e('DB_NAME'), charset: 'utf8mb4',
 });
 for (const s of SKEMA) await db.query(s);
+await tambahKolom(async (sql, nilai) => (await db.query(sql, nilai))[0]);
 const [r] = await db.query("INSERT IGNORE INTO pengaturan (kunci, nilai) VALUES ('benih', '1')");
 if (r.affectedRows === 1) {
   await db.query('INSERT IGNORE INTO pengaturan (kunci, nilai) VALUES (?, ?)', ['situs', JSON.stringify(situsBawaan())]);

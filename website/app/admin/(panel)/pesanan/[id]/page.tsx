@@ -92,7 +92,7 @@ export default async function RincianPesanan({ params, searchParams }: {
             <h2 className="text-2xl">Rincian harga</h2>
             <div className="mt-4 grid gap-3">
               <div className="flex justify-between gap-3">
-                <span>{p.kamar_nama}<span className="block text-sm text-abu">{rupiah(p.harga_satuan)} {KAMUS.id.perSkema[p.skema_harga]}, {p.malam} malam</span></span>
+                <span>{p.kamar_nama}<span className="block text-sm text-abu">{rupiah(p.harga_satuan)} {KAMUS.id.perSkema[p.skema_harga]}, {p.malam} malam{p.paket ? `, paket ${p.paket.nama.id}${p.paket.persen ? ` +${p.paket.persen}%` : ''}` : ''}</span></span>
                 <span className="font-semibold tabular-nums">{rupiah(p.biaya_kamar)}</span>
               </div>
               {p.rincian.map((r) => (
@@ -103,16 +103,22 @@ export default async function RincianPesanan({ params, searchParams }: {
               ))}
               <div className="rounded-2xl bg-buih px-4 py-3">
                 <div className="flex justify-between gap-3"><span className="font-semibold">Total</span><span className="font-judul text-2xl font-semibold tabular-nums text-laut">{rupiah(p.total)}</span></div>
-                <div className="flex justify-between gap-3 text-sm"><span>Uang muka</span><span className="tabular-nums">{rupiah(p.dp)}</span></div>
+                {p.dp > 0 && p.dp < p.total && <div className="flex justify-between gap-3 text-sm"><span>Uang muka</span><span className="tabular-nums">{rupiah(p.dp)}</span></div>}
                 <div className="flex justify-between gap-3 text-sm"><span>Sudah dibayar</span><span className="font-bold tabular-nums">{rupiah(p.dibayar)}</span></div>
                 <div className="flex justify-between gap-3 text-sm text-abu"><span>Sisa</span><span className="tabular-nums">{rupiah(sisa)}</span></div>
               </div>
+              {p.paket && (
+                <div className="rounded-2xl bg-embun px-4 py-3 text-sm">
+                  <p className="font-semibold text-laut">Paket {p.paket.nama.id}</p>
+                  {p.paket.syarat.id && <p className="mt-0.5 text-abu">{p.paket.syarat.id}</p>}
+                </div>
+              )}
             </div>
           </section>
 
           <section className="kartu p-5 sm:p-6">
             <h2 className="text-2xl">Ubah jadwal atau bungalow</h2>
-            <p className="mt-1 text-sm text-abu">Ketersediaan diperiksa lagi dan harga dihitung ulang dengan tarif bungalow sekarang.</p>
+            <p className="mt-1 text-sm text-abu">Ketersediaan diperiksa lagi dan harga dihitung ulang dengan tarif bungalow sekarang dan paket harga pesanan ini.</p>
             <form key={`${p.kamar_id}|${p.check_in}|${p.check_out}|${p.jumlah_kamar}|${p.dewasa}|${p.anak}`} action={ubahJadwal} className="mt-4 grid gap-4 sm:grid-cols-2">
               <input type="hidden" name="id" value={p.id} />
               <div className="sm:col-span-2">
@@ -137,7 +143,7 @@ export default async function RincianPesanan({ params, searchParams }: {
           <section className="kartu p-5 sm:p-6">
             <h2 className="text-2xl">Tindakan cepat</h2>
             <div className="mt-4 grid gap-2">
-              {p.status === 'menunggu' && (
+              {p.status === 'menunggu' && p.dp > 0 && p.dp < p.total && (
                 <form action={tandaiPesanan}><input type="hidden" name="id" value={p.id} /><input type="hidden" name="apa" value="dp" />
                   <button className="tombol tombol-biru w-full">Uang muka diterima</button></form>
               )}

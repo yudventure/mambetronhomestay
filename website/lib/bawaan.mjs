@@ -137,7 +137,7 @@ export const PENGATURAN = [
         ],
         bawaan: [
           { judul: dua('Pilih bungalow dan tanggal', 'Pick a bungalow and dates'), teks: dua('Lihat tanggal kosong di kalender lalu isi data tamu.', 'Check open dates on the calendar and fill in guest details.') },
-          { judul: dua('Bayar uang muka', 'Pay the deposit'), teks: dua('Transfer uang muka ke rekening yang tertera di halaman pesanan.', 'Transfer the deposit to the account shown on your booking page.') },
+          { judul: dua('Bayar penuh', 'Pay in full'), teks: dua('Transfer total pembayaran ke rekening yang tertera di halaman pesanan.', 'Transfer the full amount to the account shown on your booking page.') },
           { judul: dua('Kirim bukti lewat WhatsApp', 'Send the receipt on WhatsApp'), teks: dua('Kami mengonfirmasi pesananmu dan mengatur jemputan di Waisai.', 'We confirm your booking and arrange your pickup in Waisai.') },
         ],
       },
@@ -157,8 +157,8 @@ export const PENGATURAN = [
         bawaan: [
           { tanya: dua('Apakah harga sudah termasuk makan?', 'Are meals included?'), jawab: dua('Ya. Harga bungalow sudah termasuk makan pagi, siang, dan malam, juga air minum, teh, dan kopi.', 'Yes. The rate includes breakfast, lunch and dinner, plus drinking water, tea and coffee.') },
           { tanya: dua('Bagaimana listrik dan sinyal?', 'What about power and phone signal?'), jawab: dua('Listrik menyala dari sore sampai pagi. Sinyal telepon terbatas, jadi kabari keluarga sebelum menyeberang.', 'Power runs from late afternoon until morning. Phone signal is limited, so let your family know before you cross.') },
-          { tanya: dua('Bagaimana cara membayar?', 'How do I pay?'), jawab: dua('Setelah memesan, transfer uang muka ke rekening yang tertera lalu kirim bukti lewat WhatsApp. Sisanya dibayar saat tiba.', 'After booking, transfer the deposit to the account shown and send the receipt on WhatsApp. Pay the rest when you arrive.') },
-          { tanya: dua('Bisakah membatalkan pesanan?', 'Can I cancel?'), jawab: dua('Bisa. Aturan pengembalian uang muka ada di halaman ketentuan menginap.', 'Yes. The deposit refund rules are on the house rules page.') },
+          { tanya: dua('Bagaimana cara membayar?', 'How do I pay?'), jawab: dua('Setelah memesan, transfer total pembayaran ke rekening yang tertera lalu kirim bukti lewat WhatsApp.', 'After booking, transfer the full amount to the account shown and send the receipt on WhatsApp.') },
+          { tanya: dua('Bisakah membatalkan pesanan?', 'Can I cancel?'), jawab: dua('Tergantung paket harga yang kamu pilih saat memesan. Syarat ganti tanggal dan pembatalan tiap paket tertulis di halaman pesan dan di halaman pesananmu.', 'It depends on the rate you pick when booking. The date change and cancellation terms of each rate are shown on the booking form and on your booking page.') },
         ],
       },
     ],
@@ -166,11 +166,37 @@ export const PENGATURAN = [
   {
     kunci: 'pemesanan',
     judul: 'Pemesanan dan pembayaran',
-    keterangan: 'Jam tiba dan pulang, uang muka, rekening, dan ketentuan menginap.',
+    keterangan: 'Jam tiba dan pulang, pembayaran, paket harga, rekening, dan ketentuan menginap.',
     isian: [
       { k: 'checkIn', label: 'Jam check-in', jenis: 'jam', bawaan: '12:00' },
       { k: 'checkOut', label: 'Jam check-out', jenis: 'jam', bawaan: '10:00' },
-      { k: 'dpPersen', label: 'Uang muka dalam persen', jenis: 'angka', min: 0, max: 100, bawaan: 30, bantuan: 'Isi 0 bila tamu tidak perlu membayar uang muka.' },
+      {
+        k: 'dpPersen', label: 'Dibayar di muka dalam persen', jenis: 'angka', min: 0, max: 100, bawaan: 100,
+        bantuan: 'Isi 100 supaya tamu membayar penuh setelah memesan, tanpa uang muka. Isi angka lebih kecil bila ingin memakai uang muka lagi, sisanya dibayar saat tiba. Isi 0 bila semua dibayar saat tiba.',
+      },
+      {
+        k: 'paketHarga', label: 'Paket harga', jenis: 'daftar', tambah: 'Tambah paket',
+        bantuan: 'Pilihan harga di halaman pesan. Harga bungalow tiap paket adalah harga bungalow ditambah persen paket itu, harga kegiatan tidak berubah. Paket pertama terpilih lebih dulu. Syaratnya ikut tersimpan di setiap pesanan, jadi pesanan lama tetap memakai syarat saat dipesan. Kosongkan semua paket bila tidak memakai paket.',
+        isian: [
+          { k: 'nama', label: 'Nama paket', jenis: 'dua' },
+          { k: 'syarat', label: 'Syarat ganti tanggal dan pembatalan', jenis: 'duaPanjang' },
+          { k: 'persen', label: 'Tambahan harga bungalow dalam persen', jenis: 'angka', min: 0, max: 200 },
+        ],
+        bawaan: [
+          {
+            nama: dua('Standar', 'Standard'), persen: 0,
+            syarat: dua('Harga paling hemat. Tanggal tidak bisa diganti dan pembayaran tidak dikembalikan bila batal.', 'Our lowest price. Dates cannot be changed and the payment is not refunded if you cancel.'),
+          },
+          {
+            nama: dua('Comfort', 'Comfort'), persen: 10,
+            syarat: dua('Bisa ganti tanggal paling lambat 7 hari sebelum tiba. Pembayaran tidak dikembalikan bila batal.', 'Change your dates up to 7 days before arrival. The payment is not refunded if you cancel.'),
+          },
+          {
+            nama: dua('Flexible', 'Flexible'), persen: 20,
+            syarat: dua('Bisa ganti tanggal kapan saja sampai hari kedatangan. Batal gratis dengan uang kembali penuh sampai 7 hari sebelum tiba.', 'Change your dates any time up to your arrival day. Free cancellation with a full refund until 7 days before arrival.'),
+          },
+        ],
+      },
       { k: 'batasHari', label: 'Bisa dipesan sampai berapa hari ke depan', jenis: 'angka', min: 30, max: 730, bawaan: 365 },
       { k: 'jedaHari', label: 'Paling cepat berapa hari sebelum tiba', jenis: 'angka', min: 0, max: 30, bawaan: 1, bantuan: 'Isi 0 bila tamu boleh memesan untuk hari ini juga.' },
       {
@@ -184,18 +210,18 @@ export const PENGATURAN = [
       },
       {
         k: 'catatanBayar', label: 'Petunjuk pembayaran', jenis: 'duaPanjang', bawaan: dua(
-          'Transfer uang muka dalam 24 jam setelah memesan, lalu kirim bukti transfer lewat WhatsApp. Sisa pembayaran dilunasi saat tiba, tunai atau transfer.',
-          'Transfer the deposit within 24 hours of booking, then send the receipt on WhatsApp. Pay the balance when you arrive, in cash or by transfer.'),
+          'Transfer total pembayaran dalam 24 jam setelah memesan, lalu kirim bukti transfer lewat WhatsApp.',
+          'Transfer the full amount within 24 hours of booking, then send the receipt on WhatsApp.'),
       },
       {
         k: 'pesanTerima', label: 'Ucapan setelah tamu memesan', jenis: 'duaPanjang', bawaan: dua(
-          'Terima kasih, pesananmu sudah kami terima. Bungalow kami tahan sambil menunggu uang muka.',
-          'Thank you, we have your booking. We are holding the bungalow for you while we wait for the deposit.'),
+          'Terima kasih, pesananmu sudah kami terima. Bungalow kami tahan sambil menunggu pembayaran.',
+          'Thank you, we have your booking. We are holding the bungalow for you while we wait for your payment.'),
       },
       {
         k: 'ketentuan', label: 'Ketentuan menginap', jenis: 'duaPanjang', bawaan: dua(
-          'Jam tiba dan pulang bisa disesuaikan dengan jadwal kapal. Kabari kami bila jadwalmu berubah.\n\nPembatalan 14 hari atau lebih sebelum tiba, uang muka kembali penuh. Pembatalan kurang dari 14 hari, uang muka tidak kembali tetapi bisa dipakai untuk tanggal lain dalam satu tahun.\n\nJaga laut kita. Jangan menginjak atau mengambil karang, dan bawa pulang sampah plastikmu.',
-          'Arrival and departure times can follow the ferry schedule. Let us know if your plans change.\n\nCancel 14 days or more before arrival and the deposit is refunded in full. Cancel later and the deposit is not refunded, but you can use it for other dates within a year.\n\nLook after our sea. Do not stand on or take coral, and take your plastic home with you.'),
+          'Jam tiba dan pulang bisa disesuaikan dengan jadwal kapal. Kabari kami bila jadwalmu berubah.\n\nGanti tanggal dan pembatalan mengikuti paket harga yang kamu pilih saat memesan. Syaratnya tertulis di halaman pesananmu.\n\nJaga laut kita. Jangan menginjak atau mengambil karang, dan bawa pulang sampah plastikmu.',
+          'Arrival and departure times can follow the ferry schedule. Let us know if your plans change.\n\nDate changes and cancellations follow the rate you picked when booking. The terms are shown on your booking page.\n\nLook after our sea. Do not stand on or take coral, and take your plastic home with you.'),
       },
     ],
   },
@@ -331,6 +357,9 @@ for (const f of PENGATURAN.flatMap((g) => g.isian)) {
   const lama = sebelumBungalow(f.bawaan);
   if (JSON.stringify(lama) !== JSON.stringify(f.bawaan)) (BAWAAN_LAMA[f.k] ??= []).push(lama);
 }
+// Defaults from before full payment and rate tiers, when the site asked for a deposit.
+const SEBELUM_LUNAS = {"dpPersen": 30, "langkah": [{"judul": {"id": "Pilih bungalow dan tanggal", "en": "Pick a bungalow and dates"}, "teks": {"id": "Lihat tanggal kosong di kalender lalu isi data tamu.", "en": "Check open dates on the calendar and fill in guest details."}}, {"judul": {"id": "Bayar uang muka", "en": "Pay the deposit"}, "teks": {"id": "Transfer uang muka ke rekening yang tertera di halaman pesanan.", "en": "Transfer the deposit to the account shown on your booking page."}}, {"judul": {"id": "Kirim bukti lewat WhatsApp", "en": "Send the receipt on WhatsApp"}, "teks": {"id": "Kami mengonfirmasi pesananmu dan mengatur jemputan di Waisai.", "en": "We confirm your booking and arrange your pickup in Waisai."}}], "faq": [{"tanya": {"id": "Apakah harga sudah termasuk makan?", "en": "Are meals included?"}, "jawab": {"id": "Ya. Harga bungalow sudah termasuk makan pagi, siang, dan malam, juga air minum, teh, dan kopi.", "en": "Yes. The rate includes breakfast, lunch and dinner, plus drinking water, tea and coffee."}}, {"tanya": {"id": "Bagaimana listrik dan sinyal?", "en": "What about power and phone signal?"}, "jawab": {"id": "Listrik menyala dari sore sampai pagi. Sinyal telepon terbatas, jadi kabari keluarga sebelum menyeberang.", "en": "Power runs from late afternoon until morning. Phone signal is limited, so let your family know before you cross."}}, {"tanya": {"id": "Bagaimana cara membayar?", "en": "How do I pay?"}, "jawab": {"id": "Setelah memesan, transfer uang muka ke rekening yang tertera lalu kirim bukti lewat WhatsApp. Sisanya dibayar saat tiba.", "en": "After booking, transfer the deposit to the account shown and send the receipt on WhatsApp. Pay the rest when you arrive."}}, {"tanya": {"id": "Bisakah membatalkan pesanan?", "en": "Can I cancel?"}, "jawab": {"id": "Bisa. Aturan pengembalian uang muka ada di halaman ketentuan menginap.", "en": "Yes. The deposit refund rules are on the house rules page."}}], "catatanBayar": {"id": "Transfer uang muka dalam 24 jam setelah memesan, lalu kirim bukti transfer lewat WhatsApp. Sisa pembayaran dilunasi saat tiba, tunai atau transfer.", "en": "Transfer the deposit within 24 hours of booking, then send the receipt on WhatsApp. Pay the balance when you arrive, in cash or by transfer."}, "pesanTerima": {"id": "Terima kasih, pesananmu sudah kami terima. Bungalow kami tahan sambil menunggu uang muka.", "en": "Thank you, we have your booking. We are holding the bungalow for you while we wait for the deposit."}, "ketentuan": {"id": "Jam tiba dan pulang bisa disesuaikan dengan jadwal kapal. Kabari kami bila jadwalmu berubah.\n\nPembatalan 14 hari atau lebih sebelum tiba, uang muka kembali penuh. Pembatalan kurang dari 14 hari, uang muka tidak kembali tetapi bisa dipakai untuk tanggal lain dalam satu tahun.\n\nJaga laut kita. Jangan menginjak atau mengambil karang, dan bawa pulang sampah plastikmu.", "en": "Arrival and departure times can follow the ferry schedule. Let us know if your plans change.\n\nCancel 14 days or more before arrival and the deposit is refunded in full. Cancel later and the deposit is not refunded, but you can use it for other dates within a year.\n\nLook after our sea. Do not stand on or take coral, and take your plastic home with you."}};
+for (const [k, v] of Object.entries(SEBELUM_LUNAS)) (BAWAAN_LAMA[k] ??= []).push(v, sebelumBungalow(v));
 const sama = (a, b) => JSON.stringify(a) === JSON.stringify(b);
 
 export function gabungSitus(simpanan) {

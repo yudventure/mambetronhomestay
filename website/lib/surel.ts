@@ -4,7 +4,7 @@
 import nodemailer from 'nodemailer';
 import { KODE_MENIT } from './akun';
 import { alamatSitus, envSurel, surelDiatur } from './env';
-import { rupiah, tanggal, waktu } from './format';
+import { dwi, rupiah, tanggal, waktu } from './format';
 import type { Pesanan, Situs } from './jenis';
 import { KAMUS } from './kamus';
 
@@ -70,10 +70,11 @@ function ringkas(p: Pesanan, situs: Situs, untukAdmin: boolean) {
     `${k.tiba} ${tanggal(p.check_in, b, 'panjang')}`,
     `${k.pulang} ${tanggal(p.check_out, b, 'panjang')}`,
     `${k.form.malam(p.malam)}, ${k.hasil.tamu(p.dewasa, p.anak)}`,
+    ...(p.paket ? ['', k.hasil.paket, dwi(p.paket.nama, b), dwi(p.paket.syarat, b)].filter((x, i) => i < 3 || x) : []),
     '',
     `${k.form.total} ${rupiah(p.total, b)}`,
   ];
-  if (p.dp) baris.push(`${k.form.uangMuka(situs.dpPersen)} ${rupiah(p.dp, b)}`);
+  if (p.dp && p.dp < p.total) baris.push(`${k.form.uangMuka(situs.dpPersen)} ${rupiah(p.dp, b)}`);
   return baris.join('\n');
 }
 

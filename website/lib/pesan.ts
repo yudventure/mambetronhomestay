@@ -5,12 +5,13 @@ import { transaksi, type Baris, type Hasil } from './db';
 import { sisaKamar } from './data';
 import { pastikanSegar } from './sinkron';
 import { hitungHarga } from './harga';
+import { daftarPaket, type Paket } from './paket';
 import type { Bahasa, Kamar, Layanan, Situs, StatusPesanan } from './jenis';
 import { daftarMalam, hariIni, sahTanggal, selisihHari, tambahHari } from './tanggal';
 
 export type KodeGalat =
   | 'kamar' | 'tanggal' | 'terlaluCepat' | 'terlaluJauh' | 'minMalam' | 'maksMalam'
-  | 'jumlahKamar' | 'tamu' | 'kapasitas' | 'nama' | 'kontak' | 'email' | 'penuh';
+  | 'jumlahKamar' | 'tamu' | 'kapasitas' | 'nama' | 'kontak' | 'email' | 'penuh' | 'paket';
 
 export class GalatPesan extends Error {
   constructor(public kode: KodeGalat, public isi: Record<string, string | number> = {}) {
@@ -26,6 +27,9 @@ export type MasukanPesan = {
   dewasa: number;
   anak: number;
   layanan: number[];
+  // index in the rate tier list and its Indonesian name, which must still match
+  paket?: number;
+  paketNama?: string;
   nama: string;
   email: string;
   telepon: string;
@@ -69,10 +73,24 @@ export function periksa(m: MasukanPesan, kamar: Kamar | null, situs: Situs) {
   return malam;
 }
 
+// The rate tier a guest picked. Guests must pick one of the current tiers
+// when there are any, an admin may book without one.
+export function paketPilihan(m: MasukanPesan, situs: Situs): Paket | null {
+  const semua = daftarPaket(situs);
+  if (m.paket === undefined || Number.isNaN(m.paket)) {
+    if (semua.length && m.sumber !== 'admin') throw new GalatPesan('paket');
+    return null;
+  }
+  const p = semua[m.paket];
+  if (!p || (m.paketNama !== undefined && p.nama.id !== m.paketNama)) throw new GalatPesan('paket');
+  return p;
+}
+
 export async function simpanPesanan(m: MasukanPesan, kamar: Kamar, layananAda: Layanan[], situs: Situs) {
   const malam = periksa(m, kamar, situs);
+  const paket = paketPilihan(m, situs);
   const pilihan = layananAda.filter((l) => m.layanan.includes(l.id));
-  const h = hitungHarga(kamar, { malam, jumlahKamar: m.jumlahKamar, dewasa: m.dewasa, anak: m.anak, layanan: pilihan, dpPersen: situs.dpPersen });
+  const h = hitungHarga(kamar, { malam, jumlahKamar: m.jumlahKamar, dewasa: m.dewasa, anak: m.anak, layanan: pilihan, dpPersen: situs.dpPersen, persenPaket: paket?.persen });
   const token = crypto.randomBytes(16).toString('hex');
   // nights sold on a booking site a moment ago should already count, but a
   // slow site never holds the guest for more than a few seconds
@@ -90,12 +108,12 @@ export async function simpanPesanan(m: MasukanPesan, kamar: Kamar, layananAda: L
         const [r] = await c.query<Hasil>(
           `INSERT INTO pesanan (kode, token, kamar_id, kamar_nama, jumlah_kamar, check_in, check_out, malam, dewasa, anak,
             nama, email, telepon, negara, kedatangan, catatan, harga_satuan, skema_harga, biaya_kamar, biaya_layanan,
-            total, dp, rincian, bahasa, status, sumber, catatan_admin)
-           VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+            total, dp, rincian, paket, bahasa, status, sumber, catatan_admin)
+           VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
           [kode, token, kamar.id, kamar.nama, m.jumlahKamar, m.masuk, m.keluar, malam, m.dewasa, m.anak,
             potong(m.nama, 120), potong(m.email, 160), potong(m.telepon, 40), potong(m.negara, 80), potong(m.kedatangan, 200),
             potong(m.catatan, 2000), kamar.harga, kamar.skema_harga, h.biayaKamar, h.biayaLayanan, h.total, h.dp,
-            JSON.stringify(h.rincian), m.bahasa, m.status ?? 'menunggu', m.sumber, potong(m.catatanAdmin ?? '', 2000)],
+            JSON.stringify(h.rincian), paket ? JSON.stringify(paket) : null, m.bahasa, m.status ?? 'menunggu', m.sumber, potong(m.catatanAdmin ?? '', 2000)],
         );
         return { id: r.insertId, kode, token };
       } catch (e) {

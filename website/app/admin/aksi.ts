@@ -366,7 +366,9 @@ export async function tandaiPesanan(fd: FormData) {
   const p = await pesananDariId(id);
   if (!p) redirect('/admin/pesanan');
   const apa = String(fd.get('apa'));
-  if (apa === 'dp') await jalankan("UPDATE pesanan SET status = 'dikonfirmasi', dibayar = GREATEST(dibayar, dp) WHERE id = ?", [id]);
+  // a booking paid in full is settled by its first payment
+  if (apa === 'dp' && p.dp >= p.total) await jalankan("UPDATE pesanan SET status = 'lunas', dibayar = total WHERE id = ?", [id]);
+  else if (apa === 'dp') await jalankan("UPDATE pesanan SET status = 'dikonfirmasi', dibayar = GREATEST(dibayar, dp) WHERE id = ?", [id]);
   else if (apa === 'lunas') await jalankan("UPDATE pesanan SET status = 'lunas', dibayar = total WHERE id = ?", [id]);
   else if (apa === 'selesai') await jalankan("UPDATE pesanan SET status = 'selesai' WHERE id = ?", [id]);
   else if (apa === 'batal') await jalankan("UPDATE pesanan SET status = 'batal' WHERE id = ?", [id]);
@@ -390,7 +392,7 @@ export async function ubahJadwal(fd: FormData) {
   const malam = selisihHari(masuk, keluar);
   const [situs, layanan] = await Promise.all([ambilSitus(), daftarLayanan(true)]);
   const dipilih = layanan.filter((l) => p.rincian.some((r) => r.id === l.id));
-  const h = hitungHarga(km!, { malam, jumlahKamar, dewasa, anak, layanan: dipilih, dpPersen: situs.dpPersen });
+  const h = hitungHarga(km!, { malam, jumlahKamar, dewasa, anak, layanan: dipilih, dpPersen: situs.dpPersen, persenPaket: p.paket?.persen });
   let penuh = false;
   await transaksi(async (c) => {
     await c.query('SELECT id FROM kamar WHERE id = ? FOR UPDATE', [km!.id]);

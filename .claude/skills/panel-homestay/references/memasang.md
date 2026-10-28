@@ -89,8 +89,10 @@ Pesanan (tabel `pesanan`). Kolom yang dipakai panel `id`, `kode`,
 `kamar_id`, `kamar_nama`, `jumlah_kamar`, `check_in`, `check_out` (DATE,
 malam terakhir adalah `check_out` dikurangi satu), `malam`, `dewasa`,
 `anak`, `nama`, `email`, `telepon`, `negara`, `total`, `dp`, `dibayar`,
-`rincian` (JSON layanan tambahan), `bahasa`, `status`, `dibuat`
-(TIMESTAMP dalam UTC). Status `menunggu`, `dikonfirmasi`, `lunas`,
+`rincian` (JSON layanan tambahan), `paket` (JSON paket harga dengan nama,
+syarat, dan persen, boleh kosong), `bahasa`, `status`, `dibuat` (TIMESTAMP
+dalam UTC). Bila `dp` sama dengan `total`, tamu membayar penuh dan panel
+hanya menampilkan tombol Tandai lunas. Status `menunggu`, `dikonfirmasi`, `lunas`,
 `selesai`, `batal`. Status lain cukup ditambah ke `WARNA_STATUS` dan
 kamus.
 

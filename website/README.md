@@ -111,9 +111,25 @@ Perintah lain yang tersedia sebagai berikut.
 
 Setiap jenis bungalow punya jumlah unit. Mambetron punya satu jenis, Bungalow Tepi Pantai (Beachfront Bungalow), dengan tujuh unit yang sama tipe dan ukurannya dan semuanya menghadap pantai. Satu malam penuh bila unit yang terpesan di situs ini, unit yang terisi dari OTA lewat sinkron kalender, dan tanggal tutup sudah sama dengan jumlah unit. Pesanan berstatus apa pun kecuali Dibatalkan ikut menahan bungalow. Saat tamu mengirim pesanan, baris bungalow dikunci di database selama pemeriksaan, jadi dua tamu tidak bisa mendapat unit terakhir di malam yang sama.
 
-Harga dihitung per orang per malam atau per bungalow per malam, sesuai pilihan di panel. Anak di bawah 12 tahun bisa diberi harga sendiri. Uang muka dihitung dari persen di menu Isi situs dan dibulatkan ke atas per seribu rupiah.
+Harga dihitung per orang per malam atau per bungalow per malam, sesuai pilihan di panel. Anak di bawah 12 tahun bisa diberi harga sendiri.
 
-Tamu mendapat halaman pesanan dengan tautan rahasia. Dari sana tamu melihat rekening, menyalin nomor, dan mengirim bukti transfer lewat WhatsApp. Pengelola menandai uang muka diterima, lunas, atau selesai dari panel.
+Tamu membayar penuh setelah memesan, tanpa uang muka. Isian Dibayar di muka dalam persen di Isi situs, bagian Pemesanan dan pembayaran, bawaannya 100. Bila suatu saat ingin memakai uang muka lagi, isi angka lebih kecil, misalnya 30. Formulir, halaman pesanan, dan surel lalu kembali menampilkan uang muka dan sisa yang dibayar saat tiba.
+
+### Paket harga
+
+Di halaman pesan tamu memilih satu paket harga. Bawaannya tiga paket.
+
+| Paket | Harga bungalow | Syarat bawaan |
+|---|---|---|
+| Standar | harga dasar | tanggal tidak bisa diganti, pembayaran tidak dikembalikan bila batal |
+| Comfort | +10% | ganti tanggal paling lambat 7 hari sebelum tiba, pembayaran tidak dikembalikan bila batal |
+| Flexible | +20% | ganti tanggal kapan saja sampai hari kedatangan, batal gratis dengan uang kembali penuh sampai 7 hari sebelum tiba |
+
+Nama, syarat (Indonesia dan Inggris), dan persen tiap paket diubah di Isi situs, bagian Pemesanan dan pembayaran, isian Paket harga. Paket bisa ditambah atau dihapus di sana. Persen hanya menambah harga bungalow, harga kegiatan tidak berubah, dan hasilnya dibulatkan ke ribuan rupiah. Paket pertama terpilih lebih dulu. Server menghitung ulang harga dari paket yang tersimpan, dan menolak pesanan bila paket berubah saat tamu sedang mengisi formulir.
+
+Nama, syarat, dan persen paket ikut tersimpan di pesanan (kolom `paket` di tabel `pesanan`, ditambahkan otomatis saat situs pertama terhubung ke database). Pesanan lama tetap memakai syarat saat dipesan walau paketnya diubah kemudian. Paket tampil di ringkasan formulir, halaman pesanan tamu, surel, halaman pesanan di panel, dan halaman ketentuan menginap. Saat pengelola mengubah jadwal pesanan dari panel, harga dihitung ulang dengan persen paket pesanan itu.
+
+Tamu mendapat halaman pesanan dengan tautan rahasia. Dari sana tamu melihat rekening, menyalin nomor, dan mengirim bukti transfer lewat WhatsApp. Pengelola menandai lunas atau selesai dari panel. Tombol Uang muka diterima hanya muncul bila uang muka dipakai lagi.
 
 Foto disimpan di database supaya tidak hilang saat deploy ulang. Foto diperkecil di peramban menjadi paling lebar 1800 piksel sebelum diunggah.
 
@@ -170,7 +186,7 @@ Foto bungalow dan foto galeri di halaman utama bisa diketuk untuk dibuka layar p
 
 Tombol berikon bola dunia di kepala halaman membuka pilihan bahasa, Indonesia atau Inggris. Pilihan disimpan di kuki peramban pengunjung. Kaki halaman tidak punya tombol bahasa lagi.
 
-Harga selalu diisi, ditampilkan, dan dibayar dalam rupiah. Di bawah harga bungalow, harga kegiatan, total di formulir pesan, serta total dan uang muka di halaman pesanan ada satu baris kecil berisi perkiraannya dalam satu mata uang saja, misalnya ≈ $1,429.
+Harga selalu diisi, ditampilkan, dan dibayar dalam rupiah. Di bawah harga bungalow, harga kegiatan, total di formulir pesan, serta total yang dibayar di halaman pesanan ada satu baris kecil berisi perkiraannya dalam satu mata uang saja, misalnya ≈ $1,429.
 
 Mata uang itu dipilih lewat tombol berikon uang kertas di samping tombol bahasa. Pilihannya dolar Amerika, euro, yen, yuan, atau rupiah saja. Bila rupiah yang dipilih, baris perkiraan tidak tampil. Pilihan pengunjung disimpan di kuki perangkatnya selama setahun. Pengunjung yang belum memilih melihat mata uang bawaan dari Isi situs, bagian Mata uang (bawaannya dolar Amerika). Di HP tombol itu hanya menampilkan kodenya, misalnya USD, supaya muat di samping logo.
 
@@ -216,6 +232,6 @@ Statistik pengunjung dihitung situs sendiri di tabel `kunjungan`, tanpa layanan 
 
 ## Yang bisa diubah dari panel
 
-Semua yang tampil di situs bisa diubah dari panel, yaitu teks setiap bagian halaman utama, bungalow beserta harga dan fotonya, kegiatan tambahan, ulasan, foto situs, kontak, titik peta, rekening, uang muka, jam check-in dan check-out, serta ketentuan menginap.
+Semua yang tampil di situs bisa diubah dari panel, yaitu teks setiap bagian halaman utama, bungalow beserta harga dan fotonya, kegiatan tambahan, ulasan, foto situs, kontak, titik peta, rekening, pembayaran dan paket harga, jam check-in dan check-out, serta ketentuan menginap.
 
 Pengecualiannya teks tombol dan label formulir, misalnya Pesan sekarang, Rencanakan liburanmu, atau Nomor WhatsApp. Teks itu ada di `lib/kamus.ts` dan perlu diubah lewat kode. Hiasan merek seperti wajah Mambe di kotak rencana menginap dan gambar hammock samar di kotak ajakan juga tetap.
