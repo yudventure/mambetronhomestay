@@ -168,7 +168,9 @@ Foto bungalow dan foto galeri di halaman utama bisa diketuk untuk dibuka layar p
 
 Tombol berikon bola dunia di kepala halaman membuka pilihan bahasa, Indonesia atau Inggris. Pilihan disimpan di kuki peramban pengunjung. Kaki halaman tidak punya tombol bahasa lagi.
 
-Harga selalu diisi, ditampilkan, dan dibayar dalam rupiah. Di bawah harga bungalow, harga kegiatan, total di formulir pesan, serta total dan uang muka di halaman pesanan ada satu baris kecil berisi perkiraannya dalam dolar Amerika, euro, yen, dan yuan.
+Harga selalu diisi, ditampilkan, dan dibayar dalam rupiah. Di bawah harga bungalow, harga kegiatan, total di formulir pesan, serta total dan uang muka di halaman pesanan ada satu baris kecil berisi perkiraannya dalam satu mata uang saja, misalnya ≈ $1,429.
+
+Mata uang itu dipilih lewat tombol berikon uang kertas di samping tombol bahasa. Pilihannya dolar Amerika, euro, yen, yuan, atau rupiah saja. Bila rupiah yang dipilih, baris perkiraan tidak tampil. Pilihan pengunjung disimpan di kuki perangkatnya selama setahun. Pengunjung yang belum memilih melihat mata uang bawaan dari Isi situs, bagian Mata uang (bawaannya dolar Amerika). Di HP tombol itu hanya menampilkan kodenya, misalnya USD, supaya muat di samping logo.
 
 Kurs diambil dari kurs acuan Bank Sentral Eropa lewat Frankfurter (`api.frankfurter.app`, tanpa kunci API) dan disimpan 12 jam. Bila server tidak bisa mengambilnya, situs memakai kurs yang diisi di Isi situs, bagian Mata uang, lalu mencoba lagi setelah 30 menit. Kurs otomatis bisa dimatikan di bagian yang sama. Alamat sumber kurs bisa diganti lewat environment variable `KURS_URL` bila perlu.
 

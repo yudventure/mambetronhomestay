@@ -143,6 +143,7 @@ export type Situs = {
   ajakanLabel: Dua;
   ajakanJudul: Dua;
   ajakanTeks: Dua;
+  uangBawaan: string;
   kursOtomatis: boolean;
   kursUSD: number;
   kursEUR: number;

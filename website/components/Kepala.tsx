@@ -1,16 +1,24 @@
 import Link from 'next/link';
 import BingkaiKepala from './BingkaiKepala';
 import MenuSeluler from './MenuSeluler';
-import PilihanBahasa from './PilihanBahasa';
+import PilihanKepala from './PilihanKepala';
 import type { Bahasa, Situs } from '@/lib/jenis';
 import { kamus } from '@/lib/kamus';
 import { tautanWa } from '@/lib/format';
+import { NAMA_UANG, PILIHAN_UANG } from '@/lib/uang';
+import { uangAktif } from '@/lib/uang-server';
 
 // The group-data-[datar]/kepala variants flatten the pill while the page is
 // at the very top. Tailwind only sees whole class names, so they are written
 // out in full.
-export default function Kepala({ b, situs }: { b: Bahasa; situs: Situs }) {
+export default async function Kepala({ b, situs }: { b: Bahasa; situs: Situs }) {
   const k = kamus(b);
+  const uang = await uangAktif();
+  const bahasa = [
+    { kode: 'id', nama: 'Bahasa Indonesia', href: '/bahasa?ke=id', lang: 'id' },
+    { kode: 'en', nama: 'English', href: '/bahasa?ke=en', lang: 'en' },
+  ];
+  const mataUang = PILIHAN_UANG.map((c) => ({ kode: c, nama: NAMA_UANG[c][b], href: `/uang?ke=${c}` }));
   const tautan = [
     { href: '/#tentang', label: k.nav.tentang },
     { href: '/kamar', label: k.nav.akomodasi },
@@ -21,7 +29,7 @@ export default function Kepala({ b, situs }: { b: Bahasa; situs: Situs }) {
       <a href="#isi" className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-3 focus:z-50 focus:rounded-full focus:bg-laut focus:px-4 focus:py-2 focus:text-white">
         {k.lewati}
       </a>
-      <div className="pointer-events-auto mx-auto flex h-16 max-w-6xl items-center gap-2 rounded-full bg-white pr-2 pl-4 shadow-angkat ring-1 ring-laut/5 transition-shadow duration-300 sm:h-[4.25rem] sm:pl-6 group-data-[datar]/kepala:shadow-none group-data-[datar]/kepala:ring-0">
+      <div className="pointer-events-auto relative mx-auto flex h-16 max-w-6xl items-center gap-2 rounded-full bg-white pr-2 pl-4 shadow-angkat ring-1 ring-laut/5 transition-shadow duration-300 sm:h-[4.25rem] sm:pl-6 group-data-[datar]/kepala:shadow-none group-data-[datar]/kepala:ring-0">
         <Link href="/" className="mr-auto shrink-0" aria-label={situs.nama}>
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src="/merek/logo-horizontal.svg" alt={situs.nama} width={198} height={44} className="h-8 w-auto sm:h-10" />
@@ -33,7 +41,8 @@ export default function Kepala({ b, situs }: { b: Bahasa; situs: Situs }) {
             </Link>
           ))}
         </nav>
-        <PilihanBahasa b={b} label={k.pilihBahasa} />
+        <PilihanKepala id="pilihan-bahasa" label={k.pilihBahasa} ikon="globe" aktif={b} opsi={bahasa} />
+        <PilihanKepala id="pilihan-uang" label={k.pilihUang} ikon="uang" ikonHp={false} aktif={uang} opsi={mataUang} catatan={k.uangCatatan} />
         <MenuSeluler
           tautan={tautan}
           label={k.menu}

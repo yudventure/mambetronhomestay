@@ -6,7 +6,7 @@ import Wajah, { WAJAH } from '../Wajah';
 import { simpanPengaturan } from '@/app/admin/aksi';
 import { IKON_LABEL } from '@/lib/bawaan.mjs';
 
-type Isian = { k: string; label: string; jenis: string; bantuan?: string; min?: number; max?: number; tambah?: string; isian?: Isian[] };
+type Isian = { k: string; label: string; jenis: string; bantuan?: string; min?: number; max?: number; tambah?: string; isian?: Isian[]; pilihan?: string[][] };
 type Bagian = { kunci: string; judul: string; keterangan?: string; isian: Isian[] };
 type Nilai = Record<string, unknown>;
 type DuaV = { id: string; en: string };
@@ -30,6 +30,16 @@ function Kolom({ f, nilai, ubah, awalan }: { f: Isian; nilai: unknown; ubah: (v:
         <div>
           <label className="label-isian" htmlFor={id}>{f.label}</label>
           <textarea id={id} value={String(nilai ?? '')} onChange={(e) => ubah(e.target.value)} className="isian" />
+          {f.bantuan && <p className="bantuan">{f.bantuan}</p>}
+        </div>
+      );
+    case 'pilihan':
+      return (
+        <div>
+          <label className="label-isian" htmlFor={id}>{f.label}</label>
+          <select id={id} value={String(nilai ?? '')} onChange={(e) => ubah(e.target.value)} className="isian max-w-sm">
+            {(f.pilihan ?? []).map(([v, l]) => <option key={v} value={v}>{l}</option>)}
+          </select>
           {f.bantuan && <p className="bantuan">{f.bantuan}</p>}
         </div>
       );

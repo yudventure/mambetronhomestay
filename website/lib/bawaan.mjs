@@ -202,8 +202,13 @@ export const PENGATURAN = [
   {
     kunci: 'uang',
     judul: 'Mata uang',
-    keterangan: 'Harga bungalow dan kegiatan diisi, ditampilkan, dan dibayar dalam rupiah. Di bawah setiap harga, tamu melihat perkiraannya dalam dolar Amerika, euro, yen, dan yuan.',
+    keterangan: 'Harga bungalow dan kegiatan diisi, ditampilkan, dan dibayar dalam rupiah. Di bawah setiap harga, tamu melihat perkiraannya dalam satu mata uang, dolar Amerika, euro, yen, atau yuan, yang bisa ia ganti lewat tombol mata uang di samping pilihan bahasa.',
     isian: [
+      {
+        k: 'uangBawaan', label: 'Mata uang perkiraan bawaan', jenis: 'pilihan', bawaan: 'USD',
+        pilihan: [['USD', 'Dolar Amerika (USD)'], ['EUR', 'Euro (EUR)'], ['JPY', 'Yen Jepang (JPY)'], ['CNY', 'Yuan Tiongkok (CNY)'], ['IDR', 'Rupiah saja, tanpa perkiraan']],
+        bantuan: 'Dipakai untuk pengunjung yang belum memilih sendiri. Pilihan pengunjung di tombol mata uang diingat di perangkatnya.',
+      },
       {
         k: 'kursOtomatis', label: 'Perbarui kurs otomatis', jenis: 'saklar', bawaan: true,
         bantuan: 'Kurs acuan Bank Sentral Eropa diambil dua kali sehari. Angka di bawah dipakai bila kurs otomatis dimatikan atau gagal diambil.',
@@ -248,6 +253,8 @@ export function rapikan(f, v) {
   switch (f.jenis) {
     case 'teks': case 'panjang': case 'jam': case 'ikon': case 'wajah':
       return v === undefined ? structuredClone(f.bawaan ?? '') : teks(v);
+    case 'pilihan':
+      return (f.pilihan ?? []).some(([x]) => x === v) ? v : (f.bawaan ?? '');
     case 'dua': case 'duaPanjang':
       return v === undefined ? duaV(f.bawaan) : duaV(v);
     case 'saklar':
