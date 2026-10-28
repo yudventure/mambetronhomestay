@@ -24,6 +24,10 @@ export default async function FotoAdmin() {
         </section>
         <section className="kartu p-5 sm:p-6">
           <h2 className="mb-1 text-2xl">Foto bagian tentang kami</h2>
+          <p className="mb-3 rounded-2xl bg-buih px-4 py-3 text-sm text-laut">
+            Foto ini bisa diganti video YouTube, Instagram, atau TikTok. Tautannya diisi di{' '}
+            <a href="/admin/pengaturan#beranda" className="font-bold text-biru-tua underline underline-offset-4">Isi situs, bagian Halaman utama, isian Video tentang kami</a>.
+          </p>
           <KelolaFoto wadah="tentang" foto={foto.tentang} catatan="Tampil besar di samping teks tentang kami, di atas kalender rencana menginap. Hanya foto pertama yang dipakai. Tanpa foto, situs memakai ilustrasi bungalow di siang hari." />
         </section>
         <section className="kartu p-5 sm:p-6">
