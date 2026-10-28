@@ -212,7 +212,7 @@ Kaki halaman punya tiga kolom. Kolom kiri berisi logo dan teks singkat, kolom te
 
 Nomor WhatsApp dan surel punya isian bawaan, jadi tampil walau kolomnya di panel masih kosong. Facebook, TikTok, dan YouTube untuk sementara membuka halaman depan masing-masing sampai tautan akun asli diisi.
 
-Di pita paling bawah ada tombol Masuk operator yang membuka `/admin`. Operator yang belum masuk diarahkan ke halaman masuk.
+Di pita paling bawah ada hak cipta, tulisan Dikelola oleh thedampier.com (Managed by di bahasa Inggris) yang membuka situs DAMPIER di tab baru, dan tombol Masuk operator yang membuka `/admin`. Tulisan dan alamat situs pengelola diubah di Isi situs, bagian Identitas, dan barisnya hilang bila Situs pengelola dikosongkan. Operator yang belum masuk diarahkan ke halaman masuk.
 
 ## Masuk panel, surel pemberitahuan, dan ganti kata sandi
 

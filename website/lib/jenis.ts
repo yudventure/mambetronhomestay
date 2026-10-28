@@ -106,6 +106,8 @@ export type Situs = {
   seoJudul: Dua;
   seoDeskripsi: Dua;
   kakiTeks: Dua;
+  pengelolaTeks: Dua;
+  pengelola: string;
   whatsapp: string;
   email: string;
   instagram: string;

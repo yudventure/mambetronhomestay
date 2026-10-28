@@ -39,6 +39,8 @@ export const PENGATURAN = [
           'A family homestay in Raja Ampat. Wooden bungalows by the sea, three meals a day, pickup from Waisai and a reef right off the jetty. Book direct on the official site.'),
       },
       { k: 'kakiTeks', label: 'Teks di kaki halaman', jenis: 'duaPanjang', bawaan: dua('Homestay keluarga di Raja Ampat. Dikelola dengan sepenuh hati, untuk laut yang tetap biru.', 'A family homestay in Raja Ampat. Run with heart, for a sea that stays blue.') },
+      { k: 'pengelolaTeks', label: 'Tulisan pengelola di kaki halaman', jenis: 'dua', bawaan: dua('Dikelola oleh', 'Managed by'), bantuan: 'Tampil di baris paling bawah kaki halaman, diikuti alamat situs pengelola.' },
+      { k: 'pengelola', label: 'Situs pengelola', jenis: 'teks', bawaan: 'thedampier.com', bantuan: 'Alamat situs yang tampil dan bisa diketuk, misalnya thedampier.com. Kosongkan bila baris pengelola tidak ingin ditampilkan.' },
     ],
   },
   {

@@ -5,7 +5,8 @@ import { kamus } from '@/lib/kamus';
 import { dwi, tampilWa, tautanLuar, tautanWa } from '@/lib/format';
 
 // Footer. Brand on the left, booking links in the middle, contact on the
-// right with WhatsApp, email and the social accounts set in Isi situs.
+// right with WhatsApp, email and the social accounts set in Isi situs. The
+// bottom bar names the site that manages this one, linked to it.
 export default function Kaki({ b, situs }: { b: Bahasa; situs: Situs }) {
   const k = kamus(b);
   const wa = tautanWa(situs.whatsapp, k.pesanWaUmum);
@@ -25,6 +26,8 @@ export default function Kaki({ b, situs }: { b: Bahasa; situs: Situs }) {
   ].filter((x) => !!x);
   const label = 'block text-xs font-semibold tracking-[0.12em] text-sorot uppercase';
   const tahun = new Date().getFullYear();
+  // the site that manages this one, set in Identitas
+  const pengelola = tautanLuar(situs.pengelola);
   return (
     <footer className="px-3 pb-3 sm:px-4 sm:pb-4">
       <div className="bingkai overflow-hidden bg-laut text-white">
@@ -85,7 +88,17 @@ export default function Kaki({ b, situs }: { b: Bahasa; situs: Situs }) {
 
         <div className="bg-laut-3">
           <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-3 px-5 py-4 text-sm text-white/65 sm:px-8">
-            <p>© {tahun} {situs.nama}</p>
+            <div className="flex flex-wrap items-center gap-x-6 gap-y-1">
+              <p>© {tahun} {situs.nama}</p>
+              {pengelola && (
+                <p>
+                  {dwi(situs.pengelolaTeks, b)}{' '}
+                  <a href={pengelola} target="_blank" rel="noopener" className="font-semibold text-white/85 underline-offset-4 transition-colors hover:text-sorot hover:underline">
+                    {situs.pengelola.trim().replace(/^https?:\/\//i, '').replace(/\/$/, '')}
+                  </a>
+                </p>
+              )}
+            </div>
             <a href="/admin" rel="nofollow" className="inline-flex items-center gap-2 rounded-full px-4 py-2 font-semibold text-white/80 ring-1 ring-white/20 transition-colors hover:bg-white/10 hover:text-white">
               <Ikon nama="gembok" className="size-4" /> {k.kaki.masukOperator}
             </a>
