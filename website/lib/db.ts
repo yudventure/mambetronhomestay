@@ -4,7 +4,7 @@
 import fs from 'fs';
 import mysql from 'mysql2/promise';
 import { SKEMA, tambahKolom } from './skema.mjs';
-import { KAMAR_AWAL, KAMAR_LAMA, KAMAR_NAMA_LAMA, KAMAR_TEKS_LAMA, LAYANAN_AWAL, situsBawaan } from './bawaan.mjs';
+import { KAMAR_AWAL, KAMAR_LAMA, KAMAR_NAMA_LAMA, KAMAR_TEKS_LAMA, LAYANAN_AWAL, VIDEO_AWAL, situsBawaan } from './bawaan.mjs';
 import { dbDiatur, envDb } from './env';
 
 export class DbBelumDiatur extends Error {
@@ -157,12 +157,27 @@ async function namaBungalow(pool: mysql.Pool) {
   }
 }
 
+// The about video the owner sent, put in once when the site has no video
+// link yet. Removing it in the panel afterwards sticks.
+async function videoAwal(pool: mysql.Pool) {
+  const [r] = await pool.query<mysql.ResultSetHeader>("INSERT IGNORE INTO pengaturan (kunci, nilai) VALUES ('video-awal-1', '1')");
+  if (r.affectedRows !== 1) return;
+  const [[baris]] = await pool.query<(mysql.RowDataPacket & { nilai: string })[]>("SELECT nilai FROM pengaturan WHERE kunci = 'situs'");
+  if (!baris) return;
+  const s = JSON.parse(baris.nilai);
+  const ada = Array.isArray(s.tentangVideo) && s.tentangVideo.some((x: { url?: unknown }) => String(x?.url ?? '').trim());
+  if (ada) return;
+  s.tentangVideo = structuredClone(VIDEO_AWAL);
+  await pool.query("UPDATE pengaturan SET nilai = ? WHERE kunci = 'situs'", [JSON.stringify(s)]);
+}
+
 async function siapkan(pool: mysql.Pool) {
   for (const sql of SKEMA) await pool.query(sql);
   await tambahKolom(async (sql: string, nilai: unknown[]) => (await pool.query(sql, nilai))[0] as unknown[]);
   await pindahKamarLama(pool);
   await perbaruiTeksKamar(pool);
   await namaBungalow(pool);
+  await videoAwal(pool);
   // the first process to claim this row fills the empty database
   const [r] = await pool.query<mysql.ResultSetHeader>(
     "INSERT IGNORE INTO pengaturan (kunci, nilai) VALUES ('benih', '1')",

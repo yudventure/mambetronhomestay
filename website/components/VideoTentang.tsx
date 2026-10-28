@@ -79,7 +79,7 @@ export default function VideoTentang({ b, video, sampulCadangan }: { b: Bahasa; 
   return (
     <div className="min-w-0">
       <ul ref={jalur} onMouseLeave={() => lebar() && setAktif(0)}
-        className="tanpa-bilah relative -mx-4 flex snap-x snap-mandatory items-center gap-3 overflow-x-auto px-[calc(50vw-min(31vw,8.5rem))] py-3 sm:-mx-6 lg:mx-0 lg:aspect-[25/16] lg:snap-none lg:justify-center lg:gap-4 lg:overflow-visible lg:px-0 lg:py-0">
+        className={`tanpa-bilah relative -mx-4 flex snap-x snap-mandatory items-center gap-3 overflow-x-auto px-[calc(50vw-min(31vw,8.5rem))] py-3 sm:-mx-6 lg:mx-0 ${video.length === 1 ? 'lg:aspect-[4/3]' : 'lg:aspect-[25/16]'} lg:snap-none lg:justify-center lg:gap-4 lg:overflow-visible lg:px-0 lg:py-0`}>
         {urut.map((i) => {
           const v = video[i];
           const besar = i === aktif;

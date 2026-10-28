@@ -34,6 +34,19 @@ export default async function Pengaturan() {
                 </ul>
               </div>
             )}
+            {g.kunci === 'kontak' && (() => {
+              const host = (v: unknown) => { try { return new URL(String(v)).hostname.replace(/^(www|m)\./, ''); } catch { return ''; } };
+              const salah: string[] = [];
+              if (String(situs.facebook ?? '').trim() && !['facebook.com', 'fb.com', 'fb.me'].includes(host(situs.facebook))) salah.push('Tautan Facebook bukan alamat Facebook. Ikon Facebook di kaki halaman akan membuka alamat itu.');
+              if (String(situs.youtube ?? '').trim() && !['youtube.com', 'youtu.be'].includes(host(situs.youtube))) salah.push('Tautan YouTube bukan alamat YouTube. Ikon YouTube di kaki halaman akan membuka alamat itu.');
+              if (/\/video\//.test(String(situs.tiktok ?? ''))) salah.push('Tautan TikTok berisi satu video, bukan akun. Ikon TikTok di kaki halaman akan membuka video itu.');
+              return salah.length > 0 && (
+                <div role="alert" className="mb-6 rounded-2xl bg-[#fde3dc] px-4 py-3 text-sm text-merah">
+                  {salah.map((x) => <p key={x} className="font-semibold">{x}</p>)}
+                  <p className="mt-1">Video untuk halaman utama diisi di <a href="#beranda" className="font-bold underline underline-offset-4">Halaman utama, isian Video tentang kami</a>.</p>
+                </div>
+              );
+            })()}
             {g.isian.some((f) => f.k === 'tentangVideo') && (situs.tentangVideo as { url: string }[]).some((x) => x.url.trim()) && (
               <div className="mb-6 rounded-2xl bg-buih px-4 py-3">
                 <p className="font-semibold text-laut">Video tentang kami yang terbaca</p>

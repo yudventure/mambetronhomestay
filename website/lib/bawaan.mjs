@@ -19,6 +19,10 @@ export const IKON_LABEL = {
 };
 export const IKON_PILIHAN = Object.keys(IKON_LABEL);
 
+// The about video the owner sent, a TikTok from DAMPIER media. New sites get
+// it as the default, lib/db.ts puts it in once on sites that have no video yet.
+export const VIDEO_AWAL = [{ url: 'https://www.tiktok.com/@thedampiermedia/video/7699821441662930182', judul: '' }];
+
 export const PENGATURAN = [
   {
     kunci: 'umum',
@@ -45,9 +49,9 @@ export const PENGATURAN = [
       { k: 'whatsapp', label: 'Nomor WhatsApp', jenis: 'teks', bawaan: '6281390849237', bantuan: 'Tulis dengan kode negara tanpa tanda plus, misalnya 6281234567890.' },
       { k: 'email', label: 'Surel', jenis: 'teks', bawaan: 'halo@mambetronhomestay.com' },
       { k: 'instagram', label: 'Akun Instagram', jenis: 'teks', bawaan: 'mambetronhomestay', bantuan: 'Tanpa tanda @. Kosongkan bila ikon Instagram tidak ingin ditampilkan.' },
-      { k: 'facebook', label: 'Tautan Facebook', jenis: 'teks', bawaan: 'https://www.facebook.com/', bantuan: 'Tempel tautan lengkap halaman Facebook. Selama belum diganti, ikonnya membuka halaman depan Facebook. Kosongkan bila ikon tidak ingin ditampilkan.' },
-      { k: 'tiktok', label: 'Tautan TikTok', jenis: 'teks', bawaan: 'https://www.tiktok.com/', bantuan: 'Tempel tautan lengkap akun TikTok. Selama belum diganti, ikonnya membuka halaman depan TikTok. Kosongkan bila ikon tidak ingin ditampilkan.' },
-      { k: 'youtube', label: 'Tautan YouTube', jenis: 'teks', bawaan: 'https://www.youtube.com/', bantuan: 'Tempel tautan lengkap kanal YouTube. Selama belum diganti, ikonnya membuka halaman depan YouTube. Kosongkan bila ikon tidak ingin ditampilkan.' },
+      { k: 'facebook', label: 'Tautan Facebook', jenis: 'teks', bawaan: 'https://www.facebook.com/', bantuan: 'Tempel tautan lengkap halaman Facebook, untuk ikon di kaki halaman. Selama belum diganti, ikonnya membuka halaman depan Facebook. Kosongkan bila ikon tidak ingin ditampilkan.' },
+      { k: 'tiktok', label: 'Tautan TikTok', jenis: 'teks', bawaan: 'https://www.tiktok.com/', bantuan: 'Tempel tautan lengkap akun TikTok, misalnya https://www.tiktok.com/@namaakun, untuk ikon di kaki halaman. Tautan satu video untuk halaman utama diisi di bagian Halaman utama, isian Video tentang kami. Kosongkan bila ikon tidak ingin ditampilkan.' },
+      { k: 'youtube', label: 'Tautan YouTube', jenis: 'teks', bawaan: 'https://www.youtube.com/', bantuan: 'Tempel tautan lengkap kanal YouTube, untuk ikon di kaki halaman. Selama belum diganti, ikonnya membuka halaman depan YouTube. Kosongkan bila ikon tidak ingin ditampilkan.' },
       { k: 'alamat', label: 'Alamat', jenis: 'duaPanjang', bawaan: dua('', '') },
       { k: 'petaKoordinat', label: 'Titik peta', jenis: 'teks', bawaan: '', bantuan: 'Garis lintang dan bujur dari Google Maps, misalnya -0.4312, 130.6411. Kosongkan bila belum ingin menampilkan peta.' },
       { k: 'petaTautan', label: 'Tautan Google Maps', jenis: 'teks', bawaan: '', bantuan: 'Salin dari tombol Bagikan di Google Maps.' },
@@ -113,7 +117,7 @@ export const PENGATURAN = [
           { k: 'url', label: 'Tautan video', jenis: 'teks' },
           { k: 'judul', label: 'Judul singkat', jenis: 'teks', bantuan: 'Untuk pembaca layar, tidak tampil di halaman. Boleh dikosongkan.' },
         ],
-        bawaan: [],
+        bawaan: VIDEO_AWAL,
       },
       { k: 'sorotanJudul', label: 'Judul bagian keunggulan', jenis: 'dua', bantuan: 'Tidak tampil di layar. Dibaca oleh pembaca layar dan mesin pencari.', bawaan: dua('Kenapa menginap di sini', 'Why stay with us') },
       {

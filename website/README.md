@@ -172,7 +172,9 @@ Tabelnya `kalender_sambungan` (tautan per unit) dan `kalender_luar` (malam yang 
 
 ## Video tentang kami
 
-Foto di samping teks tentang kami bisa diganti video. Isi tautannya di Isi situs, bagian halaman utama, isian Video tentang kami, paling banyak tiga. Tautan yang dikenali adalah YouTube (video biasa dan Shorts), Instagram (post dan Reels), dan TikTok, termasuk tautan pendek `vm.tiktok.com`. Di atas isian itu panel menulis platform tiap tautan, atau memberi tahu bila tautannya belum dikenali.
+Foto di samping teks tentang kami bisa diganti video. Isi tautannya di Isi situs, bagian halaman utama, isian Video tentang kami, paling banyak tiga. Tautan yang dikenali adalah YouTube (video biasa dan Shorts), Instagram (post dan Reels), dan TikTok, termasuk tautan pendek `vm.tiktok.com`. Di atas isian itu panel menulis platform tiap tautan, atau memberi tahu bila tautannya belum dikenali. Bawaannya satu video TikTok dari DAMPIER media yang dikirim pemilik. Video itu dipasang sekali pada situs yang belum punya tautan video, dan bila semua video dihapus di panel, bagian ini kembali memakai foto.
+
+Tautan Facebook, TikTok, dan YouTube di bagian Kontak dan lokasi hanya untuk ikon di kaki halaman. Bila tautan Facebook atau YouTube bukan alamat platform itu, atau tautan TikTok berisi satu video dan bukan akun, panel memberi peringatan merah di bagian itu beserta tautan ke isian Video tentang kami.
 
 Di layar lebar video pertama tampil paling tinggi di tengah, video kedua di kiri dan ketiga di kanan lebih pendek. Video yang disentuh kursor membesar, dan saat kursor pergi video tengah kembali paling tinggi. Di HP dan tablet video berjajar dan bisa digeser, video di tengah layar besar dan tetangganya lebih kecil di kiri dan kanan. Ketukan pada video samping membawanya ke tengah, titik di bawahnya juga bisa diketuk.
 
