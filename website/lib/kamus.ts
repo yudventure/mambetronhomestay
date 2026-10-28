@@ -176,6 +176,14 @@ const id = {
     hubungi: 'Hubungi kami',
   },
   peta: 'Buka di Google Maps',
+  tanyaRute: 'Tanya rute lewat WhatsApp',
+  petaRute: {
+    judul: 'Peta rute dari Sorong ke Pulau Kri',
+    sumber: 'Garis pantai GSHHG',
+    waigeo: 'Pulau Waigeo',
+    selat: 'Selat Dampier',
+    kri: 'Pulau Kri',
+  },
   checkInOut: { masuk: 'Check-in mulai', keluar: 'Check-out paling lambat' },
   tidakDitemukan: {
     judul: 'Halaman tidak ditemukan',
@@ -363,6 +371,14 @@ const en: Kamus = {
     hubungi: 'Contact us',
   },
   peta: 'Open in Google Maps',
+  tanyaRute: 'Ask about the route on WhatsApp',
+  petaRute: {
+    judul: 'Route map from Sorong to Kri Island',
+    sumber: 'Coastline GSHHG',
+    waigeo: 'Waigeo Island',
+    selat: 'Dampier Strait',
+    kri: 'Kri Island',
+  },
   checkInOut: { masuk: 'Check-in from', keluar: 'Check-out by' },
   tidakDitemukan: {
     judul: 'Page not found',

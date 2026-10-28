@@ -53,7 +53,7 @@ export const PENGATURAN = [
       { k: 'tiktok', label: 'Tautan TikTok', jenis: 'teks', bawaan: 'https://www.tiktok.com/', bantuan: 'Tempel tautan lengkap akun TikTok, misalnya https://www.tiktok.com/@namaakun, untuk ikon di kaki halaman. Tautan satu video untuk halaman utama diisi di bagian Halaman utama, isian Video tentang kami. Kosongkan bila ikon tidak ingin ditampilkan.' },
       { k: 'youtube', label: 'Tautan YouTube', jenis: 'teks', bawaan: 'https://www.youtube.com/', bantuan: 'Tempel tautan lengkap kanal YouTube, untuk ikon di kaki halaman. Selama belum diganti, ikonnya membuka halaman depan YouTube. Kosongkan bila ikon tidak ingin ditampilkan.' },
       { k: 'alamat', label: 'Alamat', jenis: 'duaPanjang', bawaan: dua('', '') },
-      { k: 'petaKoordinat', label: 'Titik peta', jenis: 'teks', bawaan: '', bantuan: 'Garis lintang dan bujur dari Google Maps, misalnya -0.4312, 130.6411. Kosongkan bila belum ingin menampilkan peta.' },
+      { k: 'petaKoordinat', label: 'Titik peta', jenis: 'teks', bawaan: '', bantuan: 'Garis lintang dan bujur dari Google Maps, misalnya -0.5605, 130.668. Dipakai untuk tombol Buka di Google Maps di bagian lokasi bila tautan Google Maps kosong.' },
       { k: 'petaTautan', label: 'Tautan Google Maps', jenis: 'teks', bawaan: '', bantuan: 'Salin dari tombol Bagikan di Google Maps.' },
     ],
   },
@@ -123,11 +123,42 @@ export const PENGATURAN = [
       { k: 'layananTeks', label: 'Teks bagian kegiatan', jenis: 'duaPanjang', bawaan: dua('Tambahkan saat memesan atau tanyakan langsung ke kami.', 'Add them when you book or just ask us.') },
       { k: 'galeriJudul', label: 'Judul bagian galeri foto', jenis: 'dua', bawaan: dua('Sehari di Mambetron', 'A day at Mambetron') },
       { k: 'ulasanJudul', label: 'Judul bagian ulasan', jenis: 'dua', bawaan: dua('Kata tamu', 'What guests say') },
-      { k: 'lokasiJudul', label: 'Judul bagian lokasi', jenis: 'dua', bawaan: dua('Cara ke sini', 'Getting here') },
+      { k: 'lokasiLabel', label: 'Label kecil bagian lokasi', jenis: 'dua', bawaan: dua('Menuju Pulau Kri', 'Getting to Kri Island') },
+      { k: 'lokasiJudul', label: 'Judul bagian lokasi', jenis: 'dua', bawaan: dua('Cara ke sini', 'How to get here') },
       {
-        k: 'caraSampai', label: 'Petunjuk perjalanan', jenis: 'duaPanjang', bawaan: dua(
-          'Terbang ke Sorong, lalu naik kapal cepat ke Waisai sekitar dua jam. Dari Pelabuhan Waisai perjalanan berlanjut dengan perahu kami.\n\nSetiap tamu Raja Ampat wajib memiliki Kartu Jasa Lingkungan. Kartu ini bisa dibeli di Sorong atau Waisai.',
-          'Fly to Sorong, then take the fast ferry to Waisai, about two hours. From Waisai harbour you continue on our boat.\n\nEvery visitor to Raja Ampat needs the environmental service card. You can buy it in Sorong or Waisai.'),
+        k: 'caraSampai', label: 'Teks pembuka bagian lokasi', jenis: 'duaPanjang', bantuan: 'Tampil di samping judul, di atas peta rute.', bawaan: dua(
+          'Mambetron ada di Pulau Kri, di tengah Selat Dampier. Dari mana pun kamu berangkat, jalurnya sama. Terbang ke Sorong, naik kapal cepat ke Waisai, lalu menyeberang ke Kri dengan perahu kami.',
+          'Mambetron is on Kri Island in the Dampier Strait. Wherever you start, the route is the same. Fly to Sorong, take the fast ferry to Waisai, then cross to Kri on our boat.'),
+      },
+      {
+        k: 'rute', label: 'Langkah perjalanan', jenis: 'daftar', tambah: 'Tambah langkah',
+        bantuan: 'Kartu bernomor di samping peta. Tiga langkah pertama juga bernomor di peta, berurutan di Bandara Sorong, di kapal cepat menuju Waisai, dan di Pulau Kri.',
+        isian: [
+          { k: 'judul', label: 'Judul', jenis: 'dua' },
+          { k: 'label', label: 'Keterangan singkat', jenis: 'dua', bantuan: 'Tampil di pojok kartu, misalnya Sekitar 2 jam. Boleh dikosongkan.' },
+          { k: 'teks', label: 'Teks', jenis: 'duaPanjang' },
+        ],
+        bawaan: [
+          { judul: dua('Terbang ke Sorong', 'Fly to Sorong'), label: dua('Bandara SOQ', 'SOQ airport'), teks: dua('Mendarat di Bandara Domine Eduard Osok (SOQ) di Sorong. Penerbangan biasanya transit di Jakarta atau Makassar.', 'Land at Domine Eduard Osok Airport (SOQ) in Sorong. Flights usually connect through Jakarta or Makassar.') },
+          { judul: dua('Kapal cepat ke Waisai', 'Fast ferry to Waisai'), label: dua('Sekitar 2 jam', 'About 2 hours'), teks: dua('Dari bandara sekitar 15–20 menit ke Pelabuhan Rakyat Sorong. Kapal cepat ke Waisai berangkat setiap hari.', 'From the airport it is about 15–20 minutes to Pelabuhan Rakyat harbour in Sorong. Fast ferries to Waisai leave every day.') },
+          { judul: dua('Perahu ke Pulau Kri', 'Boat to Kri Island'), label: dua('Sekitar 1 jam', 'About 1 hour'), teks: dua('Perahu kami menunggu di Pelabuhan Waisai lalu mengantarmu ke bungalow di tepi pantai Pulau Kri.', 'Our boat waits at Waisai harbour and takes you to the beachfront bungalows on Kri Island.') },
+        ],
+      },
+      {
+        k: 'lokasiInfo', label: 'Kartu info perjalanan', jenis: 'daftar', tambah: 'Tambah kartu', bantuan: 'Kartu kecil berikon di bawah peta.',
+        isian: [
+          { k: 'ikon', label: 'Ikon', jenis: 'ikon' },
+          { k: 'teks', label: 'Teks', jenis: 'duaPanjang' },
+        ],
+        bawaan: [
+          { ikon: 'perahu', teks: dua('Perahu kami menjemput di Pelabuhan Waisai. Tambahkan antar jemput saat memesan bungalow.', 'Our boat picks you up at Waisai harbour. Add the transfer when you book your bungalow.') },
+          { ikon: 'tiket', teks: dua('Setiap tamu Raja Ampat wajib membawa Kartu Jasa Lingkungan. Kartu ini bisa dibeli di Sorong atau Waisai.', 'Every visitor to Raja Ampat needs the environmental service card. You can buy it in Sorong or Waisai.') },
+        ],
+      },
+      {
+        k: 'lokasiCatatan', label: 'Catatan perjalanan', jenis: 'duaPanjang', bantuan: 'Tampil di bawah langkah perjalanan, di atas tombol WhatsApp.', bawaan: dua(
+          'Jadwal kapal cepat bisa berubah karena cuaca. Kirim jadwal kapalmu lewat WhatsApp supaya perahu kami menunggu di Waisai.',
+          'Ferry times can change with the weather. Send us your ferry time on WhatsApp so our boat is waiting in Waisai.'),
       },
       { k: 'faqJudul', label: 'Judul bagian tanya jawab', jenis: 'dua', bawaan: dua('Sering ditanyakan', 'Good to know') },
       {
@@ -288,6 +319,10 @@ const BAWAAN_LAMA = {
   tentangTeks: [dua(
     'Mambetron Homestay adalah rumah singgah keluarga di Raja Ampat. Maskot kami, Mambe, adalah kuskus, hewan pemalu bermata besar yang suka mengintip dari balik dahan hutan pulau.\n\nDi sini hari dimulai dengan matahari terbit di atas laut dan ditutup dengan obrolan di dermaga. Tidak ada yang terburu-buru. Kamu cukup datang, kami yang urus sisanya.',
     'Mambetron Homestay is a family guesthouse in Raja Ampat. Our mascot Mambe is a cuscus, the shy big-eyed animal that peeks out from the branches of the island forest.\n\nDays here start with sunrise over the sea and end with stories on the jetty. Nobody is in a hurry. Just come, we will take care of the rest.')],
+  lokasiJudul: [dua('Cara ke sini', 'Getting here')],
+  caraSampai: [dua(
+    'Terbang ke Sorong, lalu naik kapal cepat ke Waisai sekitar dua jam. Dari Pelabuhan Waisai perjalanan berlanjut dengan perahu kami.\n\nSetiap tamu Raja Ampat wajib memiliki Kartu Jasa Lingkungan. Kartu ini bisa dibeli di Sorong atau Waisai.',
+    'Fly to Sorong, then take the fast ferry to Waisai, about two hours. From Waisai harbour you continue on our boat.\n\nEvery visitor to Raja Ampat needs the environmental service card. You can buy it in Sorong or Waisai.')],
   ulasanWajah: [[
     { nama: 'Adam', huruf: 'A' }, { nama: 'Rijnders', huruf: 'L' }, { nama: 'Linda', huruf: 'L' },
     { nama: 'Justyna', huruf: 'J' }, { nama: 'Jeroen', huruf: 'J' }, { nama: 'Christopher', huruf: 'C' },

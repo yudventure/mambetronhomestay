@@ -8,12 +8,13 @@ import VideoTentang from '@/components/VideoTentang';
 import KartuKegiatan from '@/components/KartuKegiatan';
 import GaleriBeranda from '@/components/GaleriBeranda';
 import Pahlawan from '@/components/Pahlawan';
-import Peta, { koordinat } from '@/components/Peta';
+import PetaRute from '@/components/PetaRute';
+import { koordinat } from '@/components/Peta';
 import { bahasaAktif } from '@/lib/bahasa';
 import { ambilSitus, daftarKamar, daftarLayanan, daftarUlasan, fotoSitus, gambarCadangan, pemesananAktif, sisaKamar } from '@/lib/data';
 import { kamus } from '@/lib/kamus';
-import { dwi, paragraf, tautanLuar, tautanWa } from '@/lib/format';
-import { KISI, rentang } from '@/lib/kisi';
+import { dwi, paragraf, rapatRentang, tautanLuar, tautanWa } from '@/lib/format';
+import { KISI, KISI2, rentang, rentang2 } from '@/lib/kisi';
 import { hariIni, tambahHari } from '@/lib/tanggal';
 import { kursAktif } from '@/lib/uang-server';
 import { siapkanVideo } from '@/lib/video-server';
@@ -42,6 +43,8 @@ export default async function Beranda() {
   const video = await siapkanVideo(s.tentangVideo.slice(0, 3));
   const titik = koordinat(s.petaKoordinat);
   const tautanPeta = s.petaTautan || (titik ? `https://www.google.com/maps?q=${titik.lat},${titik.lng}` : '');
+  const info = s.lokasiInfo.filter((x) => dwi(x.teks, b));
+  const catatanLokasi = dwi(s.lokasiCatatan, b);
   const rata = ulasan.length ? ulasan.reduce((n, u) => n + u.bintang, 0) / ulasan.length : 0;
   const angka1 = new Intl.NumberFormat(b === 'en' ? 'en-US' : 'id-ID', { minimumFractionDigits: 1, maximumFractionDigits: 1 });
 
@@ -213,41 +216,81 @@ export default async function Beranda() {
         </Bagian>
       )}
 
-      <Bagian id="lokasi" className="!pt-0">
-        <div className="grid items-center gap-10 lg:grid-cols-2 lg:gap-16">
+      <Bagian id="lokasi" latar="buih">
+        <div className="grid gap-x-6 gap-y-5 lg:grid-cols-[minmax(0,1.45fr)_minmax(0,1fr)] lg:items-end">
           <div>
-            <h2 className={JUDUL}>{dwi(s.lokasiJudul, b)}</h2>
-            <div className="prosa mt-5 text-laut/80">
+            {dwi(s.lokasiLabel, b) && <p className="label-kecil">{dwi(s.lokasiLabel, b)}</p>}
+            <h2 className={`mt-2 ${JUDUL}`}>{dwi(s.lokasiJudul, b)}</h2>
+          </div>
+          {dwi(s.caraSampai, b) && (
+            <div className="prosa text-laut/80 lg:pb-1.5">
               {paragraf(dwi(s.caraSampai, b)).map((p, i) => <p key={i}>{p}</p>)}
             </div>
-            {dwi(s.alamat, b) && (
-              <p className="mt-6 flex items-start gap-3 rounded-2xl bg-embun px-4 py-3 text-laut">
-                <Ikon nama="lokasi" className="mt-0.5 size-5 shrink-0 text-biru-tua" />
-                <span className="whitespace-pre-line">{dwi(s.alamat, b)}</span>
-              </p>
+          )}
+        </div>
+
+        {/* map and steps side by side from xl, below that the steps line up under the map */}
+        <div className="mt-10 grid gap-4 xl:grid-cols-[minmax(0,1.45fr)_minmax(0,1fr)] xl:gap-5">
+          <PetaRute b={b} n={s.rute.length} className={s.rute.length ? '' : 'xl:col-span-2'} />
+          {s.rute.length > 0 && (
+            <ol className={`${KISI} gap-4 xl:grid-cols-1 xl:auto-rows-fr`}>
+              {s.rute.map((x, i) => (
+                <li key={i} className={`flex gap-4 rounded-3xl bg-white p-5 shadow-tipis sm:p-6 ${rentang(s.rute.length, i)} xl:col-span-1`}>
+                  <span aria-hidden className="flex size-10 shrink-0 items-center justify-center rounded-full bg-laut font-judul text-lg text-white">{i + 1}</span>
+                  <div className="min-w-0 flex-1">
+                    <div className="flex flex-wrap items-start justify-between gap-x-3 gap-y-2">
+                      <h3 className="pt-1.5 text-xl">{dwi(x.judul, b)}</h3>
+                      {dwi(x.label, b) && <span className="rounded-full bg-buih px-3 py-1.5 text-xs font-bold whitespace-nowrap text-biru-tua">{rapatRentang(dwi(x.label, b))}</span>}
+                    </div>
+                    <p className="mt-2 text-[0.95rem] text-abu">{rapatRentang(dwi(x.teks, b))}</p>
+                  </div>
+                </li>
+              ))}
+            </ol>
+          )}
+        </div>
+
+        {(info.length > 0 || catatanLokasi || wa || tautanPeta || dwi(s.alamat, b)) && (
+          <div className="mt-4 grid gap-4 xl:grid-cols-[minmax(0,1.45fr)_minmax(0,1fr)] xl:gap-5">
+            {info.length > 0 && (
+              <ul className={`${KISI2} gap-4 ${catatanLokasi || wa || tautanPeta || dwi(s.alamat, b) ? '' : 'xl:col-span-2'}`}>
+                {info.map((x, i) => (
+                  <li key={i} className={`flex items-center gap-4 rounded-3xl bg-white/65 p-5 ${rentang2(info.length, i)}`}>
+                    <span aria-hidden className="flex size-11 shrink-0 items-center justify-center rounded-full bg-white text-biru-tua shadow-tipis">
+                      <Ikon nama={x.ikon} className="size-5" />
+                    </span>
+                    <p className="text-[0.95rem] text-laut/85">{rapatRentang(dwi(x.teks, b))}</p>
+                  </li>
+                ))}
+              </ul>
             )}
-            <div className="mt-6 flex flex-wrap gap-3">
-              {tautanPeta && <a href={tautanPeta} target="_blank" rel="noopener" className="tombol tombol-laut"><Ikon nama="luar" className="size-4" /> {k.peta}</a>}
-              {wa && <a href={wa} target="_blank" rel="noopener" className="tombol tombol-garis"><Ikon nama="chat" className="size-4" /> {k.tanyaWa}</a>}
+            <div className={`pt-2 xl:px-1 xl:pt-3 ${info.length ? '' : 'xl:col-span-2'}`}>
+              {dwi(s.alamat, b) && (
+                <p className="mb-4 flex items-start gap-2.5 text-laut">
+                  <Ikon nama="lokasi" className="mt-0.5 size-5 shrink-0 text-biru-tua" />
+                  <span className="whitespace-pre-line">{dwi(s.alamat, b)}</span>
+                </p>
+              )}
+              {catatanLokasi && <p className="max-w-xl text-[0.95rem] text-abu">{rapatRentang(catatanLokasi)}</p>}
+              <div className="mt-4 flex flex-wrap gap-x-6 gap-y-3">
+                {wa && (
+                  <a href={wa} target="_blank" rel="noopener" className="inline-flex items-center gap-1.5 font-bold text-biru-tua underline decoration-biru-tua/30 decoration-2 underline-offset-[6px] hover:decoration-biru-tua">
+                    {k.tanyaRute} <Ikon nama="luar" className="size-4" />
+                  </a>
+                )}
+                {tautanPeta && (
+                  <a href={tautanPeta} target="_blank" rel="noopener" className="inline-flex items-center gap-1.5 font-bold text-biru-tua underline decoration-biru-tua/30 decoration-2 underline-offset-[6px] hover:decoration-biru-tua">
+                    {k.peta} <Ikon nama="luar" className="size-4" />
+                  </a>
+                )}
+              </div>
             </div>
           </div>
-          <div>
-            {titik ? (
-              <Peta titik={s.petaKoordinat} judul={dwi(s.lokasiJudul, b)} />
-            ) : (
-              <div className="relative overflow-hidden rounded-[1.75rem] bg-buih">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src="/merek/kamar-2.svg" alt="" aria-hidden width={1200} height={800} loading="lazy" className="w-full" />
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src="/merek/mambe-perahu-stiker.svg" alt="Mambe" width={200} height={220} loading="lazy" className="absolute bottom-3 left-1/2 h-[62%] w-auto -translate-x-1/2" />
-              </div>
-            )}
-          </div>
-        </div>
+        )}
       </Bagian>
 
       {s.faq.length > 0 && (
-        <Bagian id="tanya" lebar="max-w-3xl" className="!pt-0">
+        <Bagian id="tanya" lebar="max-w-3xl">
           <JudulBagian judul={dwi(s.faqJudul, b)} />
           <div className="grid gap-3">
             {s.faq.map((f, i) => (

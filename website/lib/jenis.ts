@@ -95,6 +95,7 @@ export type Pesanan = {
 
 type Kata = { ikon: string; teks: Dua };
 type Faq = { tanya: Dua; jawab: Dua };
+type Rute = { judul: Dua; label: Dua; teks: Dua };
 type Rekening = { bank: string; nomor: string; atasNama: string };
 
 // Mirrors PENGATURAN in bawaan.mjs.
@@ -133,8 +134,12 @@ export type Situs = {
   layananJudul: Dua;
   layananTeks: Dua;
   ulasanJudul: Dua;
+  lokasiLabel: Dua;
   lokasiJudul: Dua;
   caraSampai: Dua;
+  rute: Rute[];
+  lokasiInfo: { ikon: string; teks: Dua }[];
+  lokasiCatatan: Dua;
   faqJudul: Dua;
   faq: Faq[];
   uangBawaan: string;

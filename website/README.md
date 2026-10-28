@@ -139,6 +139,10 @@ Kartu keunggulan adalah kartu foto polos, tanpa judul, teks, atau nomor, dan tid
 
 Lingkaran wajah memakai foto asli bila ada foto di Foto situs, bagian Foto wajah tamu. Unggah foto tamu yang sudah memberi izin, paling banyak enam, lalu isi nama tamu di samping fotonya. Nama itu muncul saat lingkaran disentuh. Foto dipotong persegi di bagian atas tengah dan diperkecil menjadi 480 piksel di peramban sebelum diunggah, jadi foto dari dada ke atas paling pas. Selama bagian itu kosong, lingkaran memakai gambar wajah ilustrasi yang dipilih per tamu di Isi situs. Situs tidak memasang foto orang asing atau wajah buatan AI sebagai tamu, karena pengunjung akan mengira orang itu benar-benar pernah menginap dan mengulas.
 
+Bagian Cara ke sini memakai peta rute bergambar dari Bandara Sorong, kapal cepat ke Waisai, sampai perahu ke Pulau Kri, dengan kartu langkah bernomor di sampingnya. Label kecil, judul, teks pembuka, langkah perjalanan beserta keterangan singkatnya (misalnya Sekitar 2 jam), kartu info di bawah peta, dan catatan perjalanan diubah di Isi situs, bagian Halaman utama. Tiga langkah pertama juga bernomor di peta, berurutan di Bandara Sorong, di kapal cepat, dan di Pulau Kri, jadi urutan itu sebaiknya dipertahankan. Di bawah catatan ada tautan Tanya rute lewat WhatsApp, dan tautan Buka di Google Maps bila Tautan Google Maps atau Titik peta di Kontak dan lokasi diisi. Mulai lebar 1280 piksel peta dan kartu langkah berdampingan, di bawahnya kartu langkah berjajar di bawah peta.
+
+Laut dan daratan peta ada di `public/merek/peta-rute.svg`, digambar oleh `scripts/desain/peta-rute.mjs` di akar repo dari garis pantai GSHHG resolusi penuh (Wessel & Smith, LGPL), digeser ke OpenStreetMap dengan cara yang sama seperti peta Raja Ampat di DAMPIER. Cara mengunduh datanya tertulis di kepala skrip. Rute, nomor, dan nama tempat di atasnya digambar oleh `components/PetaRute.tsx`, dengan bingkai dan letak tempat di `lib/peta-rute.mjs`. Keterangan sumber Garis pantai GSHHG selalu tampil di pojok peta.
+
 ## Bungalow bawaan
 
 Database baru langsung berisi Bungalow Tepi Pantai dengan tujuh unit. Harga bawaannya Rp 550.000 per orang per malam untuk dua orang, ganti di menu Bungalow sesuai harga sebenarnya, begitu juga foto dan teksnya.
@@ -244,4 +248,4 @@ Statistik pengunjung dihitung situs sendiri di tabel `kunjungan`, tanpa layanan 
 
 Semua yang tampil di situs bisa diubah dari panel, yaitu teks setiap bagian halaman utama, bungalow beserta harga dan fotonya, kegiatan tambahan, ulasan, foto situs, kontak, titik peta, rekening, pembayaran dan paket harga, jam check-in dan check-out, serta ketentuan menginap.
 
-Pengecualiannya teks tombol dan label formulir, misalnya Pesan sekarang, Rencanakan liburanmu, atau Nomor WhatsApp. Teks itu ada di `lib/kamus.ts` dan perlu diubah lewat kode. Hiasan merek seperti wajah Mambe di kotak rencana menginap juga tetap.
+Pengecualiannya teks tombol dan label formulir, misalnya Pesan sekarang, Rencanakan liburanmu, atau Nomor WhatsApp. Teks itu ada di `lib/kamus.ts` dan perlu diubah lewat kode. Hiasan merek seperti wajah Mambe di kotak rencana menginap juga tetap. Nama tempat di peta rute (Pulau Waigeo, Selat Dampier, Waisai, Sorong, Pulau Kri) dan gambar perahu serta pesawatnya juga ada di kode.
