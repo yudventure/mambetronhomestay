@@ -24,7 +24,7 @@ export default async function FotoAdmin() {
         </section>
         <section className="kartu p-5 sm:p-6">
           <h2 className="mb-1 text-2xl">Foto bagian tentang kami</h2>
-          <KelolaFoto wadah="tentang" foto={foto.tentang} catatan="Tampil besar di samping kotak rencana menginap. Hanya foto pertama yang dipakai. Tanpa foto, situs memakai ilustrasi bungalow di siang hari." />
+          <KelolaFoto wadah="tentang" foto={foto.tentang} catatan="Tampil besar di samping teks tentang kami, di atas kalender rencana menginap. Hanya foto pertama yang dipakai. Tanpa foto, situs memakai ilustrasi bungalow di siang hari." />
         </section>
         <section className="kartu p-5 sm:p-6">
           <h2 className="mb-1 text-2xl">Foto kotak ajakan</h2>

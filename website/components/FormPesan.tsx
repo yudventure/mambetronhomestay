@@ -1,9 +1,10 @@
 'use client';
 // Booking form with live availability and price.
 import Link from 'next/link';
-import { useActionState, useEffect, useMemo, useState } from 'react';
+import { useActionState, useEffect, useMemo, useRef, useState } from 'react';
 import Ikon from './Ikon';
 import Kalender from './Kalender';
+import KotakTanggal from './KotakTanggal';
 import { kirimTanpaReset } from '@/lib/kait';
 import { kirimPesanan, type HasilKirim } from '@/app/(situs)/pesan/aksi';
 import type { Bahasa, Kamar, Layanan } from '@/lib/jenis';
@@ -87,6 +88,13 @@ export default function FormPesan({ b, kamar, layanan, sisa, awal, akhir, dpPers
   const sisaKm = useMemo(() => sisa[km?.id] ?? {}, [sisa, km]);
   // bumped when remembered dates are restored, so the calendar opens on that month
   const [pulih, setPulih] = useState(0);
+  // With both dates chosen the stay shows as two dates and a Change dates
+  // button. The calendar shows while a date is missing, and stays a moment
+  // after the check-out is tapped so the chosen range is seen.
+  const [tahan, setTahan] = useState(false);
+  const [bulanLama, setBulanLama] = useState('');
+  const jeda = useRef<ReturnType<typeof setTimeout>>(undefined);
+  useEffect(() => () => clearTimeout(jeda.current), []);
 
   // no dates in the link, take the stay picked on the home page or a room page
   useEffect(() => {
@@ -134,6 +142,23 @@ export default function FormPesan({ b, kamar, layanan, sisa, awal, akhir, dpPers
   const terpilih = layanan.filter((l) => pilihan.includes(l.id));
   const harga = km ? hitungHarga(km, { malam, jumlahKamar, dewasa, anak, layanan: terpilih, dpPersen }) : null;
   const siap = aktif && Boolean(km && masuk && keluar && malam > 0);
+  const tampilKalender = !masuk || !keluar || tahan;
+
+  function pilihTanggal(a: string, z: string) {
+    setMasuk(a);
+    setKeluar(z);
+    clearTimeout(jeda.current);
+    if (a && z) {
+      setTahan(true);
+      jeda.current = setTimeout(() => setTahan(false), 700);
+    }
+  }
+
+  function gantiTanggal() {
+    setBulanLama(masuk);
+    setMasuk('');
+    setKeluar('');
+  }
 
   if (!km) {
     return <p className="kartu p-6 text-lg">{k.tidakAdaPondok}</p>;
@@ -189,19 +214,21 @@ export default function FormPesan({ b, kamar, layanan, sisa, awal, akhir, dpPers
                 {f.tanggalDitolak(ditolak.keluar ? rentangTanggal(ditolak.masuk, ditolak.keluar, b) : tanggal(ditolak.masuk, b))}
               </p>
             )}
-            <Kalender key={pulih} b={b} sisa={sisaKm} unit={km.jumlah_unit} butuh={jumlahKamar} minMalam={km.min_malam}
-              awal={awal} akhir={akhir} masuk={masuk} keluar={keluar}
-              onPilih={(a, z) => { setMasuk(a); setKeluar(z); }} />
-          </div>
-          <div className="mt-5 grid grid-cols-2 gap-3">
-            <div className="rounded-2xl bg-buih px-4 py-3">
-              <p className="text-sm text-abu">{k.tiba}</p>
-              <p className="font-semibold text-laut">{masuk ? tanggal(masuk, b, 'hari') : '...'}</p>
-            </div>
-            <div className="rounded-2xl bg-buih px-4 py-3">
-              <p className="text-sm text-abu">{k.pulang}</p>
-              <p className="font-semibold text-laut">{keluar ? tanggal(keluar, b, 'hari') : '...'}</p>
-            </div>
+            {tampilKalender ? (
+              <Kalender key={pulih} b={b} sisa={sisaKm} unit={km.jumlah_unit} butuh={jumlahKamar} minMalam={km.min_malam}
+                awal={awal} akhir={akhir} masuk={masuk} keluar={keluar} mulaBulan={bulanLama} onPilih={pilihTanggal} />
+            ) : (
+              <div>
+                <div className="grid gap-3 sm:grid-cols-2">
+                  <KotakTanggal b={b} label={k.tiba} d={masuk} />
+                  <KotakTanggal b={b} label={k.pulang} d={keluar} catatan={f.malam(malam)} />
+                </div>
+                <button type="button" onClick={gantiTanggal}
+                  className="mt-4 inline-flex items-center gap-2 rounded-full bg-buih px-5 py-2.5 text-sm font-bold text-biru-tua transition-colors hover:bg-buih-2">
+                  <Ikon nama="kalender" className="size-4" /> {f.gantiTanggal}
+                </button>
+              </div>
+            )}
           </div>
         </Kotak>
 

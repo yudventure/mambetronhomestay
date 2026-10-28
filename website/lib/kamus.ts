@@ -27,7 +27,7 @@ const id = {
   cariPondok: 'Cari bungalow',
   rencana: 'Rencanakan liburanmu',
   cekKetersediaan: 'Cek ketersediaan',
-  rencanaTanggal: { pilih: 'Pilih tanggal', judul: 'Tanggal menginap', selesai: 'Selesai', tutup: 'Tutup kalender', dulu: 'Pilih tanggal tiba dan pulang dulu.', tidakMuat: (n: number) => `Tanggal tadi tidak cukup untuk ${n} tamu. Pilih tanggal lain.`, kurangTamu: 'Kurangi tamu', tambahTamu: 'Tambah tamu' },
+  rencanaTanggal: { diKalender: 'Ketuk di kalender', dulu: 'Pilih tanggal tiba dan pulang dulu.', tidakMuat: (n: number) => `Tanggal tadi tidak cukup untuk ${n} tamu. Pilih tanggal lain.`, kurangTamu: 'Kurangi tamu', tambahTamu: 'Tambah tamu' },
   tontonVideo: 'Tonton suasananya',
   ulasanRingkas: (rata: string, n: number) => `${rata} dari ${n} ulasan tamu`,
   nilaiTamu: (skala: number) => `Nilai ulasan tamu dari ${skala}`,
@@ -101,6 +101,7 @@ const id = {
     kali: (n: number, satuan: string) => `${n} × ${satuan}`,
     tambah: 'Tambah',
     kurang: 'Kurangi',
+    gantiTanggal: 'Ganti tanggal',
   },
   galat: {
     kamar: 'Bungalow ini tidak tersedia.',
@@ -205,7 +206,7 @@ const en: Kamus = {
   cariPondok: 'Find a bungalow',
   rencana: 'Plan your stay',
   cekKetersediaan: 'Check availability',
-  rencanaTanggal: { pilih: 'Add date', judul: 'Your dates', selesai: 'Done', tutup: 'Close calendar', dulu: 'Pick your arrival and departure dates first.', tidakMuat: (n) => `Those dates no longer fit ${n} guests. Please pick other dates.`, kurangTamu: 'Fewer guests', tambahTamu: 'More guests' },
+  rencanaTanggal: { diKalender: 'Tap it on the calendar', dulu: 'Pick your arrival and departure dates first.', tidakMuat: (n) => `Those dates no longer fit ${n} guests. Please pick other dates.`, kurangTamu: 'Fewer guests', tambahTamu: 'More guests' },
   tontonVideo: 'Watch the stay',
   ulasanRingkas: (rata: string, n: number) => `${rata} from ${n} guest reviews`,
   nilaiTamu: (skala: number) => `Guest rating out of ${skala}`,
@@ -279,6 +280,7 @@ const en: Kamus = {
     kali: (n, satuan) => `${n} × ${satuan}`,
     tambah: 'Add',
     kurang: 'Remove',
+    gantiTanggal: 'Change dates',
   },
   galat: {
     kamar: 'This bungalow is not available.',

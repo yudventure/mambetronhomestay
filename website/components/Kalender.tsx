@@ -20,13 +20,15 @@ export type PropsKalender = {
   masuk: string;
   keluar: string;
   onPilih: (masuk: string, keluar: string) => void;
+  // month to open on when no date is chosen yet
+  mulaBulan?: string;
 };
 
 const MAKS_MALAM = 60;
 
-export default function Kalender({ b, sisa, unit, butuh, minMalam, awal, akhir, masuk, keluar, onPilih }: PropsKalender) {
+export default function Kalender({ b, sisa, unit, butuh, minMalam, awal, akhir, masuk, keluar, onPilih, mulaBulan }: PropsKalender) {
   const k = KAMUS[b].kalender;
-  const [bulan, setBulan] = useState(() => awalBulan(masuk || awal));
+  const [bulan, setBulan] = useState(() => awalBulan(masuk || (mulaBulan && mulaBulan > awal ? mulaBulan : awal)));
   const [sorot, setSorot] = useState('');
 
   const penuh = (d: string) => (sisa[d] ?? unit) < butuh;

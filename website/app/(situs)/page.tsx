@@ -148,17 +148,16 @@ export default async function Beranda() {
                 : <Link href="/#lokasi" className="tombol tombol-garis">{k.nav.lokasi}</Link>}
             </div>
           </div>
-          <div className="relative">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={tentangFoto?.url ?? '/merek/adegan-siang.svg'} alt={tentangFoto?.keterangan ?? ''} aria-hidden={tentangFoto ? undefined : true}
-              width={tentangFoto?.lebar || 1600} height={tentangFoto?.tinggi || 1200} loading="lazy"
-              className="aspect-[4/3] w-full rounded-[1.75rem] object-cover lg:ml-auto lg:aspect-[16/12] lg:w-[74%]" />
-            <div className="relative mx-auto -mt-24 w-[calc(100%-2rem)] max-w-sm lg:absolute lg:top-[6%] lg:left-0 lg:mx-0 lg:mt-0 lg:w-[17.5rem]">
-              <CariCepat b={b} awal={awal} akhir={akhir} checkIn={s.checkIn} checkOut={s.checkOut} sisa={sisa} unit={Math.max(1, unit)}
-                kapasitas={Math.max(1, ...kamar.map((x) => x.kapasitas))} minMalam={kamar.length ? Math.max(1, Math.min(...kamar.map((x) => x.min_malam))) : 1}
-                maksTamu={kamar.length ? Math.min(20, kamar.reduce((n, x) => n + x.kapasitas * x.jumlah_unit, 0)) : 6} />
-            </div>
-          </div>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src={tentangFoto?.url ?? '/merek/adegan-siang.svg'} alt={tentangFoto?.keterangan ?? ''} aria-hidden={tentangFoto ? undefined : true}
+            width={tentangFoto?.lebar || 1600} height={tentangFoto?.tinggi || 1200} loading="lazy"
+            className="aspect-[4/3] w-full rounded-[1.75rem] object-cover lg:aspect-[16/11]" />
+        </div>
+        {/* stay planner with the calendar open, under the about text and photo */}
+        <div className="mx-auto mt-12 max-w-6xl px-4 sm:px-6 md:mt-16">
+          <CariCepat b={b} awal={awal} akhir={akhir} checkIn={s.checkIn} checkOut={s.checkOut} sisa={sisa} unit={Math.max(1, unit)}
+            kapasitas={Math.max(1, ...kamar.map((x) => x.kapasitas))} minMalam={kamar.length ? Math.max(1, Math.min(...kamar.map((x) => x.min_malam))) : 1}
+            maksTamu={kamar.length ? Math.min(20, kamar.reduce((n, x) => n + x.kapasitas * x.jumlah_unit, 0)) : 6} />
         </div>
       </section>
 
