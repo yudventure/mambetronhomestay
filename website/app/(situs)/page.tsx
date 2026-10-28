@@ -5,16 +5,15 @@ import GeserPondok from '@/components/GeserPondok';
 import Ikon from '@/components/Ikon';
 import Wajah from '@/components/Wajah';
 import VideoTentang from '@/components/VideoTentang';
+import KartuKegiatan from '@/components/KartuKegiatan';
 import GaleriBeranda from '@/components/GaleriBeranda';
 import Pahlawan from '@/components/Pahlawan';
-import Perkiraan from '@/components/Perkiraan';
 import Peta, { koordinat } from '@/components/Peta';
 import { bahasaAktif } from '@/lib/bahasa';
 import { ambilSitus, daftarKamar, daftarLayanan, daftarUlasan, fotoSitus, gambarCadangan, pemesananAktif, sisaKamar } from '@/lib/data';
 import { kamus } from '@/lib/kamus';
-import { dwi, paragraf, pilih, rupiah, tautanLuar, tautanWa } from '@/lib/format';
+import { dwi, paragraf, tautanLuar, tautanWa } from '@/lib/format';
 import { KISI, kisiSorotan, rentang } from '@/lib/kisi';
-import { SATUAN } from '@/lib/satuan.mjs';
 import { hariIni, tambahHari } from '@/lib/tanggal';
 import { kursAktif } from '@/lib/uang-server';
 import { siapkanVideo } from '@/lib/video-server';
@@ -211,20 +210,10 @@ export default async function Beranda() {
       {layanan.length > 0 && (
         <Bagian id="kegiatan" className="!pt-0">
           <JudulBagian judul={dwi(s.layananJudul, b)} teks={dwi(s.layananTeks, b)} />
-          <div className={`${KISI} gap-4`}>
+          <div className={`${KISI} gap-4 md:gap-5`}>
             {layanan.map((l, i) => (
-              <div key={l.id} className={`flex flex-col rounded-3xl bg-embun p-6 ${rentang(layanan.length, i)}`}>
-                <div className="flex items-center gap-3">
-                  <Ikon nama={l.ikon} className="size-7 shrink-0 text-biru-tua" tebal={1.5} />
-                  <h3 className="text-xl">{pilih(b, l.nama, l.nama_en)}</h3>
-                </div>
-                <p className="mt-3 text-[0.95rem] text-abu">{pilih(b, l.keterangan, l.keterangan_en)}</p>
-                <div className="mt-auto pt-5">
-                  <p className="font-judul text-xl text-laut">{rupiah(l.harga, b)}</p>
-                  <p className="text-sm text-abu">{SATUAN[l.satuan][b]}</p>
-                  <Perkiraan idr={l.harga} kurs={kurs} b={b} className="mt-1 text-abu" />
-                </div>
-              </div>
+              <KartuKegiatan key={l.id} b={b} l={l} i={i} kurs={kurs} label={k.pesanKegiatan}
+                mendatar={layanan.length % 3 === 1 && i === layanan.length - 1} className={rentang(layanan.length, i)} />
             ))}
           </div>
         </Bagian>
