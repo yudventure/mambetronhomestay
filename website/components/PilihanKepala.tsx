@@ -27,7 +27,7 @@ export default function PilihanKepala({ id, label, ikon, ikonHp = true, aktif, o
   return (
     <div className="relative max-sm:static">
       <button ref={tombol} type="button" onClick={() => setBuka((x) => !x)} aria-expanded={buka} aria-controls={id} aria-label={label}
-        className="inline-flex h-10 items-center gap-1.5 rounded-full px-2 text-[0.75rem] font-bold tracking-[0.08em] text-laut transition-colors hover:bg-buih sm:px-3">
+        className="inline-flex h-10 items-center gap-1.5 rounded-full px-2 text-[0.75rem] font-bold tracking-[0.08em] text-laut transition-colors hover:bg-buih sm:px-2.5">
         <Ikon nama={ikon} className={`size-[1.125rem] ${ikonHp ? '' : 'hidden sm:block'}`} />
         <span>{aktif.toUpperCase()}</span>
         <Ikon nama="bawah" className={`hidden size-3.5 transition-transform sm:block ${buka ? 'rotate-180' : ''}`} tebal={2.2} />

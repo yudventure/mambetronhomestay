@@ -32,7 +32,7 @@ export default async function Kepala({ b, situs }: { b: Bahasa; situs: Situs }) 
       <div className="pointer-events-auto relative mx-auto flex h-16 max-w-6xl items-center gap-2 rounded-full bg-white pr-2 pl-4 shadow-angkat ring-1 ring-laut/5 transition-shadow duration-300 sm:h-[4.25rem] sm:pl-6 group-data-[datar]/kepala:shadow-none group-data-[datar]/kepala:ring-0">
         <Link href="/" className="mr-auto shrink-0" aria-label={situs.nama}>
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/merek/logo-horizontal.svg" alt={situs.nama} width={198} height={44} className="h-8 w-auto sm:h-10" />
+          <img src="/merek/logo-horizontal.svg" alt={situs.nama} width={198} height={44} className="h-9 w-auto min-[380px]:h-10 sm:h-12 lg:h-[3.25rem]" />
         </Link>
         <nav className="mr-2 hidden items-center lg:flex">
           {tautan.map((t) => (
@@ -41,8 +41,11 @@ export default async function Kepala({ b, situs }: { b: Bahasa; situs: Situs }) 
             </Link>
           ))}
         </nav>
-        <PilihanKepala id="pilihan-bahasa" label={k.pilihBahasa} ikon="globe" aktif={b} opsi={bahasa} />
-        <PilihanKepala id="pilihan-uang" label={k.pilihUang} ikon="uang" ikonHp={false} aktif={uang} opsi={mataUang} catatan={k.uangCatatan} />
+        {/* language and currency sit side by side as one pair */}
+        <div className="flex items-center">
+          <PilihanKepala id="pilihan-bahasa" label={k.pilihBahasa} ikon="globe" aktif={b} opsi={bahasa} />
+          <PilihanKepala id="pilihan-uang" label={k.pilihUang} ikon="uang" ikonHp={false} aktif={uang} opsi={mataUang} catatan={k.uangCatatan} />
+        </div>
         <MenuSeluler
           tautan={tautan}
           label={k.menu}
