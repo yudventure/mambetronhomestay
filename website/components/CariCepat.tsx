@@ -93,7 +93,7 @@ export default function CariCepat({ b, awal, akhir, checkIn, checkOut, sisa, uni
 
       <div className="flex items-center gap-3 xl:col-start-2 xl:row-start-1">
         {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src="/merek/wajah-senang.svg" alt="" aria-hidden width={64} height={52} className="size-16 shrink-0 rounded-2xl bg-buih object-contain p-1.5" />
+        <img src="/merek/ikon.svg" alt="" aria-hidden width={64} height={64} className="size-16 shrink-0 rounded-2xl bg-buih object-contain p-1" />
         <h3 className="text-[1.65rem] leading-[1.02]">{k.rencana}</h3>
       </div>
 

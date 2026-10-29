@@ -63,7 +63,7 @@ export default async function Pesan({ searchParams }: { searchParams: Promise<Re
           <h1 className="mt-2 text-[clamp(2.1rem,1.6rem+2vw,3rem)]">{k.form.judul}</h1>
         </div>
         {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src="/merek/mambe-papan-stiker.svg" alt="" aria-hidden width={130} height={142} className="hidden h-28 w-auto sm:block" />
+        <img src="/merek/simbol.svg" alt="" aria-hidden width={160} height={110} className="hidden h-24 w-auto sm:block" />
       </div>
       <FormPesan
         b={b}

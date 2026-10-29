@@ -48,14 +48,13 @@ export default async function HalamanPesanan({ params, searchParams }: {
   const perluBayar = p.status === 'menunggu' && p.dp > 0;
   // accounts with a number only, a half filled row in the panel is not shown
   const rekening = situs.bank.filter((r) => r.nomor.trim());
-  const wajah = p.status === 'batal' ? 'kaget' : p.status === 'menunggu' ? 'senang' : 'cinta';
 
   return (
     <Bagian latar="buih" lebar="max-w-4xl" className="!pt-10 md:!pt-14">
       <div className="kartu overflow-hidden">
         <div className="flex flex-col items-start gap-5 bg-laut px-5 py-7 text-white sm:flex-row sm:items-center sm:px-8">
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={`/merek/wajah-${wajah}.svg`} alt="" width={96} height={78} className="h-20 w-auto shrink-0" />
+          <img src="/merek/simbol-putih.svg" alt="" aria-hidden width={160} height={110} className="h-20 w-auto shrink-0" />
           <div className="min-w-0">
             <h1 className="text-3xl !text-white">{h.judul}</h1>
             <p className="mt-2 text-white/85">

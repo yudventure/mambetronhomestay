@@ -1,14 +1,14 @@
-// Brand assets for the booking website in website/: logos, mascot, sea
-// illustrations, placeholder room pictures, favicons and fonts.
+// Brand assets for the booking website in website/: logos, sea
+// illustrations, placeholder room pictures, favicons and fonts. The site
+// shows the Mambetron logo, never the cuscus mascot.
 import fs from 'fs';
 import path from 'path';
 import * as L from '../lib/logo.mjs';
 import * as A from '../lib/seni.mjs';
 import { adegan as pemandangan } from '../lib/adegan.mjs';
-import { maskot, wajah, POSE, EKSPRESI } from '../lib/maskot.mjs';
 import { W } from '../lib/palet.mjs';
 import { doc } from '../lib/tata.mjs';
-import { png, simpan } from '../lib/render.mjs';
+import { simpan } from '../lib/render.mjs';
 
 export default async function ({ ROOT, out }) {
   const web = (p) => path.join(ROOT, 'website', p);
@@ -27,12 +27,6 @@ export default async function ({ ROOT, out }) {
     ['monogram.svg', L.monogram()],
   ];
   for (const [nama, d] of logo) simpan(merek(nama), L.svgDoc(d, { pad: d.box[2] * 0.01 }));
-
-  for (const k of Object.keys(POSE)) {
-    simpan(merek(`mambe-${k}.svg`), L.svgDoc(maskot(k), { pad: 4 }));
-    simpan(merek(`mambe-${k}-stiker.svg`), L.svgDoc(maskot(k, { stiker: true }), { pad: 14 }));
-  }
-  for (const k of Object.keys(EKSPRESI)) simpan(merek(`wajah-${k}.svg`), L.svgDoc(wajah(k, { stiker: true }), { pad: 14 }));
 
   // placeholder room pictures until the owner uploads photos
   const adegan = [
@@ -62,7 +56,4 @@ export default async function ({ ROOT, out }) {
   }
   fs.copyFileSync(out('font/OFL-LondrinaSolid.txt'), web('app/fonts/OFL-LondrinaSolid.txt'));
   fs.copyFileSync(out('font/OFL-PlusJakartaSans.txt'), web('app/fonts/OFL-PlusJakartaSans.txt'));
-
-  // small raster mascot for e-mail and chat previews
-  await png(L.svgDoc(maskot('sapa', { stiker: true }), { pad: 14 }), merek('mambe-sapa.png'), { width: 600 });
 }

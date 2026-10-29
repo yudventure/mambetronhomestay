@@ -19,7 +19,7 @@ Bagian penting di folder ini sebagai berikut.
 | `lib/kamus.ts` | Teks tombol dan label dalam dua bahasa |
 | `lib/skema.mjs` | Tabel database |
 | `database/skema.sql` | Salinan skema untuk diimpor lewat phpMyAdmin bila perlu |
-| `public/merek` | Logo, maskot, dan ilustrasi dari folder `brand` |
+| `public/merek` | Logo dan ilustrasi dari folder `brand`. Situs memakai logo Mambetron, tidak memakai maskot kuskus. |
 | `.env.example` | Daftar environment variables dengan nilai bawaan |
 
 Aset di `public/merek` dan huruf di `app/fonts` dibuat dari folder `brand` dengan perintah `npm run build` di akar repo, jadi jangan diubah tangan.
@@ -248,4 +248,4 @@ Statistik pengunjung dihitung situs sendiri di tabel `kunjungan`, tanpa layanan 
 
 Semua yang tampil di situs bisa diubah dari panel, yaitu teks setiap bagian halaman utama, bungalow beserta harga dan fotonya, kegiatan tambahan, ulasan, foto situs, kontak, titik peta, rekening, pembayaran dan paket harga, jam check-in dan check-out, serta ketentuan menginap.
 
-Pengecualiannya teks tombol dan label formulir, misalnya Pesan sekarang, Rencanakan liburanmu, atau Nomor WhatsApp. Teks itu ada di `lib/kamus.ts` dan perlu diubah lewat kode. Hiasan merek seperti wajah Mambe di kotak rencana menginap juga tetap. Nama tempat di peta rute (Pulau Waigeo, Selat Dampier, Waisai, Sorong, Pulau Kri) dan gambar perahu serta pesawatnya juga ada di kode.
+Pengecualiannya teks tombol dan label formulir, misalnya Pesan sekarang, Rencanakan liburanmu, atau Nomor WhatsApp. Teks itu ada di `lib/kamus.ts` dan perlu diubah lewat kode. Hiasan merek seperti logo di kotak rencana menginap juga tetap. Nama tempat di peta rute (Pulau Waigeo, Selat Dampier, Waisai, Sorong, Pulau Kri) dan gambar perahu serta pesawatnya juga ada di kode.

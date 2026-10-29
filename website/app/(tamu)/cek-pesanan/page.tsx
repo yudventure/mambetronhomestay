@@ -15,7 +15,7 @@ export default async function CekPesanan() {
     <Bagian latar="buih" lebar="max-w-xl" className="!pt-10 md:!pt-14">
       <div className="kartu p-6 sm:p-8">
         {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src="/merek/wajah-kedip.svg" alt="" aria-hidden width={110} height={90} className="h-20 w-auto" />
+        <img src="/merek/simbol.svg" alt="" aria-hidden width={160} height={110} className="h-20 w-auto" />
         <h1 className="mt-4 text-3xl">{k.judul}</h1>
         <p className="mt-2 text-abu">{k.teks}</p>
         <div className="mt-6"><FormCek b={b} /></div>

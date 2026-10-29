@@ -190,7 +190,7 @@ const id = {
   checkInOut: { masuk: 'Check-in mulai', keluar: 'Check-out paling lambat' },
   tidakDitemukan: {
     judul: 'Halaman tidak ditemukan',
-    teks: 'Mambe sudah mencari ke mana-mana, tapi halaman ini tidak ada.',
+    teks: 'Kami sudah mencari ke mana-mana, tapi halaman ini tidak ada.',
     kembali: 'Kembali ke beranda',
   },
   galatHalaman: {
@@ -388,7 +388,7 @@ const en: Kamus = {
   checkInOut: { masuk: 'Check-in from', keluar: 'Check-out by' },
   tidakDitemukan: {
     judul: 'Page not found',
-    teks: 'Mambe looked everywhere, but this page is not here.',
+    teks: 'We looked everywhere, but this page is not here.',
     kembali: 'Back to home',
   },
   galatHalaman: {
