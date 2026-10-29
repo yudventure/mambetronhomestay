@@ -4,7 +4,7 @@ import Ikon from '@/components/Ikon';
 import Kabar, { JudulAdmin } from '@/components/admin/Kabar';
 import TombolSalin from '@/components/admin/TombolSalin';
 import TombolYakin from '@/components/admin/TombolYakin';
-import { gantiTautanSambungan, hapusSambungan, putusDampier, sambungDampier, sinkronkanSekarang, tambahSambungan, ubahSambungan } from '@/app/admin/aksi';
+import { gantiTautanSambungan, hapusSambungan, hapusSambunganLama, putusDampier, sambungDampier, sinkronkanSekarang, tambahSambungan, ubahSambungan } from '@/app/admin/aksi';
 import { statusDampier, type StatusDampier } from '@/lib/dampier';
 import { daftarKamar } from '@/lib/data';
 import type { Kamar } from '@/lib/jenis';
@@ -14,7 +14,7 @@ import { rentang2 } from '@/lib/kisi';
 import { cariBentrok, daftarSambungan, pastikanSegar, type Sambungan } from '@/lib/sinkron';
 import { hariIni, tambahHari } from '@/lib/tanggal';
 
-export const metadata = { title: 'Sinkron OTA' };
+export const metadata = { title: 'Channel manager' };
 
 const SARAN = ['Booking.com', 'Airbnb', 'Agoda', 'Expedia', 'Traveloka', 'Tiket.com', 'Google Calendar', 'Agen perjalanan'];
 
@@ -118,7 +118,7 @@ function FormDampier({ kamar, tombol, d }: { kamar: Kamar[]; tombol: string; d: 
   );
 }
 
-function KartuDampier({ d, kamar, adaOta }: { d: StatusDampier | null; kamar: Kamar[]; adaOta: boolean }) {
+function KartuDampier({ d, kamar, lama }: { d: StatusDampier | null; kamar: Kamar[]; lama: number }) {
   if (!d) {
     return (
       <section id="dampier" className="kartu mb-6 scroll-mt-28 p-5 sm:p-7">
@@ -182,8 +182,15 @@ function KartuDampier({ d, kamar, adaOta }: { d: StatusDampier | null; kamar: Ka
       {km && nDampier > 0 && nDampier !== km.jumlah_unit && (
         <p className="mt-4 rounded-xl bg-pasir px-4 py-3 text-sm text-laut">DAMPIER mencatat {nDampier} kamar, sedangkan {km.nama} di sini {km.jumlah_unit} unit. Samakan jumlahnya supaya hitungan kamar kosong cocok.</p>
       )}
-      {adaOta && (
-        <p className="mt-4 rounded-xl bg-panel-latar px-4 py-3 text-sm text-panel-utama/85">Booking.com yang sudah tersambung di DAMPIER tidak perlu disambung lagi di bawah. Bila keduanya tersambung, satu pesanan Booking.com bisa menutup dua unit di sini.</p>
+      {lama > 0 && (
+        <div className="mt-4 rounded-xl bg-panel-latar px-4 py-3 text-sm text-panel-utama/85">
+          <p>Ada {lama} sambungan iCal lama dari sebelum DAMPIER. Sambungan itu tidak dibaca lagi, dan OTA yang membaca tautannya tidak lagi mendapat malam dari sini, jadi tidak ada pesanan yang terhitung dua kali. Bila OTA itu belum tersambung di DAMPIER, sambungkan di sana.</p>
+          <form action={hapusSambunganLama} className="mt-2">
+            <TombolYakin tanya="Hapus semua sambungan iCal lama di situs ini? OTA tetap tersambung lewat DAMPIER." className="tombol tombol-putih tombol-kecil">
+              <Ikon nama="sampah" className="size-4" /> Hapus sambungan lama
+            </TombolYakin>
+          </form>
+        </div>
       )}
 
       {nDampier > 0 && (
@@ -231,7 +238,7 @@ export default async function HalamanSinkron({ searchParams }: { searchParams: P
 
   return (
     <>
-      <JudulAdmin judul="Sinkron OTA" teks="Hubungkan kalender setiap unit dengan Booking.com, Airbnb, Agoda, atau agen perjalanan, supaya satu malam tidak terjual dua kali.">
+      <JudulAdmin judul="Channel manager" teks="DAMPIER mengatur Booking.com, Airbnb, Agoda, Traveloka, tiket.com, dan website ini dari satu kalender, supaya satu malam tidak terjual dua kali.">
         <form action={sinkronkanSekarang}>
           <button className="tombol tombol-kecil"><Ikon nama="sinkron" className="size-4" /> Sinkronkan sekarang</button>
         </form>
@@ -257,11 +264,12 @@ export default async function HalamanSinkron({ searchParams }: { searchParams: P
         'galat:dampier-sering': 'DAMPIER meminta jeda karena terlalu sering dihubungi. Coba lagi beberapa menit lagi.',
         'galat:dampier-bentuk': 'Jawaban DAMPIER tidak dikenali. Pastikan yang disalin alamat API, bukan tautan kalender mitra.',
         'galat:dampier-jawab': 'DAMPIER menolak sambungan ini. Coba salin ulang alamat API-nya.',
+        'ok:lama': 'Sambungan iCal lama dihapus. OTA tetap tersambung lewat DAMPIER.',
       }} />
 
       <datalist id="saran-situs">{SARAN.map((x) => <option key={x} value={x} />)}</datalist>
 
-      <KartuDampier d={dampier} kamar={kamar} adaOta={Boolean(dampier) && sambungan.some((s) => s.url)} />
+      <KartuDampier d={dampier} kamar={kamar} lama={dampier ? sambungan.length : 0} />
 
       {bentrok.length > 0 && (
         <section className="mb-6 rounded-[1.5rem] bg-[#fde3dc] p-5 sm:p-6" role="alert">
@@ -279,6 +287,18 @@ export default async function HalamanSinkron({ searchParams }: { searchParams: P
         </section>
       )}
 
+      {dampier ? (
+        <section className="rounded-[1.5rem] bg-panel-lembut p-5 sm:p-7">
+          <p className="label-kecil">OTA</p>
+          <h2 className="mt-1 text-[1.6rem] text-panel-utama">Booking.com dan OTA lain diatur di DAMPIER</h2>
+          <p className="mt-2 max-w-3xl text-[0.9375rem] text-panel-utama/85">Booking.com, Airbnb, Agoda, Traveloka, tiket.com, atau channel manager lain disambungkan per kamar di kalender mitra DAMPIER, kartu Sambungkan OTA. Website ini tersambung ke kalender yang sama, jadi tidak ada lagi yang perlu disambung di sini.</p>
+        </section>
+      ) : (<>
+      <div className="mt-10 mb-4">
+        <p className="label-kecil">Tanpa DAMPIER</p>
+        <h2 className="mt-1 text-[1.75rem] text-panel-utama">Sambungan iCal langsung per unit</h2>
+        <p className="mt-1 max-w-3xl text-[0.9375rem] text-abu">Hanya untuk homestay yang tidak memakai DAMPIER. Begitu DAMPIER tersambung, bagian ini tidak dipakai lagi.</p>
+      </div>
       <div className="grid gap-6 xl:grid-cols-[minmax(0,1.15fr)_minmax(0,1fr)]">
         <section className="kartu p-5 sm:p-7">
           <p className="label-kecil">Sambungan baru</p>
@@ -365,6 +385,7 @@ export default async function HalamanSinkron({ searchParams }: { searchParams: P
           <li className="rounded-2xl bg-white px-4 py-3 md:col-span-2"><span className="block font-semibold text-panel-utama">Agen perjalanan</span>Buat sambungan tanpa tautan masuk, lalu kirim tautan sambungan itu ke agen. Agen bisa membukanya di Google Calendar untuk melihat unit yang masih kosong. Pemesanan dari agen dicatat lewat Pesanan, Tambah pesanan manual.</li>
         </ul>
       </section>
+      </>)}
     </>
   );
 }

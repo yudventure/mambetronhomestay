@@ -171,15 +171,15 @@ Selama hanya ada satu bungalow, menu Akomodasi langsung membuka halaman bungalow
 
 Teks yang disimpan dari panel ditulis dengan pindah baris Windows (CRLF), jadi deskripsi dan fasilitas bawaan lama sempat tidak dikenali dan tidak ikut diganti. Pindah baris kini diseragamkan saat disimpan, dan teks bawaan lama yang tersimpan dengan CRLF diganti sekali secara otomatis setelah Redeploy (tanda `kamar-teks-3` di tabel `pengaturan`). Teks yang sudah diubah sendiri tetap tidak disentuh.
 
-## Sinkron kalender dengan OTA dan agen perjalanan
+## Sinkron iCal langsung tanpa DAMPIER
 
-Menu Sinkron OTA di panel menghubungkan kalender setiap unit dengan Booking.com, Airbnb, Agoda, Google Calendar, atau agen perjalanan lewat tautan iCal. Kalender iCal hanya tahu terisi atau kosong, jadi setiap sambungan dipasang untuk satu unit. Unit yang dijual di dua situs mendapat dua sambungan.
+Untuk homestay yang tidak memakai DAMPIER, menu Channel manager di panel, bagian Tanpa DAMPIER, menghubungkan kalender setiap unit dengan Booking.com, Airbnb, Agoda, Google Calendar, atau agen perjalanan lewat tautan iCal. Begitu DAMPIER tersambung (bagian berikut), bagian ini tidak dipakai lagi. Kalender iCal hanya tahu terisi atau kosong, jadi setiap sambungan dipasang untuk satu unit. Unit yang dijual di dua situs mendapat dua sambungan.
 
 Setiap sambungan menukar dua tautan. Tautan dari panel (berakhiran `.ics`) ditempel di menu sinkron kalender situs itu, supaya situs itu menutup malam yang sudah terisi di sini. Tautan ekspor iCal dari situs itu ditempel di kolom tautan kalender di panel, supaya malam yang terjual di sana tertutup di sini. Untuk agen perjalanan cukup tautan dari panel saja, agen bisa membukanya di Google Calendar.
 
 Pemesanan di situs ini tidak membawa nomor unit. Situs membaginya ke unit yang kosong, menghindari malam yang sudah terisi dari OTA, lalu menutup unit itu di tautan ekspornya. Tautan setiap sambungan tidak memuat malam yang datang dari sambungan itu sendiri, jadi blokir tidak memantul bolak-balik. Tautan ekspor hanya berisi malam yang terisi, tanpa nama tamu, harga, atau kontak.
 
-Kalender situs lain dibaca setiap 15 menit selama aplikasi menyala, setiap kali halaman pesan atau kalender dibuka bila bacaan terakhir sudah lewat 15 menit, dan sekali lagi sebelum pesanan baru disimpan. Tombol Sinkronkan sekarang membaca semuanya saat itu juga. Situs pemesanan membaca tautan kita sesuai jadwal mereka sendiri, biasanya 30 menit sampai beberapa jam, jadi masih ada jeda kecil. Bila malam yang sama terjual di dua tempat melebihi tujuh unit, halaman Sinkron OTA dan kotak Perlu perhatian di Ringkasan menandainya supaya tamunya bisa dihubungi.
+Kalender situs lain dibaca setiap 15 menit selama aplikasi menyala, setiap kali halaman pesan atau kalender dibuka bila bacaan terakhir sudah lewat 15 menit, dan sekali lagi sebelum pesanan baru disimpan. Tombol Sinkronkan sekarang membaca semuanya saat itu juga. Situs pemesanan membaca tautan kita sesuai jadwal mereka sendiri, biasanya 30 menit sampai beberapa jam, jadi masih ada jeda kecil. Bila malam yang sama terjual di dua tempat melebihi tujuh unit, halaman Channel manager dan kotak Perlu perhatian di Ringkasan menandainya supaya tamunya bisa dihubungi.
 
 Tautan yang gagal dibaca (situs tidak menjawab, tautan sudah diganti, atau isinya bukan kalender) diberi pesan di sambungannya, dan malam dari bacaan terakhir yang berhasil tetap ditutup. Bila tautan dari panel tersebar ke orang yang salah, pakai Buat tautan baru lalu tempel tautan baru di situs itu.
 
@@ -192,11 +192,11 @@ Hal yang perlu diketahui tentang tiap situs, sesuai keadaan Oktober 2026.
 
 Tabelnya `kalender_sambungan` (tautan per unit) dan `kalender_luar` (malam yang terbaca dari situs lain). Pembaca iCal ada di `lib/ical.mjs` dengan uji `npm run uji`, aturan sinkron di `lib/sinkron.ts`, tautan ekspor di `app/ical/[berkas]/route.ts`.
 
-## Kalender mitra DAMPIER
+## Channel manager DAMPIER
 
-Kalender mitra Mambetron di DAMPIER memuat ketujuh kamar dengan pesanan Booking.com, tamu yang memesan di DAMPIER, dan pesanan yang dicatat sendiri di sana. Situs ini tersambung ke kalender itu lewat API, sekali untuk semua kamar. Tamu tetap memesan dan membayar di situs ini, tidak dibawa ke DAMPIER.
+Kalender mitra Mambetron di DAMPIER memuat ketujuh kamar dengan pesanan Booking.com, tamu yang memesan di DAMPIER, dan pesanan yang dicatat sendiri di sana. DAMPIER menjadi channel manager. Booking.com, Airbnb, Agoda, Traveloka, tiket.com, atau channel manager lain disambungkan per kamar di kalender mitra DAMPIER (Sambungkan OTA), dan situs ini tersambung ke kalender yang sama lewat API, sekali untuk semua kamar, seperti satu OTA lagi. Tamu tetap memesan dan membayar di situs ini, tidak dibawa ke DAMPIER.
 
-Cara menyambung. Buka kalender mitra Mambetron di DAMPIER, ketuk Sambungkan website di kartu Sambungkan OTA, lalu salin alamat API di kotak Untuk programmer website (diawali `https://thedampier.com/api/kamar/`). Tempel di panel situs ini, menu Sinkron OTA, kartu Kalender mitra DAMPIER, lalu ketuk Sambungkan. Situs membaca DAMPIER sekali sebelum menyimpan alamatnya, jadi alamat yang salah langsung ditolak. Tautan iCal per kamar dari kotak yang sama juga diterima dan diubah menjadi alamat API.
+Cara menyambung. Buka kalender mitra Mambetron di DAMPIER, ketuk Sambungkan website di kartu Sambungkan OTA, lalu salin alamat API di kotak Untuk programmer website (diawali `https://thedampier.com/api/kamar/`). Tempel di panel situs ini, menu Channel manager, kartu Kalender mitra DAMPIER, lalu ketuk Sambungkan. Situs membaca DAMPIER sekali sebelum menyimpan alamatnya, jadi alamat yang salah langsung ditolak. Tautan iCal per kamar dari kotak yang sama juga diterima dan diubah menjadi alamat API.
 
 Yang dikirim ke DAMPIER. Semua pesanan bungalow itu yang belum batal dan belum lewat, dengan kode pesanan sebagai pengenal, tanggal tiba dan pulang, jumlah bungalow, jumlah tamu, nama, negara, total, status bayar, dan rencana tiba. Nomor WhatsApp dan surel tamu tidak dikirim. Tanggal tutup dikirim sebagai Tanggal tutup untuk semua kamar. Daftarnya dikirim utuh setiap kali berubah (pesanan baru, dibayar, diubah, dibatalkan, dihapus, tanggal tutup ditambah atau dihapus), sekali lagi setiap 6 jam, dan sekali lagi bila jumlah pesanan website di DAMPIER berbeda dengan yang dikirim. Di DAMPIER pesanan ini tampil sebagai Website sendiri dan ikut menutup kamarnya untuk Booking.com dan tamu DAMPIER. Pesanan situs ini yang dulu dicatat manual di kalender DAMPIER perlu dihapus di sana supaya tidak tercatat dua kali.
 
@@ -204,9 +204,9 @@ Yang dibaca dari DAMPIER. Jumlah kamar yang terisi setiap malam untuk 400 hari k
 
 Bila DAMPIER melaporkan pesanan situs ini bertemu pesanan lain di malam yang sama, kodenya tampil merah di kartu Kalender mitra DAMPIER. Pindahkan pesanan lain ke kamar yang kosong di kalender DAMPIER, atau hubungi tamunya.
 
-Booking.com yang sudah tersambung di DAMPIER tidak perlu disambung lagi lewat iCal di halaman Sinkron OTA situs ini. Bila keduanya tersambung, satu pesanan Booking.com terhitung dua kali dan menutup dua unit. Tautan ekspor untuk situs yang juga dibaca (dua arah) tidak membawa malam dari DAMPIER supaya blokir tidak berputar, sedangkan tautan untuk agen perjalanan membawanya.
+Selama DAMPIER tersambung, sambungan iCal situs ini sendiri tidak dipakai, tanpa perlu dibereskan dulu. Malam yang pernah terbaca lewat iCal dihapus saat menyambung, tautannya tidak dibaca lagi, dan tautan ekspor untuk OTA yang juga dibaca (dua arah) menjadi kosong, jadi setiap OTA hanya mendengar dari DAMPIER dan tidak ada pesanan yang terhitung dua kali. Tautan untuk agen perjalanan tetap bekerja dan membawa malam dari DAMPIER. Bila masih ada sambungan lama, kartu DAMPIER menyebut jumlahnya dengan tombol Hapus sambungan lama. Halaman Channel manager tidak lagi menampilkan pengaturan iCal per unit.
 
-Alamat API memuat kunci kalender Mambetron, jadi disimpan sendiri di baris `dampier` tabel `pengaturan`, tidak di repo atau environment, hanya dipakai server situs, dan panel hanya menampilkan ujungnya. Bila kunci diganti di DAMPIER, tempel alamat baru lewat Ganti alamat. Putuskan menghapus alamat dan malam dari DAMPIER di situs ini, pesanan yang sudah terkirim tetap ada di DAMPIER sampai dihapus di sana. `SINKRON_IZINKAN_LOKAL=1` hanya untuk mencoba di komputer sendiri dengan DAMPIER tiruan, jangan diisi di hPanel.
+Alamat API memuat kunci kalender Mambetron, jadi disimpan sendiri di baris `dampier` tabel `pengaturan`, tidak di repo atau environment, hanya dipakai server situs, dan panel hanya menampilkan ujungnya. Bila kunci diganti di DAMPIER, tempel alamat baru lewat Ganti alamat. Putuskan menghapus alamat dan malam dari DAMPIER di situs ini, pesanan yang sudah terkirim tetap ada di DAMPIER sampai dihapus di sana, dan sambungan iCal situs ini yang masih ada dibaca lagi saat itu juga. `SINKRON_IZINKAN_LOKAL=1` hanya untuk mencoba di komputer sendiri dengan DAMPIER tiruan, jangan diisi di hPanel.
 
 ## Video tentang kami
 

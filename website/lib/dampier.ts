@@ -11,6 +11,11 @@
 // changes, and again when DAMPIER holds a different number of website
 // bookings than were sent, so both sides agree on what is subtracted.
 //
+// Once connected, DAMPIER is the channel manager. Booking.com, Airbnb and
+// the other OTAs are connected to its calendar, room by room, and this site
+// is one more channel of it. The site's own iCal links (sinkron.ts) then go
+// quiet, see dampierAktif.
+//
 // The API address carries DAMPIER's key. It lives in its own pengaturan row,
 // is only called from this server, and only its last characters reach the
 // panel.
@@ -66,6 +71,15 @@ async function bacaSimpanan(): Promise<Simpanan | null> {
 }
 const tulisSimpanan = (o: Simpanan) =>
   jalankan("INSERT INTO pengaturan (kunci, nilai) VALUES ('dampier', ?) ON DUPLICATE KEY UPDATE nilai = VALUES(nilai)", [JSON.stringify(o)]);
+
+// DAMPIER is the channel manager here. The site's own iCal links are then
+// not read, and their exports to sites that also send a calendar stay
+// empty, so every OTA hears from DAMPIER alone and nothing counts twice.
+export async function dampierAktif() {
+  if (!dbDiatur()) return false;
+  const r = await satu<{ n: number }>("SELECT COUNT(*) AS n FROM pengaturan WHERE kunci = 'dampier'").catch(() => null);
+  return Boolean(r?.n);
+}
 
 export async function statusDampier(): Promise<StatusDampier | null> {
   const o = await bacaSimpanan();
@@ -271,12 +285,16 @@ export function kabariDampier() {
 
 export async function simpanAlamatDampier(api: string, kamarId: number, b: Bacaan) {
   await tulisSimpanan({ api, kamarId, nama: b.nama, kamar: b.kamar, pesananWebsite: b.pesananWebsite });
+  // nights read through the site's own iCal links reach here through DAMPIER now
+  await jalankan('DELETE FROM kalender_luar');
   await sinkronDampier({ paksa: true });
 }
 
+// The site's own iCal links, if any, are read again at once.
 export async function putuskanDampier() {
   await jalankan("DELETE FROM pengaturan WHERE kunci = 'dampier'");
   await jalankan('DELETE FROM kalender_dampier');
+  await jalankan('UPDATE kalender_sambungan SET dicoba = NULL');
 }
 
 export type BlokDampier = { sambungan_id: 0; kamar_id: number; unit: number; mulai: string; selesai: string; ringkas: string; nama: string };

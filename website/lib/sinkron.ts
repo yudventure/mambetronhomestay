@@ -9,13 +9,15 @@
 // same link. A block read from Booking.com therefore never goes back to
 // Booking.com, and two calendars cannot keep each other's old blocks alive.
 //
-// Rooms taken in the DAMPIER partner calendar (dampier.ts) count here like
-// imported nights. Links that also read a site leave them out of their
-// export, because DAMPIER sends Booking.com and the others its own nights.
+// Once the DAMPIER partner calendar is connected (dampier.ts), DAMPIER is
+// the channel manager and these links go quiet. They are not read, and the
+// export of a link that also reads a site is empty, because DAMPIER sends
+// Booking.com and the others every night itself. Export-only links, for
+// agents, keep working and carry DAMPIER's nights too.
 import crypto from 'crypto';
 import { baris, jalankan, satu, transaksi } from './db';
 import { daftarKamar, kamarDariId } from './data';
-import { blokDampier, sinkronDampier } from './dampier';
+import { blokDampier, dampierAktif, sinkronDampier } from './dampier';
 import { alamatSitus, dbDiatur } from './env';
 import { bacaIcal, buatIcal, rangkai } from './ical.mjs';
 import { alamatDalam, izinkanLokal } from './jaringan';
@@ -116,7 +118,7 @@ async function ambil(url: string) {
 // from the last good read, so a site that is down for a moment does not
 // open its dates here.
 export async function sinkronSatu(s: Pick<Sambungan, 'id' | 'kamar_id' | 'unit' | 'url'>) {
-  if (!s.url) return { ok: true, jumlah: 0 };
+  if (!s.url || (await dampierAktif())) return { ok: true, jumlah: 0 };
   try {
     let acara;
     try {
@@ -157,7 +159,7 @@ export function sinkronSemua(o: { paksa?: boolean } = {}): Promise<void> {
   if (!dbDiatur()) return Promise.resolve();
   if (S.jalan) return o.paksa ? S.jalan.then((): Promise<void> => sinkronSemua(o)) : S.jalan;
   S.jalan = (async () => {
-    const semua = await baris<Sambungan>(
+    const semua = (await dampierAktif()) ? [] : await baris<Sambungan>(
       `SELECT id, kamar_id, unit, url FROM kalender_sambungan
        WHERE url <> ''${o.paksa ? '' : ` AND (dicoba IS NULL OR dicoba < UTC_TIMESTAMP() - INTERVAL ${SEGAR_MENIT} MINUTE)`}`,
     );
@@ -245,13 +247,11 @@ export async function petaUnit(kamar: Pick<Kamar, 'id' | 'jumlah_unit'>, dari: s
   return h;
 }
 
-// Nights a unit is taken, leaving out what came in through one link, and
-// DAMPIER's nights for a link that also reads a site (sambungan 0 is
-// DAMPIER).
-function malamUnit(h: PetaPakai, unit: number, kecuali?: number, tanpaDampier = false) {
+// Nights a unit is taken, leaving out what came in through one link.
+function malamUnit(h: PetaPakai, unit: number, kecuali?: number) {
   const malam = new Set<string>([...h.tutup, ...(h.langsung.get(unit) ?? [])]);
   for (const [m, dari] of h.luar.get(unit) ?? []) {
-    if ([...dari].some((id) => id !== kecuali && !(tanpaDampier && id === 0))) malam.add(m);
+    if ([...dari].some((id) => id !== kecuali)) malam.add(m);
   }
   return [...malam];
 }
@@ -267,7 +267,9 @@ export async function feedSambungan(token: string) {
   // a unit that no longer exists, or a hut type that was switched off, is
   // shown as taken so nobody books it elsewhere
   if (!kamar || !kamar.aktif || s.unit > kamar.jumlah_unit) malam = daftarMalam(hari, sampai);
-  else malam = malamUnit(await petaUnit(kamar, hari, sampai), s.unit, s.id, Boolean(s.url));
+  // DAMPIER is the channel manager, the site behind a two-way link hears from DAMPIER
+  else if (s.url && (await dampierAktif())) malam = [];
+  else malam = malamUnit(await petaUnit(kamar, hari, sampai), s.unit, s.id);
   const host = (alamatSitus().replace(/^https?:\/\//, '') || 'mambetronhomestay.com').replace(/\/.*/, '');
   const namaSitus = host.split('.')[0];
   return buatIcal({

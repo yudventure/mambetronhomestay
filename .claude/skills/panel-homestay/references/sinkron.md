@@ -147,7 +147,18 @@ memuat semua kamarnya, dengan Booking.com, tamu DAMPIER, dan catatan
 pesanan offline. `lib/dampier.ts` menyambungkan situs ke kalender itu lewat
 `/api/kamar/<kunci>` DAMPIER (kalender mitra, Sambungkan OTA, Sambungkan
 website, kotak Untuk programmer website). Satu sambungan untuk semua kamar
-satu tipe bungalow, bukan per unit seperti iCal.
+satu tipe bungalow, bukan per unit seperti iCal. Setelah tersambung, DAMPIER
+menjadi channel manager. OTA disambungkan per kamar di kalender mitra
+DAMPIER, dan situs hanya satu saluran lagi dari kalender itu.
+
+- Mode channel manager (`dampierAktif()`). Saat menyambung, `kalender_luar`
+  dikosongkan. Selama tersambung, `sinkronSatu()` dan `sinkronSemua()` tidak
+  membaca tautan iCal situs, dan ekspor sambungan dua arah kosong, jadi tiap
+  OTA hanya mendengar dari DAMPIER. Ekspor untuk agen tetap jalan dan
+  membawa malam DAMPIER. Halaman bernama Channel manager, pengaturan iCal
+  per unit hanya tampil tanpa DAMPIER (bagian Tanpa DAMPIER), dan
+  sambungan lama disebut di kartu DAMPIER dengan tombol Hapus sambungan
+  lama. Putus mengosongkan `dicoba` supaya iCal dibaca lagi saat itu juga.
 
 - Alamatnya memuat kunci, jadi disimpan di baris `dampier` tabel
   `pengaturan`, hanya dipanggil dari server, dan panel hanya menampilkan
@@ -166,16 +177,15 @@ satu tipe bungalow, bukan per unit seperti iCal.
   (`sambungan_id` 0, nama DAMPIER), lalu ikut dihitung `sisaKamar()`,
   `petaUnit()`, `cariBentrok()`, dan `blokLuar()`. Unitnya hanya tempat
   dalam hitungan, jadi kalender admin menulis "DAMPIER · 3 kamar".
-- Ekspor iCal untuk sambungan yang juga membaca situs itu tidak membawa
-  malam DAMPIER (DAMPIER sendiri mengekspor ke Booking.com), ekspor untuk
-  agen membawanya.
 - Dibaca paling sering tiap 5 menit dari `sinkronSemua()`, dan langsung
   (`kabariDampier()`) setelah pesanan, pembayaran, atau tanggal tutup
   berubah. Gagal baca menyimpan pesan dan mempertahankan malam terakhir.
   `bentrok` dari jawaban kirim tampil merah di kartu.
 - Uji di Mambetron memakai DAMPIER tiruan di port 4557 yang mengikuti
   `ketersediaanKamarSitus` dan `terimaPesananKamarSitus` DAMPIER, situs
-  dengan `SINKRON_IZINKAN_LOKAL=1`. 43 pemeriksaan, dari alamat salah,
-  kunci salah, kirim dan baca, pesanan tamu, batal, tanggal tutup, kirim
-  ulang yang hilang, bentrok, ekspor, kalender admin, DAMPIER mati, kunci
-  diganti, ponsel 390 px, sampai putus.
+  dengan `SINKRON_IZINKAN_LOKAL=1`, dan OTA tiruan di port 3999 sebagai
+  sambungan iCal lama. 51 pemeriksaan, dari alamat salah, kunci salah,
+  kirim dan baca, impor iCal lama berhenti, pesanan tamu, batal, tanggal
+  tutup, kirim ulang yang hilang, bentrok, ekspor, hapus sambungan lama,
+  kalender admin, DAMPIER mati, kunci diganti, ponsel 390 px, sampai
+  putus.

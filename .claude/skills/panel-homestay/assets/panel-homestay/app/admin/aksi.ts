@@ -363,6 +363,15 @@ export async function sambungDampier(fd: FormData) {
   redirect('/admin/sinkron?ok=dampier#dampier');
 }
 
+// The site's own iCal links from before DAMPIER became the channel manager.
+export async function hapusSambunganLama() {
+  await wajibMasuk();
+  await jalankan('DELETE FROM kalender_luar');
+  await jalankan('DELETE FROM kalender_sambungan');
+  segarkan();
+  redirect('/admin/sinkron?ok=lama#dampier');
+}
+
 export async function putusDampier() {
   await wajibMasuk();
   await putuskanDampier();

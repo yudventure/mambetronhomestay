@@ -204,7 +204,7 @@ export default async function KalenderAdmin({ searchParams }: { searchParams: Pr
                   </li>
                 )}
               </ul>
-              <Link href="/admin/sinkron" className="mt-2 inline-block text-sm font-semibold text-[#4b3a8c] hover:underline">Atur sinkron OTA</Link>
+              <Link href="/admin/sinkron" className="mt-2 inline-block text-sm font-semibold text-[#4b3a8c] hover:underline">Atur channel manager</Link>
             </div>
           )}
           {detail.tutup.length > 0 && (
