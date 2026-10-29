@@ -87,6 +87,7 @@ export const SKEMA = [
   total INT UNSIGNED NOT NULL DEFAULT 0,
   dp INT UNSIGNED NOT NULL DEFAULT 0,
   dibayar INT UNSIGNED NOT NULL DEFAULT 0,
+  bayar_online TEXT NULL,
   rincian LONGTEXT NULL,
   paket TEXT NULL,
   bahasa CHAR(2) NOT NULL DEFAULT 'id',
@@ -190,6 +191,7 @@ export const SKEMA = [
 // them for new databases, older ones get them here on start.
 export const KOLOM_TAMBAHAN = [
   ['pesanan', 'paket', 'TEXT NULL AFTER rincian'],
+  ['pesanan', 'bayar_online', 'TEXT NULL AFTER dibayar'],
 ];
 
 // query(sql, values) resolves to the rows of a SELECT.

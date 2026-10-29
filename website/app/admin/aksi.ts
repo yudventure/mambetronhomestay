@@ -14,6 +14,7 @@ import { tanggal } from '@/lib/format';
 import { alamatPengunjung, bolehMencoba, buatSesi, catatGagal, hapusSesi, lupakanGagal, sandiCocok, sandiDiatur, wajibMasuk } from '@/lib/sesi';
 import { daftarMalam, sahTanggal, selisihHari } from '@/lib/tanggal';
 import { GalatSinkron, buatToken, rapikanUrl, sinkronSatu, sinkronSemua, type Sambungan } from '@/lib/sinkron';
+import { GalatMidtrans, aturTampilMidtrans, bentukClient, bentukServer, hapusKunciMidtrans, simpanKunciMidtrans, ujiKunciMidtrans } from '@/lib/midtrans';
 
 const teks = (fd: FormData, k: string, n = 2000) => String(fd.get(k) ?? '').trim().slice(0, n);
 const bulat = (fd: FormData, k: string) => {
@@ -448,4 +449,42 @@ export async function pesananManual(_: { galat: string }, fd: FormData): Promise
   if (status === 'dikonfirmasi') await jalankan('UPDATE pesanan SET dibayar = dp WHERE id = ?', [hasil.id]);
   segarkan();
   redirect(`/admin/pesanan/${hasil.id}?ok=baru`);
+}
+
+// Midtrans keys (Pembayaran). The Server Key is tested with Midtrans before
+// it is kept, and never sent back to the browser.
+export async function simpanMidtrans(fd: FormData) {
+  await wajibMasuk();
+  const server = teks(fd, 'server', 200).replace(/\s/g, '');
+  const client = teks(fd, 'client', 200).replace(/\s/g, '');
+  let galat = '';
+  if (process.env.MIDTRANS_SERVER_KEY?.trim()) galat = 'env';
+  else if (!bentukServer(server) || !bentukClient(client)) galat = 'bentuk';
+  else if (server.startsWith('SB-') !== client.startsWith('SB-')) galat = 'campur';
+  else {
+    try {
+      await ujiKunciMidtrans(server);
+      await simpanKunciMidtrans(server, client);
+    } catch (e) {
+      galat = e instanceof GalatMidtrans && e.kode === '401' ? 'ditolak' : 'jaringan';
+      if (!(e instanceof GalatMidtrans)) console.error('[mambetron] simpan midtrans', e);
+    }
+  }
+  segarkan();
+  redirect(galat ? `/admin/pembayaran?galat=${galat}` : '/admin/pembayaran?ok=simpan');
+}
+
+export async function lepasMidtrans() {
+  await wajibMasuk();
+  await hapusKunciMidtrans();
+  segarkan();
+  redirect('/admin/pembayaran?ok=lepas');
+}
+
+export async function tampilMidtrans(fd: FormData) {
+  await wajibMasuk();
+  const tampil = fd.get('tampil') === 'ya';
+  await aturTampilMidtrans(tampil);
+  segarkan();
+  redirect(`/admin/pembayaran?ok=${tampil ? 'tampil' : 'sembunyi'}`);
 }

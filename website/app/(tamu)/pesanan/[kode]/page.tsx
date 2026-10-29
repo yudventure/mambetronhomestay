@@ -1,9 +1,12 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import crypto from 'crypto';
 import Bagian from '@/components/Bagian';
 import Ikon from '@/components/Ikon';
 import Salin from '@/components/Salin';
+import BayarOnline from '@/components/BayarOnline';
+import { cobaTerakhir, namaMetode, sudahTutup, tagihanOnline } from '@/lib/bayar';
+import { bacaKonfigMidtrans } from '@/lib/midtrans';
+import { tokenCocok } from '@/lib/pesan';
 import { bahasaAktif } from '@/lib/bahasa';
 import { ambilSitus, pesananDariKode } from '@/lib/data';
 import { dbDiatur } from '@/lib/env';
@@ -25,12 +28,6 @@ const WARNA: Record<StatusPesanan, string> = {
   batal: 'bg-[#fbe4df] text-merah',
 };
 
-function tokenCocok(a: string, b: string) {
-  const x = crypto.createHash('sha256').update(a).digest();
-  const y = crypto.createHash('sha256').update(b).digest();
-  return crypto.timingSafeEqual(x, y);
-}
-
 export default async function HalamanPesanan({ params, searchParams }: {
   params: Promise<{ kode: string }>; searchParams: Promise<{ t?: string }>;
 }) {
@@ -39,7 +36,7 @@ export default async function HalamanPesanan({ params, searchParams }: {
   const p = await pesananDariKode(kode).catch(() => null);
   if (!p || !tokenCocok(String(t), p.token)) notFound();
 
-  const [b, situs, kurs] = await Promise.all([bahasaAktif(), ambilSitus(), kursAktif()]);
+  const [b, situs, kurs, midtrans] = await Promise.all([bahasaAktif(), ambilSitus(), kursAktif(), bacaKonfigMidtrans().catch(() => null)]);
   const k = kamus(b);
   const h = k.hasil;
   const sisa = Math.max(0, p.total - p.dibayar);
@@ -48,6 +45,12 @@ export default async function HalamanPesanan({ params, searchParams }: {
   const perluBayar = p.status === 'menunggu' && p.dp > 0;
   // accounts with a number only, a half filled row in the panel is not shown
   const rekening = situs.bank.filter((r) => r.nomor.trim());
+  // Midtrans, when its keys are set and switched on in the panel
+  const online = midtrans?.tampil && tagihanOnline(p) > 0;
+  const terakhir = cobaTerakhir(p.bayar_online);
+  const belum = !!terakhir && !terakhir.masuk && !sudahTutup(terakhir.status);
+  const menunggu = belum && terakhir.status === 'pending' ? h.menungguLewat(namaMetode(terakhir.metode, terakhir.saluran, b)) : '';
+  const lewat = (p.bayar_online?.coba ?? []).filter((c) => c.masuk).map((c) => namaMetode(c.metode, c.saluran, b));
 
   return (
     <Bagian latar="buih" lebar="max-w-4xl" className="!pt-10 md:!pt-14">
@@ -77,9 +80,13 @@ export default async function HalamanPesanan({ params, searchParams }: {
             <h2 className="text-2xl">{p.dp >= p.total ? h.totalBayar : k.form.uangMuka(situs.dpPersen)}</h2>
             <p className="mt-1 font-judul text-3xl font-semibold text-laut">{rupiah(p.dp, b)}</p>
             <Perkiraan idr={p.dp} kurs={kurs} b={b} className="text-abu" />
+            {online && (
+              <BayarOnline kode={p.kode} t={String(t)} status={p.status} menunggu={menunggu} periksa={belum}
+                teks={{ tombol: h.bayarOnline, lanjut: h.lanjutBayar, ket: h.bayarOnlineKet, membuka: h.membuka, memeriksa: h.memeriksa, gagal: h.bayarGagal }} />
+            )}
             {rekening.length > 0 ? (
               <>
-                <p className="mt-4">{h.transfer}</p>
+                <p className={online ? 'mt-7 font-semibold text-laut' : 'mt-4'}>{online ? h.atauTransfer : h.transfer}</p>
                 <div className={`mt-3 gap-3 ${KISI2}`}>
                   {rekening.map((r, i) => {
                     // the bank code for transfers from abroad, when the panel has one
@@ -99,16 +106,21 @@ export default async function HalamanPesanan({ params, searchParams }: {
                   })}
                 </div>
               </>
-            ) : (
+            ) : !online && (
               <p className="mt-4">{h.rekeningNanti}</p>
             )}
-            <div className="prosa mt-4 text-[0.9375rem] text-laut">
-              {paragraf(dwi(situs.catatanBayar, b)).map((x, i) => <p key={i}>{x}</p>)}
-            </div>
-            {waBukti && (
-              <a href={waBukti} target="_blank" rel="noopener" className="tombol mt-5">
-                <Ikon nama="chat" /> {h.kirimBukti}
-              </a>
+            {/* the transfer note and the receipt button belong to the manual transfer */}
+            {(rekening.length > 0 || !online) && (
+              <>
+                <div className="prosa mt-4 text-[0.9375rem] text-laut">
+                  {paragraf(dwi(situs.catatanBayar, b)).map((x, i) => <p key={i}>{x}</p>)}
+                </div>
+                {waBukti && (
+                  <a href={waBukti} target="_blank" rel="noopener" className={`tombol mt-5 ${online ? 'tombol-putih' : ''}`}>
+                    <Ikon nama="chat" /> {h.kirimBukti}
+                  </a>
+                )}
+              </>
             )}
           </div>
         )}
@@ -164,7 +176,7 @@ export default async function HalamanPesanan({ params, searchParams }: {
               <Perkiraan idr={p.total} kurs={kurs} b={b} className="text-right text-abu" />
               {p.dibayar > 0 && (
                 <div className="mt-1 flex justify-between gap-3 text-sm">
-                  <span>{h.dibayar}</span><span className="font-bold tabular-nums">{rupiah(p.dibayar, b)}</span>
+                  <span>{h.dibayar}{lewat.length > 0 && <span className="block text-abu">{h.dibayarLewat(lewat.join(', '))}</span>}</span><span className="font-bold tabular-nums">{rupiah(p.dibayar, b)}</span>
                 </div>
               )}
               {p.status !== 'batal' && (

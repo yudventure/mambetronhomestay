@@ -51,6 +51,13 @@ export function kodeBaru() {
 const potong = (s: string, n: number) => s.trim().slice(0, n);
 export const surelSah = (s: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(s);
 
+// The secret in a guest's booking link, compared in constant time.
+export function tokenCocok(a: string, b: string) {
+  const x = crypto.createHash('sha256').update(a).digest();
+  const y = crypto.createHash('sha256').update(b).digest();
+  return crypto.timingSafeEqual(x, y);
+}
+
 // Checks that do not need the database. Admins may book past dates and
 // bypass the lead time and the booking window.
 export function periksa(m: MasukanPesan, kamar: Kamar | null, situs: Situs) {

@@ -79,6 +79,8 @@ Semua nilai dibaca saat aplikasi berjalan. Bila nilai diubah di hPanel, mulai ul
 | `EMAIL_FROM` | Tidak | Nama dan alamat pengirim, contoh `Mambetron Homestay <halo@mambetronhomestay.com>`. Alamatnya harus sama dengan `SMTP_USER` |
 | `EMAIL_ADMIN` | Tidak | Surel pemilik untuk masuk panel, sekaligus penerima pemberitahuan pesanan baru. Bila kosong, dipakai `SMTP_USER`, lalu `halo@mambetronhomestay.com` |
 | `EMAIL_DEVELOPER` | Tidak | Surel pengembang yang juga boleh masuk panel. Boleh lebih dari satu, dipisah koma |
+| `MIDTRANS_SERVER_KEY` | Tidak | Server Key Midtrans. Biasanya diisi di panel, menu Pembayaran. Bila diisi di sini, yang di panel tidak dipakai |
+| `MIDTRANS_CLIENT_KEY` | Tidak | Client Key Midtrans, pasangan `MIDTRANS_SERVER_KEY` dari mode yang sama |
 
 Untuk host `localhost`, aplikasi mencoba soket MySQL lebih dulu, lalu `127.0.0.1`, lalu nama host itu sendiri. Node bisa membaca `localhost` sebagai alamat IPv6 `::1`, padahal MySQL di hosting bersama biasanya hanya mendengar di IPv4 atau soket. Jalur soket tertentu bisa dipaksa dengan `DB_SOCKET`.
 
@@ -142,6 +144,18 @@ Lingkaran wajah memakai foto asli bila ada foto di Foto situs, bagian Foto wajah
 Bagian Cara ke sini memakai peta rute bergambar dari Bandara Sorong, kapal cepat ke Waisai, sampai perahu ke Pulau Kri, dengan kartu langkah bernomor di sampingnya. Label kecil, judul, teks pembuka, langkah perjalanan beserta keterangan singkatnya (misalnya Sekitar 2 jam), kartu info di bawah peta, dan catatan perjalanan diubah di Isi situs, bagian Halaman utama. Tiga langkah pertama juga bernomor di peta, berurutan di Bandara Sorong, di kapal cepat, dan di Pulau Kri, jadi urutan itu sebaiknya dipertahankan. Di bawah catatan ada tautan Tanya rute lewat WhatsApp, dan tautan Buka di Google Maps bila Tautan Google Maps atau Titik peta di Kontak dan lokasi diisi. Mulai lebar 1280 piksel peta dan kartu langkah berdampingan, di bawahnya kartu langkah berjajar di bawah peta.
 
 Laut dan daratan peta ada di `public/merek/peta-rute.svg`, digambar oleh `scripts/desain/peta-rute.mjs` di akar repo dari garis pantai GSHHG resolusi penuh (Wessel & Smith, LGPL), digeser ke OpenStreetMap dengan cara yang sama seperti peta Raja Ampat di DAMPIER. Cara mengunduh datanya tertulis di kepala skrip. Rute, nomor, dan nama tempat di atasnya digambar oleh `components/PetaRute.tsx`, dengan bingkai dan letak tempat di `lib/peta-rute.mjs`. Keterangan sumber Garis pantai GSHHG selalu tampil di pojok peta.
+
+## Pembayaran online lewat Midtrans
+
+Selain transfer manual, tamu bisa membayar online lewat Midtrans dengan kartu, QRIS, virtual account bank, GoPay, ShopeePay, dan cara lain yang aktif di akun Midtrans. Tombol Bayar online ada di halaman pesanan tamu selama pesanan menunggu pembayaran. Jendela pembayaran Midtrans (Snap) terbuka di atas halaman itu, jadi tamu tidak pindah ke situs lain. Rekening transfer manual tetap tampil di bawahnya.
+
+Kunci dipasang di panel, menu Pembayaran. Server Key dan Client Key disalin dari Dashboard Midtrans, menu Settings, Access Keys, lalu diuji ke Midtrans sebelum disimpan. Mode Sandbox atau Produksi terbaca dari kuncinya sendiri, kunci sandbox diawali `SB-`. Server Key disimpan di baris `midtrans` tabel `pengaturan`, terpisah dari pengaturan situs yang dibaca halaman, dan panel hanya menampilkan empat huruf terakhirnya. Bila `MIDTRANS_SERVER_KEY` dan `MIDTRANS_CLIENT_KEY` diisi di environment variables hPanel, keduanya yang dipakai. Tombol Bayar online bisa disembunyikan dari tamu tanpa melepas kuncinya.
+
+Alamat notifikasi di halaman Pembayaran (`https://domainmu/api/midtrans/notifikasi`) ditempel di Dashboard Midtrans, Settings, Payment, Notification URL, di Sandbox dan di Production masing-masing. Kabar dari Midtrans hanya dipercaya bila tanda tangannya cocok dengan Server Key, lalu statusnya ditanyakan ulang langsung ke Midtrans. Selain itu, situs ikut memeriksa status ke Midtrans setiap kali tamu menutup jendela pembayaran atau membuka lagi halaman pesanannya, jadi pesanan tetap berubah walau kabar terlambat. Kabar terakhir dan artinya tampil di halaman Pembayaran.
+
+Setiap pembayaran online membuat order Midtrans bernomor kode pesanan dan nomor urut, misalnya `MB49PG9F-1`. Selama order itu masih bisa dibayar, membuka jendela pembayaran lagi memakai order yang sama, jadi nomor virtual account tamu tidak berubah. Order baru dibuat bila yang lama kedaluwarsa, ditolak, atau dibatalkan. Batas bayar tiap order 24 jam. Setelah uang masuk, pesanan menjadi Lunas, uang muka yang terbayar menjadi Dikonfirmasi, dan tamu serta pemilik mendapat surel bila SMTP diisi. Uang yang masuk untuk pesanan yang sudah dibatalkan tetap dicatat, status pesanannya tidak berubah, dan surel ke pemilik meminta dana dikembalikan. Riwayat order tiap pesanan tersimpan di kolom `bayar_online` tabel `pesanan` dan tampil di rincian pesanan panel.
+
+Pengembalian dana (refund) belum lewat situs. Lakukan dari Dashboard Midtrans, lalu ubah status pesanan di panel.
 
 ## Bungalow bawaan
 

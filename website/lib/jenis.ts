@@ -58,6 +58,26 @@ export type StatusPesanan = 'menunggu' | 'dikonfirmasi' | 'lunas' | 'selesai' | 
 
 export type BarisLayanan = { id: number; nama: string; nama_en: string; harga: number; satuan: Satuan; jumlah: number; subtotal: number };
 
+// One Midtrans transaction for a booking. The order id is the booking code
+// with a running number, a new one only when the last could not be paid.
+export type CobaBayar = {
+  orderId: string;
+  jumlah: number;
+  dibuat: string;
+  status: string;
+  metode: string;
+  saluran?: string;
+  waktu?: string;
+  // the paid amount has been added to the booking
+  masuk?: boolean;
+};
+export type BayarOnline = {
+  n: number;
+  // the Snap token of the latest transaction, reused while it can still be paid
+  token: string;
+  coba: CobaBayar[];
+};
+
 export type Pesanan = {
   id: number;
   kode: string;
@@ -83,6 +103,8 @@ export type Pesanan = {
   total: number;
   dp: number;
   dibayar: number;
+  // payments through Midtrans, null until the guest first pays online
+  bayar_online: BayarOnline | null;
   rincian: BarisLayanan[];
   // rate tier with its terms as booked, null for bookings without one
   paket: { nama: Dua; syarat: Dua; persen: number } | null;

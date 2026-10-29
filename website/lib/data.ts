@@ -6,6 +6,7 @@ import { baris, satu, type Koneksi, type Baris } from './db';
 import { dbDiatur } from './env';
 import type { Foto, Kamar, Layanan, Pesanan, Situs, Ulasan } from './jenis';
 import { bacaPaket } from './paket';
+import { bacaBayarOnline } from './bayar';
 import { awalBulan, daftarMalam, tambahBulan, tambahHari } from './tanggal';
 
 const urlFoto = (id: number) => `/api/foto/${id}`;
@@ -218,7 +219,7 @@ export async function sisaKamar(
 }
 
 // Booking rows.
-type BarisPesanan = Omit<Pesanan, 'rincian' | 'catatan' | 'catatan_admin' | 'paket'> & { rincian: string | null; catatan: string | null; catatan_admin: string | null; paket?: string | null };
+type BarisPesanan = Omit<Pesanan, 'rincian' | 'catatan' | 'catatan_admin' | 'paket' | 'bayar_online'> & { rincian: string | null; catatan: string | null; catatan_admin: string | null; paket?: string | null; bayar_online?: string | null };
 
 export function kePesanan(r: BarisPesanan): Pesanan {
   let rincian: Pesanan['rincian'] = [];
@@ -231,6 +232,7 @@ export function kePesanan(r: BarisPesanan): Pesanan {
     ...r,
     rincian,
     paket: bacaPaket(r.paket),
+    bayar_online: bacaBayarOnline(r.bayar_online),
     catatan: r.catatan ?? '',
     catatan_admin: r.catatan_admin ?? '',
     bahasa: r.bahasa === 'en' ? 'en' : 'id',

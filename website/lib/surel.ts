@@ -98,3 +98,28 @@ export async function surelPesananBaru(p: Pesanan, situs: Situs, asal: string) {
     );
   }
 }
+
+// A payment through Midtrans has come in. The guest gets a thank you, the
+// owner the booking with what was paid. A cancelled booking, or an amount
+// Midtrans reports differently, is pointed out to the owner.
+export async function surelBayarMasuk(p: Pesanan, situs: Situs, asal: string, o: { jumlah: number; metode: string; metodeTamu: string; orderId: string; jumlahBeda: boolean }) {
+  const dasar = alamatSitus() || asal;
+  const k = KAMUS[p.bahasa];
+  if (p.email && !o.jumlahBeda) {
+    await kirim(
+      p.email,
+      `${situs.nama} ${p.kode}`,
+      `${k.hasil.surelBayar(rupiah(o.jumlah, p.bahasa), o.metodeTamu, situs.nama)}\n\n${ringkas(p, situs, false)}\n\n${k.hasil.simpan}\n${dasar}/pesanan/${p.kode}?t=${p.token}\n`,
+    );
+  }
+  const admin = tujuanAdmin();
+  if (!admin) return;
+  const catatan = o.jumlahBeda
+    ? 'Midtrans melaporkan jumlah yang berbeda dari tagihan, jadi pembayaran ini belum dicatat di pesanan. Periksa transaksinya di Dashboard Midtrans.\n\n'
+    : p.status === 'batal' ? 'Pesanan ini sudah dibatalkan sebelum pembayaran masuk. Hubungi tamu untuk mengembalikan dananya.\n\n' : '';
+  await kirim(
+    admin,
+    o.jumlahBeda ? `Periksa pembayaran online ${p.kode}` : `Pembayaran online masuk ${p.kode}`,
+    `${catatan}${ringkas(p, situs, true)}\n\nDibayar lewat Midtrans\n${rupiah(o.jumlah)}, ${o.metode}\nOrder ${o.orderId}\n\nPemesan\n${p.nama}\n${p.telepon}\n${p.email}\n\n${dasar}/admin/pesanan/${p.id}\n`,
+  );
+}

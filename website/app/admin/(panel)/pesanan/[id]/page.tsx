@@ -10,6 +10,7 @@ import { alamatSitus } from '@/lib/env';
 import { rupiah, tanggal, tautanWa, waktu } from '@/lib/format';
 import { KAMUS } from '@/lib/kamus';
 import { SATUAN } from '@/lib/satuan.mjs';
+import { STATUS_MIDTRANS, namaMetode } from '@/lib/bayar';
 import { headers } from 'next/headers';
 
 export const metadata = { title: 'Rincian pesanan' };
@@ -111,6 +112,22 @@ export default async function RincianPesanan({ params, searchParams }: {
                 <div className="rounded-2xl bg-embun px-4 py-3 text-sm">
                   <p className="font-semibold text-laut">Paket {p.paket.nama.id}</p>
                   {p.paket.syarat.id && <p className="mt-0.5 text-abu">{p.paket.syarat.id}</p>}
+                </div>
+              )}
+              {(p.bayar_online?.coba.length ?? 0) > 0 && (
+                <div className="rounded-2xl bg-embun px-4 py-3 text-sm">
+                  <p className="font-semibold text-laut">Pembayaran online lewat Midtrans</p>
+                  <ul className="mt-2 grid gap-2">
+                    {[...(p.bayar_online?.coba ?? [])].reverse().map((c) => (
+                      <li key={c.orderId} className="rounded-xl bg-white px-3 py-2">
+                        <span className="flex flex-wrap justify-between gap-x-3">
+                          <span className="font-semibold text-laut">{c.masuk ? 'Lunas' : STATUS_MIDTRANS[c.status] ?? c.status}</span>
+                          <span className="tabular-nums">{rupiah(c.jumlah)}</span>
+                        </span>
+                        <span className="block text-abu">{c.metode ? `${namaMetode(c.metode, c.saluran, 'id')}, ` : ''}order {c.orderId}, {waktu((c.waktu ?? c.dibuat).slice(0, 19).replace('T', ' '))}</span>
+                      </li>
+                    ))}
+                  </ul>
                 </div>
               )}
             </div>
