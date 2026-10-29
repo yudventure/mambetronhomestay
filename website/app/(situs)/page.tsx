@@ -5,8 +5,6 @@ import GeserPondok from '@/components/GeserPondok';
 import Ikon from '@/components/Ikon';
 import Wajah from '@/components/Wajah';
 import VideoTentang from '@/components/VideoTentang';
-import DikelolaDampier from '@/components/DikelolaDampier';
-import { tombolDampier } from '@/lib/dampier';
 import KartuKegiatan from '@/components/KartuKegiatan';
 import GaleriBeranda from '@/components/GaleriBeranda';
 import Pahlawan from '@/components/Pahlawan';
@@ -43,7 +41,6 @@ export default async function Beranda() {
   for (const d of Object.keys(sisa)) sisa[d] = kamar.reduce((n, x) => n + (peta.get(x.id)?.[d] ?? x.jumlah_unit), 0);
   const tentangFoto = foto.tentang[0];
   const video = await siapkanVideo(s.tentangVideo.slice(0, 3));
-  const dampier = tombolDampier(s, b);
   const titik = koordinat(s.petaKoordinat);
   const tautanPeta = s.petaTautan || (titik ? `https://www.google.com/maps?q=${titik.lat},${titik.lng}` : '');
   const info = s.lokasiInfo.filter((x) => dwi(x.teks, b));
@@ -162,8 +159,7 @@ export default async function Beranda() {
         <div className="mx-auto mt-12 max-w-6xl px-4 sm:px-6 md:mt-16">
           <CariCepat b={b} awal={awal} akhir={akhir} checkIn={s.checkIn} checkOut={s.checkOut} sisa={sisa} unit={Math.max(1, unit)}
             kapasitas={Math.max(1, ...kamar.map((x) => x.kapasitas))} minMalam={kamar.length ? Math.max(1, Math.min(...kamar.map((x) => x.min_malam))) : 1}
-            maksTamu={kamar.length ? Math.min(20, kamar.reduce((n, x) => n + x.kapasitas * x.jumlah_unit, 0)) : 6}
-            tombol={dampier?.tombol} catatan={dampier && <DikelolaDampier teks={dampier.teks} beranda={dampier.beranda} />} />
+            maksTamu={kamar.length ? Math.min(20, kamar.reduce((n, x) => n + x.kapasitas * x.jumlah_unit, 0)) : 6} />
         </div>
       </section>
 

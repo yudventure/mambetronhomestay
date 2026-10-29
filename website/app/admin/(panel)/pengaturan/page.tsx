@@ -34,6 +34,12 @@ export default async function Pengaturan() {
                 </ul>
               </div>
             )}
+            {g.kunci === 'pemesanan' && !(situs.bank as { nomor: string }[]).some((r) => r.nomor.trim()) && (
+              <div role="alert" className="mb-6 rounded-2xl bg-[#fde3dc] px-4 py-3 text-sm text-merah">
+                <p className="font-semibold">Rekening pembayaran belum diisi.</p>
+                <p className="mt-1">Tamu yang sudah memesan baru membaca bahwa nomor rekening akan dikirim lewat WhatsApp. Isi bank, nomor rekening, atas nama, dan kode SWIFT untuk tamu dari luar negeri di isian Rekening pembayaran di bawah, supaya semuanya tampil di halaman pesanan tamu dengan tombol salin.</p>
+              </div>
+            )}
             {g.kunci === 'kontak' && (() => {
               const host = (v: unknown) => { try { return new URL(String(v)).hostname.replace(/^(www|m)\./, ''); } catch { return ''; } };
               const salah: string[] = [];

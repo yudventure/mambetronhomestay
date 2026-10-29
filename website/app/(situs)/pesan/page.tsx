@@ -1,5 +1,4 @@
 import type { Metadata } from 'next';
-import { redirect } from 'next/navigation';
 import Bagian from '@/components/Bagian';
 import FormPesan, { type KamarForm } from '@/components/FormPesan';
 import { bahasaAktif } from '@/lib/bahasa';
@@ -8,7 +7,6 @@ import { pastikanSegar } from '@/lib/sinkron';
 import { daftarPaket } from '@/lib/paket';
 import { kamus } from '@/lib/kamus';
 import { tautanWa } from '@/lib/format';
-import { tautanDampier } from '@/lib/dampier';
 import { kursAktif } from '@/lib/uang-server';
 import { daftarMalam, hariIni, sahTanggal, selisihHari, tambahHari } from '@/lib/tanggal';
 
@@ -24,14 +22,6 @@ const angka = (v: unknown, min: number, maks: number, cadangan: number) => {
 export default async function Pesan({ searchParams }: { searchParams: Promise<Record<string, string | string[] | undefined>> }) {
   const sp = await searchParams;
   const [b, situs, kamar, layanan, aktif] = await Promise.all([bahasaAktif(), ambilSitus(), daftarKamar(), daftarLayanan(), pemesananAktif()]);
-  // While the DAMPIER listing link is set, bookings and payment happen on
-  // DAMPIER, so every way into this form leads there with the chosen stay.
-  const dampier = tautanDampier(situs.dampierTautan, b, {
-    masuk: sahTanggal(sp.masuk) ? sp.masuk : '',
-    keluar: sahTanggal(sp.keluar) ? sp.keluar : '',
-    tamu: sp.tamu ? angka(sp.tamu, 1, 20, 2) : undefined,
-  });
-  if (dampier) redirect(dampier);
   const k = kamus(b);
   const hari = hariIni();
   const awal = tambahHari(hari, situs.jedaHari);

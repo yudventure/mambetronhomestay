@@ -46,6 +46,8 @@ export default async function HalamanPesanan({ params, searchParams }: {
   const waBukti = tautanWa(situs.whatsapp, h.pesanWa(p.kode));
   const waTanya = tautanWa(situs.whatsapp, h.pesanWaTanya(p.kode));
   const perluBayar = p.status === 'menunggu' && p.dp > 0;
+  // accounts with a number only, a half filled row in the panel is not shown
+  const rekening = situs.bank.filter((r) => r.nomor.trim());
   const wajah = p.status === 'batal' ? 'kaget' : p.status === 'menunggu' ? 'senang' : 'cinta';
 
   return (
@@ -76,18 +78,26 @@ export default async function HalamanPesanan({ params, searchParams }: {
             <h2 className="text-2xl">{p.dp >= p.total ? h.totalBayar : k.form.uangMuka(situs.dpPersen)}</h2>
             <p className="mt-1 font-judul text-3xl font-semibold text-laut">{rupiah(p.dp, b)}</p>
             <Perkiraan idr={p.dp} kurs={kurs} b={b} className="text-abu" />
-            {situs.bank.length > 0 ? (
+            {rekening.length > 0 ? (
               <>
                 <p className="mt-4">{h.transfer}</p>
                 <div className={`mt-3 gap-3 ${KISI2}`}>
-                  {situs.bank.map((r, i) => (
-                    <div key={i} className={`rounded-2xl bg-white p-4 shadow-tipis ${rentang2(situs.bank.length, i)}`}>
-                      <p className="text-sm font-bold text-biru-tua">{r.bank}</p>
-                      <p className="mt-1 font-judul text-2xl font-semibold tracking-wide text-laut">{r.nomor}</p>
-                      <p className="text-sm text-abu">{h.atasNama(r.atasNama)}</p>
-                      <div className="mt-3"><Salin teks={r.nomor.replace(/\s/g, '')} label={h.salin} sudah={h.tersalin} /></div>
-                    </div>
-                  ))}
+                  {rekening.map((r, i) => {
+                    // the bank code for transfers from abroad, when the panel has one
+                    const swift = (r.swift ?? '').replace(/\s/g, '').toUpperCase();
+                    return (
+                      <div key={i} className={`rounded-2xl bg-white p-4 shadow-tipis ${rentang2(rekening.length, i)}`}>
+                        <p className="text-sm font-bold text-biru-tua">{r.bank}</p>
+                        <p className="mt-1 font-judul text-2xl font-semibold tracking-wide text-laut">{r.nomor}</p>
+                        <p className="text-sm text-abu">{h.atasNama(r.atasNama)}</p>
+                        {swift && <p className="mt-2 text-sm text-abu">{h.swift} <span className="font-semibold tracking-wider text-laut">{swift}</span></p>}
+                        <div className="mt-3 flex flex-wrap gap-2">
+                          <Salin teks={r.nomor.replace(/\s/g, '')} label={swift ? h.salinNomor : h.salin} sudah={h.tersalin} />
+                          {swift && <Salin teks={swift} label={h.salinSwift} sudah={h.tersalin} />}
+                        </div>
+                      </div>
+                    );
+                  })}
                 </div>
               </>
             ) : (

@@ -91,7 +91,7 @@ export default async function Ringkasan({ searchParams }: { searchParams: Promis
 
   const daftarCek = [
     { ok: Boolean(situs.whatsapp), teks: 'Isi nomor WhatsApp homestay', href: '/admin/pengaturan#kontak' },
-    { ok: situs.bank.length > 0, teks: 'Isi rekening untuk pembayaran', href: '/admin/pengaturan#pemesanan' },
+    { ok: situs.bank.some((r) => r.nomor.trim()), teks: 'Isi rekening untuk pembayaran', href: '/admin/pengaturan#pemesanan' },
     { ok: kamar.length > 0 && kamar.every((k) => k.foto.length > 0), teks: 'Unggah foto setiap bungalow', href: '/admin/kamar' },
     { ok: Boolean(situs.petaKoordinat), teks: 'Isi titik peta lokasi homestay', href: '/admin/pengaturan#kontak' },
     { ok: Boolean(alamatSitus()), teks: 'Isi SITE_URL di environment variables hPanel', href: '' },

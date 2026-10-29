@@ -96,7 +96,7 @@ export type Pesanan = {
 type Kata = { ikon: string; teks: Dua };
 type Faq = { tanya: Dua; jawab: Dua };
 type Rute = { judul: Dua; label: Dua; teks: Dua };
-type Rekening = { bank: string; nomor: string; atasNama: string };
+type Rekening = { bank: string; nomor: string; atasNama: string; swift: string };
 
 // Mirrors PENGATURAN in bawaan.mjs.
 export type Situs = {
@@ -153,9 +153,6 @@ export type Situs = {
   tutup: boolean;
   tutupJudul: Dua;
   tutupTeks: Dua;
-  dampierTautan: string;
-  dampierTombol: Dua;
-  dampierTeks: Dua;
   checkIn: string;
   checkOut: string;
   dpPersen: number;

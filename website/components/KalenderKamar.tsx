@@ -1,17 +1,15 @@
 'use client';
 // Availability on the room page. Picking dates leads to the booking form.
 import Link from 'next/link';
-import { useEffect, useState, type ReactNode } from 'react';
+import { useEffect, useState } from 'react';
 import Kalender from './Kalender';
 import type { Bahasa } from '@/lib/jenis';
 import { KAMUS } from '@/lib/kamus';
 import { bacaRencana, simpanRencana } from '@/lib/rencana';
 import { daftarMalam, selisihHari } from '@/lib/tanggal';
 
-export default function KalenderKamar({ b, slug, sisa, unit, minMalam, awal, akhir, tombol, catatan }: {
+export default function KalenderKamar({ b, slug, sisa, unit, minMalam, awal, akhir }: {
   b: Bahasa; slug: string; sisa: Record<string, number>; unit: number; minMalam: number; awal: string; akhir: string;
-  // button words and a line under the button while bookings go through DAMPIER
-  tombol?: string; catatan?: ReactNode;
 }) {
   const [masuk, setMasuk] = useState('');
   const [keluar, setKeluar] = useState('');
@@ -33,8 +31,7 @@ export default function KalenderKamar({ b, slug, sisa, unit, minMalam, awal, akh
     <div>
       <Kalender key={pulih} b={b} sisa={sisa} unit={unit} butuh={1} minMalam={minMalam} awal={awal} akhir={akhir} masuk={masuk} keluar={keluar}
         onPilih={(a, z) => { setMasuk(a); setKeluar(z); simpanRencana({ masuk: a, keluar: z }); }} />
-      <Link href={tujuan} className="tombol mt-6 w-full sm:w-auto">{tombol || k.pesanPondok}</Link>
-      {catatan && <div className="mt-3">{catatan}</div>}
+      <Link href={tujuan} className="tombol mt-6 w-full sm:w-auto">{k.pesanPondok}</Link>
     </div>
   );
 }

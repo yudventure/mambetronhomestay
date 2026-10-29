@@ -7,8 +7,6 @@ import TeksPanjang from '@/components/TeksPanjang';
 import Ikon from '@/components/Ikon';
 import KalenderKamar from '@/components/KalenderKamar';
 import KartuKamar from '@/components/KartuKamar';
-import DikelolaDampier from '@/components/DikelolaDampier';
-import { tombolDampier } from '@/lib/dampier';
 import { bahasaAktif } from '@/lib/bahasa';
 import { ambilSitus, daftarKamar, gambarCadangan, kamarDariSlug, pemesananAktif, sisaKamar } from '@/lib/data';
 import { pastikanSegar } from '@/lib/sinkron';
@@ -48,8 +46,6 @@ export default async function HalamanPondok({ params }: P) {
   const sisa = aktif ? ((await sisaKamar([km], hari, tambahHari(akhir, 61)).catch(() => new Map())).get(km.id) ?? {}) : {};
   const lain = semua.filter((x) => x.id !== km.id);
   const wa = tautanWa(situs.whatsapp, `${k.pesanWaUmum} ${nama}`);
-  const dampier = tombolDampier(situs, b);
-  const dikelola = dampier && <DikelolaDampier teks={dampier.teks} beranda={dampier.beranda} />;
 
   return (
     <>
@@ -76,10 +72,9 @@ export default async function HalamanPondok({ params }: P) {
                 <p className="mt-2 text-sm font-semibold text-biru-tua">{k.hargaAnak(rupiah(km.harga_anak, b))}</p>
               )}
               <div className="mt-4 flex flex-wrap gap-2">
-                <Link href={`/pesan?kamar=${km.slug}`} className="tombol">{dampier?.tombol || k.pesanPondok}</Link>
+                <Link href={`/pesan?kamar=${km.slug}`} className="tombol">{k.pesanPondok}</Link>
                 {wa && <a href={wa} target="_blank" rel="noopener" className="tombol tombol-putih"><Ikon nama="chat" /> {k.tanyaWa}</a>}
               </div>
-              {dikelola && <div className="mt-3">{dikelola}</div>}
             </div>
           </div>
         </div>
@@ -108,8 +103,7 @@ export default async function HalamanPondok({ params }: P) {
         <Bagian latar="buih" id="tanggal">
           <div className="kartu p-5 sm:p-8">
             <h2 className="mb-6 text-3xl">{k.kalender.judul}</h2>
-            <KalenderKamar b={b} slug={km.slug} sisa={sisa} unit={km.jumlah_unit} minMalam={km.min_malam} awal={awal} akhir={akhir}
-              tombol={dampier?.tombol} catatan={dikelola} />
+            <KalenderKamar b={b} slug={km.slug} sisa={sisa} unit={km.jumlah_unit} minMalam={km.min_malam} awal={awal} akhir={akhir} />
           </div>
         </Bagian>
       )}
