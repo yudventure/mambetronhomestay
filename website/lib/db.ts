@@ -147,6 +147,26 @@ async function perbaruiTeksKamar(pool: mysql.Pool) {
   }
 }
 
+// The same once more for rooms saved in the panel before line breaks were
+// normalised, whose first release texts carry CRLF and so slipped past the
+// exact comparison above.
+async function perbaruiTeksKamarCrlf(pool: mysql.Pool) {
+  const [r] = await pool.query<mysql.ResultSetHeader>("INSERT IGNORE INTO pengaturan (kunci, nilai) VALUES ('kamar-teks-3', '1')");
+  if (r.affectedRows !== 1) return;
+  const k = KAMAR_AWAL[0];
+  const baru: Record<keyof typeof KAMAR_TEKS_LAMA, string> = {
+    ringkas: k.ringkas, ringkas_en: k.ringkas_en, deskripsi: k.deskripsi, deskripsi_en: k.deskripsi_en,
+    fasilitas: k.fasilitas.join('\n'), fasilitas_en: k.fasilitas_en.join('\n'),
+  };
+  const rata = (s: unknown) => String(s ?? '').replace(/\r\n?/g, '\n').trim();
+  const [ada] = await pool.query<mysql.RowDataPacket[]>('SELECT id, ringkas, ringkas_en, deskripsi, deskripsi_en, fasilitas, fasilitas_en FROM kamar');
+  for (const baris of ada) {
+    for (const [kolom, lama] of Object.entries(KAMAR_TEKS_LAMA) as [keyof typeof KAMAR_TEKS_LAMA, string][]) {
+      if (baris[kolom] !== lama && rata(baris[kolom]) === rata(lama)) await pool.query(`UPDATE kamar SET ${kolom} = ? WHERE id = ?`, [baru[kolom], baris.id]);
+    }
+  }
+}
+
 // The huts became bungalows. Only the untouched default name changes, the
 // address (slug) stays so shared links keep working.
 async function namaBungalow(pool: mysql.Pool) {
@@ -176,6 +196,7 @@ async function siapkan(pool: mysql.Pool) {
   await tambahKolom(async (sql: string, nilai: unknown[]) => (await pool.query(sql, nilai))[0] as unknown[]);
   await pindahKamarLama(pool);
   await perbaruiTeksKamar(pool);
+  await perbaruiTeksKamarCrlf(pool);
   await namaBungalow(pool);
   await videoAwal(pool);
   // the first process to claim this row fills the empty database

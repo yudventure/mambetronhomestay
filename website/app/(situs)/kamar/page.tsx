@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { redirect } from 'next/navigation';
 import Bagian, { JudulBagian } from '@/components/Bagian';
 import KartuKamar from '@/components/KartuKamar';
 import { bahasaAktif } from '@/lib/bahasa';
@@ -15,6 +16,7 @@ export async function generateMetadata(): Promise<Metadata> {
 export default async function DaftarPondok() {
   const [b, situs, kamar, kurs] = await Promise.all([bahasaAktif(), ambilSitus(), daftarKamar(), kursAktif()]);
   const k = kamus(b);
+  if (kamar.length === 1) redirect(`/kamar/${kamar[0].slug}`);
   return (
     <Bagian latar="buih" className="!pt-10 md:!pt-14">
       <JudulBagian label={situs.nama} judul={dwi(situs.kamarJudul, b)} teks={dwi(situs.kamarTeks, b)} />

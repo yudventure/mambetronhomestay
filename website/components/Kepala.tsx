@@ -7,13 +7,14 @@ import { kamus } from '@/lib/kamus';
 import { tautanWa } from '@/lib/format';
 import { NAMA_UANG, PILIHAN_UANG } from '@/lib/uang';
 import { uangAktif } from '@/lib/uang-server';
+import { alamatAkomodasi } from '@/lib/data';
 
 // The group-data-[datar]/kepala variants flatten the pill while the page is
 // at the very top. Tailwind only sees whole class names, so they are written
 // out in full.
 export default async function Kepala({ b, situs }: { b: Bahasa; situs: Situs }) {
   const k = kamus(b);
-  const uang = await uangAktif();
+  const [uang, akomodasi] = await Promise.all([uangAktif(), alamatAkomodasi()]);
   const bahasa = [
     { kode: 'id', nama: 'Bahasa Indonesia', href: '/bahasa?ke=id', lang: 'id' },
     { kode: 'en', nama: 'English', href: '/bahasa?ke=en', lang: 'en' },
@@ -21,7 +22,7 @@ export default async function Kepala({ b, situs }: { b: Bahasa; situs: Situs }) 
   const mataUang = PILIHAN_UANG.map((c) => ({ kode: c, nama: NAMA_UANG[c][b], href: `/uang?ke=${c}` }));
   const tautan = [
     { href: '/#tentang', label: k.nav.tentang },
-    { href: '/kamar', label: k.nav.akomodasi },
+    { href: akomodasi, label: k.nav.akomodasi },
     { href: '/#kegiatan', label: k.nav.wisata },
   ];
   return (

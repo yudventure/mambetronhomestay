@@ -10,6 +10,7 @@ import { cekDb } from '@/lib/db';
 import { surelDiatur } from '@/lib/env';
 import { alamatPengunjung, bolehMencoba, buatSesi, catatGagal, lupakanGagal, sandiDiatur } from '@/lib/sesi';
 import { surelKodeSandi, surelSandiDiganti } from '@/lib/surel';
+import { asalHalaman } from '@/lib/asal';
 
 export type HasilSandi = { galat: string; pesan: string };
 
@@ -37,7 +38,7 @@ export async function mintaKode(_: HasilSandi, fd: FormData): Promise<HasilSandi
   }
   const k = await buatKode(akun.surel);
   if ('galat' in k) return { galat: k.galat, pesan: '' };
-  if (!(await surelKodeSandi(akun.surel, k.kode, ip))) {
+  if (!(await surelKodeSandi(akun.surel, k.kode, ip, await asalHalaman()))) {
     return { galat: 'Surel gagal dikirim. Periksa SMTP_HOST, SMTP_PORT, SMTP_USER, dan SMTP_PASSWORD di hPanel.', pesan: '' };
   }
   return { galat: '', pesan: TERKIRIM };
@@ -71,6 +72,7 @@ export async function gantiSandi(_: HasilSandi, fd: FormData): Promise<HasilSand
   await simpanSandi(akun.surel, hash);
   lupakanGagal(ip);
   await buatSesi(akun.surel, hash);
-  after(() => surelSandiDiganti(akun.surel, ip));
+  const asal = await asalHalaman();
+  after(() => surelSandiDiganti(akun.surel, ip, asal));
   redirect('/admin?ok=sandi');
 }

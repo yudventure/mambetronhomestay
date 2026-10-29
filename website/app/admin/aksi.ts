@@ -16,7 +16,8 @@ import { daftarMalam, sahTanggal, selisihHari } from '@/lib/tanggal';
 import { GalatSinkron, buatToken, rapikanUrl, sinkronSatu, sinkronSemua, type Sambungan } from '@/lib/sinkron';
 import { GalatMidtrans, aturTampilMidtrans, bentukClient, bentukServer, hapusKunciMidtrans, simpanKunciMidtrans, ujiKunciMidtrans } from '@/lib/midtrans';
 
-const teks = (fd: FormData, k: string, n = 2000) => String(fd.get(k) ?? '').trim().slice(0, n);
+// line breaks from a textarea arrive as CRLF, kept as plain LF
+const teks = (fd: FormData, k: string, n = 2000) => String(fd.get(k) ?? '').replace(/\r\n?/g, '\n').trim().slice(0, n);
 const bulat = (fd: FormData, k: string) => {
   const n = Number.parseInt(String(fd.get(k) ?? '').replace(/[^\d-]/g, ''), 10);
   return Number.isFinite(n) ? n : 0;

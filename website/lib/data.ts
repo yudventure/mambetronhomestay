@@ -93,6 +93,13 @@ export const daftarKamar = cache(async (semua = false): Promise<Kamar[]> => {
   }
 });
 
+// Accommodation leads straight to the bungalow page while the site has one
+// type of bungalow, and to the list once there are more.
+export const alamatAkomodasi = cache(async () => {
+  const kamar = await daftarKamar().catch(() => [] as Kamar[]);
+  return kamar.length === 1 ? `/kamar/${kamar[0].slug}` : '/kamar';
+});
+
 export async function kamarDariSlug(slug: string) {
   return (await daftarKamar()).find((k) => k.slug === slug) ?? null;
 }

@@ -167,6 +167,10 @@ Teks bungalow dan bagian tentang kami di halaman utama mengikuti deskripsi Mambe
 
 Sebutan pondok dan hut di situs, panel, dan surel diganti bungalow, mengikuti DAMPIER. Nama bungalow bawaan yang belum diubah (Pondok Tepi Pantai, Beachfront Hut) ikut berganti sekali secara otomatis, alamat halamannya tidak berubah supaya tautan lama tetap bekerja. Teks pengaturan bawaan yang masih memakai kata lama juga berganti, teks yang ditulis sendiri di panel tidak disentuh.
 
+Selama hanya ada satu bungalow, menu Akomodasi langsung membuka halaman bungalow itu, dan alamat `/kamar` dialihkan ke sana. Daftar bungalow kembali tampil begitu bungalow kedua ditambahkan. Halaman bungalow memuat deskripsi lengkap, kartu fasilitas dan jam check-in yang ikut turun saat digulir, lalu kartu Pilih tanggal menginap dengan kalender, jumlah tamu, dan tombol Pesan bungalow ini yang membawa tanggal dan tamunya ke formulir pesan.
+
+Teks yang disimpan dari panel ditulis dengan pindah baris Windows (CRLF), jadi deskripsi dan fasilitas bawaan lama sempat tidak dikenali dan tidak ikut diganti. Pindah baris kini diseragamkan saat disimpan, dan teks bawaan lama yang tersimpan dengan CRLF diganti sekali secara otomatis setelah Redeploy (tanda `kamar-teks-3` di tabel `pengaturan`). Teks yang sudah diubah sendiri tetap tidak disentuh.
+
 ## Sinkron kalender dengan OTA dan agen perjalanan
 
 Menu Sinkron OTA di panel menghubungkan kalender setiap unit dengan Booking.com, Airbnb, Agoda, Google Calendar, atau agen perjalanan lewat tautan iCal. Kalender iCal hanya tahu terisi atau kosong, jadi setiap sambungan dipasang untuk satu unit. Unit yang dijual di dua situs mendapat dua sambungan.
@@ -233,6 +237,8 @@ Di pita paling bawah ada hak cipta, tulisan Dikelola oleh thedampier.com (Manage
 Panel dibuka dengan surel dan kata sandi. Surel yang boleh masuk hanya `EMAIL_ADMIN` milik pemilik dan `EMAIL_DEVELOPER` milik pengembang, keduanya diisi di hPanel, tidak bisa ditambah dari panel. Semua akun mula-mula memakai `ADMIN_PASSWORD`, lalu masing-masing bisa membuat kata sandi sendiri lewat kode surel. Akun yang sedang masuk tertulis di menu akun di pojok kanan atas panel.
 
 Bila `SMTP_HOST`, `SMTP_USER`, dan `SMTP_PASSWORD` terisi, setiap pesanan baru dikirimkan ke `EMAIL_ADMIN`, dan tamu yang mengisi surel mendapat salinan pesanannya. Surel dikirim setelah halaman pesanan tampil, jadi tamu tidak ikut menunggu, dan pesanan tetap tersimpan walau surel gagal.
+
+Semua surel (pesanan baru, pembayaran masuk, kode dan pemberitahuan kata sandi) berupa HTML dengan logo putih di kepala biru laut, kotak kode pesanan, rincian menginap dan harga, cara membayar dengan rekening dan SWIFT, tombol ke halaman pesanan, dan kaki berisi kontak dari Isi situs. Tata letaknya di `lib/surel-html.ts`, dibangun dari tabel dengan gaya di tiap elemen supaya tetap rapi di Gmail, Outlook, dan Apple Mail, dan setiap surel juga membawa versi teks biasa. Logo surel adalah `public/merek/logo-surel.png` yang dimuat dari alamat situs, jadi aplikasi surel yang memblokir gambar menampilkan nama homestay sebagai gantinya.
 
 Kata sandi diganti di `/admin/sandi`, lewat menu Ganti kata sandi di panel atau tautan Lupa kata sandi di halaman masuk. Tulis surel akun, lalu kode 6 angka dikirim ke surel itu bila terdaftar. Jawabannya sama walau surel tidak terdaftar, supaya daftar akun tidak bisa ditebak. Kode berlaku 10 menit, gugur setelah 5 kali salah, dan tiap akun paling banyak meminta tiga kode sejam dengan jeda satu menit.
 

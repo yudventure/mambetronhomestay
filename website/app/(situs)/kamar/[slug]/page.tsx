@@ -5,7 +5,7 @@ import Bagian from '@/components/Bagian';
 import Galeri from '@/components/Galeri';
 import TeksPanjang from '@/components/TeksPanjang';
 import Ikon from '@/components/Ikon';
-import KalenderKamar from '@/components/KalenderKamar';
+import CariCepat from '@/components/CariCepat';
 import KartuKamar from '@/components/KartuKamar';
 import { bahasaAktif } from '@/lib/bahasa';
 import { ambilSitus, daftarKamar, gambarCadangan, kamarDariSlug, pemesananAktif, sisaKamar } from '@/lib/data';
@@ -50,10 +50,13 @@ export default async function HalamanPondok({ params }: P) {
   return (
     <>
       <Bagian className="!pt-8 md:!pt-12">
-        <Link href="/kamar" className="inline-flex items-center gap-1 text-sm font-semibold text-biru-tua hover:underline">
-          <Ikon nama="kiri" className="size-4" /> {k.semuaPondok}
-        </Link>
-        <div className="mt-5 grid grid-cols-1 gap-8 lg:grid-cols-[minmax(0,1.25fr)_minmax(0,1fr)] lg:gap-12">
+        {/* with one bungalow type Accommodation opens this page, there is no list to go back to */}
+        {semua.length > 1 && (
+          <Link href="/kamar" className="mb-5 inline-flex items-center gap-1 text-sm font-semibold text-biru-tua hover:underline">
+            <Ikon nama="kiri" className="size-4" /> {k.semuaPondok}
+          </Link>
+        )}
+        <div className="grid grid-cols-1 gap-8 lg:grid-cols-[minmax(0,1.25fr)_minmax(0,1fr)] lg:gap-12">
           <Galeri b={b} foto={km.foto} cadangan={gambarCadangan(i)} nama={nama} />
           <div>
             <h1 className="text-[clamp(2.2rem,1.7rem+2vw,3.25rem)]">{nama}</h1>
@@ -72,39 +75,52 @@ export default async function HalamanPondok({ params }: P) {
                 <p className="mt-2 text-sm font-semibold text-biru-tua">{k.hargaAnak(rupiah(km.harga_anak, b))}</p>
               )}
               <div className="mt-4 flex flex-wrap gap-2">
-                <Link href={`/pesan?kamar=${km.slug}`} className="tombol">{k.pesanPondok}</Link>
+                {aktif
+                  ? <a href="#rencana" className="tombol"><Ikon nama="kalender" className="size-4" /> {k.pilihTanggal}</a>
+                  : <Link href={`/pesan?kamar=${km.slug}`} className="tombol">{k.pesanPondok}</Link>}
                 {wa && <a href={wa} target="_blank" rel="noopener" className="tombol tombol-putih"><Ikon nama="chat" /> {k.tanyaWa}</a>}
               </div>
             </div>
           </div>
         </div>
 
-        <div className="mt-12 grid grid-cols-1 gap-10 lg:grid-cols-[minmax(0,1.25fr)_minmax(0,1fr)] lg:gap-12">
-          <div className="prosa text-lg">
-            <TeksPanjang teks={pilih(b, km.deskripsi, km.deskripsi_en)} />
-          </div>
-          {fasilitas.length > 0 && (
-            <div>
-              <h2 className="text-2xl">{k.fasilitas}</h2>
-              <ul className="mt-4 grid gap-2">
-                {fasilitas.map((f) => (
-                  <li key={f} className="flex items-start gap-3">
-                    <span className="mt-0.5 inline-flex size-7 shrink-0 items-center justify-center rounded-full bg-buih text-biru-tua"><Ikon nama="centang" className="size-4" tebal={2.4} /></span>
-                    <span>{f}</span>
-                  </li>
-                ))}
-              </ul>
+        <div className="mt-14 grid grid-cols-1 gap-10 lg:grid-cols-[minmax(0,1.25fr)_minmax(0,1fr)] lg:gap-12 md:mt-20">
+          <div>
+            <h2 className="text-[clamp(1.75rem,1.4rem+1.4vw,2.4rem)]">{k.tentangPondok}</h2>
+            <div className="prosa mt-5 text-lg text-laut/85">
+              <TeksPanjang teks={pilih(b, km.deskripsi, km.deskripsi_en)} />
             </div>
-          )}
+          </div>
+          <aside className="lg:sticky lg:top-28 lg:self-start">
+            <div className="rounded-3xl bg-embun p-6 sm:p-7">
+              {fasilitas.length > 0 && (
+                <>
+                  <h2 className="text-2xl">{k.fasilitas}</h2>
+                  <ul className="mt-4 grid gap-2.5">
+                    {fasilitas.map((f) => (
+                      <li key={f} className="flex items-start gap-3">
+                        <span className="mt-0.5 inline-flex size-7 shrink-0 items-center justify-center rounded-full bg-white text-biru-tua shadow-tipis"><Ikon nama="centang" className="size-4" tebal={2.4} /></span>
+                        <span className="text-laut">{f}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </>
+              )}
+              <div className={`grid grid-cols-2 gap-3 ${fasilitas.length ? 'mt-6' : ''}`}>
+                <p className="rounded-2xl bg-white px-4 py-3 text-sm text-abu shadow-tipis">{k.checkInOut.masuk}<span className="mt-0.5 block font-judul text-xl text-laut">{situs.checkIn}</span></p>
+                <p className="rounded-2xl bg-white px-4 py-3 text-sm text-abu shadow-tipis">{k.checkInOut.keluar}<span className="mt-0.5 block font-judul text-xl text-laut">{situs.checkOut}</span></p>
+              </div>
+            </div>
+          </aside>
         </div>
       </Bagian>
 
+      {/* the same planner as on the home page, for this bungalow */}
       {aktif && (
         <Bagian latar="buih" id="tanggal">
-          <div className="kartu p-5 sm:p-8">
-            <h2 className="mb-6 text-3xl">{k.kalender.judul}</h2>
-            <KalenderKamar b={b} slug={km.slug} sisa={sisa} unit={km.jumlah_unit} minMalam={km.min_malam} awal={awal} akhir={akhir} />
-          </div>
+          <CariCepat b={b} awal={awal} akhir={akhir} checkIn={situs.checkIn} checkOut={situs.checkOut} sisa={sisa} unit={km.jumlah_unit}
+            kapasitas={km.kapasitas} minMalam={km.min_malam} maksTamu={Math.min(20, km.kapasitas * km.jumlah_unit)}
+            kamar={km.slug} judul={k.pilihTanggal} tombol={k.pesanPondok} />
         </Bagian>
       )}
 
