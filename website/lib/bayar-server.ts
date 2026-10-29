@@ -2,6 +2,7 @@
 // applying what Midtrans reports. The booking row is locked while it
 // changes, so the notification and the guest's own check arriving together
 // add the payment only once.
+import { kabariDampier } from './dampier';
 import { ambilSitus, pesananDariKode } from './data';
 import { transaksi, type Baris } from './db';
 import { bacaBayarOnline, namaMetode, sudahMasuk, sudahTutup, tagihanOnline, tokenMasihBisa } from './bayar';
@@ -100,6 +101,8 @@ export async function cekBayar(k: KonfigMidtrans, p: Pesanan) {
 // alone when the amount does not match.
 export async function kabariHasil(orderId: string, h: HasilTerap, asal: string) {
   if (!h.masukBaru && !h.jumlahBeda) return;
+  // the booking's note in the DAMPIER calendar says it is paid
+  if (h.masukBaru) kabariDampier();
   const kode = kodeDariOrder(orderId);
   const p = kode ? await pesananDariKode(kode) : null;
   const coba = p?.bayar_online?.coba.find((c) => c.orderId === orderId);

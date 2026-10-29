@@ -73,3 +73,6 @@ export const pilih = <T,>(b: Bahasa, id: T, en: T) => (b === 'en' && en ? en : i
 export const dwi = (v: { id: string; en: string }, b: Bahasa) => (b === 'en' ? v.en || v.id : v.id || v.en);
 
 export const paragraf = (s: string) => s.split(/\n\s*\n/).map((p) => p.trim()).filter(Boolean);
+
+// A word joiner after the dash keeps a range like 15–20 on one line.
+export const rapatRentang = (s: string) => s.replace(/(\d)–(?=\d)/g, '$1–\u2060');

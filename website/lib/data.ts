@@ -7,6 +7,7 @@ import { dbDiatur } from './env';
 import type { Foto, Kamar, Layanan, Pesanan, Situs, Ulasan } from './jenis';
 import { bacaPaket } from './paket';
 import { bacaBayarOnline } from './bayar';
+import { blokDampier } from './dampier';
 import { awalBulan, daftarMalam, tambahBulan, tambahHari } from './tanggal';
 
 const urlFoto = (id: number) => `/api/foto/${id}`;
@@ -155,7 +156,8 @@ export const fotoSitus = cache(async (): Promise<Record<WadahFoto, Foto[]>> => {
 // Rooms left per night. Only nights with fewer than all units free are
 // listed, a missing night means every unit is free. The end date is the
 // check-out day and is not counted. Nights taken on a booking site through
-// calendar sync count once per unit, however many links report them.
+// calendar sync count once per unit, however many links report them. Rooms
+// taken in the DAMPIER partner calendar count the same way (dampier.ts).
 export type PetaSisa = Record<string, number>;
 
 export async function sisaKamar(
@@ -187,7 +189,7 @@ export async function sisaKamar(
     tanya<{ kamar_id: number; unit: number; mulai: string; selesai: string }>(
       'SELECT kamar_id, unit, mulai, selesai FROM kalender_luar WHERE kamar_id IN (?) AND mulai < ? AND selesai > ?',
       [ids, sampai, dari],
-    ),
+    ).then(async (ical) => [...ical, ...(await blokDampier(kamar, dari, sampai, tanya))]),
   ]);
   const unit = new Map(kamar.map((k) => [k.id, k.jumlah_unit]));
   const kurangi = (id: number, malam: string, n: number) => {

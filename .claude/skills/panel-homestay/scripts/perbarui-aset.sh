@@ -27,6 +27,8 @@ BERKAS=(
   "app/ical/[berkas]/route.ts"
   "instrumentation.ts"
   "lib/sinkron.ts"
+  "lib/dampier.ts"
+  "lib/jaringan.ts"
   "lib/ical.mjs"
   "lib/ical.test.mjs"
   "lib/statistik.ts"

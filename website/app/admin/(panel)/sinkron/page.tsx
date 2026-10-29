@@ -1,10 +1,13 @@
 import { headers } from 'next/headers';
+import Link from 'next/link';
 import Ikon from '@/components/Ikon';
 import Kabar, { JudulAdmin } from '@/components/admin/Kabar';
 import TombolSalin from '@/components/admin/TombolSalin';
 import TombolYakin from '@/components/admin/TombolYakin';
-import { gantiTautanSambungan, hapusSambungan, sinkronkanSekarang, tambahSambungan, ubahSambungan } from '@/app/admin/aksi';
+import { gantiTautanSambungan, hapusSambungan, putusDampier, sambungDampier, sinkronkanSekarang, tambahSambungan, ubahSambungan } from '@/app/admin/aksi';
+import { statusDampier, type StatusDampier } from '@/lib/dampier';
 import { daftarKamar } from '@/lib/data';
+import type { Kamar } from '@/lib/jenis';
 import { alamatSitus } from '@/lib/env';
 import { rentangTanggal, waktu } from '@/lib/format';
 import { rentang2 } from '@/lib/kisi';
@@ -90,15 +93,135 @@ function Sambung({ s, asal, baru }: { s: Sambungan; asal: string; baru: boolean 
   );
 }
 
+// Times kept as ISO strings, shown like the other sync times.
+const jamIso = (iso: string) => waktu(iso.slice(0, 19).replace('T', ' '));
+
+function FormDampier({ kamar, tombol, d }: { kamar: Kamar[]; tombol: string; d: StatusDampier | null }) {
+  const pilihan = kamar.filter((k) => k.aktif || k.id === d?.kamarId);
+  return (
+    <form action={sambungDampier} className="mt-4 grid gap-4 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-end">
+      <label className="block">
+        <span className="label-isian">Alamat API dari DAMPIER</span>
+        <input name="api" required inputMode="url" autoComplete="off" spellCheck={false} placeholder="https://thedampier.com/api/kamar/..." className="isian font-mono text-sm" />
+      </label>
+      {pilihan.length > 1 && (
+        <label className="block sm:col-span-2 sm:row-start-2">
+          <span className="label-isian">Bungalow yang dijual di DAMPIER</span>
+          <select name="kamar_id" defaultValue={d?.kamarId} className="isian">
+            {pilihan.map((k) => <option key={k.id} value={k.id}>{k.nama}, {k.jumlah_unit} unit</option>)}
+          </select>
+        </label>
+      )}
+      <button className="tombol tombol-kecil justify-self-start"><Ikon nama="sinkron" className="size-4" /> {tombol}</button>
+      <p className="bantuan sm:col-span-2">Alamat ini memuat kunci kalender Mambetron di DAMPIER. Simpan hanya di sini dan jangan dibagikan. Panel hanya menampilkan ujungnya.</p>
+    </form>
+  );
+}
+
+function KartuDampier({ d, kamar, adaOta }: { d: StatusDampier | null; kamar: Kamar[]; adaOta: boolean }) {
+  if (!d) {
+    return (
+      <section id="dampier" className="kartu mb-6 scroll-mt-28 p-5 sm:p-7">
+        <div className="flex flex-wrap items-start justify-between gap-3">
+          <div>
+            <p className="label-kecil">Kalender mitra DAMPIER</p>
+            <h2 className="mt-1 text-[1.6rem] text-panel-utama">Sambungkan dengan kalender DAMPIER</h2>
+          </div>
+          <span className="inline-flex rounded-full bg-panel-lembut px-3 py-1 text-xs font-bold whitespace-nowrap text-panel-utama">Belum tersambung</span>
+        </div>
+        <p className="mt-2 max-w-3xl text-[0.9375rem] text-abu">Kalender mitra di DAMPIER memuat semua kamar Mambetron, pesanan Booking.com, tamu DAMPIER, dan pesanan yang dicatat sendiri. Setelah tersambung, kamar yang terisi di sana ikut tertutup di situs ini, dan pesanan serta tanggal tutup dari situs ini ikut menutup kamar di DAMPIER dan Booking.com. Tamu tetap memesan dan membayar di situs ini.</p>
+        <ol className="mt-4 grid gap-2 text-[0.9375rem] text-panel-utama/85">
+          <li className="flex gap-3"><span className="inline-flex size-7 shrink-0 items-center justify-center rounded-full bg-panel-lembut text-sm font-bold">1</span>Buka kalender mitra Mambetron di DAMPIER, lalu ketuk Sambungkan website di kartu Sambungkan OTA.</li>
+          <li className="flex gap-3"><span className="inline-flex size-7 shrink-0 items-center justify-center rounded-full bg-panel-lembut text-sm font-bold">2</span>Di kotak Untuk programmer website, ketuk Salin di samping alamat API.</li>
+          <li className="flex gap-3"><span className="inline-flex size-7 shrink-0 items-center justify-center rounded-full bg-panel-lembut text-sm font-bold">3</span>Tempel alamatnya di bawah, lalu ketuk Sambungkan.</li>
+        </ol>
+        <FormDampier kamar={kamar} tombol="Sambungkan" d={d} />
+      </section>
+    );
+  }
+  const km = kamar.find((k) => k.id === d.kamarId);
+  const [kelas, label] = d.galat
+    ? ['bg-[#fde3dc] text-merah', 'Gagal dibaca']
+    : d.berhasil
+      ? ['bg-[#dff5e6] text-[#1f7a3d]', 'Tersambung']
+      : ['bg-pasir text-laut', 'Belum dibaca'];
+  const nDampier = d.kamar?.length ?? 0;
+  return (
+    <section id="dampier" className="kartu mb-6 scroll-mt-28 p-5 sm:p-7">
+      <div className="flex flex-wrap items-start justify-between gap-3">
+        <div className="min-w-0">
+          <p className="label-kecil">Kalender mitra DAMPIER</p>
+          <h2 className="mt-1 text-[1.6rem] text-panel-utama">{d.nama || 'Kalender DAMPIER'}</h2>
+        </div>
+        <span className={`inline-flex rounded-full px-3 py-1 text-xs font-bold whitespace-nowrap ${kelas}`}>{label}</span>
+      </div>
+      <p className="mt-2 max-w-3xl text-[0.9375rem] text-abu">
+        Kamar yang terisi di DAMPIER ikut tertutup di {km?.nama ?? 'bungalow ini'}, dan pesanan serta tanggal tutup dari situs ini dikirim ke DAMPIER sebagai pesanan Website sendiri.
+        {d.berhasil ? ` Terakhir dibaca ${jamIso(d.berhasil)}.` : ''}
+        {d.kirim ? ` ${d.kirim.jumlah} pesanan dan tanggal tutup terkirim ${jamIso(d.kirim.waktu)}.` : ''}
+      </p>
+      {d.galat && <p className="mt-3 rounded-xl bg-[#fde3dc] px-4 py-3 text-sm font-semibold text-merah">{d.galat}</p>}
+
+      {(d.bentrok?.length ?? 0) > 0 && (
+        <div className="mt-4 rounded-2xl bg-[#fde3dc] p-4" role="alert">
+          <p className="font-semibold text-merah">Pesanan ini bertemu pesanan lain di DAMPIER pada malam yang sama</p>
+          <p className="mt-1 text-sm text-laut">Pindahkan pesanan lain ke kamar yang kosong di kalender DAMPIER, atau hubungi tamunya.</p>
+          <ul className="mt-2 grid gap-2 sm:grid-cols-2">
+            {d.bentrok!.map((b) => (
+              <li key={`${b.id}-${b.mulai}`} className="rounded-xl bg-white px-3 py-2">
+                {b.id.startsWith('TUTUP-')
+                  ? <span className="block font-semibold text-laut">Tanggal tutup</span>
+                  : <Link href={`/admin/pesanan?q=${encodeURIComponent(b.id)}`} className="block font-semibold text-laut hover:underline">{b.id}</Link>}
+                <span className="block text-sm text-abu">{rentangTanggal(b.mulai, b.selesai)}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+
+      {km && nDampier > 0 && nDampier !== km.jumlah_unit && (
+        <p className="mt-4 rounded-xl bg-pasir px-4 py-3 text-sm text-laut">DAMPIER mencatat {nDampier} kamar, sedangkan {km.nama} di sini {km.jumlah_unit} unit. Samakan jumlahnya supaya hitungan kamar kosong cocok.</p>
+      )}
+      {adaOta && (
+        <p className="mt-4 rounded-xl bg-panel-latar px-4 py-3 text-sm text-panel-utama/85">Booking.com yang sudah tersambung di DAMPIER tidak perlu disambung lagi di bawah. Bila keduanya tersambung, satu pesanan Booking.com bisa menutup dua unit di sini.</p>
+      )}
+
+      {nDampier > 0 && (
+        <>
+          <p className="mt-5 text-sm font-semibold text-panel-utama">Kamar di DAMPIER</p>
+          <ul className="mt-2 flex flex-wrap gap-2">
+            {d.kamar!.map((k) => <li key={k.nomor} className="rounded-full bg-panel-latar px-3 py-1 text-sm text-panel-utama">{k.nama}</li>)}
+          </ul>
+        </>
+      )}
+      <p className="mt-4 text-sm text-abu">Alamat API <span className="font-mono">{d.host}/api/kamar/…{d.akhiran}</span></p>
+
+      <details className="group mt-4">
+        <summary className="inline-flex cursor-pointer list-none items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold text-panel-utama ring-1 ring-panel-garis hover:bg-panel-latar">
+          Ganti alamat <Ikon nama="bawah" className="size-4 transition-transform group-open:rotate-180" />
+        </summary>
+        <p className="mt-3 text-sm text-abu">Pakai ini bila kunci diganti di DAMPIER, atau untuk memindahkan sambungan ke bungalow lain.</p>
+        <FormDampier kamar={kamar} tombol="Simpan alamat baru" d={d} />
+        <form action={putusDampier} className="mt-4">
+          <TombolYakin tanya="Putuskan kalender DAMPIER? Kamar yang terisi di DAMPIER tidak lagi ditutup di sini. Pesanan yang sudah terkirim tetap ada di DAMPIER sampai dihapus di sana.">
+            <Ikon nama="sampah" className="size-4" /> Putuskan
+          </TombolYakin>
+        </form>
+      </details>
+    </section>
+  );
+}
+
 export default async function HalamanSinkron({ searchParams }: { searchParams: Promise<Record<string, string | undefined>> }) {
   const sp = await searchParams;
   pastikanSegar().catch(() => {});
   const hari = hariIni();
-  const [kamar, sambungan, bentrok, asal] = await Promise.all([
+  const [kamar, sambungan, bentrok, asal, dampier] = await Promise.all([
     daftarKamar(true),
     daftarSambungan().catch(() => [] as Sambungan[]),
     cariBentrok(hari, tambahHari(hari, 365)).catch(() => []),
     asalSitus(),
+    statusDampier().catch(() => null),
   ]);
   const baru = Number(sp.baru) || 0;
   const unit = kamar.flatMap((k) => Array.from({ length: k.jumlah_unit }, (_, i) => ({ k, u: i + 1 })));
@@ -125,9 +248,20 @@ export default async function HalamanSinkron({ searchParams }: { searchParams: P
         'galat:url-https': 'Tautan kalender harus diawali https.',
         'galat:url-umum': 'Tautan kalender harus alamat internet umum.',
         'galat:url-panjang': 'Tautan kalender terlalu panjang.',
+        'ok:dampier': 'Kalender DAMPIER tersambung. Pesanan dan tanggal tutup situs ini sudah dikirim ke DAMPIER.',
+        'ok:dampier-putus': 'Kalender DAMPIER diputus.',
+        'galat:dampier-alamat': 'Alamat itu bukan alamat API DAMPIER. Salin alamat dari kotak Untuk programmer website, yang diawali https://thedampier.com/api/kamar/.',
+        'galat:dampier-kamar': 'Pilih bungalow yang dijual di DAMPIER.',
+        'galat:dampier-kunci': 'DAMPIER tidak mengenal alamat ini. Kuncinya mungkin sudah diganti. Salin alamat API yang terbaru dari DAMPIER.',
+        'galat:dampier-jaringan': 'DAMPIER tidak bisa dihubungi dari server situs ini. Coba lagi sebentar lagi.',
+        'galat:dampier-sering': 'DAMPIER meminta jeda karena terlalu sering dihubungi. Coba lagi beberapa menit lagi.',
+        'galat:dampier-bentuk': 'Jawaban DAMPIER tidak dikenali. Pastikan yang disalin alamat API, bukan tautan kalender mitra.',
+        'galat:dampier-jawab': 'DAMPIER menolak sambungan ini. Coba salin ulang alamat API-nya.',
       }} />
 
       <datalist id="saran-situs">{SARAN.map((x) => <option key={x} value={x} />)}</datalist>
+
+      <KartuDampier d={dampier} kamar={kamar} adaOta={Boolean(dampier) && sambungan.some((s) => s.url)} />
 
       {bentrok.length > 0 && (
         <section className="mb-6 rounded-[1.5rem] bg-[#fde3dc] p-5 sm:p-6" role="alert">

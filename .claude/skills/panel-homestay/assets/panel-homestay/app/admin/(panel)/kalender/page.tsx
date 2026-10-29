@@ -45,12 +45,13 @@ export default async function KalenderAdmin({ searchParams }: { searchParams: Pr
   const menginapDi = (d: string) => hidup.filter((p) => p.check_in <= d && p.check_out > d);
   const unitAda = (b: BlokLuar) => b.unit <= (kamar.find((k) => k.id === b.kamar_id)?.jumlah_unit ?? 0);
   const luarDi = (d: string) => luar.filter((b) => b.mulai <= d && b.selesai > d && unitAda(b) && (!pondok || b.kamar_id === pondok.id));
-  // one chip per site, with the units it took that night
+  // one chip per site, with the units it took that night. DAMPIER's units
+  // are only a count (sambungan 0), the room is known there.
   const luarPerSitus = (d: string) => {
-    const m = new Map<string, { nama: string; kamar: number; unit: Set<number> }>();
+    const m = new Map<string, { nama: string; kamar: number; unit: Set<number>; dampier: boolean }>();
     for (const b of luarDi(d)) {
-      const k = `${b.kamar_id}|${b.nama}`;
-      const x = m.get(k) ?? { nama: b.nama, kamar: b.kamar_id, unit: new Set<number>() };
+      const k = `${b.kamar_id}|${b.sambungan_id ? b.nama : 0}`;
+      const x = m.get(k) ?? { nama: b.nama, kamar: b.kamar_id, unit: new Set<number>(), dampier: !b.sambungan_id };
       x.unit.add(b.unit);
       m.set(k, x);
     }
@@ -80,7 +81,9 @@ export default async function KalenderAdmin({ searchParams }: { searchParams: Pr
     pulang: hidup.filter((p) => p.check_out === pilih),
     menginap: menginapDi(pilih),
     tutup: tutupDi(pilih),
-    luar: luarDi(pilih),
+    luar: luarDi(pilih).filter((b) => b.sambungan_id),
+    // rooms taken at DAMPIER that night, as one line
+    dampier: luarDi(pilih).filter((b) => !b.sambungan_id),
   };
 
   return (
@@ -117,7 +120,7 @@ export default async function KalenderAdmin({ searchParams }: { searchParams: Pr
               })),
               ...situsLain.map(([kunci, x]) => ({
                 k: `l${kunci}`,
-                el: <span className="flex items-center gap-1.5 truncate rounded-md bg-[#f1edfb] px-1.5 py-0.5 text-[#4b3a8c]"><span className={`size-1.5 shrink-0 rounded-full ${UNGU}`} /><span className="truncate">{x.nama} · unit {[...x.unit].sort((a, b) => a - b).join(', ')}</span></span>,
+                el: <span className="flex items-center gap-1.5 truncate rounded-md bg-[#f1edfb] px-1.5 py-0.5 text-[#4b3a8c]"><span className={`size-1.5 shrink-0 rounded-full ${UNGU}`} /><span className="truncate">{x.dampier ? `${x.nama} · ${x.unit.size} kamar` : `${x.nama} · unit ${[...x.unit].sort((a, b) => a - b).join(', ')}`}</span></span>,
               })),
             ];
             const lebih = Math.max(0, butir.length - MUAT);
@@ -149,7 +152,7 @@ export default async function KalenderAdmin({ searchParams }: { searchParams: Pr
         </ol>
         <ul className="flex flex-wrap gap-x-5 gap-y-1 px-2 pt-3 pb-1 text-xs text-abu sm:text-sm">
           <li className="inline-flex items-center gap-2"><span className="size-2 rounded-full bg-panel-aksen" />Dikonfirmasi atau lunas</li>
-          <li className="inline-flex items-center gap-2"><span className="size-2 rounded-full bg-senja" />Menunggu uang muka</li>
+          <li className="inline-flex items-center gap-2"><span className="size-2 rounded-full bg-senja" />Menunggu pembayaran</li>
           <li className="inline-flex items-center gap-2"><span className={`size-2 rounded-full ${UNGU}`} />Terisi dari OTA</li>
           <li className="inline-flex items-center gap-2"><span className="h-2 w-4 rounded-full bg-panel-lembut ring-1 ring-panel-utama/20 max-sm:h-1.5 max-sm:bg-panel-utama max-sm:ring-0" />Semua bungalow penuh</li>
           <li className="inline-flex items-center gap-2"><span className="h-2 w-4 rounded-full bg-[#fde3dc] max-sm:size-2 max-sm:bg-merah" />Tutup</li>
@@ -184,9 +187,9 @@ export default async function KalenderAdmin({ searchParams }: { searchParams: Pr
               </div>
             ))}
           </div>
-          {detail.luar.length > 0 && (
+          {detail.luar.length + detail.dampier.length > 0 && (
             <div className="mt-3 rounded-2xl bg-[#f1edfb] p-4">
-              <p className="text-sm font-semibold text-[#4b3a8c]">Terisi dari OTA<span className="ml-1.5 opacity-70">{detail.luar.length}</span></p>
+              <p className="text-sm font-semibold text-[#4b3a8c]">Terisi dari OTA<span className="ml-1.5 opacity-70">{detail.luar.length + detail.dampier.length}</span></p>
               <ul className="mt-2 grid gap-1.5 sm:grid-cols-2">
                 {detail.luar.map((b, i) => (
                   <li key={`${b.sambungan_id}-${b.mulai}-${i}`} className="rounded-xl bg-white px-3 py-2">
@@ -194,6 +197,12 @@ export default async function KalenderAdmin({ searchParams }: { searchParams: Pr
                     <span className="block text-sm text-abu">{kamar.find((k) => k.id === b.kamar_id)?.nama ?? 'Bungalow'}, {rentangTanggal(b.mulai, b.selesai)}{b.ringkas ? `, ${b.ringkas}` : ''}</span>
                   </li>
                 ))}
+                {detail.dampier.length > 0 && (
+                  <li className="rounded-xl bg-white px-3 py-2">
+                    <span className="flex items-center gap-2 font-semibold text-panel-utama"><span className={`size-2 shrink-0 rounded-full ${UNGU}`} />DAMPIER, {detail.dampier.length} kamar</span>
+                    <span className="block text-sm text-abu">{kamar.find((k) => k.id === detail.dampier[0].kamar_id)?.nama ?? 'Bungalow'}, terisi di kalender DAMPIER malam ini</span>
+                  </li>
+                )}
               </ul>
               <Link href="/admin/sinkron" className="mt-2 inline-block text-sm font-semibold text-[#4b3a8c] hover:underline">Atur sinkron OTA</Link>
             </div>

@@ -206,7 +206,7 @@ export default async function Ringkasan({ searchParams }: { searchParams: Promis
               {luarMalamIni.slice(0, Math.max(0, 3 - menginap.length)).map((b, i) => (
                 <li key={`l${b.sambungan_id}-${i}`} className="flex items-baseline justify-between gap-3">
                   <span className="min-w-0 truncate font-semibold text-panel-utama">Tamu {b.nama}</span>
-                  <span className="shrink-0 text-sm">unit {b.unit}</span>
+                  <span className="shrink-0 text-sm">{b.sambungan_id ? `unit ${b.unit}` : '1 kamar'}</span>
                 </li>
               ))}
             </ul>

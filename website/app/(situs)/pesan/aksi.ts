@@ -3,6 +3,7 @@ import { after } from 'next/server';
 import { headers } from 'next/headers';
 import { redirect } from 'next/navigation';
 import { ambilSitus, daftarKamar, daftarLayanan, pemesananAktif, pesananDariId } from '@/lib/data';
+import { sinkronDampier } from '@/lib/dampier';
 import { tanggal } from '@/lib/format';
 import { kamus, pesanGalat } from '@/lib/kamus';
 import { GalatPesan, bolehKirim, catatKirim, simpanPesanan } from '@/lib/pesan';
@@ -63,5 +64,7 @@ export async function kirimPesanan(_: HasilKirim, fd: FormData): Promise<HasilKi
     const p = await pesananDariId(id);
     if (p) await surelPesananBaru(p, situs, asal);
   });
+  // the DAMPIER calendar closes the bungalow there too
+  after(() => sinkronDampier({ segera: true }));
   redirect(`/pesanan/${hasil.kode}?t=${hasil.token}`);
 }

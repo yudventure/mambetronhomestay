@@ -146,6 +146,13 @@ CREATE TABLE IF NOT EXISTS kalender_sambungan (
   KEY sambungan_unit (kamar_id, unit)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+CREATE TABLE IF NOT EXISTS kalender_dampier (
+  kamar_id INT UNSIGNED NOT NULL,
+  malam DATE NOT NULL,
+  terisi TINYINT UNSIGNED NOT NULL,
+  PRIMARY KEY (kamar_id, malam)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 CREATE TABLE IF NOT EXISTS kalender_luar (
   id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
   sambungan_id INT UNSIGNED NOT NULL,

@@ -58,6 +58,26 @@ export type StatusPesanan = 'menunggu' | 'dikonfirmasi' | 'lunas' | 'selesai' | 
 
 export type BarisLayanan = { id: number; nama: string; nama_en: string; harga: number; satuan: Satuan; jumlah: number; subtotal: number };
 
+// One Midtrans transaction for a booking. The order id is the booking code
+// with a running number, a new one only when the last could not be paid.
+export type CobaBayar = {
+  orderId: string;
+  jumlah: number;
+  dibuat: string;
+  status: string;
+  metode: string;
+  saluran?: string;
+  waktu?: string;
+  // the paid amount has been added to the booking
+  masuk?: boolean;
+};
+export type BayarOnline = {
+  n: number;
+  // the Snap token of the latest transaction, reused while it can still be paid
+  token: string;
+  coba: CobaBayar[];
+};
+
 export type Pesanan = {
   id: number;
   kode: string;
@@ -83,7 +103,11 @@ export type Pesanan = {
   total: number;
   dp: number;
   dibayar: number;
+  // payments through Midtrans, null until the guest first pays online
+  bayar_online: BayarOnline | null;
   rincian: BarisLayanan[];
+  // rate tier with its terms as booked, null for bookings without one
+  paket: { nama: Dua; syarat: Dua; persen: number } | null;
   bahasa: Bahasa;
   status: StatusPesanan;
   sumber: string;
@@ -91,11 +115,10 @@ export type Pesanan = {
   dibuat: string;
 };
 
-type Sorotan = { ikon: string; judul: Dua; teks: Dua };
 type Kata = { ikon: string; teks: Dua };
-type Langkah = { judul: Dua; teks: Dua };
 type Faq = { tanya: Dua; jawab: Dua };
-type Rekening = { bank: string; nomor: string; atasNama: string };
+type Rute = { judul: Dua; label: Dua; teks: Dua };
+type Rekening = { bank: string; nomor: string; atasNama: string; swift: string };
 
 // Mirrors PENGATURAN in bawaan.mjs.
 export type Situs = {
@@ -105,6 +128,8 @@ export type Situs = {
   seoJudul: Dua;
   seoDeskripsi: Dua;
   kakiTeks: Dua;
+  pengelolaTeks: Dua;
+  pengelola: string;
   whatsapp: string;
   email: string;
   instagram: string;
@@ -119,8 +144,6 @@ export type Situs = {
   heroTeks: Dua;
   heroKata: Kata[];
   heroVideo: string;
-  sorotanJudul: Dua;
-  sorotan: Sorotan[];
   kamarJudul: Dua;
   kamarTeks: Dua;
   ulasanSkor: string;
@@ -130,19 +153,20 @@ export type Situs = {
   ulasanWajah: { nama: string; wajah: string }[];
   tentangJudul: Dua;
   tentangTeks: Dua;
+  tentangVideo: { url: string; judul: string }[];
   galeriJudul: Dua;
   layananJudul: Dua;
   layananTeks: Dua;
   ulasanJudul: Dua;
-  caraJudul: Dua;
-  langkah: Langkah[];
+  lokasiLabel: Dua;
   lokasiJudul: Dua;
   caraSampai: Dua;
+  rute: Rute[];
+  lokasiInfo: { ikon: string; teks: Dua }[];
+  lokasiCatatan: Dua;
   faqJudul: Dua;
   faq: Faq[];
-  ajakanLabel: Dua;
-  ajakanJudul: Dua;
-  ajakanTeks: Dua;
+  uangBawaan: string;
   kursOtomatis: boolean;
   kursUSD: number;
   kursEUR: number;
@@ -154,6 +178,7 @@ export type Situs = {
   checkIn: string;
   checkOut: string;
   dpPersen: number;
+  paketHarga: { nama: Dua; syarat: Dua; persen: number | string }[];
   batasHari: number;
   jedaHari: number;
   bank: Rekening[];

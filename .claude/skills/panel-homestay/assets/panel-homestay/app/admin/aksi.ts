@@ -14,8 +14,11 @@ import { tanggal } from '@/lib/format';
 import { alamatPengunjung, bolehMencoba, buatSesi, catatGagal, hapusSesi, lupakanGagal, sandiCocok, sandiDiatur, wajibMasuk } from '@/lib/sesi';
 import { daftarMalam, sahTanggal, selisihHari } from '@/lib/tanggal';
 import { GalatSinkron, buatToken, rapikanUrl, sinkronSatu, sinkronSemua, type Sambungan } from '@/lib/sinkron';
+import { GalatDampier, kabariDampier, putuskanDampier, rapikanAlamatDampier, simpanAlamatDampier, ujiAlamatDampier } from '@/lib/dampier';
+import { GalatMidtrans, aturTampilMidtrans, bentukClient, bentukServer, hapusKunciMidtrans, simpanKunciMidtrans, ujiKunciMidtrans } from '@/lib/midtrans';
 
-const teks = (fd: FormData, k: string, n = 2000) => String(fd.get(k) ?? '').trim().slice(0, n);
+// line breaks from a textarea arrive as CRLF, kept as plain LF
+const teks = (fd: FormData, k: string, n = 2000) => String(fd.get(k) ?? '').replace(/\r\n?/g, '\n').trim().slice(0, n);
 const bulat = (fd: FormData, k: string) => {
   const n = Number.parseInt(String(fd.get(k) ?? '').replace(/[^\d-]/g, ''), 10);
   return Number.isFinite(n) ? n : 0;
@@ -152,7 +155,7 @@ export async function hapusKamar(fd: FormData) {
 
 // Photos, already resized in the browser.
 const JENIS_FOTO = ['image/jpeg', 'image/png', 'image/webp'];
-const WADAH = ['kamar', 'beranda', 'berandaHp', 'unggulan', 'tentang', 'ajakan', 'galeri'];
+const WADAH = ['kamar', 'beranda', 'berandaHp', 'unggulan', 'tentang', 'galeri', 'tamu'];
 
 export async function unggahFoto(fd: FormData): Promise<{ galat: string }> {
   await wajibMasuk();
@@ -255,6 +258,7 @@ export async function tambahTutup(fd: FormData) {
   const kembali = teks(fd, 'kembali', 200) || '/admin/kalender';
   if (!sahTanggal(mulai) || !sahTanggal(akhir) || akhir < mulai) redirect(`${kembali}${kembali.includes('?') ? '&' : '?'}galat=tanggal`);
   await jalankan('INSERT INTO tutup (kamar_id, mulai, akhir, alasan) VALUES (?, ?, ?, ?)', [kamarId, mulai, akhir, teks(fd, 'alasan', 200)]);
+  kabariDampier();
   segarkan();
   redirect(`${kembali}${kembali.includes('?') ? '&' : '?'}ok=tutup`);
 }
@@ -262,6 +266,7 @@ export async function tambahTutup(fd: FormData) {
 export async function hapusTutup(fd: FormData) {
   await wajibMasuk();
   await jalankan('DELETE FROM tutup WHERE id = ?', [bulat(fd, 'id')]);
+  kabariDampier();
   segarkan();
 }
 
@@ -333,6 +338,38 @@ export async function sinkronkanSekarang() {
   redirect('/admin/sinkron?ok=sinkron');
 }
 
+// The DAMPIER partner calendar. The address is read once before it is
+// kept, and never sent back to the browser whole.
+export async function sambungDampier(fd: FormData) {
+  await wajibMasuk();
+  const kamar = await daftarKamar(true);
+  const kamarId = bulat(fd, 'kamar_id') || kamar.find((k) => k.aktif)?.id || 0;
+  if (!kamar.some((k) => k.id === kamarId)) redirect('/admin/sinkron?galat=dampier-kamar#dampier');
+  let api = '';
+  try {
+    api = rapikanAlamatDampier(teks(fd, 'api', 400));
+  } catch {
+    redirect('/admin/sinkron?galat=dampier-alamat#dampier');
+  }
+  let galat = '';
+  try {
+    await simpanAlamatDampier(api, kamarId, await ujiAlamatDampier(api));
+  } catch (e) {
+    galat = e instanceof GalatDampier ? e.kode : 'jaringan';
+    if (!(e instanceof GalatDampier)) console.error('[mambetron] sambung DAMPIER', e);
+  }
+  if (galat) redirect(`/admin/sinkron?galat=dampier-${galat}#dampier`);
+  segarkan();
+  redirect('/admin/sinkron?ok=dampier#dampier');
+}
+
+export async function putusDampier() {
+  await wajibMasuk();
+  await putuskanDampier();
+  segarkan();
+  redirect('/admin/sinkron?ok=dampier-putus#dampier');
+}
+
 // Bookings.
 export async function ubahPesanan(fd: FormData) {
   await wajibMasuk();
@@ -355,6 +392,7 @@ export async function ubahPesanan(fd: FormData) {
   await jalankan('UPDATE pesanan SET status = ?, total = ?, dibayar = ?, catatan_admin = ? WHERE id = ?', [
     status, total, dibayar, fd.has('catatan_admin') ? teks(fd, 'catatan_admin') : p.catatan_admin, id,
   ]);
+  kabariDampier();
   segarkan();
   redirect(`/admin/pesanan/${id}?ok=1`);
 }
@@ -366,10 +404,13 @@ export async function tandaiPesanan(fd: FormData) {
   const p = await pesananDariId(id);
   if (!p) redirect('/admin/pesanan');
   const apa = String(fd.get('apa'));
-  if (apa === 'dp') await jalankan("UPDATE pesanan SET status = 'dikonfirmasi', dibayar = GREATEST(dibayar, dp) WHERE id = ?", [id]);
+  // a booking paid in full is settled by its first payment
+  if (apa === 'dp' && p.dp >= p.total) await jalankan("UPDATE pesanan SET status = 'lunas', dibayar = total WHERE id = ?", [id]);
+  else if (apa === 'dp') await jalankan("UPDATE pesanan SET status = 'dikonfirmasi', dibayar = GREATEST(dibayar, dp) WHERE id = ?", [id]);
   else if (apa === 'lunas') await jalankan("UPDATE pesanan SET status = 'lunas', dibayar = total WHERE id = ?", [id]);
   else if (apa === 'selesai') await jalankan("UPDATE pesanan SET status = 'selesai' WHERE id = ?", [id]);
   else if (apa === 'batal') await jalankan("UPDATE pesanan SET status = 'batal' WHERE id = ?", [id]);
+  kabariDampier();
   segarkan();
   redirect(`/admin/pesanan/${id}?ok=1`);
 }
@@ -390,7 +431,7 @@ export async function ubahJadwal(fd: FormData) {
   const malam = selisihHari(masuk, keluar);
   const [situs, layanan] = await Promise.all([ambilSitus(), daftarLayanan(true)]);
   const dipilih = layanan.filter((l) => p.rincian.some((r) => r.id === l.id));
-  const h = hitungHarga(km!, { malam, jumlahKamar, dewasa, anak, layanan: dipilih, dpPersen: situs.dpPersen });
+  const h = hitungHarga(km!, { malam, jumlahKamar, dewasa, anak, layanan: dipilih, dpPersen: situs.dpPersen, persenPaket: p.paket?.persen });
   let penuh = false;
   await transaksi(async (c) => {
     await c.query('SELECT id FROM kamar WHERE id = ? FOR UPDATE', [km!.id]);
@@ -407,6 +448,7 @@ export async function ubahJadwal(fd: FormData) {
     );
   });
   if (penuh) galat('penuh');
+  kabariDampier();
   segarkan();
   redirect(`/admin/pesanan/${id}?ok=jadwal`);
 }
@@ -416,6 +458,7 @@ export async function hapusPesanan(fd: FormData) {
   const id = bulat(fd, 'id');
   if (teks(fd, 'yakin') !== 'HAPUS') redirect(`/admin/pesanan/${id}?galat=yakin`);
   await jalankan('DELETE FROM pesanan WHERE id = ?', [id]);
+  kabariDampier();
   segarkan();
   redirect('/admin/pesanan?hapus=1');
 }
@@ -444,6 +487,45 @@ export async function pesananManual(_: { galat: string }, fd: FormData): Promise
   }
   if (status === 'lunas') await jalankan('UPDATE pesanan SET dibayar = total WHERE id = ?', [hasil.id]);
   if (status === 'dikonfirmasi') await jalankan('UPDATE pesanan SET dibayar = dp WHERE id = ?', [hasil.id]);
+  kabariDampier();
   segarkan();
   redirect(`/admin/pesanan/${hasil.id}?ok=baru`);
+}
+
+// Midtrans keys (Pembayaran). The Server Key is tested with Midtrans before
+// it is kept, and never sent back to the browser.
+export async function simpanMidtrans(fd: FormData) {
+  await wajibMasuk();
+  const server = teks(fd, 'server', 200).replace(/\s/g, '');
+  const client = teks(fd, 'client', 200).replace(/\s/g, '');
+  let galat = '';
+  if (process.env.MIDTRANS_SERVER_KEY?.trim()) galat = 'env';
+  else if (!bentukServer(server) || !bentukClient(client)) galat = 'bentuk';
+  else if (server.startsWith('SB-') !== client.startsWith('SB-')) galat = 'campur';
+  else {
+    try {
+      await ujiKunciMidtrans(server);
+      await simpanKunciMidtrans(server, client);
+    } catch (e) {
+      galat = e instanceof GalatMidtrans && e.kode === '401' ? 'ditolak' : 'jaringan';
+      if (!(e instanceof GalatMidtrans)) console.error('[mambetron] simpan midtrans', e);
+    }
+  }
+  segarkan();
+  redirect(galat ? `/admin/pembayaran?galat=${galat}` : '/admin/pembayaran?ok=simpan');
+}
+
+export async function lepasMidtrans() {
+  await wajibMasuk();
+  await hapusKunciMidtrans();
+  segarkan();
+  redirect('/admin/pembayaran?ok=lepas');
+}
+
+export async function tampilMidtrans(fd: FormData) {
+  await wajibMasuk();
+  const tampil = fd.get('tampil') === 'ya';
+  await aturTampilMidtrans(tampil);
+  segarkan();
+  redirect(`/admin/pembayaran?ok=${tampil ? 'tampil' : 'sembunyi'}`);
 }

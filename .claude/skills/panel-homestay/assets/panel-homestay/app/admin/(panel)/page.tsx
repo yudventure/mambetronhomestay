@@ -91,7 +91,7 @@ export default async function Ringkasan({ searchParams }: { searchParams: Promis
 
   const daftarCek = [
     { ok: Boolean(situs.whatsapp), teks: 'Isi nomor WhatsApp homestay', href: '/admin/pengaturan#kontak' },
-    { ok: situs.bank.length > 0, teks: 'Isi rekening untuk uang muka', href: '/admin/pengaturan#pemesanan' },
+    { ok: situs.bank.some((r) => r.nomor.trim()), teks: 'Isi rekening untuk pembayaran', href: '/admin/pengaturan#pemesanan' },
     { ok: kamar.length > 0 && kamar.every((k) => k.foto.length > 0), teks: 'Unggah foto setiap bungalow', href: '/admin/kamar' },
     { ok: Boolean(situs.petaKoordinat), teks: 'Isi titik peta lokasi homestay', href: '/admin/pengaturan#kontak' },
     { ok: Boolean(alamatSitus()), teks: 'Isi SITE_URL di environment variables hPanel', href: '' },
@@ -119,7 +119,7 @@ export default async function Ringkasan({ searchParams }: { searchParams: Promis
             <h1 className="mt-2 text-[2.2rem] leading-[1.05] text-white sm:text-[2.6rem]">Selamat {salam()}, tim {nama}.</h1>
             <p className="mt-2 text-white/75">
               {angka.menunggu
-                ? `Ada ${angka.menunggu} pesanan yang menunggu konfirmasi uang muka.`
+                ? `Ada ${angka.menunggu} pesanan yang menunggu konfirmasi pembayaran.`
                 : 'Tidak ada pesanan yang menunggu konfirmasi saat ini.'}
             </p>
           </div>
@@ -131,7 +131,7 @@ export default async function Ringkasan({ searchParams }: { searchParams: Promis
         <Angka label={`Pesanan masuk · ${bulan}`} nilai={angka.masuk} ket={`${angka.masukLalu} bulan lalu`} href="/admin/pesanan" />
         <Angka label={`Dikonfirmasi · ${bulan}`} nilai={angka.dikonfirmasi}
           ket={angka.masuk ? `${Math.round((angka.dikonfirmasi / angka.masuk) * 100)}% dari pesanan masuk` : 'Belum ada pesanan bulan ini'} />
-        <Angka label="Menunggu konfirmasi" nilai={angka.menunggu} ket={angka.menunggu ? 'Cek uang muka lalu konfirmasi' : 'Semua sudah ditanggapi'} baik={!angka.menunggu} href="/admin/pesanan?status=menunggu" />
+        <Angka label="Menunggu konfirmasi" nilai={angka.menunggu} ket={angka.menunggu ? 'Cek pembayaran lalu konfirmasi' : 'Semua sudah ditanggapi'} baik={!angka.menunggu} href="/admin/pesanan?status=menunggu" />
         <Angka label="Tiba hari ini" nilai={tiba.length} ket={`${pulang.length} pulang, ${tamuMalamIni} tamu menginap malam ini`} />
         <Angka label="Keterisian 30 hari" nilai={`${okupansi}%`} ket={`${malamTerisi} dari ${unitAktif * 30} malam bungalow terisi`} href="/admin/kalender" />
         <Angka label={`Nilai pesanan · ${bulan}`} nilai={<><span className="sm:hidden">{rupiahRingkas(angka.nilai)}</span><span className="max-sm:hidden">{rupiah(angka.nilai)}</span></>} ket={`${rupiah(angka.dibayar)} sudah dibayar`} baik={angka.nilai > 0 && angka.dibayar >= angka.nilai} />
@@ -206,7 +206,7 @@ export default async function Ringkasan({ searchParams }: { searchParams: Promis
               {luarMalamIni.slice(0, Math.max(0, 3 - menginap.length)).map((b, i) => (
                 <li key={`l${b.sambungan_id}-${i}`} className="flex items-baseline justify-between gap-3">
                   <span className="min-w-0 truncate font-semibold text-panel-utama">Tamu {b.nama}</span>
-                  <span className="shrink-0 text-sm">unit {b.unit}</span>
+                  <span className="shrink-0 text-sm">{b.sambungan_id ? `unit ${b.unit}` : '1 kamar'}</span>
                 </li>
               ))}
             </ul>

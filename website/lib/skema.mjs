@@ -155,6 +155,15 @@ export const SKEMA = [
   KEY sambungan_unit (kamar_id, unit)
 ) ${T}`,
 
+  // Rooms taken in the DAMPIER partner calendar per night, not counting
+  // this site's own bookings, as read at the last sync (dampier.ts).
+  `CREATE TABLE IF NOT EXISTS kalender_dampier (
+  kamar_id INT UNSIGNED NOT NULL,
+  malam DATE NOT NULL,
+  terisi TINYINT UNSIGNED NOT NULL,
+  PRIMARY KEY (kamar_id, malam)
+) ${T}`,
+
   // Nights taken on the other site, as read at the last sync. selesai is
   // the check-out day and is not a night.
   `CREATE TABLE IF NOT EXISTS kalender_luar (

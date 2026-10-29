@@ -15,6 +15,7 @@ yang berpindah hanya malam terisi. Harga, nama tamu, dan jumlah unit tidak.
 6. Ketersediaan, kalender, dan bentrok
 7. Keterbatasan tiap situs
 8. Uji dengan OTA tiruan
+9. Kalender mitra DAMPIER
 
 ## 1. Data
 
@@ -138,3 +139,43 @@ database baru. Yang diperiksa (33 pemeriksaan).
 - Buat tautan baru mematikan tautan lama, token asing 404.
 - Hapus sambungan menghapus malamnya.
 - Ponsel 390 px tanpa gulir menyamping, tanpa galat konsol.
+
+## 9. Kalender mitra DAMPIER
+
+Homestay yang juga mitra DAMPIER (thedampier.com) punya kalender mitra yang
+memuat semua kamarnya, dengan Booking.com, tamu DAMPIER, dan catatan
+pesanan offline. `lib/dampier.ts` menyambungkan situs ke kalender itu lewat
+`/api/kamar/<kunci>` DAMPIER (kalender mitra, Sambungkan OTA, Sambungkan
+website, kotak Untuk programmer website). Satu sambungan untuk semua kamar
+satu tipe bungalow, bukan per unit seperti iCal.
+
+- Alamatnya memuat kunci, jadi disimpan di baris `dampier` tabel
+  `pengaturan`, hanya dipanggil dari server, dan panel hanya menampilkan
+  empat huruf terakhirnya. Diperiksa dengan satu bacaan sebelum disimpan.
+- Kirim. Pesanan yang belum batal dan belum lewat dikirim sebagai jumlah
+  kamar tanpa nomor (`jumlahKamar`, kode pesanan sebagai `id`), tanggal
+  tutup sebagai Tanggal tutup untuk semua kamar dan dipotong per 90 malam.
+  Daftarnya dikirim utuh dengan `ganti: true` saat sidiknya berubah, tiap
+  6 jam, dan saat `pesananWebsite` di DAMPIER berbeda dari jumlah yang
+  dikirim. Telepon dan surel tamu tidak ikut.
+- Baca. `GET ?hari=400` memberi `terisi` per malam, termasuk pesanan situs
+  ini. Yang disimpan di `kalender_dampier` adalah `terisi` dikurangi kamar
+  yang dikirim situs ini untuk malam itu. Karena daftar yang dikirim dan
+  yang dikurangi sama, hitungannya tidak ganda.
+- `blokDampier()` mengubah jumlah itu menjadi blok di unit tertinggi
+  (`sambungan_id` 0, nama DAMPIER), lalu ikut dihitung `sisaKamar()`,
+  `petaUnit()`, `cariBentrok()`, dan `blokLuar()`. Unitnya hanya tempat
+  dalam hitungan, jadi kalender admin menulis "DAMPIER · 3 kamar".
+- Ekspor iCal untuk sambungan yang juga membaca situs itu tidak membawa
+  malam DAMPIER (DAMPIER sendiri mengekspor ke Booking.com), ekspor untuk
+  agen membawanya.
+- Dibaca paling sering tiap 5 menit dari `sinkronSemua()`, dan langsung
+  (`kabariDampier()`) setelah pesanan, pembayaran, atau tanggal tutup
+  berubah. Gagal baca menyimpan pesan dan mempertahankan malam terakhir.
+  `bentrok` dari jawaban kirim tampil merah di kartu.
+- Uji di Mambetron memakai DAMPIER tiruan di port 4557 yang mengikuti
+  `ketersediaanKamarSitus` dan `terimaPesananKamarSitus` DAMPIER, situs
+  dengan `SINKRON_IZINKAN_LOKAL=1`. 43 pemeriksaan, dari alamat salah,
+  kunci salah, kirim dan baca, pesanan tamu, batal, tanggal tutup, kirim
+  ulang yang hilang, bentrok, ekspor, kalender admin, DAMPIER mati, kunci
+  diganti, ponsel 390 px, sampai putus.

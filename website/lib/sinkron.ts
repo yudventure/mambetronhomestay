@@ -8,11 +8,17 @@
 // Each link has its own export, which leaves out what came in through that
 // same link. A block read from Booking.com therefore never goes back to
 // Booking.com, and two calendars cannot keep each other's old blocks alive.
+//
+// Rooms taken in the DAMPIER partner calendar (dampier.ts) count here like
+// imported nights. Links that also read a site leave them out of their
+// export, because DAMPIER sends Booking.com and the others its own nights.
 import crypto from 'crypto';
 import { baris, jalankan, satu, transaksi } from './db';
 import { daftarKamar, kamarDariId } from './data';
+import { blokDampier, sinkronDampier } from './dampier';
 import { alamatSitus, dbDiatur } from './env';
 import { bacaIcal, buatIcal, rangkai } from './ical.mjs';
+import { alamatDalam, izinkanLokal } from './jaringan';
 import type { Kamar } from './jenis';
 import { ZONA, daftarMalam, hariIni, tambahHari } from './tanggal';
 
@@ -54,14 +60,19 @@ export async function sambunganDariToken(token: string) {
 }
 
 // Imported nights overlapping [dari, sampai).
-export async function blokLuar(dari: string, sampai: string, kamarId?: number) {
-  return baris<BlokLuar>(
-    `SELECT b.sambungan_id, b.kamar_id, b.unit, b.mulai, b.selesai, b.ringkas, s.nama
-     FROM kalender_luar b JOIN kalender_sambungan s ON s.id = b.sambungan_id
-     WHERE b.mulai < ? AND b.selesai > ?${kamarId ? ' AND b.kamar_id = ?' : ''}
-     ORDER BY b.mulai`,
-    [sampai, dari, ...(kamarId ? [kamarId] : [])],
-  );
+export async function blokLuar(dari: string, sampai: string, kamarId?: number): Promise<BlokLuar[]> {
+  const [ical, kamar] = await Promise.all([
+    baris<BlokLuar>(
+      `SELECT b.sambungan_id, b.kamar_id, b.unit, b.mulai, b.selesai, b.ringkas, s.nama
+       FROM kalender_luar b JOIN kalender_sambungan s ON s.id = b.sambungan_id
+       WHERE b.mulai < ? AND b.selesai > ?${kamarId ? ' AND b.kamar_id = ?' : ''}
+       ORDER BY b.mulai`,
+      [sampai, dari, ...(kamarId ? [kamarId] : [])],
+    ),
+    daftarKamar(true),
+  ]);
+  const dampier = await blokDampier(kamar.filter((k) => !kamarId || k.id === kamarId), dari, sampai);
+  return [...ical, ...dampier].sort((a, b) => a.mulai.localeCompare(b.mulai));
 }
 
 // The link a booking site gives is checked before the server fetches it.
@@ -77,11 +88,7 @@ export function rapikanUrl(masukan: string) {
     throw new GalatSinkron('Tautan kalender tidak terbaca. Salin ulang tautan iCal dari situs pemesanan.', 'url-baca');
   }
   if (!['http:', 'https:'].includes(u.protocol)) throw new GalatSinkron('Tautan kalender harus diawali https.', 'url-https');
-  const h = u.hostname.toLowerCase().replace(/^\[|\]$/g, '');
-  const dalam = h === 'localhost' || h.endsWith('.local') || h.endsWith('.internal') || (!h.includes('.') && !h.includes(':'))
-    || /^(127|10|0)\./.test(h) || /^192\.168\./.test(h) || /^169\.254\./.test(h) || /^172\.(1[6-9]|2\d|3[01])\./.test(h)
-    || h === '::1' || /^f[cd][0-9a-f]{2}:/.test(h) || /^fe80:/.test(h);
-  if (dalam && process.env.SINKRON_IZINKAN_LOKAL !== '1') throw new GalatSinkron('Tautan kalender harus alamat internet umum.', 'url-umum');
+  if (alamatDalam(u.hostname) && !izinkanLokal()) throw new GalatSinkron('Tautan kalender harus alamat internet umum.', 'url-umum');
   if (s.length > 1000) throw new GalatSinkron('Tautan kalender terlalu panjang.', 'url-panjang');
   return u.toString();
 }
@@ -156,6 +163,7 @@ export function sinkronSemua(o: { paksa?: boolean } = {}): Promise<void> {
     );
     // a few at a time, a slow site does not hold up the others
     for (let i = 0; i < semua.length; i += 4) await Promise.all(semua.slice(i, i + 4).map(sinkronSatu));
+    await sinkronDampier({ paksa: o.paksa });
   })()
     .catch((e) => console.error('[mambetron] sinkron kalender', e))
     .finally(() => {
@@ -183,7 +191,7 @@ type PetaPakai = { langsung: Map<number, Set<string>>; luar: Map<number, Map<str
 // single unit is free throughout.
 export async function petaUnit(kamar: Pick<Kamar, 'id' | 'jumlah_unit'>, dari: string, sampai: string): Promise<PetaPakai> {
   const n = kamar.jumlah_unit;
-  const [pesanan, luar, tutup] = await Promise.all([
+  const [pesanan, ical, dampier, tutup] = await Promise.all([
     baris<{ id: number; check_in: string; check_out: string; jumlah_kamar: number }>(
       "SELECT id, check_in, check_out, jumlah_kamar FROM pesanan WHERE status <> 'batal' AND kamar_id = ? AND check_in < ? AND check_out > ? ORDER BY check_in, id",
       [kamar.id, sampai, dari],
@@ -192,11 +200,13 @@ export async function petaUnit(kamar: Pick<Kamar, 'id' | 'jumlah_unit'>, dari: s
       'SELECT sambungan_id, unit, mulai, selesai FROM kalender_luar WHERE kamar_id = ? AND mulai < ? AND selesai > ?',
       [kamar.id, sampai, dari],
     ),
+    blokDampier([kamar], dari, sampai),
     baris<{ mulai: string; akhir: string }>(
       'SELECT mulai, akhir FROM tutup WHERE (kamar_id IS NULL OR kamar_id = ?) AND mulai < ? AND akhir >= ?',
       [kamar.id, sampai, dari],
     ),
   ]);
+  const luar = [...ical, ...dampier];
   const potong = (a: string, b: string) => daftarMalam(a > dari ? a : dari, b < sampai ? b : sampai);
   const h: PetaPakai = { langsung: new Map(), luar: new Map(), tutup: new Set() };
   for (const t of tutup) for (const m of potong(t.mulai, tambahHari(t.akhir, 1))) h.tutup.add(m);
@@ -235,11 +245,13 @@ export async function petaUnit(kamar: Pick<Kamar, 'id' | 'jumlah_unit'>, dari: s
   return h;
 }
 
-// Nights a unit is taken, leaving out what came in through one link.
-function malamUnit(h: PetaPakai, unit: number, kecuali?: number) {
+// Nights a unit is taken, leaving out what came in through one link, and
+// DAMPIER's nights for a link that also reads a site (sambungan 0 is
+// DAMPIER).
+function malamUnit(h: PetaPakai, unit: number, kecuali?: number, tanpaDampier = false) {
   const malam = new Set<string>([...h.tutup, ...(h.langsung.get(unit) ?? [])]);
   for (const [m, dari] of h.luar.get(unit) ?? []) {
-    if ([...dari].some((id) => id !== kecuali)) malam.add(m);
+    if ([...dari].some((id) => id !== kecuali && !(tanpaDampier && id === 0))) malam.add(m);
   }
   return [...malam];
 }
@@ -255,7 +267,7 @@ export async function feedSambungan(token: string) {
   // a unit that no longer exists, or a hut type that was switched off, is
   // shown as taken so nobody books it elsewhere
   if (!kamar || !kamar.aktif || s.unit > kamar.jumlah_unit) malam = daftarMalam(hari, sampai);
-  else malam = malamUnit(await petaUnit(kamar, hari, sampai), s.unit, s.id);
+  else malam = malamUnit(await petaUnit(kamar, hari, sampai), s.unit, s.id, Boolean(s.url));
   const host = (alamatSitus().replace(/^https?:\/\//, '') || 'mambetronhomestay.com').replace(/\/.*/, '');
   const namaSitus = host.split('.')[0];
   return buatIcal({
@@ -274,7 +286,7 @@ export async function cariBentrok(dari: string, sampai: string): Promise<Bentrok
   const kamar = await daftarKamar(true);
   const hasil: Bentrok[] = [];
   for (const k of kamar) {
-    const [pesanan, luar] = await Promise.all([
+    const [pesanan, ical, dampier] = await Promise.all([
       baris<{ check_in: string; check_out: string; jumlah_kamar: number }>(
         "SELECT check_in, check_out, jumlah_kamar FROM pesanan WHERE status <> 'batal' AND kamar_id = ? AND check_in < ? AND check_out > ?",
         [k.id, sampai, dari],
@@ -283,7 +295,9 @@ export async function cariBentrok(dari: string, sampai: string): Promise<Bentrok
         'SELECT unit, mulai, selesai FROM kalender_luar WHERE kamar_id = ? AND mulai < ? AND selesai > ?',
         [k.id, sampai, dari],
       ),
+      blokDampier([k], dari, sampai),
     ]);
+    const luar = [...ical, ...dampier];
     if (!luar.length) continue;
     const potong = (a: string, b: string) => daftarMalam(a > dari ? a : dari, b < sampai ? b : sampai);
     const sini = new Map<string, number>();

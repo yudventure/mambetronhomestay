@@ -84,7 +84,9 @@ CREATE TABLE IF NOT EXISTS pesanan (
   total INT UNSIGNED NOT NULL DEFAULT 0,
   dp INT UNSIGNED NOT NULL DEFAULT 0,
   dibayar INT UNSIGNED NOT NULL DEFAULT 0,
+  bayar_online TEXT NULL,
   rincian LONGTEXT NULL,
+  paket TEXT NULL,
   bahasa CHAR(2) NOT NULL DEFAULT 'id',
   status VARCHAR(16) NOT NULL DEFAULT 'menunggu',
   sumber VARCHAR(16) NOT NULL DEFAULT 'situs',
@@ -142,6 +144,13 @@ CREATE TABLE IF NOT EXISTS kalender_sambungan (
   dibuat TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   UNIQUE KEY sambungan_token (token),
   KEY sambungan_unit (kamar_id, unit)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS kalender_dampier (
+  kamar_id INT UNSIGNED NOT NULL,
+  malam DATE NOT NULL,
+  terisi TINYINT UNSIGNED NOT NULL,
+  PRIMARY KEY (kamar_id, malam)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS kalender_luar (

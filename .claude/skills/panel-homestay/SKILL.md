@@ -1,6 +1,6 @@
 ---
 name: panel-homestay
-description: Panel pengelola (dashboard admin) homestay bergaya meja pengelola DAMPIER, dibangun untuk Mambetron Homestay dan siap dipakai ulang di situs homestay lain milik pemilik yang sama. Bilah atas dan menu samping putih, kartu HARI INI, kartu sapaan dengan jam WIT, enam angka ringkasan, statistik pengunjung tanpa cookie, meja pesanan dengan cari dan saring status, kalender bulan dengan tamu, unit terisi, dan tanggal tutup, sinkron kalender iCal per unit dengan Booking.com, Airbnb, Agoda, dan agen perjalanan, lembar menu ponsel, tema lewat enam token warna. Pakai SETIAP KALI pemilik meminta dashboard admin, panel pengelola, "admin seperti DAMPIER" atau "seperti Mambetron", meja pesanan, kalender pemesanan, sinkron kalender OTA atau iCal, statistik pengunjung di panel, atau membangun dan menata ulang admin untuk homestay, penginapan, guesthouse, dive center, atau situs pemesanan lain, bahkan kalau kata "skill" tidak disebut.
+description: Panel pengelola (dashboard admin) homestay bergaya meja pengelola DAMPIER, dibangun untuk Mambetron Homestay dan siap dipakai ulang di situs homestay lain milik pemilik yang sama. Bilah atas dan menu samping putih, kartu HARI INI, kartu sapaan dengan jam WIT, enam angka ringkasan, statistik pengunjung tanpa cookie, meja pesanan dengan cari dan saring status, kalender bulan dengan tamu, unit terisi, dan tanggal tutup, sinkron kalender iCal per unit dengan Booking.com, Airbnb, Agoda, dan agen perjalanan, sambungan API ke kalender mitra DAMPIER, lembar menu ponsel, tema lewat enam token warna. Pakai SETIAP KALI pemilik meminta dashboard admin, panel pengelola, "admin seperti DAMPIER" atau "seperti Mambetron", meja pesanan, kalender pemesanan, sinkron kalender OTA atau iCal, statistik pengunjung di panel, atau membangun dan menata ulang admin untuk homestay, penginapan, guesthouse, dive center, atau situs pemesanan lain, bahkan kalau kata "skill" tidak disebut.
 ---
 
 # Panel pengelola homestay
@@ -27,13 +27,14 @@ tata letaknya.
 | `assets/panel-homestay/app/admin/(panel)/pesanan/page.tsx` | Daftar pesanan dengan pil status dan "Hanya yang akan datang". |
 | `assets/panel-homestay/lib/statistik.ts`, `app/api/kunjungan/route.ts`, `components/Kunjungan.tsx` | Penghitung kunjungan milik situs sendiri. |
 | `assets/panel-homestay/lib/sinkron.ts`, `lib/ical.mjs`, `app/ical/[berkas]/route.ts`, `app/admin/(panel)/sinkron/page.tsx`, `instrumentation.ts` | Sinkron kalender iCal per unit dengan OTA dan agen. Baca, simpan, bagi unit, ekspor tanpa pantulan, cari bentrok. Uji `node --test lib/*.test.mjs`. |
+| `assets/panel-homestay/lib/dampier.ts`, `lib/jaringan.ts` | Sambungan ke kalender mitra DAMPIER lewat `/api/kamar/<kunci>`. Kirim pesanan dan tanggal tutup, baca kamar terisi per malam, kartu Kalender mitra DAMPIER di Sinkron OTA. |
 | `assets/panel-homestay/lib/*.ts`, `database/skema.sql`, `app/globals.css` | Pendukung dari Mambetron (tanggal, format, kait, data, ikon, skema) sebagai acuan. |
 | `scripts/cek-token.mjs` | Memeriksa enam warna panel. Kontras setiap pasangan yang muncul di panel, dan menolak krem keabuan. |
 | `scripts/perbarui-aset.sh` | Menyalin ulang semua berkas di atas dari repo Mambetron setelah panel di sana berubah. |
 | `references/anatomi.md` | Rincian tiap bagian panel, ukuran, perilaku, dan alasannya. |
 | `references/memasang.md` | Langkah memasang di situs homestay baru, kontrak data, daftar yang wajib diganti per homestay, uji Playwright. |
 | `references/tema.md` | Cara memilih enam warna panel dari logo homestay baru dan memeriksanya. |
-| `references/sinkron.md` | Cara kerja sinkron kalender OTA, data, pembagian unit, jadwal baca, uji dengan OTA tiruan. |
+| `references/sinkron.md` | Cara kerja sinkron kalender OTA, data, pembagian unit, jadwal baca, uji dengan OTA tiruan, dan sambungan kalender mitra DAMPIER (bagian 9). |
 | `references/aturan-pemilik.md` | Aturan tulisan, tata letak, ponsel, dan laporan yang berlaku di semua situs pemilik. |
 
 ## Memasang di situs baru (ringkas)

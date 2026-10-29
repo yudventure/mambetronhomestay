@@ -192,6 +192,22 @@ Hal yang perlu diketahui tentang tiap situs, sesuai keadaan Oktober 2026.
 
 Tabelnya `kalender_sambungan` (tautan per unit) dan `kalender_luar` (malam yang terbaca dari situs lain). Pembaca iCal ada di `lib/ical.mjs` dengan uji `npm run uji`, aturan sinkron di `lib/sinkron.ts`, tautan ekspor di `app/ical/[berkas]/route.ts`.
 
+## Kalender mitra DAMPIER
+
+Kalender mitra Mambetron di DAMPIER memuat ketujuh kamar dengan pesanan Booking.com, tamu yang memesan di DAMPIER, dan pesanan yang dicatat sendiri di sana. Situs ini tersambung ke kalender itu lewat API, sekali untuk semua kamar. Tamu tetap memesan dan membayar di situs ini, tidak dibawa ke DAMPIER.
+
+Cara menyambung. Buka kalender mitra Mambetron di DAMPIER, ketuk Sambungkan website di kartu Sambungkan OTA, lalu salin alamat API di kotak Untuk programmer website (diawali `https://thedampier.com/api/kamar/`). Tempel di panel situs ini, menu Sinkron OTA, kartu Kalender mitra DAMPIER, lalu ketuk Sambungkan. Situs membaca DAMPIER sekali sebelum menyimpan alamatnya, jadi alamat yang salah langsung ditolak. Tautan iCal per kamar dari kotak yang sama juga diterima dan diubah menjadi alamat API.
+
+Yang dikirim ke DAMPIER. Semua pesanan bungalow itu yang belum batal dan belum lewat, dengan kode pesanan sebagai pengenal, tanggal tiba dan pulang, jumlah bungalow, jumlah tamu, nama, negara, total, status bayar, dan rencana tiba. Nomor WhatsApp dan surel tamu tidak dikirim. Tanggal tutup dikirim sebagai Tanggal tutup untuk semua kamar. Daftarnya dikirim utuh setiap kali berubah (pesanan baru, dibayar, diubah, dibatalkan, dihapus, tanggal tutup ditambah atau dihapus), sekali lagi setiap 6 jam, dan sekali lagi bila jumlah pesanan website di DAMPIER berbeda dengan yang dikirim. Di DAMPIER pesanan ini tampil sebagai Website sendiri dan ikut menutup kamarnya untuk Booking.com dan tamu DAMPIER. Pesanan situs ini yang dulu dicatat manual di kalender DAMPIER perlu dihapus di sana supaya tidak tercatat dua kali.
+
+Yang dibaca dari DAMPIER. Jumlah kamar yang terisi setiap malam untuk 400 hari ke depan, dikurangi pesanan situs ini sendiri, disimpan di tabel `kalender_dampier`. Jumlah itu menutup bungalow di situs ini seperti malam dari OTA, dan tampil di kalender panel sebagai DAMPIER dengan jumlah kamarnya. DAMPIER dibaca setiap 15 menit selama aplikasi menyala, paling sering tiap 5 menit saat halaman pesan atau panel dibuka, sebelum pesanan baru disimpan, dan saat Sinkronkan sekarang diketuk. Bila DAMPIER tidak bisa dihubungi atau kuncinya sudah diganti, kartunya memberi tahu dan malam dari bacaan terakhir tetap ditutup.
+
+Bila DAMPIER melaporkan pesanan situs ini bertemu pesanan lain di malam yang sama, kodenya tampil merah di kartu Kalender mitra DAMPIER. Pindahkan pesanan lain ke kamar yang kosong di kalender DAMPIER, atau hubungi tamunya.
+
+Booking.com yang sudah tersambung di DAMPIER tidak perlu disambung lagi lewat iCal di halaman Sinkron OTA situs ini. Bila keduanya tersambung, satu pesanan Booking.com terhitung dua kali dan menutup dua unit. Tautan ekspor untuk situs yang juga dibaca (dua arah) tidak membawa malam dari DAMPIER supaya blokir tidak berputar, sedangkan tautan untuk agen perjalanan membawanya.
+
+Alamat API memuat kunci kalender Mambetron, jadi disimpan sendiri di baris `dampier` tabel `pengaturan`, tidak di repo atau environment, hanya dipakai server situs, dan panel hanya menampilkan ujungnya. Bila kunci diganti di DAMPIER, tempel alamat baru lewat Ganti alamat. Putuskan menghapus alamat dan malam dari DAMPIER di situs ini, pesanan yang sudah terkirim tetap ada di DAMPIER sampai dihapus di sana. `SINKRON_IZINKAN_LOKAL=1` hanya untuk mencoba di komputer sendiri dengan DAMPIER tiruan, jangan diisi di hPanel.
+
 ## Video tentang kami
 
 Foto di samping teks tentang kami bisa diganti video. Isi tautannya di Isi situs, bagian halaman utama, isian Video tentang kami, paling banyak tiga. Tautan yang dikenali adalah YouTube (video biasa dan Shorts), Instagram (post dan Reels), dan TikTok, termasuk tautan pendek `vm.tiktok.com`. Di atas isian itu panel menulis platform tiap tautan, atau memberi tahu bila tautannya belum dikenali. Bawaannya satu video TikTok dari DAMPIER media yang dikirim pemilik. Video itu dipasang sekali pada situs yang belum punya tautan video, dan bila semua video dihapus di panel, bagian ini kembali memakai foto.
