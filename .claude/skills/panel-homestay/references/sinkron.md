@@ -163,6 +163,14 @@ DAMPIER, dan situs hanya satu saluran lagi dari kalender itu.
 - Alamatnya memuat kunci, jadi disimpan di baris `dampier` tabel
   `pengaturan`, hanya dipanggil dari server, dan panel hanya menampilkan
   empat huruf terakhirnya. Diperiksa dengan satu bacaan sebelum disimpan.
+- Tautan kamar DAMPIER (`/api/kamar/<kunci>/<nomor>.ics`, dari lembar
+  Sambungkan website) yang ditempel di formulir iCal per unit atau sudah
+  tersimpan di sana memuat kunci semua kamar. `lewatDampier` (aksi) dan
+  `sambungDariIcal()` (awal `sinkronSemua()`) memakainya untuk menyambung
+  API, supaya malam penuh di DAMPIER tampil penuh. Tautan itu tetap tersimpan
+  dan diam, putus ikut menghapusnya. Ekspor satu kamar dari Sambungkan OTA
+  DAMPIER (`/api/kalender-mitra/ics/`) tanpa kunci, kartu memberi tahu.
+  Diuji `uji-dampier-ical.mjs`, 17 pemeriksaan.
 - Kirim. Pesanan yang belum batal dan belum lewat dikirim sebagai jumlah
   kamar tanpa nomor (`jumlahKamar`, kode pesanan sebagai `id`), tanggal
   tutup sebagai Tanggal tutup untuk semua kamar dan dipotong per 90 malam.

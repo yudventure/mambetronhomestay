@@ -202,7 +202,7 @@ function malamKita(k: Kiriman[]) {
   return m;
 }
 
-type Simpan = { jalan?: Promise<unknown>; lagi?: boolean };
+type Simpan = { jalan?: Promise<unknown>; lagi?: boolean; gagalPindah?: number };
 const g = globalThis as unknown as { __mambetronDampier?: Simpan };
 const S: Simpan = (g.__mambetronDampier ??= {});
 
@@ -283,6 +283,44 @@ export function kabariDampier() {
   void sinkronDampier({ segera: true });
 }
 
+// The API address inside a DAMPIER link, or null. DAMPIER's sheet Sambungkan
+// website gives one iCal link per room, /api/kamar/<key>/<room>.ics, made to
+// be pasted into the website one room at a time. Its key opens every room.
+export function apiDariTautan(url: string) {
+  try {
+    return rapikanAlamatDampier(url);
+  } catch {
+    return null;
+  }
+}
+
+// DAMPIER's export for one OTA room, /api/kalender-mitra/ics/<token>.ics. It
+// carries no key, so only that room can be read through it.
+export const tautanSatuKamarDampier = (url: string) => /\/api\/kalender-mitra\/ics\/[^/]+\.ics$/i.test(url.split('?')[0]);
+
+// A DAMPIER room link saved as an iCal link on one unit, before this site
+// knew DAMPIER, reads only that room, so nights full at DAMPIER never look
+// full here. Its key connects the site to DAMPIER for every room instead,
+// and the link goes quiet with the other iCal links (dampierAktif). Tried
+// again ten minutes after a failure.
+export async function sambungDariIcal() {
+  if (!dbDiatur() || (S.gagalPindah && Date.now() - S.gagalPindah < 10 * 60_000) || (await dampierAktif())) return false;
+  const daftar = await baris<{ kamar_id: number; url: string }>("SELECT kamar_id, url FROM kalender_sambungan WHERE url LIKE '%/api/kamar/%' ORDER BY id").catch(() => []);
+  for (const r of daftar) {
+    const api = apiDariTautan(r.url);
+    if (!api) continue;
+    try {
+      await simpanAlamatDampier(api, r.kamar_id, await ujiAlamatDampier(api));
+      return true;
+    } catch (e) {
+      S.gagalPindah = Date.now();
+      if (!(e instanceof GalatDampier)) console.error('[mambetron] sambung DAMPIER dari iCal', e);
+      return false;
+    }
+  }
+  return false;
+}
+
 export async function simpanAlamatDampier(api: string, kamarId: number, b: Bacaan) {
   await tulisSimpanan({ api, kamarId, nama: b.nama, kamar: b.kamar, pesananWebsite: b.pesananWebsite });
   // nights read through the site's own iCal links reach here through DAMPIER now
@@ -290,10 +328,17 @@ export async function simpanAlamatDampier(api: string, kamarId: number, b: Bacaa
   await sinkronDampier({ paksa: true });
 }
 
-// The site's own iCal links, if any, are read again at once.
+// The site's own iCal links, if any, are read again at once. DAMPIER room
+// links saved among them go too, or they would connect DAMPIER again.
 export async function putuskanDampier() {
   await jalankan("DELETE FROM pengaturan WHERE kunci = 'dampier'");
   await jalankan('DELETE FROM kalender_dampier');
+  const dampier = (await baris<{ id: number; url: string }>("SELECT id, url FROM kalender_sambungan WHERE url LIKE '%/api/kamar/%'"))
+    .filter((x) => apiDariTautan(x.url)).map((x) => x.id);
+  if (dampier.length) {
+    await jalankan('DELETE FROM kalender_luar WHERE sambungan_id IN (?)', [dampier]);
+    await jalankan('DELETE FROM kalender_sambungan WHERE id IN (?)', [dampier]);
+  }
   await jalankan('UPDATE kalender_sambungan SET dicoba = NULL');
 }
 

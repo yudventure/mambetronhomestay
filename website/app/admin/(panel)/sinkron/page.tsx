@@ -5,7 +5,7 @@ import Kabar, { JudulAdmin } from '@/components/admin/Kabar';
 import TombolSalin from '@/components/admin/TombolSalin';
 import TombolYakin from '@/components/admin/TombolYakin';
 import { gantiTautanSambungan, hapusSambungan, hapusSambunganLama, putusDampier, sambungDampier, sinkronkanSekarang, tambahSambungan, ubahSambungan } from '@/app/admin/aksi';
-import { statusDampier, type StatusDampier } from '@/lib/dampier';
+import { apiDariTautan, statusDampier, tautanSatuKamarDampier, type StatusDampier } from '@/lib/dampier';
 import { daftarKamar } from '@/lib/data';
 import type { Kamar } from '@/lib/jenis';
 import { alamatSitus } from '@/lib/env';
@@ -118,7 +118,7 @@ function FormDampier({ kamar, tombol, d }: { kamar: Kamar[]; tombol: string; d: 
   );
 }
 
-function KartuDampier({ d, kamar, lama }: { d: StatusDampier | null; kamar: Kamar[]; lama: number }) {
+function KartuDampier({ d, kamar, lama, satuKamar }: { d: StatusDampier | null; kamar: Kamar[]; lama: number; satuKamar: Sambungan[] }) {
   if (!d) {
     return (
       <section id="dampier" className="kartu mb-6 scroll-mt-28 p-5 sm:p-7">
@@ -135,6 +135,9 @@ function KartuDampier({ d, kamar, lama }: { d: StatusDampier | null; kamar: Kama
           <li className="flex gap-3"><span className="inline-flex size-7 shrink-0 items-center justify-center rounded-full bg-panel-lembut text-sm font-bold">2</span>Di kotak Untuk programmer website, ketuk Salin di samping alamat API.</li>
           <li className="flex gap-3"><span className="inline-flex size-7 shrink-0 items-center justify-center rounded-full bg-panel-lembut text-sm font-bold">3</span>Tempel alamatnya di bawah, lalu ketuk Sambungkan.</li>
         </ol>
+        {satuKamar.map((x) => (
+          <p key={x.id} className="mt-4 rounded-xl bg-pasir px-4 py-3 text-sm text-laut">Sambungan {x.nama} di unit {x.unit} memakai tautan satu kamar dari DAMPIER, jadi hanya unit itu yang terbaca dan malam yang penuh di DAMPIER belum tampil penuh di sini. Tempel alamat API di bawah supaya semua kamar terbaca sekaligus.</p>
+        ))}
         <FormDampier kamar={kamar} tombol="Sambungkan" d={d} />
       </section>
     );
@@ -210,7 +213,7 @@ function KartuDampier({ d, kamar, lama }: { d: StatusDampier | null; kamar: Kama
         <p className="mt-3 text-sm text-abu">Pakai ini bila kunci diganti di DAMPIER, atau untuk memindahkan sambungan ke bungalow lain.</p>
         <FormDampier kamar={kamar} tombol="Simpan alamat baru" d={d} />
         <form action={putusDampier} className="mt-4">
-          <TombolYakin tanya="Putuskan kalender DAMPIER? Kamar yang terisi di DAMPIER tidak lagi ditutup di sini. Pesanan yang sudah terkirim tetap ada di DAMPIER sampai dihapus di sana.">
+          <TombolYakin tanya="Putuskan kalender DAMPIER? Kamar yang terisi di DAMPIER tidak lagi ditutup di sini, dan tautan kamar DAMPIER yang tersimpan di sini ikut dihapus. Pesanan yang sudah terkirim tetap ada di DAMPIER sampai dihapus di sana.">
             <Ikon nama="sampah" className="size-4" /> Putuskan
           </TombolYakin>
         </form>
@@ -265,11 +268,18 @@ export default async function HalamanSinkron({ searchParams }: { searchParams: P
         'galat:dampier-bentuk': 'Jawaban DAMPIER tidak dikenali. Pastikan yang disalin alamat API, bukan tautan kalender mitra.',
         'galat:dampier-jawab': 'DAMPIER menolak sambungan ini. Coba salin ulang alamat API-nya.',
         'ok:lama': 'Sambungan iCal lama dihapus. OTA tetap tersambung lewat DAMPIER.',
+        'ok:dampier-dikenali': 'Tautan itu dari DAMPIER. Semua kamar langsung tersambung lewat kalender DAMPIER, tanpa tautan per unit.',
       }} />
 
       <datalist id="saran-situs">{SARAN.map((x) => <option key={x} value={x} />)}</datalist>
 
-      <KartuDampier d={dampier} kamar={kamar} lama={dampier ? sambungan.length : 0} />
+      <KartuDampier
+        d={dampier}
+        kamar={kamar}
+        // DAMPIER's own room links stay as they are, the others are from before DAMPIER
+        lama={dampier ? sambungan.filter((x) => !apiDariTautan(x.url) && !tautanSatuKamarDampier(x.url)).length : 0}
+        satuKamar={sambungan.filter((x) => tautanSatuKamarDampier(x.url))}
+      />
 
       {bentrok.length > 0 && (
         <section className="mb-6 rounded-[1.5rem] bg-[#fde3dc] p-5 sm:p-6" role="alert">
@@ -292,6 +302,7 @@ export default async function HalamanSinkron({ searchParams }: { searchParams: P
           <p className="label-kecil">OTA</p>
           <h2 className="mt-1 text-[1.6rem] text-panel-utama">Booking.com dan OTA lain diatur di DAMPIER</h2>
           <p className="mt-2 max-w-3xl text-[0.9375rem] text-panel-utama/85">Booking.com, Airbnb, Agoda, Traveloka, tiket.com, atau channel manager lain disambungkan per kamar di kalender mitra DAMPIER, kartu Sambungkan OTA. Website ini tersambung ke kalender yang sama, jadi tidak ada lagi yang perlu disambung di sini.</p>
+          <p className="mt-2 max-w-3xl text-[0.9375rem] text-panel-utama/85">Tautan per kamar di lembar Sambungkan website DAMPIER tidak perlu ditempel, di sini maupun di sana. Sambungan ini sudah membaca semua kamar dan mengirim pesanan website ke DAMPIER.</p>
         </section>
       ) : (<>
       <div className="mt-10 mb-4">

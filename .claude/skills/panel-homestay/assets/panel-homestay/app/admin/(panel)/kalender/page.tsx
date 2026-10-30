@@ -112,8 +112,9 @@ export default async function KalenderAdmin({ searchParams }: { searchParams: Pr
             const penuh = penuhDi(d);
             const terisi = terisiSemua(d);
             const butir = [
-              ...(penuh ? [{ k: 'penuh', el: <span className="block truncate rounded-md bg-panel-lembut px-1.5 py-0.5 font-semibold text-panel-utama">{namaPenuh}</span> }] : []),
-              ...tt.map((t) => ({ k: `t${t.id}`, el: <span className="block truncate rounded-md bg-[#fde3dc] px-1.5 py-0.5 text-merah">Tutup{t.alasan ? ` · ${t.alasan}` : ''}</span> })),
+              // a full night is red, like Full on the guest calendar
+              ...(penuh ? [{ k: 'penuh', el: <span className="block truncate rounded-md bg-merah px-1.5 py-0.5 font-semibold text-white">{namaPenuh}</span> }] : []),
+              ...tt.map((t) => ({ k: `t${t.id}`, el: <span className={`block truncate rounded-md px-1.5 py-0.5 text-merah ${penuh ? 'bg-white' : 'bg-[#fde3dc]'}`}>Tutup{t.alasan ? ` · ${t.alasan}` : ''}</span> })),
               ...tamu.map((p) => ({
                 k: `p${p.id}`,
                 el: <span className="flex items-center gap-1.5 truncate rounded-md bg-panel-latar px-1.5 py-0.5 text-panel-utama/90"><span className={`size-1.5 shrink-0 rounded-full ${titik(p)}`} /><span className="truncate">{satuJenis ? p.nama : `${p.kamar_nama} · ${p.nama}`}{p.jumlah_kamar > 1 ? ` ×${p.jumlah_kamar}` : ''}</span></span>,
@@ -128,7 +129,7 @@ export default async function KalenderAdmin({ searchParams }: { searchParams: Pr
               <li key={d}>
                 <Link href={tautan(bulan, `&tgl=${d}`)} scroll={false}
                   aria-label={`${tanggal(d, 'id', 'panjang')}, ${terisi} dari ${totalUnit} unit terisi, ${tamu.length} pesanan menginap${situsLain.length ? `, terisi dari ${situsLain.map(([, x]) => x.nama).join(' dan ')}` : ''}${penuh ? ', penuh' : ''}${tt.length ? ', ada tanggal tutup' : ''}`}
-                  className={`flex h-full min-h-[4.25rem] min-w-0 flex-col rounded-xl p-1.5 transition-shadow sm:min-h-[8.75rem] sm:rounded-2xl sm:p-2.5 ${diBulan ? 'bg-white' : 'bg-white/50'} ${d === pilih ? 'ring-2 ring-panel-utama' : 'hover:shadow-tipis'}`}>
+                  className={`flex h-full min-h-[4.25rem] min-w-0 flex-col rounded-xl p-1.5 transition-shadow sm:min-h-[8.75rem] sm:rounded-2xl sm:p-2.5 ${diBulan ? (penuh ? 'bg-[#fde3dc]' : 'bg-white') : 'bg-white/50'} ${d === pilih ? 'ring-2 ring-panel-utama' : 'hover:shadow-tipis'}`}>
                   <span className="flex items-center justify-between gap-1">
                     <span className={`inline-flex size-7 items-center justify-center rounded-full text-sm font-semibold sm:size-8 sm:text-base ${d === hari ? 'bg-panel-utama text-white' : diBulan ? 'text-panel-utama' : 'text-abu/60'}`}>{Number(d.slice(8))}</span>
                     {terisi > 0 && !penuh && totalUnit > 1 && <span className="hidden text-xs font-semibold text-abu tabular-nums sm:inline">{terisi}/{totalUnit}</span>}
@@ -139,7 +140,7 @@ export default async function KalenderAdmin({ searchParams }: { searchParams: Pr
                   </span>
                   {butir.length > 0 && (
                     <span className="mt-auto flex flex-wrap gap-0.5 sm:hidden" aria-hidden>
-                      {penuh && <span className="h-1.5 w-full rounded-full bg-panel-utama" />}
+                      {penuh && <span className="h-1.5 w-full rounded-full bg-merah" />}
                       {!penuh && tamu.slice(0, 4).map((p) => <span key={p.id} className={`size-1.5 rounded-full ${titik(p)}`} />)}
                       {!penuh && situsLain.slice(0, 3).map(([kunci]) => <span key={kunci} className={`size-1.5 rounded-full ${UNGU}`} />)}
                       {!penuh && tt.length > 0 && <span className="size-1.5 rounded-full bg-merah" />}
@@ -154,7 +155,7 @@ export default async function KalenderAdmin({ searchParams }: { searchParams: Pr
           <li className="inline-flex items-center gap-2"><span className="size-2 rounded-full bg-panel-aksen" />Dikonfirmasi atau lunas</li>
           <li className="inline-flex items-center gap-2"><span className="size-2 rounded-full bg-senja" />Menunggu pembayaran</li>
           <li className="inline-flex items-center gap-2"><span className={`size-2 rounded-full ${UNGU}`} />Terisi dari OTA</li>
-          <li className="inline-flex items-center gap-2"><span className="h-2 w-4 rounded-full bg-panel-lembut ring-1 ring-panel-utama/20 max-sm:h-1.5 max-sm:bg-panel-utama max-sm:ring-0" />Semua bungalow penuh</li>
+          <li className="inline-flex items-center gap-2"><span className="h-2 w-4 rounded-full bg-merah max-sm:h-1.5" />Semua bungalow penuh</li>
           <li className="inline-flex items-center gap-2"><span className="h-2 w-4 rounded-full bg-[#fde3dc] max-sm:size-2 max-sm:bg-merah" />Tutup</li>
         </ul>
       </div>

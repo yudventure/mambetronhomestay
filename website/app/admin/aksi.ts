@@ -14,7 +14,7 @@ import { tanggal } from '@/lib/format';
 import { alamatPengunjung, bolehMencoba, buatSesi, catatGagal, hapusSesi, lupakanGagal, sandiCocok, sandiDiatur, wajibMasuk } from '@/lib/sesi';
 import { daftarMalam, sahTanggal, selisihHari } from '@/lib/tanggal';
 import { GalatSinkron, buatToken, rapikanUrl, sinkronSatu, sinkronSemua, type Sambungan } from '@/lib/sinkron';
-import { GalatDampier, kabariDampier, putuskanDampier, rapikanAlamatDampier, simpanAlamatDampier, ujiAlamatDampier } from '@/lib/dampier';
+import { GalatDampier, apiDariTautan, kabariDampier, putuskanDampier, rapikanAlamatDampier, simpanAlamatDampier, ujiAlamatDampier } from '@/lib/dampier';
 import { GalatMidtrans, aturTampilMidtrans, bentukClient, bentukServer, hapusKunciMidtrans, simpanKunciMidtrans, ujiKunciMidtrans } from '@/lib/midtrans';
 
 // line breaks from a textarea arrive as CRLF, kept as plain LF
@@ -279,6 +279,23 @@ const urlSambungan = (fd: FormData) => {
   }
 };
 
+// A room link from DAMPIER's sheet Sambungkan website carries the key for
+// every room, so it connects the whole homestay through DAMPIER instead of
+// one unit (lib/dampier.ts). Returns only when the link is not DAMPIER's.
+async function lewatDampier(fd: FormData, kamarId: number) {
+  const api = apiDariTautan(teks(fd, 'url', 1200));
+  if (!api) return;
+  let galat = '';
+  try {
+    await simpanAlamatDampier(api, kamarId, await ujiAlamatDampier(api));
+  } catch (e) {
+    galat = e instanceof GalatDampier ? e.kode : 'jaringan';
+  }
+  if (galat) redirect(`/admin/sinkron?galat=dampier-${galat}#dampier`);
+  segarkan();
+  redirect('/admin/sinkron?ok=dampier-dikenali#dampier');
+}
+
 export async function tambahSambungan(fd: FormData) {
   await wajibMasuk();
   // the unit picker sends "kamar_id-unit"
@@ -287,6 +304,7 @@ export async function tambahSambungan(fd: FormData) {
   const km = await kamarDariId(kamarId);
   if (!km || unit < 1 || unit > km.jumlah_unit) redirect('/admin/sinkron?galat=unit');
   if (!nama) redirect('/admin/sinkron?galat=nama');
+  await lewatDampier(fd, kamarId);
   const u = urlSambungan(fd);
   if ('galat' in u) redirect(`/admin/sinkron?galat=${u.galat}`);
   const r = await jalankan('INSERT INTO kalender_sambungan (kamar_id, unit, nama, url, token) VALUES (?, ?, ?, ?, ?)', [kamarId, unit, nama, u.url, buatToken()]);
@@ -302,6 +320,7 @@ export async function ubahSambungan(fd: FormData) {
   if (!s) redirect('/admin/sinkron');
   const nama = teks(fd, 'nama', 80);
   if (!nama) redirect(`/admin/sinkron?galat=nama#sambungan-${id}`);
+  await lewatDampier(fd, s.kamar_id);
   const u = urlSambungan(fd);
   if ('galat' in u) redirect(`/admin/sinkron?galat=${u.galat}#sambungan-${id}`);
   await jalankan('UPDATE kalender_sambungan SET nama = ?, url = ? WHERE id = ?', [nama, u.url, id]);

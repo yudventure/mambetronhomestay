@@ -17,7 +17,7 @@
 import crypto from 'crypto';
 import { baris, jalankan, satu, transaksi } from './db';
 import { daftarKamar, kamarDariId } from './data';
-import { blokDampier, dampierAktif, sinkronDampier } from './dampier';
+import { blokDampier, dampierAktif, sambungDariIcal, sinkronDampier } from './dampier';
 import { alamatSitus, dbDiatur } from './env';
 import { bacaIcal, buatIcal, rangkai } from './ical.mjs';
 import { alamatDalam, izinkanLokal } from './jaringan';
@@ -159,6 +159,8 @@ export function sinkronSemua(o: { paksa?: boolean } = {}): Promise<void> {
   if (!dbDiatur()) return Promise.resolve();
   if (S.jalan) return o.paksa ? S.jalan.then((): Promise<void> => sinkronSemua(o)) : S.jalan;
   S.jalan = (async () => {
+    // a DAMPIER room link among the iCal links connects every room at once
+    await sambungDariIcal();
     const semua = (await dampierAktif()) ? [] : await baris<Sambungan>(
       `SELECT id, kamar_id, unit, url FROM kalender_sambungan
        WHERE url <> ''${o.paksa ? '' : ` AND (dicoba IS NULL OR dicoba < UTC_TIMESTAMP() - INTERVAL ${SEGAR_MENIT} MINUTE)`}`,
