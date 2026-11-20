@@ -6,7 +6,7 @@ import { ambilSitus, daftarKamar, daftarLayanan, gambarCadangan, pemesananAktif,
 import { pastikanSegar } from '@/lib/sinkron';
 import { daftarPaket } from '@/lib/paket';
 import { kamus } from '@/lib/kamus';
-import { tautanWa } from '@/lib/format';
+import { dataPengelola, tautanWa } from '@/lib/format';
 import { kursAktif } from '@/lib/uang-server';
 import { daftarMalam, hariIni, sahTanggal, selisihHari, tambahHari } from '@/lib/tanggal';
 
@@ -80,6 +80,7 @@ export default async function Pesan({ searchParams }: { searchParams: Promise<Re
         mula={{ kamarId: km?.id ?? 0, masuk, keluar, dewasa: Math.min(tamu, kap), anak: 0, jumlahKamar }}
         ditolak={ditolak}
         dariTautan={dariTautan}
+        pengelola={dataPengelola(situs, b)}
       />
     </Bagian>
   );

@@ -11,9 +11,10 @@ import type { Bahasa, Kamar, Layanan } from '@/lib/jenis';
 import { KAMUS } from '@/lib/kamus';
 import { SATUAN } from '@/lib/satuan.mjs';
 import { hitungHarga } from '@/lib/harga';
-import { dwi, pilih, rentangTanggal, rupiah, tanggal } from '@/lib/format';
+import { dwi, pilih, rentangTanggal, rupiah, tanggal, type DataPengelola } from '@/lib/format';
 import type { Paket } from '@/lib/paket';
 import { bacaRencana, simpanRencana } from '@/lib/rencana';
+import Pengelola from './Pengelola';
 import Perkiraan from './Perkiraan';
 import type { Kurs } from '@/lib/uang';
 import { daftarMalam, selisihHari } from '@/lib/tanggal';
@@ -36,6 +37,8 @@ type Props = {
   // dates that came in the link and could not be kept, null when none came
   ditolak: { masuk: string; keluar: string } | null;
   dariTautan: boolean;
+  // "Managed by thedampier.com" under the send button
+  pengelola?: DataPengelola | null;
 };
 
 function Kotak({ judul, children }: { judul: string; children: React.ReactNode }) {
@@ -71,7 +74,7 @@ function Hitung({ label, ket, nilai, min, maks, ubah, kurang, tambah }: {
   );
 }
 
-export default function FormPesan({ b, kamar, layanan, sisa, awal, akhir, dpPersen, paket, aktif, wa, kurs, mula, ditolak, dariTautan }: Props) {
+export default function FormPesan({ b, kamar, layanan, sisa, awal, akhir, dpPersen, paket, aktif, wa, kurs, mula, ditolak, dariTautan, pengelola }: Props) {
   const k = KAMUS[b];
   const f = k.form;
   const [hasil, aksi, sedang] = useActionState<HasilKirim, FormData>(kirimPesanan, { galat: '' });
@@ -395,6 +398,7 @@ export default function FormPesan({ b, kamar, layanan, sisa, awal, akhir, dpPers
           {sedang ? f.mengirim : f.kirim}
         </button>
         {!siap && aktif && <p className="mt-2 text-center text-sm text-abu">{f.pilihTanggalDulu}</p>}
+        <Pengelola p={pengelola} className="mt-3 text-center text-sm" />
       </aside>
     </form>
   );

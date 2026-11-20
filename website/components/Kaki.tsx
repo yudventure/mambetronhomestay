@@ -2,7 +2,7 @@ import Link from 'next/link';
 import Ikon from './Ikon';
 import type { Bahasa, Situs } from '@/lib/jenis';
 import { kamus } from '@/lib/kamus';
-import { dwi, tampilWa, tautanLuar, tautanWa } from '@/lib/format';
+import { dataPengelola, dwi, tampilWa, tautanLuar, tautanWa } from '@/lib/format';
 
 // Footer. Brand on the left, booking links in the middle, contact on the
 // right with WhatsApp, email and the social accounts set in Isi situs. The
@@ -27,7 +27,7 @@ export default function Kaki({ b, situs }: { b: Bahasa; situs: Situs }) {
   const label = 'block text-xs font-semibold tracking-[0.12em] text-sorot uppercase';
   const tahun = new Date().getFullYear();
   // the site that manages this one, set in Identitas
-  const pengelola = tautanLuar(situs.pengelola);
+  const pengelola = dataPengelola(situs, b);
   return (
     <footer className="px-3 pb-3 sm:px-4 sm:pb-4">
       <div className="bingkai overflow-hidden bg-laut text-white">
@@ -92,9 +92,9 @@ export default function Kaki({ b, situs }: { b: Bahasa; situs: Situs }) {
               <p>© {tahun} {situs.nama}</p>
               {pengelola && (
                 <p>
-                  {dwi(situs.pengelolaTeks, b)}{' '}
-                  <a href={pengelola} target="_blank" rel="noopener" className="font-semibold text-white/85 underline-offset-4 transition-colors hover:text-sorot hover:underline">
-                    {situs.pengelola.trim().replace(/^https?:\/\//i, '').replace(/\/$/, '')}
+                  {pengelola.teks}{' '}
+                  <a href={pengelola.href} target="_blank" rel="noopener" className="font-semibold text-white/85 underline-offset-4 transition-colors hover:text-sorot hover:underline">
+                    {pengelola.nama}
                   </a>
                 </p>
               )}

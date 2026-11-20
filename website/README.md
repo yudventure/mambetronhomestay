@@ -246,7 +246,7 @@ Kaki halaman punya tiga kolom. Kolom kiri berisi logo dan teks singkat, kolom te
 
 Nomor WhatsApp dan surel punya isian bawaan, jadi tampil walau kolomnya di panel masih kosong. Facebook, TikTok, dan YouTube untuk sementara membuka halaman depan masing-masing sampai tautan akun asli diisi.
 
-Di pita paling bawah ada hak cipta, tulisan Dikelola oleh thedampier.com (Managed by di bahasa Inggris) yang membuka situs DAMPIER di tab baru, dan tombol Masuk operator yang membuka `/admin`. Tulisan dan alamat situs pengelola diubah di Isi situs, bagian Identitas, dan barisnya hilang bila Situs pengelola dikosongkan. Operator yang belum masuk diarahkan ke halaman masuk.
+Di pita paling bawah ada hak cipta, tulisan Dikelola oleh thedampier.com (Managed by di bahasa Inggris) yang membuka situs DAMPIER di tab baru, dan tombol Masuk operator yang membuka `/admin`. Atas persetujuan pemilik Mambetron, tulisan yang sama juga tampil di bawah kartu pilih tanggal (beranda dan halaman bungalow), di bawah tombol Kirim pesanan, di bagian bayar halaman pesanan, dan di kaki surel. Tulisan dan alamat situs pengelola diubah di Isi situs, bagian Identitas, dan barisnya hilang di semua tempat itu bila Situs pengelola dikosongkan. Operator yang belum masuk diarahkan ke halaman masuk.
 
 ## Masuk panel, surel pemberitahuan, dan ganti kata sandi
 

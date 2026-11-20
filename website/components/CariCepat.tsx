@@ -7,6 +7,8 @@ import { useCallback, useEffect, useState, type FormEvent } from 'react';
 import Ikon from './Ikon';
 import Kalender from './Kalender';
 import KotakTanggal from './KotakTanggal';
+import Pengelola from './Pengelola';
+import type { DataPengelola } from '@/lib/format';
 import type { Bahasa } from '@/lib/jenis';
 import { kamus } from '@/lib/kamus';
 import { bacaRencana, simpanRencana } from '@/lib/rencana';
@@ -28,12 +30,14 @@ type Props = {
   kamar?: string;
   judul?: string;
   tombol?: string;
+  // "Managed by thedampier.com" under the card
+  pengelola?: DataPengelola | null;
 };
 type Rentang = { masuk: string; keluar: string };
 
 const KOSONG: Rentang = { masuk: '', keluar: '' };
 
-export default function CariCepat({ b, awal, akhir, checkIn, checkOut, sisa, unit, kapasitas, minMalam, maksTamu, kamar, judul, tombol }: Props) {
+export default function CariCepat({ b, awal, akhir, checkIn, checkOut, sisa, unit, kapasitas, minMalam, maksTamu, kamar, judul, tombol, pengelola }: Props) {
   const k = kamus(b);
   const t = k.rencanaTanggal;
   const [{ masuk, keluar }, setRentang] = useState<Rentang>(KOSONG);
@@ -135,6 +139,7 @@ export default function CariCepat({ b, awal, akhir, checkIn, checkOut, sisa, uni
           <p>{k.checkInOut.masuk}<span className="block text-sm font-semibold text-laut">{checkIn}</span></p>
           <p>{k.checkInOut.keluar}<span className="block text-sm font-semibold text-laut">{checkOut}</span></p>
         </div>
+        <Pengelola p={pengelola} className="text-xs sm:col-span-2 xl:col-span-1" />
       </div>
     </form>
   );

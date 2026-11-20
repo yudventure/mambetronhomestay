@@ -72,6 +72,14 @@ export function tautanWa(nomor: string, pesan = '') {
 export const pilih = <T,>(b: Bahasa, id: T, en: T) => (b === 'en' && en ? en : id);
 export const dwi = (v: { id: string; en: string }, b: Bahasa) => (b === 'en' ? v.en || v.id : v.id || v.en);
 
+// "Managed by thedampier.com", the managing site from Isi situs, Identitas.
+// Null when the site field is empty, which hides the line everywhere.
+export type DataPengelola = { teks: string; href: string; nama: string };
+export function dataPengelola(situs: { pengelola: string; pengelolaTeks: { id: string; en: string } }, b: Bahasa): DataPengelola | null {
+  const href = tautanLuar(situs.pengelola);
+  return href ? { teks: dwi(situs.pengelolaTeks, b), href, nama: situs.pengelola.trim().replace(/^https?:\/\//i, '').replace(/\/$/, '') } : null;
+}
+
 export const paragraf = (s: string) => s.split(/\n\s*\n/).map((p) => p.trim()).filter(Boolean);
 
 // A word joiner after the dash keeps a range like 15–20 on one line.

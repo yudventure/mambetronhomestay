@@ -74,7 +74,8 @@ ${r.swift ? `<p style="margin:6px 0 0;font-family:${HURUF};font-size:14px;color:
   }
 }
 
-export type Kaki = { nama: string; baris: string[]; tautan: { teks: string; href: string }[]; alasan: string };
+// `pengelola` is "Managed by thedampier.com" from Identitas, under the contacts.
+export type Kaki = { nama: string; baris: string[]; tautan: { teks: string; href: string }[]; alasan: string; pengelola?: { teks: string; href: string; nama: string } | null };
 
 // One whole e-mail. `logo` is the absolute address of the white PNG logo,
 // or empty to write the name instead (no site address known).
@@ -108,6 +109,7 @@ ${o.blok.map(blok).join('\n')}
 <p style="margin:0;font-family:${HURUF};font-size:15px;font-weight:800;color:${W.laut};">${esc(o.kaki.nama)}</p>
 ${o.kaki.baris.map((b) => `<p style="margin:3px 0 0;font-family:${HURUF};font-size:14px;line-height:1.5;color:${W.abu};">${baris(b)}</p>`).join('')}
 ${tautan ? `<p style="margin:12px 0 0;font-family:${HURUF};font-size:14px;">${tautan}</p>` : ''}
+${o.kaki.pengelola ? `<p style="margin:12px 0 0;font-family:${HURUF};font-size:13px;line-height:1.5;color:${W.abu};">${esc(o.kaki.pengelola.teks)} <a href="${esc(o.kaki.pengelola.href)}" target="_blank" style="color:${W.biruTua};font-weight:700;text-decoration:none;">${esc(o.kaki.pengelola.nama)}</a></p>` : ''}
 </td></tr>
 <tr><td style="padding:16px 24px 0;font-family:${HURUF};font-size:12px;line-height:1.5;color:${W.abu};text-align:center;">${esc(o.kaki.alasan)}</td></tr>
 </table>

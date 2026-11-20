@@ -6,7 +6,7 @@
 import nodemailer from 'nodemailer';
 import { KODE_MENIT } from './akun';
 import { alamatSitus, envSurel, surelDiatur } from './env';
-import { dwi, rupiah, tampilWa, tanggal, tautanWa, waktu } from './format';
+import { dataPengelola, dwi, rupiah, tampilWa, tanggal, tautanWa, waktu } from './format';
 import type { Bahasa, Pesanan, Situs } from './jenis';
 import { KAMUS } from './kamus';
 import { bacaKonfigMidtrans } from './midtrans';
@@ -54,6 +54,7 @@ function kaki(situs: Situs | null, b: Bahasa, dasar: string, alasan: string): Ka
       ...(dasar ? [{ teks: dasar.replace(/^https?:\/\//, ''), href: dasar }] : []),
     ],
     alasan,
+    pengelola: situs ? dataPengelola(situs, b) : null,
   };
 }
 

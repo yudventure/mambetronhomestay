@@ -4,6 +4,7 @@ import Bagian from '@/components/Bagian';
 import Ikon from '@/components/Ikon';
 import Salin from '@/components/Salin';
 import BayarOnline from '@/components/BayarOnline';
+import Pengelola from '@/components/Pengelola';
 import { cobaTerakhir, namaMetode, sudahTutup, tagihanOnline } from '@/lib/bayar';
 import { bacaKonfigMidtrans } from '@/lib/midtrans';
 import { tokenCocok } from '@/lib/pesan';
@@ -11,7 +12,7 @@ import { bahasaAktif } from '@/lib/bahasa';
 import { ambilSitus, pesananDariKode } from '@/lib/data';
 import { dbDiatur } from '@/lib/env';
 import { kamus } from '@/lib/kamus';
-import { dwi, paragraf, rupiah, tanggal, tautanWa } from '@/lib/format';
+import { dataPengelola, dwi, paragraf, rupiah, tanggal, tautanWa } from '@/lib/format';
 import Perkiraan from '@/components/Perkiraan';
 import { kursAktif } from '@/lib/uang-server';
 import { SATUAN } from '@/lib/satuan.mjs';
@@ -122,6 +123,7 @@ export default async function HalamanPesanan({ params, searchParams }: {
                 )}
               </>
             )}
+            <Pengelola p={dataPengelola(situs, b)} className="mt-6 text-sm" />
           </div>
         )}
 
