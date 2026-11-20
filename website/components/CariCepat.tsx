@@ -1,5 +1,6 @@
 'use client';
-// Stay planner on the home page and on a bungalow page, a plain GET form into /pesan. The
+// Stay planner on the home page and on a bungalow page, a plain GET form into /pesan,
+// or DAMPIER's payment sheet over the page while DAMPIER takes bookings. The
 // availability calendar, the same one as the booking page, is shown open
 // right away, so full nights show before the visitor commits. Both dates are
 // required, and the choice is remembered in this browser for the next pages.
@@ -85,9 +86,15 @@ export default function CariCepat({ b, awal, akhir, checkIn, checkOut, sisa, uni
   }
 
   function kirim(e: FormEvent<HTMLFormElement>) {
-    if (masuk && keluar) return;
-    e.preventDefault();
-    setGalat(t.dulu);
+    if (!masuk || !keluar) {
+      e.preventDefault();
+      setGalat(t.dulu);
+      return;
+    }
+    // DAMPIER's payment sheet takes the stay when it is on (LembarDampier),
+    // otherwise the form goes on to /pesan.
+    const tanya = new CustomEvent('mambetron:pesan', { cancelable: true, detail: { masuk, keluar, tamu, kamar } });
+    if (!window.dispatchEvent(tanya)) e.preventDefault();
   }
 
   const bulat = 'inline-flex size-9 items-center justify-center rounded-full bg-white text-laut shadow-tipis transition-colors hover:bg-buih disabled:opacity-35 disabled:shadow-none';

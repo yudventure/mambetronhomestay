@@ -28,6 +28,10 @@ const id = {
   rencana: 'Rencanakan liburanmu',
   cekKetersediaan: 'Cek ketersediaan',
   rencanaTanggal: { diKalender: 'Ketuk di kalender', dulu: 'Pilih tanggal tiba dan pulang dulu.', tidakMuat: (n: number) => `Tanggal tadi tidak cukup untuk ${n} tamu. Pilih tanggal lain.`, kurangTamu: 'Kurangi tamu', tambahTamu: 'Tambah tamu' },
+  lembarDampier: {
+    judul: 'Pembayaran DAMPIER', membuka: 'Membuka pembayaran', dikelola: 'Pemesanan online dikelola oleh thedampier.com',
+    lambat: 'Pembayaran belum terbuka. Sinyal mungkin sedang lemah.', ulang: 'Coba lagi', tutup: 'Tutup',
+  },
   tontonVideo: 'Tonton suasananya',
   ulasanRingkas: (rata: string, n: number) => `${rata} dari ${n} ulasan tamu`,
   nilaiTamu: (skala: number) => `Nilai ulasan tamu dari ${skala}`,
@@ -259,6 +263,10 @@ const en: Kamus = {
   rencana: 'Plan your stay',
   cekKetersediaan: 'Check availability',
   rencanaTanggal: { diKalender: 'Tap it on the calendar', dulu: 'Pick your arrival and departure dates first.', tidakMuat: (n) => `Those dates no longer fit ${n} guests. Please pick other dates.`, kurangTamu: 'Fewer guests', tambahTamu: 'More guests' },
+  lembarDampier: {
+    judul: 'DAMPIER payment', membuka: 'Opening payment', dikelola: 'Online bookings managed by thedampier.com',
+    lambat: 'The payment has not opened yet. The connection may be weak.', ulang: 'Try again', tutup: 'Close',
+  },
   tontonVideo: 'Watch the stay',
   ulasanRingkas: (rata: string, n: number) => `${rata} from ${n} guest reviews`,
   nilaiTamu: (skala: number) => `Guest rating out of ${skala}`,

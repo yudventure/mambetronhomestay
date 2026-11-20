@@ -1,9 +1,12 @@
 import type { Metadata } from 'next';
+import { redirect } from 'next/navigation';
 import Bagian from '@/components/Bagian';
 import FormPesan, { type KamarForm } from '@/components/FormPesan';
 import { bahasaAktif } from '@/lib/bahasa';
 import { ambilSitus, daftarKamar, daftarLayanan, gambarCadangan, pemesananAktif, sisaKamar } from '@/lib/data';
 import { pastikanSegar } from '@/lib/sinkron';
+import { lembarDampierSitus } from '@/lib/dampier';
+import { asalHalaman } from '@/lib/asal';
 import { daftarPaket } from '@/lib/paket';
 import { kamus } from '@/lib/kamus';
 import { dataPengelola, tautanWa } from '@/lib/format';
@@ -21,6 +24,18 @@ const angka = (v: unknown, min: number, maks: number, cadangan: number) => {
 
 export default async function Pesan({ searchParams }: { searchParams: Promise<Record<string, string | string[] | undefined>> }) {
   const sp = await searchParams;
+  // While DAMPIER takes the bookings, its payment sheet opens over the
+  // bungalow page (LembarDampier), with the dates when the link had them.
+  const dampier = await lembarDampierSitus(await asalHalaman());
+  if (dampier && (sp.kamar ? sp.kamar === dampier.kamar : dampier.satu)) {
+    const q = new URLSearchParams();
+    if (sahTanggal(sp.masuk) && sahTanggal(sp.keluar) && sp.keluar > sp.masuk) {
+      q.set('dampier_tiba', sp.masuk);
+      q.set('dampier_pulang', sp.keluar);
+      q.set('dampier_tamu', String(angka(sp.tamu, 1, 20, 2)));
+    }
+    redirect(`/kamar/${dampier.kamar}${q.size ? `?${q}` : ''}#rencana`);
+  }
   const [b, situs, kamar, layanan, aktif] = await Promise.all([bahasaAktif(), ambilSitus(), daftarKamar(), daftarLayanan(), pemesananAktif()]);
   const k = kamus(b);
   const hari = hariIni();

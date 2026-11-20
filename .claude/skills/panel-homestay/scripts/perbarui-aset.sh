@@ -28,6 +28,7 @@ BERKAS=(
   "instrumentation.ts"
   "lib/sinkron.ts"
   "lib/dampier.ts"
+  "components/LembarDampier.tsx"
   "lib/jaringan.ts"
   "lib/ical.mjs"
   "lib/ical.test.mjs"

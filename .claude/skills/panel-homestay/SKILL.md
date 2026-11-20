@@ -27,7 +27,7 @@ tata letaknya.
 | `assets/panel-homestay/app/admin/(panel)/pesanan/page.tsx` | Daftar pesanan dengan pil status dan "Hanya yang akan datang". |
 | `assets/panel-homestay/lib/statistik.ts`, `app/api/kunjungan/route.ts`, `components/Kunjungan.tsx` | Penghitung kunjungan milik situs sendiri. |
 | `assets/panel-homestay/lib/sinkron.ts`, `lib/ical.mjs`, `app/ical/[berkas]/route.ts`, `app/admin/(panel)/sinkron/page.tsx`, `instrumentation.ts` | Sinkron kalender iCal per unit dengan OTA dan agen. Baca, simpan, bagi unit, ekspor tanpa pantulan, cari bentrok. Uji `node --test lib/*.test.mjs`. |
-| `assets/panel-homestay/lib/dampier.ts`, `lib/jaringan.ts` | Sambungan ke kalender mitra DAMPIER lewat `/api/kamar/<kunci>`. Kirim pesanan dan tanggal tutup, baca kamar terisi per malam, kartu Kalender mitra DAMPIER di Sinkron OTA. |
+| `assets/panel-homestay/lib/dampier.ts`, `lib/jaringan.ts` | Sambungan ke kalender mitra DAMPIER lewat `/api/kamar/<kunci>`. Kirim pesanan dan tanggal tutup, baca kamar terisi per malam, kartu Kalender mitra DAMPIER di Sinkron OTA, lembar bayar DAMPIER di situs (`components/LembarDampier.tsx`). |
 | `assets/panel-homestay/lib/*.ts`, `database/skema.sql`, `app/globals.css` | Pendukung dari Mambetron (tanggal, format, kait, data, ikon, skema) sebagai acuan. |
 | `scripts/cek-token.mjs` | Memeriksa enam warna panel. Kontras setiap pasangan yang muncul di panel, dan menolak krem keabuan. |
 | `scripts/perbarui-aset.sh` | Menyalin ulang semua berkas di atas dari repo Mambetron setelah panel di sana berubah. |

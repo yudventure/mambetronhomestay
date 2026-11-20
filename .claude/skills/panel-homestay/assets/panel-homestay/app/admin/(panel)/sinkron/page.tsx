@@ -4,8 +4,9 @@ import Ikon from '@/components/Ikon';
 import Kabar, { JudulAdmin } from '@/components/admin/Kabar';
 import TombolSalin from '@/components/admin/TombolSalin';
 import TombolYakin from '@/components/admin/TombolYakin';
-import { gantiTautanSambungan, hapusSambungan, hapusSambunganLama, putusDampier, sambungDampier, sinkronkanSekarang, tambahSambungan, ubahSambungan } from '@/app/admin/aksi';
-import { apiDariTautan, statusDampier, tautanSatuKamarDampier, type StatusDampier } from '@/lib/dampier';
+import { aturLembarBayar, gantiTautanSambungan, hapusSambungan, hapusSambunganLama, putusDampier, sambungDampier, sinkronkanSekarang, tambahSambungan, ubahSambungan } from '@/app/admin/aksi';
+import { apiDariTautan, catatAsalSitus, statusDampier, tautanSatuKamarDampier, type StatusDampier } from '@/lib/dampier';
+import { asalHalaman } from '@/lib/asal';
 import { daftarKamar } from '@/lib/data';
 import type { Kamar } from '@/lib/jenis';
 import { alamatSitus } from '@/lib/env';
@@ -118,6 +119,35 @@ function FormDampier({ kamar, tombol, d }: { kamar: Kamar[]; tombol: string; d: 
   );
 }
 
+// DAMPIER's payment sheet over the public site (components/LembarDampier.tsx).
+function LembarBayar({ d }: { d: StatusDampier }) {
+  const nyala = d.lembar !== false;
+  const situs = d.asal?.replace(/^https?:\/\//, '');
+  return (
+    <div className="mt-4 rounded-2xl bg-panel-latar p-4" data-lembar-bayar={d.bayarMitra ? (nyala ? 'nyala' : 'mati') : 'belum'}>
+      <div className="flex flex-wrap items-start justify-between gap-3">
+        <p className="font-semibold text-panel-utama">Lembar bayar DAMPIER di situs ini</p>
+        {d.bayarMitra && (
+          <span className={`inline-flex rounded-full px-3 py-1 text-xs font-bold whitespace-nowrap ${nyala ? 'bg-[#dff5e6] text-[#1f7a3d]' : 'bg-white text-panel-utama'}`}>{nyala ? 'Menyala' : 'Mati'}</span>
+        )}
+      </div>
+      {!d.bayarMitra ? (
+        <p className="mt-1 text-sm text-abu">DAMPIER belum menawarkan lembar bayar untuk listing ini. Begitu DAMPIER menawarkannya, tamu yang memilih tanggal di situs ini langsung melihat lembar Pembayaran DAMPIER tanpa pindah halaman.</p>
+      ) : nyala ? (
+        <p className="mt-1 text-sm text-abu">Setelah tamu memilih tanggal dan jumlah tamu, lembar Pembayaran DAMPIER terbuka langsung di {situs || 'situs ini'}. DAMPIER yang menerima pesanan dan pembayarannya, lalu tamu kembali ke situs ini dan melihat status pesanannya di lembar yang sama. Formulir pesan situs ini tidak dipakai selama menyala.</p>
+      ) : (
+        <p className="mt-1 text-sm text-abu">Tamu memesan lewat formulir situs ini dan membayar lewat Midtrans situs ini.</p>
+      )}
+      {d.bayarMitra && (
+        <form action={aturLembarBayar} className="mt-3">
+          <input type="hidden" name="nyala" value={nyala ? '0' : '1'} />
+          <button className={`tombol tombol-kecil ${nyala ? 'tombol-putih' : ''}`}>{nyala ? 'Matikan lembar bayar DAMPIER' : 'Nyalakan lembar bayar DAMPIER'}</button>
+        </form>
+      )}
+    </div>
+  );
+}
+
 function KartuDampier({ d, kamar, lama, satuKamar }: { d: StatusDampier | null; kamar: Kamar[]; lama: number; satuKamar: Sambungan[] }) {
   if (!d) {
     return (
@@ -129,7 +159,7 @@ function KartuDampier({ d, kamar, lama, satuKamar }: { d: StatusDampier | null; 
           </div>
           <span className="inline-flex rounded-full bg-panel-lembut px-3 py-1 text-xs font-bold whitespace-nowrap text-panel-utama">Belum tersambung</span>
         </div>
-        <p className="mt-2 max-w-3xl text-[0.9375rem] text-abu">Kalender mitra di DAMPIER memuat semua kamar Mambetron, pesanan Booking.com, tamu DAMPIER, dan pesanan yang dicatat sendiri. Setelah tersambung, kamar yang terisi di sana ikut tertutup di situs ini, dan pesanan serta tanggal tutup dari situs ini ikut menutup kamar di DAMPIER dan Booking.com. Tamu tetap memesan dan membayar di situs ini.</p>
+        <p className="mt-2 max-w-3xl text-[0.9375rem] text-abu">Kalender mitra di DAMPIER memuat semua kamar Mambetron, pesanan Booking.com, tamu DAMPIER, dan pesanan yang dicatat sendiri. Setelah tersambung, kamar yang terisi di sana ikut tertutup di situs ini, dan pesanan serta tanggal tutup dari situs ini ikut menutup kamar di DAMPIER dan Booking.com. Tamu tetap memesan di situs ini, dan lembar bayar DAMPIER bisa terbuka langsung di sini.</p>
         <ol className="mt-4 grid gap-2 text-[0.9375rem] text-panel-utama/85">
           <li className="flex gap-3"><span className="inline-flex size-7 shrink-0 items-center justify-center rounded-full bg-panel-lembut text-sm font-bold">1</span>Buka kalender mitra Mambetron di DAMPIER, lalu ketuk Sambungkan website di kartu Sambungkan OTA.</li>
           <li className="flex gap-3"><span className="inline-flex size-7 shrink-0 items-center justify-center rounded-full bg-panel-lembut text-sm font-bold">2</span>Di kotak Untuk programmer website, ketuk Salin di samping alamat API.</li>
@@ -164,6 +194,7 @@ function KartuDampier({ d, kamar, lama, satuKamar }: { d: StatusDampier | null; 
         {d.kirim ? ` ${d.kirim.jumlah} pesanan dan tanggal tutup terkirim ${jamIso(d.kirim.waktu)}.` : ''}
       </p>
       {d.galat && <p className="mt-3 rounded-xl bg-[#fde3dc] px-4 py-3 text-sm font-semibold text-merah">{d.galat}</p>}
+      <LembarBayar d={d} />
 
       {(d.bentrok?.length ?? 0) > 0 && (
         <div className="mt-4 rounded-2xl bg-[#fde3dc] p-4" role="alert">
@@ -224,6 +255,8 @@ function KartuDampier({ d, kamar, lama, satuKamar }: { d: StatusDampier | null; 
 
 export default async function HalamanSinkron({ searchParams }: { searchParams: Promise<Record<string, string | undefined>> }) {
   const sp = await searchParams;
+  // the address the owner opens the panel on tells DAMPIER where its payment sheet may open
+  await catatAsalSitus(await asalHalaman(), { panel: true }).catch(() => {});
   pastikanSegar().catch(() => {});
   const hari = hariIni();
   const [kamar, sambungan, bentrok, asal, dampier] = await Promise.all([
@@ -260,6 +293,8 @@ export default async function HalamanSinkron({ searchParams }: { searchParams: P
         'galat:url-panjang': 'Tautan kalender terlalu panjang.',
         'ok:dampier': 'Kalender DAMPIER tersambung. Pesanan dan tanggal tutup situs ini sudah dikirim ke DAMPIER.',
         'ok:dampier-putus': 'Kalender DAMPIER diputus.',
+        'ok:lembar-nyala': 'Lembar bayar DAMPIER menyala. Tamu yang memilih tanggal langsung melihat Pembayaran DAMPIER di situs ini.',
+        'ok:lembar-mati': 'Lembar bayar DAMPIER dimatikan. Tamu memesan lewat formulir situs ini lagi.',
         'galat:dampier-alamat': 'Alamat itu bukan alamat API DAMPIER. Salin alamat dari kotak Untuk programmer website, yang diawali https://thedampier.com/api/kamar/.',
         'galat:dampier-kamar': 'Pilih bungalow yang dijual di DAMPIER.',
         'galat:dampier-kunci': 'DAMPIER tidak mengenal alamat ini. Kuncinya mungkin sudah diganti. Salin alamat API yang terbaru dari DAMPIER.',

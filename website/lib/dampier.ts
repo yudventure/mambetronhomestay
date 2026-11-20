@@ -21,7 +21,7 @@
 // panel.
 import crypto from 'crypto';
 import { baris, jalankan, satu, transaksi } from './db';
-import { dbDiatur } from './env';
+import { alamatSitus, dbDiatur } from './env';
 import { alamatDalam, izinkanLokal } from './jaringan';
 import type { Kamar, StatusPesanan } from './jenis';
 import { daftarMalam, hariIni, tambahHari } from './tanggal';
@@ -40,6 +40,15 @@ type Simpanan = {
   pesananWebsite?: number;
   kirim?: { sidik: string; waktu: string; jumlah: number };
   bentrok?: BentrokDampier[];
+  // DAMPIER's payment sheet for this homestay, opened over this site
+  // (LembarDampier): the DAMPIER listing and the sheet's path without the
+  // language, from the last read. Only DAMPIER versions that offer it send it.
+  listing?: number;
+  bayarMitra?: string;
+  // this site's own address, sent to DAMPIER so it lets the sheet open here
+  asal?: string;
+  // false once the owner turns the sheet off on the channel manager page
+  lembar?: boolean;
 };
 export type StatusDampier = Omit<Simpanan, 'api'> & { host: string; akhiran: string };
 
@@ -106,14 +115,35 @@ export function rapikanAlamatDampier(masukan: string) {
 }
 
 type Malam = { tanggal: string; terisi: number };
-type Bacaan = { nama: string; kamar: KamarDampier[]; pesananWebsite: number; malam: Malam[] };
+type Bacaan = { nama: string; kamar: KamarDampier[]; pesananWebsite: number; malam: Malam[]; listing?: number; bayarMitra?: string };
 
-async function panggil(api: string, isi?: unknown): Promise<Record<string, unknown>> {
+// This site's public address as DAMPIER expects it: https and no path, or
+// http on this computer while testing. A plain http address of the live site
+// (a proxy that forgot to say https) is taken as https.
+export function asalSah(v: string | null | undefined) {
+  if (!v) return '';
+  try {
+    const u = new URL(v.trim());
+    const lokal = /^(localhost|127\.0\.0\.1)$/i.test(u.hostname);
+    if (u.protocol !== 'https:' && u.protocol !== 'http:') return '';
+    if (lokal) return izinkanLokal() ? u.origin.toLowerCase() : '';
+    if (!/^[a-z0-9-]+(\.[a-z0-9-]+)+$/i.test(u.hostname)) return '';
+    return `https://${u.host}`.toLowerCase();
+  } catch {
+    return '';
+  }
+}
+
+async function panggil(api: string, isi?: unknown, asal?: string): Promise<Record<string, unknown>> {
   let r: Response;
   try {
     r = await fetch(isi ? api : `${api}?hari=${HARI_BACA}`, {
       method: isi ? 'POST' : 'GET',
-      headers: { 'user-agent': 'MambetronKalender/1.0 (+DAMPIER)', accept: 'application/json', ...(isi ? { 'content-type': 'application/json' } : {}) },
+      headers: {
+        'user-agent': 'MambetronKalender/1.0 (+DAMPIER)', accept: 'application/json', ...(isi ? { 'content-type': 'application/json' } : {}),
+        // lets DAMPIER open its payment sheet over this site, see LembarDampier
+        ...(asal ? { 'x-situs-asal': asal } : {}),
+      },
       body: isi ? JSON.stringify(isi) : undefined,
       signal: AbortSignal.timeout(20_000),
       cache: 'no-store',
@@ -139,12 +169,20 @@ function bacaJawaban(j: Record<string, unknown>): Bacaan {
       .map((x) => ({ tanggal: x.tanggal as string, terisi: Math.max(0, Math.round(Number(x.terisi))) }))
     : [];
   if (!kamar.length || !malam.length) throw new GalatDampier('bentuk', 'Jawaban DAMPIER tidak dikenali. Pastikan alamatnya alamat API dari kotak Untuk programmer website.');
-  return { nama: String(j.nama ?? '').slice(0, 120), kamar: kamar.slice(0, 50), pesananWebsite: Math.max(0, Number(j.pesananWebsite) || 0), malam };
+  const listing = Number(j.listing);
+  const bayarMitra = typeof j.bayarMitra === 'string' && JALUR_LEMBAR.test(j.bayarMitra) ? j.bayarMitra : undefined;
+  return {
+    nama: String(j.nama ?? '').slice(0, 120), kamar: kamar.slice(0, 50), pesananWebsite: Math.max(0, Number(j.pesananWebsite) || 0), malam,
+    ...(Number.isInteger(listing) && listing > 0 ? { listing } : {}), ...(bayarMitra ? { bayarMitra } : {}),
+  };
 }
+
+// DAMPIER's payment sheet path, /bayar-mitra/<listing>?utm_…, the language goes in front.
+const JALUR_LEMBAR = /^\/bayar-mitra\/\d{1,9}(\?[A-Za-z0-9_=&%.+-]{0,400})?$/;
 
 // Reads DAMPIER once with an address that is not saved yet, for the panel.
 export async function ujiAlamatDampier(api: string) {
-  return bacaJawaban(await panggil(api));
+  return bacaJawaban(await panggil(api, undefined, asalSah(alamatSitus())));
 }
 
 type Kiriman = { id: string; masuk: string; keluar: string; jumlahKamar: number; tamu?: number; nama?: string; negara?: string; nilai?: number; ket?: string };
@@ -202,7 +240,7 @@ function malamKita(k: Kiriman[]) {
   return m;
 }
 
-type Simpan = { jalan?: Promise<unknown>; lagi?: boolean; gagalPindah?: number };
+type Simpan = { jalan?: Promise<unknown>; lagi?: boolean; gagalPindah?: number; asal?: string };
 const g = globalThis as unknown as { __mambetronDampier?: Simpan };
 const S: Simpan = (g.__mambetronDampier ??= {});
 
@@ -219,16 +257,17 @@ async function satuPutaran(o: { paksa?: boolean; segera?: boolean }) {
     const km = await satu<{ id: number }>('SELECT id FROM kamar WHERE id = ?', [k.kamarId]);
     if (!km) throw new GalatDampier('kamar', 'Bungalow yang disambungkan ke DAMPIER sudah dihapus. Putuskan lalu sambungkan ulang.');
     const hari = hariIni();
-    let baca = bacaJawaban(await panggil(k.api));
+    const asal = asalSitusIni(k);
+    let baca = bacaJawaban(await panggil(k.api, undefined, asal));
     const kiriman = await daftarKiriman(km.id, baca.kamar.length, hari);
     const sidik = sidikDari(kiriman);
     const kirimSemua = async () => {
-      const j = await panggil(k.api, { pesanan: kiriman, ganti: true });
+      const j = await panggil(k.api, { pesanan: kiriman, ganti: true }, asal);
       kirim = { sidik, waktu: new Date().toISOString(), jumlah: kiriman.length };
       bentrok = (Array.isArray(j.bentrok) ? (j.bentrok as Record<string, unknown>[]) : [])
         .filter((b) => b && typeof b.id === 'string' && typeof b.mulai === 'string' && typeof b.selesai === 'string')
         .slice(0, 50).map((b) => ({ id: String(b.id).slice(0, 80), mulai: String(b.mulai), selesai: String(b.selesai) }));
-      baca = bacaJawaban(await panggil(k.api));
+      baca = bacaJawaban(await panggil(k.api, undefined, asal));
     };
     const basi = !k.kirim || Date.now() - Date.parse(k.kirim.waktu) > KIRIM_ULANG_JAM * 3600_000;
     if (o.paksa || basi || k.kirim?.sidik !== sidik) await kirimSemua();
@@ -239,7 +278,8 @@ async function satuPutaran(o: { paksa?: boolean; segera?: boolean }) {
       .map((m) => ({ malam: m.tanggal, n: Math.max(0, Math.min(baca.kamar.length, m.terisi) - (kita.get(m.tanggal) ?? 0)) }))
       .filter((m) => m.n > 0);
     // disconnected while this round ran
-    if ((await bacaSimpanan())?.api !== k.api) return;
+    const kini = await bacaSimpanan();
+    if (kini?.api !== k.api) return;
     await transaksi(async (c) => {
       await c.query('DELETE FROM kalender_dampier');
       for (let i = 0; i < lain.length; i += 200) {
@@ -248,12 +288,17 @@ async function satuPutaran(o: { paksa?: boolean; segera?: boolean }) {
           bagian.flatMap((m) => [km.id, m.malam, Math.min(255, m.n)]));
       }
     });
-    await tulisSimpanan({ ...k, dicoba, berhasil: new Date().toISOString(), galat: '', nama: baca.nama, kamar: baca.kamar, pesananWebsite: baca.pesananWebsite, kirim, bentrok });
+    // the owner's switch and the site address may have changed during the round
+    await tulisSimpanan({
+      ...k, lembar: kini.lembar, asal: kini.asal, dicoba, berhasil: new Date().toISOString(), galat: '',
+      nama: baca.nama, kamar: baca.kamar, pesananWebsite: baca.pesananWebsite, kirim, bentrok, listing: baca.listing, bayarMitra: baca.bayarMitra,
+    });
   } catch (e) {
     const pesan = e instanceof GalatDampier ? e.message : 'Sinkron DAMPIER gagal disimpan.';
     if (!(e instanceof GalatDampier)) console.error('[mambetron] sinkron DAMPIER', e);
-    if ((await bacaSimpanan())?.api !== k.api) return;
-    await tulisSimpanan({ ...k, dicoba, galat: pesan.slice(0, 300), kirim, bentrok }).catch(() => {});
+    const kini = await bacaSimpanan();
+    if (kini?.api !== k.api) return;
+    await tulisSimpanan({ ...k, lembar: kini.lembar, asal: kini.asal, dicoba, galat: pesan.slice(0, 300), kirim, bentrok }).catch(() => {});
   }
 }
 
@@ -322,7 +367,8 @@ export async function sambungDariIcal() {
 }
 
 export async function simpanAlamatDampier(api: string, kamarId: number, b: Bacaan) {
-  await tulisSimpanan({ api, kamarId, nama: b.nama, kamar: b.kamar, pesananWebsite: b.pesananWebsite });
+  const asal = asalSah(alamatSitus()) || (await bacaSimpanan())?.asal;
+  await tulisSimpanan({ api, kamarId, nama: b.nama, kamar: b.kamar, pesananWebsite: b.pesananWebsite, listing: b.listing, bayarMitra: b.bayarMitra, ...(asal ? { asal } : {}) });
   // nights read through the site's own iCal links reach here through DAMPIER now
   await jalankan('DELETE FROM kalender_luar');
   await sinkronDampier({ paksa: true });
@@ -375,4 +421,54 @@ export async function blokDampier(
     }
   }
   return hasil.sort((a, b) => a.mulai.localeCompare(b.mulai) || a.unit - b.unit);
+}
+
+// This site's address for DAMPIER: SITE_URL, or the address visitors and
+// the owner came in on (catatAsalSitus).
+const asalSitusIni = (k: Simpanan) => asalSah(alamatSitus()) || k.asal || '';
+
+// The same address with or without www, which DAMPIER allows both of.
+const samaAsal = (a: string, b: string) => !!a && !!b && a.replace('://www.', '://') === b.replace('://www.', '://');
+
+// Keeps the address the site is opened on, for a site without SITE_URL.
+// The panel's address wins (`panel`), public pages only fill it in while
+// none is known, so a visit through another address (the hosting's
+// temporary domain, say) does not move it.
+export async function catatAsalSitus(mentah: string, o: { panel?: boolean } = {}) {
+  const asal = asalSah(mentah);
+  if (!asal || asalSah(alamatSitus())) return;
+  const kunci = `${o.panel ? 'panel' : 'umum'} ${asal}`;
+  if (S.asal === kunci) return;
+  const k = await bacaSimpanan();
+  // not connected yet: asked again on the next visit
+  if (!k) return;
+  S.asal = kunci;
+  if (k.asal && (samaAsal(k.asal, asal) || !o.panel)) return;
+  await tulisSimpanan({ ...k, asal });
+  kabariDampier();
+}
+
+// DAMPIER's payment sheet over this site, when DAMPIER offers it and the
+// owner has not turned it off: DAMPIER's address, the sheet's path, and
+// the bungalow it books.
+const lembarDari = (k: Simpanan | null): { asal: string; jalur: string; kamarId: number } | null =>
+  !k || !k.bayarMitra || k.lembar === false || !k.berhasil || !asalSitusIni(k) ? null
+    : { asal: new URL(k.api).origin, jalur: k.bayarMitra, kamarId: k.kamarId };
+
+export async function aturLembarDampier(nyala: boolean) {
+  const k = await bacaSimpanan();
+  if (k) await tulisSimpanan({ ...k, lembar: nyala });
+}
+
+// The same for a public page opened on `asalKini`, with the slug of the
+// bungalow it books, and whether that is the site's only bungalow (then the
+// home page's date card books it too). DAMPIER lets the sheet open only on
+// the address it was told, so on any other the site keeps its own form.
+export async function lembarDampierSitus(asalKini: string): Promise<{ asal: string; jalur: string; kamar: string; satu: boolean } | null> {
+  const k = await bacaSimpanan();
+  const d = lembarDari(k);
+  if (!d || !samaAsal(asalSitusIni(k!), asalSah(asalKini))) return null;
+  const km = await baris<{ id: number; slug: string }>('SELECT id, slug FROM kamar WHERE aktif = 1').catch(() => []);
+  const ini = km.find((x) => x.id === d.kamarId);
+  return ini ? { asal: d.asal, jalur: d.jalur, kamar: ini.slug, satu: km.length === 1 } : null;
 }

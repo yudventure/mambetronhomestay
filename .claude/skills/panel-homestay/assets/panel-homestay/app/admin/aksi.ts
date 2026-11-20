@@ -14,7 +14,7 @@ import { tanggal } from '@/lib/format';
 import { alamatPengunjung, bolehMencoba, buatSesi, catatGagal, hapusSesi, lupakanGagal, sandiCocok, sandiDiatur, wajibMasuk } from '@/lib/sesi';
 import { daftarMalam, sahTanggal, selisihHari } from '@/lib/tanggal';
 import { GalatSinkron, buatToken, rapikanUrl, sinkronSatu, sinkronSemua, type Sambungan } from '@/lib/sinkron';
-import { GalatDampier, apiDariTautan, kabariDampier, putuskanDampier, rapikanAlamatDampier, simpanAlamatDampier, ujiAlamatDampier } from '@/lib/dampier';
+import { GalatDampier, apiDariTautan, aturLembarDampier, kabariDampier, putuskanDampier, rapikanAlamatDampier, simpanAlamatDampier, ujiAlamatDampier } from '@/lib/dampier';
 import { GalatMidtrans, aturTampilMidtrans, bentukClient, bentukServer, hapusKunciMidtrans, simpanKunciMidtrans, ujiKunciMidtrans } from '@/lib/midtrans';
 
 // line breaks from a textarea arrive as CRLF, kept as plain LF
@@ -389,6 +389,14 @@ export async function hapusSambunganLama() {
   await jalankan('DELETE FROM kalender_sambungan');
   segarkan();
   redirect('/admin/sinkron?ok=lama#dampier');
+}
+
+export async function aturLembarBayar(fd: FormData) {
+  await wajibMasuk();
+  const nyala = fd.get('nyala') === '1';
+  await aturLembarDampier(nyala);
+  segarkan();
+  redirect(`/admin/sinkron?ok=${nyala ? 'lembar-nyala' : 'lembar-mati'}#dampier`);
 }
 
 export async function putusDampier() {

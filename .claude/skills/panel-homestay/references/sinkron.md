@@ -189,6 +189,22 @@ DAMPIER, dan situs hanya satu saluran lagi dari kalender itu.
   (`kabariDampier()`) setelah pesanan, pembayaran, atau tanggal tutup
   berubah. Gagal baca menyimpan pesan dan mempertahankan malam terakhir.
   `bentrok` dari jawaban kirim tampil merah di kartu.
+- Lembar bayar DAMPIER di situs (`components/LembarDampier.tsx`). Situs
+  mengirim alamatnya di header `x-situs-asal` setiap memanggil API kamar
+  (`asalSitusIni`, dari `SITE_URL`, alamat panel, atau alamat pertama
+  pengunjung lewat `catatAsalSitus`). DAMPIER yang mendukungnya menjawab
+  `listing` dan `bayarMitra` (`/bayar-mitra/<id>?utm_…`), disimpan di
+  baris `dampier`. Selama ada dan tidak dimatikan (`lembar: false`, tombol
+  di kartu DAMPIER), kartu tanggal (`CariCepat`) menanyakan lewat event
+  `mambetron:pesan`, lalu lembar membuka
+  `<DAMPIER>/<bahasa>/bayar-mitra/<id>?…&tiba=&pulang=&dewasa=` di iframe
+  berlatar bening di atas halaman. Pesan `siap`, `tutup`, dan `bayar` hanya
+  diterima dari asal DAMPIER dan iframe itu. `bayar` membuka Midtrans di
+  jendela utama, lalu tamu kembali ke `/#dampier=<jalur pesanan>` dan
+  lembar membuka status pesanannya. `/pesan` diantar ke halaman bungalow.
+  Situs yang dibuka lewat alamat lain, atau bungalow lain di situs dengan
+  beberapa jenis, tetap memakai formulir sendiri. Diuji dengan DAMPIER asli
+  yang dijalankan lokal dan Midtrans tiruan, 43 pemeriksaan.
 - Uji di Mambetron memakai DAMPIER tiruan di port 4557 yang mengikuti
   `ketersediaanKamarSitus` dan `terimaPesananKamarSitus` DAMPIER, situs
   dengan `SINKRON_IZINKAN_LOKAL=1`, dan OTA tiruan di port 3999 sebagai
