@@ -4,12 +4,12 @@
 // availability calendar, the same one as the booking page, is shown open
 // right away, so full nights show before the visitor commits. Both dates are
 // required, and the choice is remembered in this browser for the next pages.
-import { useCallback, useEffect, useState, type FormEvent } from 'react';
+import { useCallback, useEffect, useState, type FormEvent, type MouseEvent } from 'react';
 import Ikon from './Ikon';
 import Kalender from './Kalender';
 import KotakTanggal from './KotakTanggal';
 import Pengelola from './Pengelola';
-import type { DataPengelola } from '@/lib/format';
+import { tanggal, type DataPengelola } from '@/lib/format';
 import type { Bahasa } from '@/lib/jenis';
 import { kamus } from '@/lib/kamus';
 import { bacaRencana, simpanRencana } from '@/lib/rencana';
@@ -33,12 +33,16 @@ type Props = {
   tombol?: string;
   // "Managed by thedampier.com" under the card
   pengelola?: DataPengelola | null;
+  // Check availability on WhatsApp: the wa.me link without text, the
+  // message from the panel with {tiba} {pulang} {malam} {tamu} {bungalow},
+  // and the bungalow's name for {bungalow}
+  wa?: { tautan: string; pesan: string; bungalow: string } | null;
 };
 type Rentang = { masuk: string; keluar: string };
 
 const KOSONG: Rentang = { masuk: '', keluar: '' };
 
-export default function CariCepat({ b, awal, akhir, checkIn, checkOut, sisa, unit, kapasitas, minMalam, maksTamu, kamar, judul, tombol, pengelola }: Props) {
+export default function CariCepat({ b, awal, akhir, checkIn, checkOut, sisa, unit, kapasitas, minMalam, maksTamu, kamar, judul, tombol, pengelola, wa }: Props) {
   const k = kamus(b);
   const t = k.rencanaTanggal;
   const [{ masuk, keluar }, setRentang] = useState<Rentang>(KOSONG);
@@ -97,6 +101,19 @@ export default function CariCepat({ b, awal, akhir, checkIn, checkOut, sisa, uni
     if (!window.dispatchEvent(tanya)) e.preventDefault();
   }
 
+  // the WhatsApp message with the chosen stay filled in
+  const tautanCek = wa?.tautan && masuk && keluar
+    ? `${wa.tautan}?text=${encodeURIComponent(wa.pesan
+      .replaceAll('{tiba}', tanggal(masuk, b, 'polos')).replaceAll('{pulang}', tanggal(keluar, b, 'polos'))
+      .replaceAll('{malam}', k.form.malam(selisihHari(masuk, keluar))).replaceAll('{tamu}', t.tamuN(tamu))
+      .replaceAll('{bungalow}', wa.bungalow))}`
+    : '';
+  function cekWa(e: MouseEvent<HTMLAnchorElement>) {
+    if (tautanCek) return;
+    e.preventDefault();
+    setGalat(t.dulu);
+  }
+
   const bulat = 'inline-flex size-9 items-center justify-center rounded-full bg-white text-laut shadow-tipis transition-colors hover:bg-buih disabled:opacity-35 disabled:shadow-none';
 
   return (
@@ -125,7 +142,7 @@ export default function CariCepat({ b, awal, akhir, checkIn, checkOut, sisa, uni
       </div>
 
       <div className="grid content-end gap-3 sm:grid-cols-2 xl:col-start-2 xl:row-start-3 xl:grid-cols-1">
-        <div className="flex items-center gap-3 rounded-2xl bg-embun p-2 pr-2.5">
+        <div className="flex items-center gap-3 rounded-2xl bg-embun p-2 pr-2.5 sm:col-span-2 xl:col-span-1">
           <span aria-hidden className="flex size-12 shrink-0 items-center justify-center rounded-xl bg-white text-biru-tua shadow-tipis">
             <Ikon nama="orang" className="size-5" />
           </span>
@@ -140,7 +157,17 @@ export default function CariCepat({ b, awal, akhir, checkIn, checkOut, sisa, uni
             <Ikon nama="tambah" className="size-4" />
           </button>
         </div>
-        <button className="tombol h-full min-h-14 w-full">{tombol ?? k.cekKetersediaan}</button>
+        {/* Pay goes straight to payment, DAMPIER's sheet or the booking form.
+            Check availability asks on WhatsApp with the chosen stay. */}
+        <div className={`grid gap-3 sm:col-span-2 xl:col-span-1 ${wa?.tautan ? 'sm:grid-cols-2 xl:grid-cols-1' : ''}`}>
+          <button className="tombol min-h-14 w-full" data-bayar>{tombol ?? k.bayarSekarang}</button>
+          {wa?.tautan && (
+            <a href={tautanCek || wa.tautan} onClick={cekWa} target="_blank" rel="noopener noreferrer" aria-label={t.waBaru}
+              className="tombol tombol-putih min-h-14 w-full" data-cek-wa>
+              <Ikon nama="chat" className="size-5" /> {k.cekKetersediaan}
+            </a>
+          )}
+        </div>
         {galat && <p role="alert" className="rounded-2xl bg-[#fde3dc] px-4 py-3 text-sm font-semibold text-merah sm:col-span-2 xl:col-span-1">{galat}</p>}
         <div className="grid grid-cols-2 items-end gap-2 pt-1 text-xs text-abu sm:col-span-2 xl:col-span-1">
           <p>{k.checkInOut.masuk}<span className="block text-sm font-semibold text-laut">{checkIn}</span></p>

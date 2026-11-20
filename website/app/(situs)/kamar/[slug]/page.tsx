@@ -11,7 +11,7 @@ import { bahasaAktif } from '@/lib/bahasa';
 import { ambilSitus, daftarKamar, gambarCadangan, kamarDariSlug, pemesananAktif, sisaKamar } from '@/lib/data';
 import { pastikanSegar } from '@/lib/sinkron';
 import { kamus } from '@/lib/kamus';
-import { dataPengelola, pilih, rupiah, tautanWa } from '@/lib/format';
+import { dataPengelola, dwi, pilih, rupiah, tautanWa } from '@/lib/format';
 import { hariIni, tambahHari } from '@/lib/tanggal';
 import { KISI, rentang } from '@/lib/kisi';
 import Perkiraan from '@/components/Perkiraan';
@@ -120,7 +120,8 @@ export default async function HalamanPondok({ params }: P) {
         <Bagian latar="buih" id="tanggal">
           <CariCepat b={b} awal={awal} akhir={akhir} checkIn={situs.checkIn} checkOut={situs.checkOut} sisa={sisa} unit={km.jumlah_unit}
             kapasitas={km.kapasitas} minMalam={km.min_malam} maksTamu={Math.min(20, km.kapasitas * km.jumlah_unit)}
-            kamar={km.slug} judul={k.pilihTanggal} tombol={k.pesanPondok} pengelola={dataPengelola(situs, b)} />
+            kamar={km.slug} judul={k.pilihTanggal} pengelola={dataPengelola(situs, b)}
+            wa={{ tautan: tautanWa(situs.whatsapp), pesan: dwi(situs.pesanCekWa, b), bungalow: pilih(b, km.nama, km.nama_en) }} />
         </Bagian>
       )}
 

@@ -27,7 +27,9 @@ const id = {
   cariPondok: 'Cari bungalow',
   rencana: 'Rencanakan liburanmu',
   cekKetersediaan: 'Cek ketersediaan',
-  rencanaTanggal: { diKalender: 'Ketuk di kalender', dulu: 'Pilih tanggal tiba dan pulang dulu.', tidakMuat: (n: number) => `Tanggal tadi tidak cukup untuk ${n} tamu. Pilih tanggal lain.`, kurangTamu: 'Kurangi tamu', tambahTamu: 'Tambah tamu' },
+  bayarSekarang: 'Bayar sekarang',
+  bungalowUmum: 'bungalow',
+  rencanaTanggal: { diKalender: 'Ketuk di kalender', dulu: 'Pilih tanggal tiba dan pulang dulu.', tidakMuat: (n: number) => `Tanggal tadi tidak cukup untuk ${n} tamu. Pilih tanggal lain.`, kurangTamu: 'Kurangi tamu', tambahTamu: 'Tambah tamu', tamuN: (n: number) => `${n} tamu`, waBaru: 'Cek ketersediaan lewat WhatsApp, terbuka di jendela baru' },
   lembarDampier: {
     judul: 'Pembayaran DAMPIER', membuka: 'Membuka pembayaran', dikelola: 'Pemesanan online dikelola oleh thedampier.com',
     lambat: 'Pembayaran belum terbuka. Sinyal mungkin sedang lemah.', ulang: 'Coba lagi', tutup: 'Tutup',
@@ -262,7 +264,9 @@ const en: Kamus = {
   cariPondok: 'Find a bungalow',
   rencana: 'Plan your stay',
   cekKetersediaan: 'Check availability',
-  rencanaTanggal: { diKalender: 'Tap it on the calendar', dulu: 'Pick your arrival and departure dates first.', tidakMuat: (n) => `Those dates no longer fit ${n} guests. Please pick other dates.`, kurangTamu: 'Fewer guests', tambahTamu: 'More guests' },
+  bayarSekarang: 'Pay now',
+  bungalowUmum: 'a bungalow',
+  rencanaTanggal: { diKalender: 'Tap it on the calendar', dulu: 'Pick your arrival and departure dates first.', tidakMuat: (n) => `Those dates no longer fit ${n} guests. Please pick other dates.`, kurangTamu: 'Fewer guests', tambahTamu: 'More guests', tamuN: (n) => (n === 1 ? '1 guest' : `${n} guests`), waBaru: 'Check availability on WhatsApp, opens in a new window' },
   lembarDampier: {
     judul: 'DAMPIER payment', membuka: 'Opening payment', dikelola: 'Online bookings managed by thedampier.com',
     lambat: 'The payment has not opened yet. The connection may be weak.', ulang: 'Try again', tutup: 'Close',

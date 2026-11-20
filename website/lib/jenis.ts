@@ -131,6 +131,7 @@ export type Situs = {
   pengelolaTeks: Dua;
   pengelola: string;
   whatsapp: string;
+  pesanCekWa: Dua;
   email: string;
   instagram: string;
   facebook: string;
