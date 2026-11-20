@@ -8,6 +8,7 @@ import { pastikanSegar } from '@/lib/sinkron';
 import { lembarDampierSitus } from '@/lib/dampier';
 import { asalHalaman } from '@/lib/asal';
 import { daftarPaket } from '@/lib/paket';
+import { pondokUntuk } from '@/lib/harga';
 import { kamus } from '@/lib/kamus';
 import { dataPengelola, tautanWa } from '@/lib/format';
 import { kursAktif } from '@/lib/uang-server';
@@ -33,6 +34,7 @@ export default async function Pesan({ searchParams }: { searchParams: Promise<Re
       q.set('dampier_tiba', sp.masuk);
       q.set('dampier_pulang', sp.keluar);
       q.set('dampier_tamu', String(angka(sp.tamu, 1, 20, 2)));
+      if (angka(sp.anak, 0, 8, 0)) q.set('dampier_anak', String(angka(sp.anak, 0, 8, 0)));
     }
     redirect(`/kamar/${dampier.kamar}${q.size ? `?${q}` : ''}#rencana`);
   }
@@ -50,8 +52,9 @@ export default async function Pesan({ searchParams }: { searchParams: Promise<Re
   let masuk = sahTanggal(sp.masuk) && sp.masuk >= awal && sp.masuk <= akhir ? sp.masuk : '';
   let keluar = masuk && sahTanggal(sp.keluar) && sp.keluar > masuk ? sp.keluar : '';
   const tamu = angka(sp.tamu, 1, 20, 2);
+  const anakTautan = angka(sp.anak, 0, 8, 0);
   // without a bungalow count, enough bungalows for the guests from the home page
-  const jumlahKamar = !km ? 1 : sp.pondok ? angka(sp.pondok, 1, km.jumlah_unit, 1) : Math.min(km.jumlah_unit, Math.ceil(tamu / Math.max(1, km.kapasitas)));
+  const jumlahKamar = !km ? 1 : sp.pondok ? angka(sp.pondok, 1, km.jumlah_unit, 1) : Math.min(km.jumlah_unit, pondokUntuk(tamu, anakTautan, km.kapasitas, situs.anakPerPondok));
   const kap = km ? km.kapasitas * jumlahKamar : 2;
   if (km && masuk && keluar) {
     const p = sisa[km.id] ?? {};
@@ -92,10 +95,12 @@ export default async function Pesan({ searchParams }: { searchParams: Promise<Re
         paket={daftarPaket(situs)}
         aktif={aktif}
         wa={tautanWa(situs.whatsapp, k.pesanWaUmum)}
-        mula={{ kamarId: km?.id ?? 0, masuk, keluar, dewasa: Math.min(tamu, kap), anak: 0, jumlahKamar }}
+        mula={{ kamarId: km?.id ?? 0, masuk, keluar, dewasa: Math.min(tamu, kap), anak: Math.min(anakTautan, situs.anakPerPondok * jumlahKamar), jumlahKamar }}
         ditolak={ditolak}
         dariTautan={dariTautan}
         pengelola={dataPengelola(situs, b)}
+        usiaGratis={situs.usiaGratis}
+        anakPerPondok={situs.anakPerPondok}
       />
     </Bagian>
   );

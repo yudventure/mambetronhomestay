@@ -14,6 +14,7 @@ import type { Bahasa } from '@/lib/jenis';
 import { kamus } from '@/lib/kamus';
 import { bacaRencana, simpanRencana } from '@/lib/rencana';
 import { daftarMalam, selisihHari } from '@/lib/tanggal';
+import { pondokUntuk } from '@/lib/harga';
 
 type Props = {
   b: Bahasa;
@@ -37,26 +38,32 @@ type Props = {
   // message from the panel with {tiba} {pulang} {malam} {tamu} {bungalow},
   // and the bungalow's name for {bungalow}
   wa?: { tautan: string; pesan: string; bungalow: string } | null;
+  // children under this age stay free and share their parents' bed, a few per bungalow
+  usiaGratis: number;
+  anakPerPondok: number;
 };
 type Rentang = { masuk: string; keluar: string };
 
 const KOSONG: Rentang = { masuk: '', keluar: '' };
 
-export default function CariCepat({ b, awal, akhir, checkIn, checkOut, sisa, unit, kapasitas, minMalam, maksTamu, kamar, judul, tombol, pengelola, wa }: Props) {
+export default function CariCepat({ b, awal, akhir, checkIn, checkOut, sisa, unit, kapasitas, minMalam, maksTamu, kamar, judul, tombol, pengelola, wa, usiaGratis, anakPerPondok }: Props) {
   const k = kamus(b);
   const t = k.rencanaTanggal;
   const [{ masuk, keluar }, setRentang] = useState<Rentang>(KOSONG);
+  // paying guests (adults and children from the free age) and the children under it
   const [tamu, setTamu] = useState(Math.min(2, maksTamu));
+  const [anak, setAnak] = useState(0);
+  const maksAnak = Math.min(8, anakPerPondok * unit);
   const [galat, setGalat] = useState('');
   // bumped when remembered dates are restored, so the calendar opens on that month
   const [pulih, setPulih] = useState(0);
 
-  const butuhUntuk = useCallback((n: number) => Math.max(1, Math.ceil(n / Math.max(1, kapasitas))), [kapasitas]);
-  const butuh = butuhUntuk(tamu);
+  const butuhUntuk = useCallback((n: number, a: number) => pondokUntuk(n, a, kapasitas, anakPerPondok), [kapasitas, anakPerPondok]);
+  const butuh = butuhUntuk(tamu, anak);
 
   // a stay that no longer fits loses its check-out, or both dates when even the first night is full
-  const cocokkan = useCallback((r: Rentang, n: number): Rentang => {
-    const penuh = (d: string) => (sisa[d] ?? unit) < butuhUntuk(n);
+  const cocokkan = useCallback((r: Rentang, n: number, a: number): Rentang => {
+    const penuh = (d: string) => (sisa[d] ?? unit) < butuhUntuk(n, a);
     if (!r.masuk) return KOSONG;
     if (r.masuk < awal || r.masuk > akhir || penuh(r.masuk)) return KOSONG;
     if (r.keluar && (selisihHari(r.masuk, r.keluar) < minMalam || daftarMalam(r.masuk, r.keluar).some(penuh))) return { masuk: r.masuk, keluar: '' };
@@ -66,9 +73,10 @@ export default function CariCepat({ b, awal, akhir, checkIn, checkOut, sisa, uni
   useEffect(() => {
     const r = bacaRencana();
     if (!r) return;
-    const n = Math.min(maksTamu, r.tamu);
+    const n = Math.min(maksTamu, r.tamu), a = Math.min(maksAnak, r.anak);
     setTamu(n);
-    setRentang(cocokkan(r, n));
+    setAnak(a);
+    setRentang(cocokkan(r, n, a));
     setPulih((x) => x + 1);
     // run once, later changes come from the visitor
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -77,16 +85,17 @@ export default function CariCepat({ b, awal, akhir, checkIn, checkOut, sisa, uni
   function pilih(a: string, z: string) {
     setRentang({ masuk: a, keluar: z });
     setGalat('');
-    simpanRencana({ masuk: a, keluar: z, tamu });
+    simpanRencana({ masuk: a, keluar: z, tamu, anak });
   }
 
-  function ubahTamu(n: number) {
-    const baru = Math.min(maksTamu, Math.max(1, n));
-    const r = cocokkan({ masuk, keluar }, baru);
+  function ubahTamu(n: number, a = anak) {
+    const baru = Math.min(maksTamu, Math.max(1, n)), anakBaru = Math.min(maksAnak, Math.max(0, a));
+    const r = cocokkan({ masuk, keluar }, baru, anakBaru);
     setTamu(baru);
+    setAnak(anakBaru);
     setRentang(r);
-    setGalat(r.keluar !== keluar || r.masuk !== masuk ? t.tidakMuat(baru) : '');
-    simpanRencana({ ...r, tamu: baru });
+    setGalat(r.keluar !== keluar || r.masuk !== masuk ? t.tidakMuat(baru + anakBaru) : '');
+    simpanRencana({ ...r, tamu: baru, anak: anakBaru });
   }
 
   function kirim(e: FormEvent<HTMLFormElement>) {
@@ -97,7 +106,7 @@ export default function CariCepat({ b, awal, akhir, checkIn, checkOut, sisa, uni
     }
     // DAMPIER's payment sheet takes the stay when it is on (LembarDampier),
     // otherwise the form goes on to /pesan.
-    const tanya = new CustomEvent('mambetron:pesan', { cancelable: true, detail: { masuk, keluar, tamu, kamar } });
+    const tanya = new CustomEvent('mambetron:pesan', { cancelable: true, detail: { masuk, keluar, tamu, anak, kamar } });
     if (!window.dispatchEvent(tanya)) e.preventDefault();
   }
 
@@ -105,7 +114,7 @@ export default function CariCepat({ b, awal, akhir, checkIn, checkOut, sisa, uni
   const tautanCek = wa?.tautan && masuk && keluar
     ? `${wa.tautan}?text=${encodeURIComponent(wa.pesan
       .replaceAll('{tiba}', tanggal(masuk, b, 'polos')).replaceAll('{pulang}', tanggal(keluar, b, 'polos'))
-      .replaceAll('{malam}', k.form.malam(selisihHari(masuk, keluar))).replaceAll('{tamu}', t.tamuN(tamu))
+      .replaceAll('{malam}', k.form.malam(selisihHari(masuk, keluar))).replaceAll('{tamu}', t.tamuN(tamu) + (anak ? t.danAnak(anak, usiaGratis) : ''))
       .replaceAll('{bungalow}', wa.bungalow))}`
     : '';
   function cekWa(e: MouseEvent<HTMLAnchorElement>) {
@@ -122,6 +131,7 @@ export default function CariCepat({ b, awal, akhir, checkIn, checkOut, sisa, uni
       <input type="hidden" name="masuk" value={masuk} />
       <input type="hidden" name="keluar" value={keluar} />
       <input type="hidden" name="tamu" value={tamu} />
+      {anak > 0 && <input type="hidden" name="anak" value={anak} />}
       {kamar && <input type="hidden" name="kamar" value={kamar} />}
 
       <div className="flex items-center gap-3 xl:col-start-2 xl:row-start-1">
@@ -142,20 +152,40 @@ export default function CariCepat({ b, awal, akhir, checkIn, checkOut, sisa, uni
       </div>
 
       <div className="grid content-end gap-3 sm:grid-cols-2 xl:col-start-2 xl:row-start-3 xl:grid-cols-1">
-        <div className="flex items-center gap-3 rounded-2xl bg-embun p-2 pr-2.5 sm:col-span-2 xl:col-span-1">
-          <span aria-hidden className="flex size-12 shrink-0 items-center justify-center rounded-xl bg-white text-biru-tua shadow-tipis">
-            <Ikon nama="orang" className="size-5" />
-          </span>
-          <span className="min-w-0 flex-1">
-            <span className="block text-xs font-semibold text-abu" id="label-tamu">{k.tamu}</span>
-            <output aria-labelledby="label-tamu" aria-live="polite" className="block font-semibold tabular-nums text-laut">{tamu}</output>
-          </span>
-          <button type="button" onClick={() => ubahTamu(tamu - 1)} disabled={tamu <= 1} aria-label={t.kurangTamu} className={bulat}>
-            <Ikon nama="kurang" className="size-4" />
-          </button>
-          <button type="button" onClick={() => ubahTamu(tamu + 1)} disabled={tamu >= maksTamu} aria-label={t.tambahTamu} className={bulat}>
-            <Ikon nama="tambah" className="size-4" />
-          </button>
+        {/* paying guests, then the children under the free age who stay free */}
+        <div className="grid gap-1 rounded-2xl bg-embun p-2 pr-2.5 sm:col-span-2 xl:col-span-1" data-rincian-tamu>
+          <div className="flex items-center gap-3">
+            <span aria-hidden className="flex size-12 shrink-0 items-center justify-center rounded-xl bg-white text-biru-tua shadow-tipis">
+              <Ikon nama="orang" className="size-5" />
+            </span>
+            <span className="min-w-0 flex-1">
+              <span className="block text-xs font-semibold text-abu" id="label-tamu">{k.tamu}</span>
+              <output aria-labelledby="label-tamu" aria-live="polite" className="block font-semibold tabular-nums text-laut">{tamu}</output>
+              <span className="block text-[0.6875rem] leading-tight text-abu">{k.form.dewasaKet(usiaGratis)}</span>
+            </span>
+            <button type="button" onClick={() => ubahTamu(tamu - 1)} disabled={tamu <= 1} aria-label={t.kurangTamu} className={bulat}>
+              <Ikon nama="kurang" className="size-4" />
+            </button>
+            <button type="button" onClick={() => ubahTamu(tamu + 1)} disabled={tamu >= maksTamu} aria-label={t.tambahTamu} className={bulat}>
+              <Ikon nama="tambah" className="size-4" />
+            </button>
+          </div>
+          <div className="flex items-center gap-3">
+            <span aria-hidden className="flex size-12 shrink-0 items-center justify-center rounded-xl bg-white text-biru-tua shadow-tipis">
+              <Ikon nama="hati" className="size-5" />
+            </span>
+            <span className="min-w-0 flex-1">
+              <span className="block text-xs font-semibold text-abu" id="label-anak">{k.form.anak(usiaGratis)}</span>
+              <output aria-labelledby="label-anak" aria-live="polite" className="block font-semibold tabular-nums text-laut">{anak}</output>
+              <span className="block text-[0.6875rem] leading-tight text-abu">{k.form.anakKet}</span>
+            </span>
+            <button type="button" onClick={() => ubahTamu(tamu, anak - 1)} disabled={anak <= 0} aria-label={t.kurangAnak} className={bulat}>
+              <Ikon nama="kurang" className="size-4" />
+            </button>
+            <button type="button" onClick={() => ubahTamu(tamu, anak + 1)} disabled={anak >= maksAnak} aria-label={t.tambahAnak} className={bulat}>
+              <Ikon nama="tambah" className="size-4" />
+            </button>
+          </div>
         </div>
         {/* Pay goes straight to payment, DAMPIER's sheet or the booking form.
             Check availability asks on WhatsApp with the chosen stay. */}

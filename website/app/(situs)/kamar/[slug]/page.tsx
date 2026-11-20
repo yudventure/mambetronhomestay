@@ -71,8 +71,8 @@ export default async function HalamanPondok({ params }: P) {
               <p className="font-judul text-3xl font-semibold text-laut">{rupiah(km.harga, b)}</p>
               <p className="text-sm text-abu">{k.perSkema[km.skema_harga]}</p>
               <Perkiraan idr={km.harga} kurs={kurs} b={b} className="mt-1 text-abu" />
-              {km.skema_harga === 'orang' && km.harga_anak != null && km.harga_anak !== km.harga && (
-                <p className="mt-2 text-sm font-semibold text-biru-tua">{k.hargaAnak(rupiah(km.harga_anak, b))}</p>
+              {km.skema_harga === 'orang' && (
+                <p className="mt-2 text-sm font-semibold text-biru-tua" data-aturan-anak>{k.hargaAnak(situs.usiaGratis)}</p>
               )}
               <div className="mt-4 flex flex-wrap gap-2">
                 {aktif
@@ -120,7 +120,7 @@ export default async function HalamanPondok({ params }: P) {
         <Bagian latar="buih" id="tanggal">
           <CariCepat b={b} awal={awal} akhir={akhir} checkIn={situs.checkIn} checkOut={situs.checkOut} sisa={sisa} unit={km.jumlah_unit}
             kapasitas={km.kapasitas} minMalam={km.min_malam} maksTamu={Math.min(20, km.kapasitas * km.jumlah_unit)}
-            kamar={km.slug} judul={k.pilihTanggal} pengelola={dataPengelola(situs, b)}
+            kamar={km.slug} judul={k.pilihTanggal} pengelola={dataPengelola(situs, b)} usiaGratis={situs.usiaGratis} anakPerPondok={situs.anakPerPondok}
             wa={{ tautan: tautanWa(situs.whatsapp), pesan: dwi(situs.pesanCekWa, b), bungalow: pilih(b, km.nama, km.nama_en) }} />
         </Bagian>
       )}

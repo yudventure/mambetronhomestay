@@ -26,7 +26,7 @@ export default function FormManual({ kamar, layanan, hari }: { kamar: Pick<Kamar
         <div><label className="label-isian" htmlFor="jumlahKamar">Jumlah bungalow</label><input id="jumlahKamar" name="jumlahKamar" type="number" min={1} defaultValue={1} className="isian" /></div>
         <div className="grid grid-cols-2 gap-3">
           <div><label className="label-isian" htmlFor="dewasa">Dewasa</label><input id="dewasa" name="dewasa" type="number" min={1} defaultValue={2} className="isian" /></div>
-          <div><label className="label-isian" htmlFor="anak">Anak</label><input id="anak" name="anak" type="number" min={0} defaultValue={0} className="isian" /></div>
+          <div><label className="label-isian" htmlFor="anak">Anak gratis (di bawah usia gratis)</label><input id="anak" name="anak" type="number" min={0} defaultValue={0} className="isian" /></div>
         </div>
         {layanan.length > 0 && (
           <fieldset className="sm:col-span-2">

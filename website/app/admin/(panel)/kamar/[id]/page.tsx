@@ -74,9 +74,8 @@ export default async function UbahKamar({ params, searchParams }: { params: Prom
               </select>
             </div>
             <div>
-              <label className="label-isian" htmlFor="harga_anak">Harga anak</label>
-              <input id="harga_anak" name="harga_anak" inputMode="numeric" defaultValue={k.harga_anak ?? ''} className="isian" />
-              <p className="bantuan">Kosongkan bila sama dengan dewasa. Hanya untuk harga per orang.</p>
+              <p className="label-isian">Harga anak</p>
+              <p className="bantuan">Anak di bawah usia gratis menginap gratis, dan anak sejak usia itu membayar harga dewasa. Usia dan jumlah anak gratis per bungalow diatur di Isi situs, bagian Pemesanan dan pembayaran.</p>
             </div>
             <div>
               <label className="label-isian" htmlFor="kapasitas">Muat berapa orang per bungalow</label>

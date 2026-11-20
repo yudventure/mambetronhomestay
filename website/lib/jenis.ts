@@ -182,6 +182,8 @@ export type Situs = {
   paketHarga: { nama: Dua; syarat: Dua; persen: number | string }[];
   batasHari: number;
   jedaHari: number;
+  usiaGratis: number;
+  anakPerPondok: number;
   bank: Rekening[];
   catatanBayar: Dua;
   pesanTerima: Dua;

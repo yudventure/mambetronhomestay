@@ -11,7 +11,7 @@ import { daftarMalam, hariIni, sahTanggal, selisihHari, tambahHari } from './tan
 
 export type KodeGalat =
   | 'kamar' | 'tanggal' | 'terlaluCepat' | 'terlaluJauh' | 'minMalam' | 'maksMalam'
-  | 'jumlahKamar' | 'tamu' | 'kapasitas' | 'nama' | 'kontak' | 'email' | 'penuh' | 'paket';
+  | 'jumlahKamar' | 'tamu' | 'kapasitas' | 'anak' | 'nama' | 'kontak' | 'email' | 'penuh' | 'paket';
 
 export class GalatPesan extends Error {
   constructor(public kode: KodeGalat, public isi: Record<string, string | number> = {}) {
@@ -73,7 +73,8 @@ export function periksa(m: MasukanPesan, kamar: Kamar | null, situs: Situs) {
   if (malam > 60) throw new GalatPesan('maksMalam');
   if (!Number.isInteger(m.jumlahKamar) || m.jumlahKamar < 1 || m.jumlahKamar > kamar.jumlah_unit) throw new GalatPesan('jumlahKamar', { n: kamar.jumlah_unit });
   if (!Number.isInteger(m.dewasa) || m.dewasa < 1 || !Number.isInteger(m.anak) || m.anak < 0) throw new GalatPesan('tamu');
-  if (m.dewasa + m.anak > kamar.kapasitas * m.jumlahKamar) throw new GalatPesan('kapasitas', { n: kamar.kapasitas * m.jumlahKamar });
+  if (m.dewasa > kamar.kapasitas * m.jumlahKamar) throw new GalatPesan('kapasitas', { n: kamar.kapasitas * m.jumlahKamar });
+  if (m.anak > situs.anakPerPondok * m.jumlahKamar) throw new GalatPesan('anak', { n: situs.anakPerPondok * m.jumlahKamar, usia: situs.usiaGratis });
   if (potong(m.nama, 120).length < 2) throw new GalatPesan('nama');
   if (m.sumber !== 'admin' && m.telepon.replace(/\D/g, '').length < 8) throw new GalatPesan('kontak');
   if (m.email && !surelSah(m.email.trim())) throw new GalatPesan('email');

@@ -39,6 +39,9 @@ type Props = {
   dariTautan: boolean;
   // "Managed by thedampier.com" under the send button
   pengelola?: DataPengelola | null;
+  // children under this age stay free, a few per bungalow (Isi situs)
+  usiaGratis: number;
+  anakPerPondok: number;
 };
 
 function Kotak({ judul, children }: { judul: string; children: React.ReactNode }) {
@@ -74,7 +77,7 @@ function Hitung({ label, ket, nilai, min, maks, ubah, kurang, tambah }: {
   );
 }
 
-export default function FormPesan({ b, kamar, layanan, sisa, awal, akhir, dpPersen, paket, aktif, wa, kurs, mula, ditolak, dariTautan, pengelola }: Props) {
+export default function FormPesan({ b, kamar, layanan, sisa, awal, akhir, dpPersen, paket, aktif, wa, kurs, mula, ditolak, dariTautan, pengelola, usiaGratis, anakPerPondok }: Props) {
   const k = KAMUS[b];
   const f = k.form;
   const [hasil, aksi, sedang] = useActionState<HasilKirim, FormData>(kirimPesanan, { galat: '' });
@@ -112,12 +115,13 @@ export default function FormPesan({ b, kamar, layanan, sisa, awal, akhir, dpPers
     setKeluar(cocok(r.masuk, r.keluar, km.jumlah_unit, jumlahKamar, sisaKm, km.min_malam) ? r.keluar : '');
     const kap = km.kapasitas * jumlahKamar;
     setDewasa(Math.max(1, Math.min(r.tamu, kap)));
+    setAnak(Math.min(r.anak, anakPerPondok * jumlahKamar));
     setPulih((n) => n + 1);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
-    if (masuk) simpanRencana({ masuk, keluar, tamu: dewasa + anak });
+    if (masuk) simpanRencana({ masuk, keluar, tamu: dewasa, anak });
   }, [masuk, keluar, dewasa, anak]);
 
   // keep the chosen dates only while every night still fits
@@ -135,12 +139,13 @@ export default function FormPesan({ b, kamar, layanan, sisa, awal, akhir, dpPers
     setJumlahKamar(jk);
     const kap = baru.kapasitas * jk;
     if (dewasa > kap) setDewasa(kap);
-    if (dewasa + anak > kap) setAnak(Math.max(0, kap - Math.min(dewasa, kap)));
+    if (anak > anakPerPondok * jk) setAnak(anakPerPondok * jk);
     if (!cocok(masuk, keluar, baru.jumlah_unit, jk, sisa[id] ?? {}, baru.min_malam)) setKeluar('');
   }
 
   function gantiJumlah(n: number) {
     setJumlahKamar(n);
+    if (anak > anakPerPondok * n) setAnak(anakPerPondok * n);
     if (!cocok(masuk, keluar, km.jumlah_unit, n, sisaKm, km.min_malam)) setKeluar('');
   }
 
@@ -248,8 +253,8 @@ export default function FormPesan({ b, kamar, layanan, sisa, awal, akhir, dpPers
             {km.jumlah_unit > 1 && (
               <Hitung label={f.jumlahKamar} ket={k.unit(km.jumlah_unit)} nilai={jumlahKamar} min={1} maks={km.jumlah_unit} ubah={gantiJumlah} kurang={f.kurang} tambah={f.tambah} />
             )}
-            <Hitung label={f.dewasa} nilai={dewasa} min={1} maks={Math.max(1, kapasitas - anak)} ubah={setDewasa} kurang={f.kurang} tambah={f.tambah} />
-            <Hitung label={f.anak} ket={f.anakKet} nilai={anak} min={0} maks={Math.max(0, kapasitas - dewasa)} ubah={setAnak} kurang={f.kurang} tambah={f.tambah} />
+            <Hitung label={f.dewasa} ket={f.dewasaKet(usiaGratis)} nilai={dewasa} min={1} maks={Math.max(1, kapasitas)} ubah={setDewasa} kurang={f.kurang} tambah={f.tambah} />
+            <Hitung label={f.anak(usiaGratis)} ket={f.anakKet} nilai={anak} min={0} maks={anakPerPondok * jumlahKamar} ubah={setAnak} kurang={f.kurang} tambah={f.tambah} />
             <p className="text-sm text-abu">{k.muat(kapasitas)}</p>
           </div>
         </Kotak>

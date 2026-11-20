@@ -160,7 +160,7 @@ export default async function Beranda() {
           <CariCepat b={b} awal={awal} akhir={akhir} checkIn={s.checkIn} checkOut={s.checkOut} sisa={sisa} unit={Math.max(1, unit)}
             kapasitas={Math.max(1, ...kamar.map((x) => x.kapasitas))} minMalam={kamar.length ? Math.max(1, Math.min(...kamar.map((x) => x.min_malam))) : 1}
             maksTamu={kamar.length ? Math.min(20, kamar.reduce((n, x) => n + x.kapasitas * x.jumlah_unit, 0)) : 6}
-            pengelola={dataPengelola(s, b)}
+            pengelola={dataPengelola(s, b)} usiaGratis={s.usiaGratis} anakPerPondok={s.anakPerPondok}
             wa={{ tautan: tautanWa(s.whatsapp), pesan: dwi(s.pesanCekWa, b), bungalow: kamar.length === 1 ? pilih(b, kamar[0].nama, kamar[0].nama_en) : k.bungalowUmum }} />
         </div>
       </section>

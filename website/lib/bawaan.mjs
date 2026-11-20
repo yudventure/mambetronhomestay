@@ -221,6 +221,11 @@ export const PENGATURAN = [
       { k: 'batasHari', label: 'Bisa dipesan sampai berapa hari ke depan', jenis: 'angka', min: 30, max: 730, bawaan: 365 },
       { k: 'jedaHari', label: 'Paling cepat berapa hari sebelum tiba', jenis: 'angka', min: 0, max: 30, bawaan: 1, bantuan: 'Isi 0 bila tamu boleh memesan untuk hari ini juga.' },
       {
+        k: 'usiaGratis', label: 'Anak gratis di bawah usia (tahun)', jenis: 'angka', min: 1, max: 12, bawaan: 5,
+        bantuan: 'Anak di bawah usia ini menginap gratis dan tidur bersama orang tuanya. Anak sejak usia ini membayar penuh seperti dewasa. Berlaku di kartu pilih tanggal, formulir pesan, dan halaman bungalow. Untuk lembar bayar DAMPIER, isi aturan yang sama di listing Mambetron di DAMPIER.',
+      },
+      { k: 'anakPerPondok', label: 'Anak gratis per bungalow', jenis: 'angka', min: 1, max: 4, bawaan: 1, bantuan: 'Berapa anak di bawah usia gratis yang boleh ikut di satu bungalow, di luar tamu yang membayar.' },
+      {
         k: 'bank', label: 'Rekening pembayaran', jenis: 'daftar', tambah: 'Tambah rekening',
         isian: [
           { k: 'bank', label: 'Bank', jenis: 'teks' },

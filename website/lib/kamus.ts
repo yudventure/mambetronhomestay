@@ -29,7 +29,7 @@ const id = {
   cekKetersediaan: 'Cek ketersediaan',
   bayarSekarang: 'Bayar sekarang',
   bungalowUmum: 'bungalow',
-  rencanaTanggal: { diKalender: 'Ketuk di kalender', dulu: 'Pilih tanggal tiba dan pulang dulu.', tidakMuat: (n: number) => `Tanggal tadi tidak cukup untuk ${n} tamu. Pilih tanggal lain.`, kurangTamu: 'Kurangi tamu', tambahTamu: 'Tambah tamu', tamuN: (n: number) => `${n} tamu`, waBaru: 'Cek ketersediaan lewat WhatsApp, terbuka di jendela baru' },
+  rencanaTanggal: { diKalender: 'Ketuk di kalender', dulu: 'Pilih tanggal tiba dan pulang dulu.', tidakMuat: (n: number) => `Tanggal tadi tidak cukup untuk ${n} tamu. Pilih tanggal lain.`, kurangTamu: 'Kurangi tamu', tambahTamu: 'Tambah tamu', tamuN: (n: number) => `${n} tamu`, danAnak: (n: number, u: number) => ` dan ${n} anak di bawah ${u} tahun`, kurangAnak: 'Kurangi anak', tambahAnak: 'Tambah anak', waBaru: 'Cek ketersediaan lewat WhatsApp, terbuka di jendela baru' },
   lembarDampier: {
     judul: 'Pembayaran DAMPIER', membuka: 'Membuka pembayaran', dikelola: 'Pemesanan online dikelola oleh thedampier.com',
     lambat: 'Pembayaran belum terbuka. Sinyal mungkin sedang lemah.', ulang: 'Coba lagi', tutup: 'Tutup',
@@ -56,7 +56,7 @@ const id = {
   pilihTanggal: 'Pilih tanggal menginap',
   tentangPondok: 'Tentang bungalow ini',
   fasilitas: 'Yang kamu dapat',
-  hargaAnak: (h: string) => `Anak di bawah 12 tahun ${h}`,
+  hargaAnak: (u: number) => `Anak di bawah ${u} tahun gratis, sejak ${u} tahun membayar penuh`,
   semuaPondok: 'Semua bungalow',
   tidakAdaPondok: 'Belum ada bungalow yang bisa dipesan. Hubungi kami lewat WhatsApp.',
   kalender: {
@@ -80,9 +80,10 @@ const id = {
     bagianData: 'Data pemesan',
     pondok: 'Bungalow',
     jumlahKamar: 'Jumlah bungalow',
-    dewasa: 'Dewasa',
-    anak: 'Anak',
-    anakKet: 'Di bawah 12 tahun',
+    dewasa: 'Tamu',
+    dewasaKet: (u: number) => `Dewasa dan anak ${u} tahun ke atas`,
+    anak: (u: number) => `Anak di bawah ${u} tahun`,
+    anakKet: 'Gratis',
     nama: 'Nama lengkap',
     telepon: 'Nomor WhatsApp',
     teleponKet: 'Kami mengonfirmasi pesanan lewat nomor ini.',
@@ -126,6 +127,7 @@ const id = {
     jumlahKamar: (n: number) => `Jumlah bungalow antara 1 dan ${n}.`,
     tamu: 'Minimal satu tamu dewasa.',
     kapasitas: (n: number) => `Pilihan ini muat paling banyak ${n} orang. Tambah jumlah bungalow atau pilih bungalow lain.`,
+    anak: (n: number, usia: number) => `Pilihan ini muat paling banyak ${n} anak di bawah ${usia} tahun. Tambah jumlah bungalow.`,
     nama: 'Tulis nama lengkap.',
     kontak: 'Tulis nomor WhatsApp yang aktif.',
     email: 'Alamat surel belum benar.',
@@ -266,7 +268,7 @@ const en: Kamus = {
   cekKetersediaan: 'Check availability',
   bayarSekarang: 'Pay now',
   bungalowUmum: 'a bungalow',
-  rencanaTanggal: { diKalender: 'Tap it on the calendar', dulu: 'Pick your arrival and departure dates first.', tidakMuat: (n) => `Those dates no longer fit ${n} guests. Please pick other dates.`, kurangTamu: 'Fewer guests', tambahTamu: 'More guests', tamuN: (n) => (n === 1 ? '1 guest' : `${n} guests`), waBaru: 'Check availability on WhatsApp, opens in a new window' },
+  rencanaTanggal: { diKalender: 'Tap it on the calendar', dulu: 'Pick your arrival and departure dates first.', tidakMuat: (n) => `Those dates no longer fit ${n} guests. Please pick other dates.`, kurangTamu: 'Fewer guests', tambahTamu: 'More guests', tamuN: (n) => (n === 1 ? '1 guest' : `${n} guests`), danAnak: (n, u) => ` and ${n} ${n === 1 ? 'child' : 'children'} under ${u}`, kurangAnak: 'Fewer children', tambahAnak: 'More children', waBaru: 'Check availability on WhatsApp, opens in a new window' },
   lembarDampier: {
     judul: 'DAMPIER payment', membuka: 'Opening payment', dikelola: 'Online bookings managed by thedampier.com',
     lambat: 'The payment has not opened yet. The connection may be weak.', ulang: 'Try again', tutup: 'Close',
@@ -293,7 +295,7 @@ const en: Kamus = {
   pilihTanggal: 'Choose your dates',
   tentangPondok: 'About this bungalow',
   fasilitas: 'What you get',
-  hargaAnak: (h) => `Children under 12 ${h}`,
+  hargaAnak: (u) => `Children under ${u} stay free, from ${u} they pay in full`,
   semuaPondok: 'All bungalows',
   tidakAdaPondok: 'No bungalows are open for booking yet. Message us on WhatsApp.',
   kalender: {
@@ -317,9 +319,10 @@ const en: Kamus = {
     bagianData: 'Your details',
     pondok: 'Bungalow',
     jumlahKamar: 'Number of bungalows',
-    dewasa: 'Adults',
-    anak: 'Children',
-    anakKet: 'Under 12',
+    dewasa: 'Guests',
+    dewasaKet: (u) => `Adults and children ${u} and over`,
+    anak: (u) => `Children under ${u}`,
+    anakKet: 'Free',
     nama: 'Full name',
     telepon: 'WhatsApp number',
     teleponKet: 'We confirm your booking on this number.',
@@ -363,6 +366,7 @@ const en: Kamus = {
     jumlahKamar: (n) => `Choose between 1 and ${n} bungalows.`,
     tamu: 'At least one adult, please.',
     kapasitas: (n) => `This choice sleeps up to ${n}. Add a bungalow or pick a bigger one.`,
+    anak: (n, usia) => `This choice takes up to ${n} ${n === 1 ? 'child' : 'children'} under ${usia}. Add a bungalow.`,
     nama: 'Please enter your full name.',
     kontak: 'Please enter a WhatsApp number we can reach.',
     email: 'That email address does not look right.',
@@ -488,6 +492,7 @@ export function pesanGalat(b: Bahasa, kode: KodeGalat | 'setuju' | 'sibuk' | 'ga
     case 'minMalam': return g.minMalam(Number(isi.n ?? 1));
     case 'jumlahKamar': return g.jumlahKamar(Number(isi.n ?? 1));
     case 'kapasitas': return g.kapasitas(Number(isi.n ?? 1));
+    case 'anak': return g.anak(Number(isi.n ?? 1), Number(isi.usia ?? 5));
     case 'penuh': return g.penuh(tgl ? tgl(String(isi.malam ?? '')) : String(isi.malam ?? ''));
     default: return g[kode];
   }
