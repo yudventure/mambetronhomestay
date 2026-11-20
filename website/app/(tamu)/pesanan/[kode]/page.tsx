@@ -18,6 +18,7 @@ import { kursAktif } from '@/lib/uang-server';
 import { SATUAN } from '@/lib/satuan.mjs';
 import type { StatusPesanan } from '@/lib/jenis';
 import { KISI2, rentang2 } from '@/lib/kisi';
+import { barisIsi, isiPesanan } from '@/lib/harga';
 
 export const metadata: Metadata = { robots: { index: false, follow: false } };
 
@@ -161,8 +162,9 @@ export default async function HalamanPesanan({ params, searchParams }: {
 
           <div className="mt-6 grid gap-3 text-[0.9375rem]">
             <div className="flex justify-between gap-3">
-              <span>{p.kamar_nama}<span className="block text-sm text-abu">{k.form.malam(p.malam)}{p.paket ? `, ${dwi(p.paket.nama, b)}` : ''}</span></span>
-              <span className="font-semibold tabular-nums">{rupiah(p.biaya_kamar, b)}</span>
+              <span>{p.kamar_nama}<span className="block text-sm text-abu">{k.form.malam(p.malam)}{p.paket ? `, ${dwi(p.paket.nama, b)}` : ''}</span>
+                {barisIsi(b, isiPesanan(p)).map((t) => <span key={t} className="block text-sm text-abu" data-isi-pondok>{t}</span>)}</span>
+              <span className="shrink-0 whitespace-nowrap font-semibold tabular-nums">{rupiah(p.biaya_kamar, b)}</span>
             </div>
             {p.rincian.map((r) => (
               <div key={r.id} className="flex justify-between gap-3">

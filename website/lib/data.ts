@@ -51,6 +51,7 @@ function keKamar(r: BarisKamar, foto: Foto[]): Kamar {
     fasilitas_en: baris2(r.fasilitas_en),
     harga_anak: r.harga_anak == null ? null : Number(r.harga_anak),
     skema_harga: r.skema_harga === 'kamar' ? 'kamar' : 'orang',
+    persen_sendiri: Number(r.persen_sendiri) || 0,
     aktif: Boolean(r.aktif),
     foto,
   };
@@ -62,6 +63,7 @@ function kamarBawaan(): Kamar[] {
     id: i + 1,
     harga_anak: k.harga_anak ?? null,
     skema_harga: k.skema_harga === 'kamar' ? 'kamar' : 'orang',
+    persen_sendiri: k.persen_sendiri ?? 0,
     aktif: true,
     foto: [],
   }));
@@ -242,6 +244,7 @@ export function kePesanan(r: BarisPesanan): Pesanan {
     rincian,
     paket: bacaPaket(r.paket),
     bayar_online: bacaBayarOnline(r.bayar_online),
+    persen_sendiri: Number(r.persen_sendiri) || 0,
     catatan: r.catatan ?? '',
     catatan_admin: r.catatan_admin ?? '',
     bahasa: r.bahasa === 'en' ? 'en' : 'id',

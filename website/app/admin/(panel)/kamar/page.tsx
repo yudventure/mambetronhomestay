@@ -4,6 +4,7 @@ import Kabar, { JudulAdmin } from '@/components/admin/Kabar';
 import { daftarKamar, gambarCadangan } from '@/lib/data';
 import { rupiah } from '@/lib/format';
 import { KAMUS } from '@/lib/kamus';
+import { hargaSendiri, persenSendiri } from '@/lib/harga';
 import { KISI, rentang } from '@/lib/kisi';
 
 export const metadata = { title: 'Bungalow' };
@@ -30,6 +31,9 @@ export default async function KamarAdmin({ searchParams }: { searchParams: Promi
               <p className="mt-1 text-sm text-abu">{k.jumlah_unit} unit, muat {k.kapasitas} orang, {k.foto.length} foto</p>
               <p className="mt-3 font-judul text-xl font-semibold text-laut">{rupiah(k.harga)}</p>
               <p className="text-sm text-abu">{KAMUS.id.perSkema[k.skema_harga]}</p>
+              {hargaSendiri(k.harga, persenSendiri(k)) < k.harga && (
+                <p className="text-sm text-abu">{KAMUS.id.hargaSendiri(rupiah(hargaSendiri(k.harga, persenSendiri(k))))}, {persenSendiri(k)}% lebih murah</p>
+              )}
             </div>
           </Link>
         ))}

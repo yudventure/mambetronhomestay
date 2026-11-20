@@ -12,6 +12,7 @@ import { KAMUS } from '@/lib/kamus';
 import { SATUAN } from '@/lib/satuan.mjs';
 import { STATUS_MIDTRANS, namaMetode } from '@/lib/bayar';
 import { headers } from 'next/headers';
+import { barisIsi, isiPesanan } from '@/lib/harga';
 
 export const metadata = { title: 'Rincian pesanan' };
 
@@ -93,7 +94,8 @@ export default async function RincianPesanan({ params, searchParams }: {
             <h2 className="text-2xl">Rincian harga</h2>
             <div className="mt-4 grid gap-3">
               <div className="flex justify-between gap-3">
-                <span>{p.kamar_nama}<span className="block text-sm text-abu">{rupiah(p.harga_satuan)} {KAMUS.id.perSkema[p.skema_harga]}, {p.malam} malam{p.paket ? `, paket ${p.paket.nama.id}${p.paket.persen ? ` +${p.paket.persen}%` : ''}` : ''}</span></span>
+                <span>{p.kamar_nama}<span className="block text-sm text-abu">{rupiah(p.harga_satuan)} {KAMUS.id.perSkema[p.skema_harga]}, {p.malam} malam{p.paket ? `, paket ${p.paket.nama.id}${p.paket.persen ? ` +${p.paket.persen}%` : ''}` : ''}</span>
+                  {isiPesanan(p)?.sendiri ? <span className="block text-sm text-abu" data-isi-pondok>{barisIsi('id', isiPesanan(p)).join('. ')}</span> : null}</span>
                 <span className="font-semibold tabular-nums">{rupiah(p.biaya_kamar)}</span>
               </div>
               {p.rincian.map((r) => (

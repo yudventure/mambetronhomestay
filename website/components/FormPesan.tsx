@@ -10,7 +10,7 @@ import { kirimPesanan, type HasilKirim } from '@/app/(situs)/pesan/aksi';
 import type { Bahasa, Kamar, Layanan } from '@/lib/jenis';
 import { KAMUS } from '@/lib/kamus';
 import { SATUAN } from '@/lib/satuan.mjs';
-import { hitungHarga } from '@/lib/harga';
+import { barisIsi, hitungHarga } from '@/lib/harga';
 import { dwi, pilih, rentangTanggal, rupiah, tanggal, type DataPengelola } from '@/lib/format';
 import type { Paket } from '@/lib/paket';
 import { bacaRencana, simpanRencana } from '@/lib/rencana';
@@ -19,7 +19,7 @@ import Perkiraan from './Perkiraan';
 import type { Kurs } from '@/lib/uang';
 import { daftarMalam, selisihHari } from '@/lib/tanggal';
 
-export type KamarForm = Pick<Kamar, 'id' | 'slug' | 'nama' | 'nama_en' | 'harga' | 'harga_anak' | 'skema_harga' | 'kapasitas' | 'jumlah_unit' | 'min_malam'> & { gambar: string };
+export type KamarForm = Pick<Kamar, 'id' | 'slug' | 'nama' | 'nama_en' | 'harga' | 'harga_anak' | 'skema_harga' | 'persen_sendiri' | 'kapasitas' | 'jumlah_unit' | 'min_malam'> & { gambar: string };
 
 type Props = {
   b: Bahasa;
@@ -356,8 +356,9 @@ export default function FormPesan({ b, kamar, layanan, sisa, awal, akhir, dpPers
         {malam > 0 && harga ? (
           <div className="mt-5 grid gap-3 text-[0.9375rem]">
             <div className="flex justify-between gap-3">
-              <span>{pilih(b, km.nama, km.nama_en)}<span className="block text-sm text-abu">{f.malam(malam)}{pk ? `, ${dwi(pk.nama, b)}` : ''}</span></span>
-              <span className="font-semibold tabular-nums">{rupiah(harga.biayaKamar, b)}</span>
+              <span>{pilih(b, km.nama, km.nama_en)}<span className="block text-sm text-abu">{f.malam(malam)}{pk ? `, ${dwi(pk.nama, b)}` : ''}</span>
+                {barisIsi(b, harga.isi).map((t) => <span key={t} className="block text-sm text-abu" data-isi-pondok>{t}</span>)}</span>
+              <span className="shrink-0 whitespace-nowrap font-semibold tabular-nums">{rupiah(harga.biayaKamar, b)}</span>
             </div>
             {harga.rincian.map((r) => (
               <div key={r.id} className="flex justify-between gap-3">

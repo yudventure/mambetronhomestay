@@ -123,9 +123,9 @@ async function pindahKamarLama(pool: mysql.Pool) {
   const k = KAMAR_AWAL[0];
   await pool.query(
     `UPDATE kamar SET slug = ?, nama = ?, nama_en = ?, ringkas = ?, ringkas_en = ?, deskripsi = ?, deskripsi_en = ?, fasilitas = ?,
-      fasilitas_en = ?, harga = ?, harga_anak = ?, skema_harga = ?, kapasitas = ?, jumlah_unit = ?, min_malam = ?, urutan = ? WHERE id = ?`,
+      fasilitas_en = ?, harga = ?, harga_anak = ?, skema_harga = ?, persen_sendiri = ?, kapasitas = ?, jumlah_unit = ?, min_malam = ?, urutan = ? WHERE id = ?`,
     [k.slug, k.nama, k.nama_en, k.ringkas, k.ringkas_en, k.deskripsi, k.deskripsi_en, k.fasilitas.join('\n'), k.fasilitas_en.join('\n'),
-      utama.harga === KAMAR_LAMA[0].harga ? k.harga : utama.harga, k.harga_anak, k.skema_harga, k.kapasitas, k.jumlah_unit, k.min_malam,
+      utama.harga === KAMAR_LAMA[0].harga ? k.harga : utama.harga, k.harga_anak, k.skema_harga, k.persen_sendiri, k.kapasitas, k.jumlah_unit, k.min_malam,
       k.urutan, utama.id],
   );
   await pool.query('DELETE FROM tutup WHERE kamar_id IN (?)', [ids]);
@@ -177,6 +177,21 @@ async function namaBungalow(pool: mysql.Pool) {
   }
 }
 
+// The owner's price, November 2026: the beachfront bungalow costs
+// Rp1.200.000 a night for two and a guest alone pays 30% less. Set once on
+// the beachfront bungalow (its address is still pondok-tepi-pantai on sites
+// from before the rename), or on the only bungalow, whatever it cost
+// before. Changes in the panel afterwards stick.
+async function hargaBungalow(pool: mysql.Pool) {
+  const [r] = await pool.query<mysql.ResultSetHeader>("INSERT IGNORE INTO pengaturan (kunci, nilai) VALUES ('harga-bungalow-2026-11', '1')");
+  if (r.affectedRows !== 1) return;
+  const k = KAMAR_AWAL[0];
+  const [ada] = await pool.query<(mysql.RowDataPacket & { id: number; slug: string })[]>('SELECT id, slug FROM kamar');
+  const ids = ada.length === 1 ? [ada[0].id] : ada.filter((x) => x.slug === k.slug || x.slug === 'pondok-tepi-pantai').map((x) => x.id);
+  if (!ids.length) return;
+  await pool.query('UPDATE kamar SET harga = ?, skema_harga = ?, persen_sendiri = ? WHERE id IN (?)', [k.harga, k.skema_harga, k.persen_sendiri, ids]);
+}
+
 // The about video the owner sent, put in once when the site has no video
 // link yet. Removing it in the panel afterwards sticks.
 async function videoAwal(pool: mysql.Pool) {
@@ -198,6 +213,7 @@ async function siapkan(pool: mysql.Pool) {
   await perbaruiTeksKamar(pool);
   await perbaruiTeksKamarCrlf(pool);
   await namaBungalow(pool);
+  await hargaBungalow(pool);
   await videoAwal(pool);
   // the first process to claim this row fills the empty database
   const [r] = await pool.query<mysql.ResultSetHeader>(
@@ -210,10 +226,10 @@ async function siapkan(pool: mysql.Pool) {
     for (const k of KAMAR_AWAL) {
       await pool.query(
         `INSERT INTO kamar (slug, nama, nama_en, ringkas, ringkas_en, deskripsi, deskripsi_en, fasilitas, fasilitas_en,
-          harga, harga_anak, skema_harga, kapasitas, jumlah_unit, min_malam, urutan)
-         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+          harga, harga_anak, skema_harga, persen_sendiri, kapasitas, jumlah_unit, min_malam, urutan)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
         [k.slug, k.nama, k.nama_en, k.ringkas, k.ringkas_en, k.deskripsi, k.deskripsi_en,
-          k.fasilitas.join('\n'), k.fasilitas_en.join('\n'), k.harga, k.harga_anak, k.skema_harga,
+          k.fasilitas.join('\n'), k.fasilitas_en.join('\n'), k.harga, k.harga_anak, k.skema_harga, k.persen_sendiri,
           k.kapasitas, k.jumlah_unit, k.min_malam, k.urutan],
       );
     }

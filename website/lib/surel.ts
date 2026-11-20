@@ -9,6 +9,7 @@ import { alamatSitus, envSurel, surelDiatur } from './env';
 import { dataPengelola, dwi, rupiah, tampilWa, tanggal, tautanWa, waktu } from './format';
 import type { Bahasa, Pesanan, Situs } from './jenis';
 import { KAMUS } from './kamus';
+import { barisIsi, isiPesanan } from './harga';
 import { bacaKonfigMidtrans } from './midtrans';
 import { susunSurel, type Blok, type Kaki } from './surel-html';
 
@@ -75,7 +76,7 @@ function barisMenginap(p: Pesanan, situs: Situs, b: Bahasa): [string, string][] 
 function barisHarga(p: Pesanan, b: Bahasa): [string, string][] {
   const k = KAMUS[b];
   return [
-    [p.kamar_nama, `${rupiah(p.biaya_kamar, b)}\n${k.form.malam(p.malam)}`],
+    [p.kamar_nama, [rupiah(p.biaya_kamar, b), k.form.malam(p.malam), ...barisIsi(b, isiPesanan(p))].join('\n')],
     ...p.rincian.map((r) => [b === 'en' && r.nama_en ? r.nama_en : r.nama, `${rupiah(r.subtotal, b)}\n${k.form.kali(r.jumlah, rupiah(r.harga, b))}`] as [string, string]),
   ];
 }

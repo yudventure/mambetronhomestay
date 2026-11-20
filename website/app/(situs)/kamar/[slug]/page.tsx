@@ -11,10 +11,10 @@ import { bahasaAktif } from '@/lib/bahasa';
 import { ambilSitus, daftarKamar, gambarCadangan, kamarDariSlug, pemesananAktif, sisaKamar } from '@/lib/data';
 import { pastikanSegar } from '@/lib/sinkron';
 import { kamus } from '@/lib/kamus';
-import { dataPengelola, dwi, pilih, rupiah, tautanWa } from '@/lib/format';
+import { dataPengelola, dwi, pilih, tautanWa } from '@/lib/format';
 import { hariIni, tambahHari } from '@/lib/tanggal';
 import { KISI, rentang } from '@/lib/kisi';
-import Perkiraan from '@/components/Perkiraan';
+import HargaPondok from '@/components/HargaPondok';
 import { kursAktif } from '@/lib/uang-server';
 
 type P = { params: Promise<{ slug: string }> };
@@ -67,13 +67,7 @@ export default async function HalamanPondok({ params }: P) {
               {km.jumlah_unit > 1 && <li className="inline-flex items-center gap-1.5 rounded-full bg-buih px-3 py-1"><Ikon nama="kamar" className="size-4" />{k.unit(km.jumlah_unit)}</li>}
             </ul>
             <div className="mt-6 rounded-3xl bg-buih p-5">
-              <p className="text-sm text-abu">{k.mulai}</p>
-              <p className="font-judul text-3xl font-semibold text-laut">{rupiah(km.harga, b)}</p>
-              <p className="text-sm text-abu">{k.perSkema[km.skema_harga]}</p>
-              <Perkiraan idr={km.harga} kurs={kurs} b={b} className="mt-1 text-abu" />
-              {km.skema_harga === 'orang' && (
-                <p className="mt-2 text-sm font-semibold text-biru-tua" data-aturan-anak>{k.hargaAnak(situs.usiaGratis)}</p>
-              )}
+              <HargaPondok b={b} kamar={km} kurs={kurs} ukuran="text-3xl" usiaGratis={situs.usiaGratis} />
               <div className="mt-4 flex flex-wrap gap-2">
                 {aktif
                   ? <a href="#rencana" className="tombol"><Ikon nama="kalender" className="size-4" /> {k.pilihTanggal}</a>

@@ -1,6 +1,8 @@
 // Price of a stay. Used by the booking form for the live total and by the
 // server when the booking is saved, so both always agree.
-import type { BarisLayanan, Kamar, Layanan, Satuan } from './jenis';
+import type { Bahasa, BarisLayanan, Kamar, Layanan, Pesanan, Satuan } from './jenis';
+import { KAMUS } from './kamus';
+import { rupiah } from './format';
 
 export function jumlahSatuan(satuan: Satuan, tamu: number, malam: number) {
   switch (satuan) {
@@ -18,17 +20,46 @@ export function pondokUntuk(tamu: number, anak: number, kapasitas: number, anakP
   return Math.max(1, Math.ceil(Math.max(1, tamu) / Math.max(1, kapasitas)), Math.ceil(Math.max(0, anak) / Math.max(1, anakPerPondok)));
 }
 
+// Price of a bungalow holding one paying guest, `persen` below the usual
+// price, rounded to whole thousands. The owner's rule, November 2026: a
+// bungalow for two is Rp1.200.000, a guest alone pays 30% less.
+export function hargaSendiri(harga: number, persen: number) {
+  const p = Math.min(90, Math.max(0, Math.round(persen) || 0));
+  return p > 0 ? Math.round((harga * (100 - p)) / 100 / 1000) * 1000 : harga;
+}
+
+// The solo discount a bungalow gives: per bungalow pricing for two or more
+// only, a bungalow for one has no one to be alone without.
+export const persenSendiri = (k: Pick<Kamar, 'skema_harga' | 'persen_sendiri' | 'kapasitas'>) =>
+  k.skema_harga === 'kamar' && k.kapasitas >= 2 ? Math.min(90, Math.max(0, Math.round(k.persen_sendiri) || 0)) : 0;
+
+// Paying guests spread evenly over the bungalows booked. `sendiri` are the
+// bungalows holding one paying guest or none (a second bungalow for a
+// parent with two children under the free age), which take the solo price,
+// the others the usual price. Only for bungalows priced per bungalow.
+export type IsiPondok = { penuh: number; sendiri: number; harga: number; hargaSendiri: number };
+export function isiPondok(kamar: Pick<Kamar, 'harga' | 'skema_harga' | 'persen_sendiri' | 'kapasitas'>, jumlahKamar: number, dewasa: number): IsiPondok | null {
+  if (kamar.skema_harga !== 'kamar') return null;
+  const r = Math.max(1, Math.round(jumlahKamar) || 1), t = Math.max(0, Math.round(dewasa) || 0);
+  const hs = hargaSendiri(kamar.harga, persenSendiri(kamar));
+  // fewer guests than bungalows leaves none with two
+  const q = Math.floor(t / r);
+  const sendiri = hs >= kamar.harga ? 0 : q === 0 ? r : q === 1 ? r - (t % r) : 0;
+  return { penuh: r - sendiri, sendiri, harga: kamar.harga, hargaSendiri: hs };
+}
+
 // `dewasa` are the paying guests, adults and children from the free age
 // (Isi situs, usiaGratis), who pay in full. `anak` are the children under
-// it, free and not counted for extras per person. The owner's rule,
-// November 2026: under 5 free, from 5 the full price.
+// it, free and not counted for extras per person or in a bungalow's guests.
+// The owner's rule, November 2026: under 5 free, from 5 the full price.
 export function hitungHarga(
-  kamar: Pick<Kamar, 'harga' | 'skema_harga'>,
+  kamar: Pick<Kamar, 'harga' | 'skema_harga' | 'persen_sendiri' | 'kapasitas'>,
   o: { malam: number; jumlahKamar: number; dewasa: number; anak: number; layanan: Layanan[]; dpPersen: number; persenPaket?: number },
 ) {
   const malam = Math.max(0, o.malam);
-  const dasar = kamar.skema_harga === 'kamar'
-    ? kamar.harga * o.jumlahKamar * malam
+  const isi = isiPondok(kamar, o.jumlahKamar, o.dewasa);
+  const dasar = isi
+    ? (isi.penuh * isi.harga + isi.sendiri * isi.hargaSendiri) * malam
     : kamar.harga * o.dewasa * malam;
   // a rate tier adds its percentage to the bungalow part only, rounded to whole thousands
   const persen = o.persenPaket ?? 0;
@@ -41,5 +72,21 @@ export function hitungHarga(
   const biayaLayanan = rincian.reduce((a, r) => a + r.subtotal, 0);
   const total = biayaKamar + biayaLayanan;
   const dp = o.dpPersen > 0 ? Math.min(total, Math.ceil((total * o.dpPersen) / 100 / 1000) * 1000) : 0;
-  return { biayaKamar, rincian, biayaLayanan, total, dp };
+  return { biayaKamar, rincian, biayaLayanan, total, dp, isi };
+}
+
+// The same split for a saved booking, from the price and discount it was
+// booked with (saved as 0 where the bungalow gave none, persenSendiri).
+export const isiPesanan = (p: Pick<Pesanan, 'harga_satuan' | 'skema_harga' | 'persen_sendiri' | 'jumlah_kamar' | 'dewasa'>) =>
+  isiPondok({ harga: p.harga_satuan, skema_harga: p.skema_harga, persen_sendiri: p.persen_sendiri, kapasitas: 2 }, p.jumlah_kamar, p.dewasa);
+
+// Lines under the bungalow in a price summary, one for bungalows at the
+// usual price and one for bungalows holding one guest.
+export function barisIsi(b: Bahasa, isi: IsiPondok | null) {
+  if (!isi) return [];
+  const f = KAMUS[b].form;
+  return [
+    isi.penuh > 0 ? f.isiPenuh(isi.penuh, rupiah(isi.harga, b)) : '',
+    isi.sendiri > 0 ? f.isiSendiri(isi.sendiri, rupiah(isi.hargaSendiri, b)) : '',
+  ].filter(Boolean);
 }
