@@ -8,13 +8,13 @@ import { hapusKamar, simpanKamar } from '@/app/admin/aksi';
 import { kamarDariId } from '@/lib/data';
 import type { Kamar } from '@/lib/jenis';
 import { rupiah } from '@/lib/format';
-import { hargaSendiri } from '@/lib/harga';
+import { hargaIsiPondok, hargaSendiri } from '@/lib/harga';
 
 export const metadata = { title: 'Ubah bungalow' };
 
 const KOSONG: Kamar = {
   id: 0, slug: '', nama: '', nama_en: '', ringkas: '', ringkas_en: '', deskripsi: '', deskripsi_en: '', fasilitas: [], fasilitas_en: [],
-  harga: 0, harga_anak: null, skema_harga: 'kamar', harga_sendiri: 0, kapasitas: 2, jumlah_unit: 1, min_malam: 1, aktif: true, urutan: 0, foto: [],
+  harga: 0, harga_anak: null, skema_harga: 'kamar', harga_sendiri: 0, harga_tambah: 0, kapasitas: 2, jumlah_unit: 1, min_malam: 1, aktif: true, urutan: 0, foto: [],
 };
 
 function Dua({ label, nama, k, panjang = false, bantuan, wajib = false }: { label: string; nama: string; k: Kamar; panjang?: boolean; bantuan?: string; wajib?: boolean }) {
@@ -82,6 +82,14 @@ export default async function UbahKamar({ params, searchParams }: { params: Prom
               <p className="bantuan">
                 Hanya untuk harga per bungalow yang muat dua orang atau lebih. Bungalow yang diisi satu orang membayar harga ini per malam. Anak di bawah usia gratis tidak dihitung. Kosongkan bila tamu sendiri membayar harga penuh.
                 {hargaSendiri(k) < k.harga && <> Sekarang <b data-panel-harga-sendiri>{rupiah(hargaSendiri(k))}</b> untuk satu orang.</>}
+              </p>
+            </div>
+            <div>
+              <label className="label-isian" htmlFor="harga_tambah">Harga orang ketiga dan seterusnya</label>
+              <input id="harga_tambah" name="harga_tambah" inputMode="numeric" defaultValue={k.harga_tambah || ''} placeholder="600000" className="isian" />
+              <p className="bantuan">
+                Hanya untuk harga per bungalow. Tiap tamu di atas dua orang dalam satu bungalow menambah harga ini per malam, misalnya kasur king dan kasur single untuk tiga orang. Kosongkan bila harga bungalow sama berapa pun isinya.
+                {k.skema_harga === 'kamar' && k.kapasitas >= 3 && k.harga_tambah > 0 && <> Sekarang <b data-panel-harga-tiga>{rupiah(hargaIsiPondok(k, 3))}</b> untuk tiga orang.</>}
               </p>
             </div>
             <div>

@@ -15,7 +15,7 @@ import type { Bahasa, Kamar } from '@/lib/jenis';
 import { kamus } from '@/lib/kamus';
 import { bacaRencana, simpanRencana } from '@/lib/rencana';
 import { daftarMalam, selisihHari } from '@/lib/tanggal';
-import { barisIsi, hitungHarga, pondokUntuk } from '@/lib/harga';
+import { barisIsi, hitungHarga, isiPondok, pondokUntuk } from '@/lib/harga';
 import type { Kurs } from '@/lib/uang';
 
 type Props = {
@@ -46,7 +46,7 @@ type Props = {
   // the bungalow priced on this card (none when the site has several types),
   // the first rate tier's percentage, and the rates for the estimate. The
   // owner's request, November 2026: the price and the total in the card.
-  harga?: { kamar: Pick<Kamar, 'harga' | 'skema_harga' | 'harga_sendiri' | 'kapasitas'>; persenPaket: number; kurs: Kurs } | null;
+  harga?: { kamar: Pick<Kamar, 'harga' | 'skema_harga' | 'harga_sendiri' | 'harga_tambah' | 'kapasitas'>; persenPaket: number; kurs: Kurs } | null;
 };
 type Rentang = { masuk: string; keluar: string };
 
@@ -64,17 +64,29 @@ export default function CariCepat({ b, awal, akhir, checkIn, checkOut, sisa, uni
   // bumped when remembered dates are restored, so the calendar opens on that month
   const [pulih, setPulih] = useState(0);
 
-  const butuhUntuk = useCallback((n: number, a: number) => pondokUntuk(n, a, kapasitas, anakPerPondok), [kapasitas, anakPerPondok]);
+  // One more bungalow than the guests need can be picked when a bungalow
+  // would hold three: the owner's request, November 2026, "Rp600.000 untuk
+  // satu kamar 3 orang, jika ingin kamar sendiri tambahan 850.000".
+  const [tambahPondok, setTambahPondok] = useState(false);
+  const bisaTambah = useCallback((n: number, a: number) => {
+    const min = pondokUntuk(n, a, kapasitas, anakPerPondok);
+    const isi = harga ? isiPondok(harga.kamar, min, n) : null;
+    return !!isi && isi.baris.some((x) => x.orang >= 3) && min + 1 <= unit && min + 1 <= n;
+  }, [harga, kapasitas, anakPerPondok, unit]);
+  const butuhUntuk = useCallback((n: number, a: number, tambah = tambahPondok) => pondokUntuk(n, a, kapasitas, anakPerPondok) + (tambah && bisaTambah(n, a) ? 1 : 0),
+    [kapasitas, anakPerPondok, tambahPondok, bisaTambah]);
+  const butuhMin = pondokUntuk(tamu, anak, kapasitas, anakPerPondok);
+  const pilihanPondok = bisaTambah(tamu, anak);
   const butuh = butuhUntuk(tamu, anak);
 
   // a stay that no longer fits loses its check-out, or both dates when even the first night is full
-  const cocokkan = useCallback((r: Rentang, n: number, a: number): Rentang => {
-    const penuh = (d: string) => (sisa[d] ?? unit) < butuhUntuk(n, a);
+  const cocokkan = useCallback((r: Rentang, n: number, a: number, tambah = tambahPondok): Rentang => {
+    const penuh = (d: string) => (sisa[d] ?? unit) < butuhUntuk(n, a, tambah);
     if (!r.masuk) return KOSONG;
     if (r.masuk < awal || r.masuk > akhir || penuh(r.masuk)) return KOSONG;
     if (r.keluar && (selisihHari(r.masuk, r.keluar) < minMalam || daftarMalam(r.masuk, r.keluar).some(penuh))) return { masuk: r.masuk, keluar: '' };
     return r;
-  }, [sisa, unit, butuhUntuk, awal, akhir, minMalam]);
+  }, [sisa, unit, butuhUntuk, awal, akhir, minMalam, tambahPondok]);
 
   useEffect(() => {
     const r = bacaRencana();
@@ -104,6 +116,19 @@ export default function CariCepat({ b, awal, akhir, checkIn, checkOut, sisa, uni
     simpanRencana({ ...r, tamu: baru, anak: anakBaru });
   }
 
+  // one more bungalow, kept off when the chosen nights have no room for it
+  function pilihTambah(v: boolean) {
+    if (v && masuk) {
+      const r = cocokkan({ masuk, keluar }, tamu, anak, true);
+      if (r.masuk !== masuk || r.keluar !== keluar) {
+        setGalat(t.tambahPenuh);
+        return;
+      }
+    }
+    setTambahPondok(v);
+    setGalat('');
+  }
+
   function kirim(e: FormEvent<HTMLFormElement>) {
     if (!masuk || !keluar) {
       e.preventDefault();
@@ -112,7 +137,7 @@ export default function CariCepat({ b, awal, akhir, checkIn, checkOut, sisa, uni
     }
     // DAMPIER's payment sheet takes the stay when it is on (LembarDampier),
     // otherwise the form goes on to /pesan.
-    const tanya = new CustomEvent('mambetron:pesan', { cancelable: true, detail: { masuk, keluar, tamu, anak, kamar } });
+    const tanya = new CustomEvent('mambetron:pesan', { cancelable: true, detail: { masuk, keluar, tamu, anak, kamar, pondok: butuh } });
     if (!window.dispatchEvent(tanya)) e.preventDefault();
   }
 
@@ -120,7 +145,7 @@ export default function CariCepat({ b, awal, akhir, checkIn, checkOut, sisa, uni
   const tautanCek = wa?.tautan && masuk && keluar
     ? `${wa.tautan}?text=${encodeURIComponent(wa.pesan
       .replaceAll('{tiba}', tanggal(masuk, b, 'polos')).replaceAll('{pulang}', tanggal(keluar, b, 'polos'))
-      .replaceAll('{malam}', k.form.malam(selisihHari(masuk, keluar))).replaceAll('{tamu}', t.tamuN(tamu) + (anak ? t.danAnak(anak, usiaGratis) : ''))
+      .replaceAll('{malam}', k.form.malam(selisihHari(masuk, keluar))).replaceAll('{tamu}', t.tamuN(tamu) + (anak ? t.danAnak(anak, usiaGratis) : '') + (butuh > 1 ? `, ${t.bungalowN(butuh)}` : ''))
       .replaceAll('{bungalow}', wa.bungalow))}`
     : '';
   function cekWa(e: MouseEvent<HTMLAnchorElement>) {
@@ -134,111 +159,146 @@ export default function CariCepat({ b, awal, akhir, checkIn, checkOut, sisa, uni
   const hitung = (n: number) => (harga ? hitungHarga(harga.kamar, { malam: n, jumlahKamar: butuh, dewasa: tamu, anak, layanan: [], dpPersen: 0, persenPaket: harga.persenPaket }) : null);
   const satuMalam = hitung(1), semua = malam > 0 ? hitung(malam) : null;
   const isi = satuMalam?.isi ?? null;
-  const ketHarga = isi && isi.penuh > 0 && isi.sendiri > 0
+  const ketHarga = isi && isi.baris.length > 1
     ? barisIsi(b, isi)
     : [t.isiPondok(butuh, tamu) + (anak ? `, ${t.anakGratis(anak)}` : '')];
+  // the two choices, each with its bungalows and price per night
+  const pilihan = pilihanPondok && harga ? [false, true].map((v) => {
+    const n = butuhMin + (v ? 1 : 0);
+    const h = hitungHarga(harga.kamar, { malam: 1, jumlahKamar: n, dewasa: tamu, anak, layanan: [], dpPersen: 0, persenPaket: harga.persenPaket });
+    return { v, judul: v ? t.tambahPondok : t.bertiga, isi: (h.isi?.baris ?? []).map((x) => t.isiPondok(x.bungalow, x.orang)).join(', '), harga: h.biayaKamar };
+  }) : [];
 
   const bulat = 'inline-flex size-9 items-center justify-center rounded-full bg-white text-laut shadow-tipis transition-colors hover:bg-buih disabled:opacity-35 disabled:shadow-none';
 
   return (
     <form id="rencana" action="/pesan" method="get" onSubmit={kirim}
-      className="kartu grid scroll-mt-24 gap-6 p-5 shadow-angkat sm:p-7 xl:grid-cols-[minmax(0,1fr)_18rem] xl:grid-rows-[auto_auto_1fr] xl:gap-x-10">
+      className="kartu grid scroll-mt-24 gap-6 p-5 shadow-angkat sm:p-7 xl:grid-cols-[minmax(0,1fr)_18rem] xl:items-start xl:gap-x-10">
       <input type="hidden" name="masuk" value={masuk} />
       <input type="hidden" name="keluar" value={keluar} />
       <input type="hidden" name="tamu" value={tamu} />
       {anak > 0 && <input type="hidden" name="anak" value={anak} />}
+      {butuh > butuhMin && <input type="hidden" name="pondok" value={butuh} />}
       {kamar && <input type="hidden" name="kamar" value={kamar} />}
 
-      <div className="flex items-center gap-3 xl:col-start-2 xl:row-start-1">
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src="/merek/ikon.svg" alt="" aria-hidden width={64} height={64} className="size-16 shrink-0 rounded-2xl bg-buih object-contain p-1" />
-        <h3 className="text-[1.65rem] leading-[1.02]">{judul ?? k.rencana}</h3>
-      </div>
-
-      <div className="min-w-0 xl:col-start-1 xl:row-span-3 xl:row-start-1">
-        <Kalender key={pulih} b={b} sisa={sisa} unit={unit} butuh={butuh} minMalam={minMalam}
-          awal={awal} akhir={akhir} masuk={masuk} keluar={keluar} onPilih={pilih} />
-      </div>
-
-      {/* on wide screens the chosen stay is spelled out beside the calendar */}
-      <div className="hidden gap-2 xl:col-start-2 xl:row-start-2 xl:grid">
-        <KotakTanggal b={b} label={k.tiba} d={masuk} kosong={t.diKalender} />
-        <KotakTanggal b={b} label={k.pulang} d={keluar} kosong={t.diKalender} catatan={masuk && keluar ? k.form.malam(selisihHari(masuk, keluar)) : undefined} />
-      </div>
-
-      <div className="grid content-end gap-3 sm:grid-cols-2 xl:col-start-2 xl:row-start-3 xl:grid-cols-1">
-        {/* paying guests, then the children under the free age who stay free */}
-        <div className="grid gap-1 rounded-2xl bg-embun p-2 pr-2.5 sm:col-span-2 xl:col-span-1" data-rincian-tamu>
-          <div className="flex items-center gap-3">
-            <span aria-hidden className="flex size-12 shrink-0 items-center justify-center rounded-xl bg-white text-biru-tua shadow-tipis">
-              <Ikon nama="orang" className="size-5" />
-            </span>
-            <span className="min-w-0 flex-1">
-              <span className="block text-xs font-semibold text-abu" id="label-tamu">{k.tamu}</span>
-              <output aria-labelledby="label-tamu" aria-live="polite" className="block font-semibold tabular-nums text-laut">{tamu}</output>
-              <span className="block text-[0.6875rem] leading-tight text-abu">{k.form.dewasaKet(usiaGratis)}</span>
-            </span>
-            <button type="button" onClick={() => ubahTamu(tamu - 1)} disabled={tamu <= 1} aria-label={t.kurangTamu} className={bulat}>
-              <Ikon nama="kurang" className="size-4" />
-            </button>
-            <button type="button" onClick={() => ubahTamu(tamu + 1)} disabled={tamu >= maksTamu} aria-label={t.tambahTamu} className={bulat}>
-              <Ikon nama="tambah" className="size-4" />
-            </button>
-          </div>
-          <div className="flex items-center gap-3">
-            <span aria-hidden className="flex size-12 shrink-0 items-center justify-center rounded-xl bg-white text-biru-tua shadow-tipis">
-              <Ikon nama="hati" className="size-5" />
-            </span>
-            <span className="min-w-0 flex-1">
-              <span className="block text-xs font-semibold text-abu" id="label-anak">{k.form.anak(usiaGratis)}</span>
-              <output aria-labelledby="label-anak" aria-live="polite" className="block font-semibold tabular-nums text-laut">{anak}</output>
-              <span className="block text-[0.6875rem] leading-tight text-abu">{k.form.anakKet}</span>
-            </span>
-            <button type="button" onClick={() => ubahTamu(tamu, anak - 1)} disabled={anak <= 0} aria-label={t.kurangAnak} className={bulat}>
-              <Ikon nama="kurang" className="size-4" />
-            </button>
-            <button type="button" onClick={() => ubahTamu(tamu, anak + 1)} disabled={anak >= maksAnak} aria-label={t.tambahAnak} className={bulat}>
-              <Ikon nama="tambah" className="size-4" />
-            </button>
-          </div>
+      {/* Two columns on wide screens that fill on their own: the calendar with
+          the guests under it, so no empty space is left below the calendar
+          (the owner's request, November 2026), and the stay, the price and the
+          buttons beside it. Below that one column: heading, calendar, guests,
+          price, buttons. */}
+      <div className="contents xl:flex xl:min-w-0 xl:flex-col xl:gap-5">
+        <div className="order-2 min-w-0 xl:order-none">
+          <Kalender key={pulih} b={b} sisa={sisa} unit={unit} butuh={butuh} minMalam={minMalam}
+            awal={awal} akhir={akhir} masuk={masuk} keluar={keluar} onPilih={pilih} />
         </div>
-        {satuMalam && (
-          <div className="grid gap-1 rounded-2xl bg-embun px-4 py-3 sm:col-span-2 xl:col-span-1" data-harga-rencana aria-live="polite">
-            <div className="flex items-baseline justify-between gap-3">
-              <span className="text-sm text-abu">{t.hargaMalam}</span>
-              <span className="whitespace-nowrap font-semibold tabular-nums text-laut" data-harga-malam>{rupiah(satuMalam.biayaKamar, b)}</span>
+          {/* paying guests, then the children under the free age who stay free */}
+          <div className="order-3 grid gap-1 rounded-2xl bg-embun p-2 pr-2.5 xl:order-none xl:grid-cols-2 xl:gap-3" data-rincian-tamu>
+            <div className="flex items-center gap-3">
+              <span aria-hidden className="flex size-12 shrink-0 items-center justify-center rounded-xl bg-white text-biru-tua shadow-tipis">
+                <Ikon nama="orang" className="size-5" />
+              </span>
+              <span className="min-w-0 flex-1">
+                <span className="block text-xs font-semibold text-abu" id="label-tamu">{k.tamu}</span>
+                <output aria-labelledby="label-tamu" aria-live="polite" className="block font-semibold tabular-nums text-laut">{tamu}</output>
+                <span className="block text-[0.6875rem] leading-tight text-abu">{k.form.dewasaKet(usiaGratis)}</span>
+              </span>
+              <button type="button" onClick={() => ubahTamu(tamu - 1)} disabled={tamu <= 1} aria-label={t.kurangTamu} className={bulat}>
+                <Ikon nama="kurang" className="size-4" />
+              </button>
+              <button type="button" onClick={() => ubahTamu(tamu + 1)} disabled={tamu >= maksTamu} aria-label={t.tambahTamu} className={bulat}>
+                <Ikon nama="tambah" className="size-4" />
+              </button>
             </div>
-            {ketHarga.map((x) => <p key={x} className="text-xs leading-snug text-abu">{x}</p>)}
-            {semua ? (
-              <>
-                <div className="mt-2 flex items-baseline justify-between gap-3">
-                  <span className="font-semibold text-laut">{t.totalMalam(malam)}</span>
-                  <span className="whitespace-nowrap font-judul text-2xl font-semibold tabular-nums text-laut" data-total-rencana>{rupiah(semua.biayaKamar, b)}</span>
-                </div>
-                <Perkiraan idr={semua.biayaKamar} kurs={harga!.kurs} b={b} className="text-right text-abu" />
-              </>
-            ) : (
-              <p className="mt-1 text-xs font-semibold text-biru-tua">{t.pilihUntukTotal}</p>
+            <div className="flex items-center gap-3">
+              <span aria-hidden className="flex size-12 shrink-0 items-center justify-center rounded-xl bg-white text-biru-tua shadow-tipis">
+                <Ikon nama="hati" className="size-5" />
+              </span>
+              <span className="min-w-0 flex-1">
+                <span className="block text-xs font-semibold text-abu" id="label-anak">{k.form.anak(usiaGratis)}</span>
+                <output aria-labelledby="label-anak" aria-live="polite" className="block font-semibold tabular-nums text-laut">{anak}</output>
+                <span className="block text-[0.6875rem] leading-tight text-abu">{k.form.anakKet}</span>
+              </span>
+              <button type="button" onClick={() => ubahTamu(tamu, anak - 1)} disabled={anak <= 0} aria-label={t.kurangAnak} className={bulat}>
+                <Ikon nama="kurang" className="size-4" />
+              </button>
+              <button type="button" onClick={() => ubahTamu(tamu, anak + 1)} disabled={anak >= maksAnak} aria-label={t.tambahAnak} className={bulat}>
+                <Ikon nama="tambah" className="size-4" />
+              </button>
+            </div>
+          </div>
+          {/* the bungalow choice belongs with the guests, under them */}
+          {pilihan.length > 0 && (
+            <fieldset className="order-3 grid gap-2 rounded-2xl bg-embun p-3 sm:grid-cols-2 xl:order-none" data-pilih-pondok>
+              <legend className="float-left mb-1 w-full text-sm text-abu sm:col-span-2">{t.pilihPondok}</legend>
+              {pilihan.map((x) => {
+                const on = x.v === (butuh > butuhMin);
+                return (
+                  <label key={String(x.v)} className={`flex cursor-pointer items-start gap-2.5 rounded-xl bg-white px-3 py-2.5 transition-shadow ${on ? 'ring-2 ring-biru' : 'ring-1 ring-buih-2'}`}>
+                    <input type="radio" name="pilih_pondok" form="rencana-pilihan" checked={on} onChange={() => pilihTambah(x.v)} className="mt-0.5 size-4 shrink-0 accent-[#036f87]" />
+                    <span className="min-w-0 flex-1">
+                      <span className="block text-sm font-semibold leading-tight text-laut">{x.judul}</span>
+                      <span className="block text-xs leading-snug text-abu">{x.isi}</span>
+                    </span>
+                    <span className="whitespace-nowrap text-sm font-semibold tabular-nums text-laut">{rupiah(x.harga, b)}</span>
+                  </label>
+                );
+              })}
+            </fieldset>
+          )}
+      </div>
+
+      <div className="contents xl:flex xl:flex-col xl:gap-6">
+        <div className="order-1 flex items-center gap-3 xl:order-none">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="/merek/ikon.svg" alt="" aria-hidden width={64} height={64} className="size-16 shrink-0 rounded-2xl bg-buih object-contain p-1" />
+          <h3 className="text-[1.65rem] leading-[1.02]">{judul ?? k.rencana}</h3>
+        </div>
+
+        {/* on wide screens the chosen stay is spelled out beside the calendar */}
+        <div className="hidden gap-2 xl:grid">
+          <KotakTanggal b={b} label={k.tiba} d={masuk} kosong={t.diKalender} />
+          <KotakTanggal b={b} label={k.pulang} d={keluar} kosong={t.diKalender} catatan={masuk && keluar ? k.form.malam(selisihHari(masuk, keluar)) : undefined} />
+        </div>
+
+        <div className="order-4 grid gap-3 sm:grid-cols-2 xl:order-none xl:grid-cols-1">
+          {satuMalam && (
+            <div className="grid gap-1 rounded-2xl bg-embun px-4 py-3 sm:col-span-2 xl:col-span-1" data-harga-rencana aria-live="polite">
+              <div className="flex items-baseline justify-between gap-3">
+                <span className="text-sm text-abu">{t.hargaMalam}</span>
+                <span className="whitespace-nowrap font-semibold tabular-nums text-laut" data-harga-malam>{rupiah(satuMalam.biayaKamar, b)}</span>
+              </div>
+              {ketHarga.map((x) => <p key={x} className="text-xs leading-snug text-abu">{x}</p>)}
+              {semua ? (
+                <>
+                  <div className="mt-2 flex items-baseline justify-between gap-3">
+                    <span className="font-semibold text-laut">{t.totalMalam(malam)}</span>
+                    <span className="whitespace-nowrap font-judul text-2xl font-semibold tabular-nums text-laut" data-total-rencana>{rupiah(semua.biayaKamar, b)}</span>
+                  </div>
+                  <Perkiraan idr={semua.biayaKamar} kurs={harga!.kurs} b={b} className="text-right text-abu" />
+                </>
+              ) : (
+                <p className="mt-1 text-xs font-semibold text-biru-tua">{t.pilihUntukTotal}</p>
+              )}
+            </div>
+          )}
+          {/* Pay goes straight to payment, DAMPIER's sheet or the booking form.
+              Check availability asks on WhatsApp with the chosen stay. */}
+          <div className={`grid gap-3 sm:col-span-2 xl:col-span-1 ${wa?.tautan ? 'sm:grid-cols-2 xl:grid-cols-1' : ''}`}>
+            <button className="tombol min-h-14 w-full" data-bayar>{tombol ?? k.bayarSekarang}</button>
+            {wa?.tautan && (
+              <a href={tautanCek || wa.tautan} onClick={cekWa} target="_blank" rel="noopener noreferrer" aria-label={t.waBaru}
+                className="tombol tombol-putih min-h-14 w-full" data-cek-wa>
+                <Ikon nama="chat" className="size-5" /> {k.cekKetersediaan}
+              </a>
             )}
           </div>
-        )}
-        {/* Pay goes straight to payment, DAMPIER's sheet or the booking form.
-            Check availability asks on WhatsApp with the chosen stay. */}
-        <div className={`grid gap-3 sm:col-span-2 xl:col-span-1 ${wa?.tautan ? 'sm:grid-cols-2 xl:grid-cols-1' : ''}`}>
-          <button className="tombol min-h-14 w-full" data-bayar>{tombol ?? k.bayarSekarang}</button>
-          {wa?.tautan && (
-            <a href={tautanCek || wa.tautan} onClick={cekWa} target="_blank" rel="noopener noreferrer" aria-label={t.waBaru}
-              className="tombol tombol-putih min-h-14 w-full" data-cek-wa>
-              <Ikon nama="chat" className="size-5" /> {k.cekKetersediaan}
-            </a>
-          )}
+          {galat && <p role="alert" className="rounded-2xl bg-[#fde3dc] px-4 py-3 text-sm font-semibold text-merah sm:col-span-2 xl:col-span-1">{galat}</p>}
+          <div className="grid grid-cols-2 items-end gap-2 pt-1 text-xs text-abu sm:col-span-2 xl:col-span-1">
+            <p>{k.checkInOut.masuk}<span className="block text-sm font-semibold text-laut">{checkIn}</span></p>
+            <p>{k.checkInOut.keluar}<span className="block text-sm font-semibold text-laut">{checkOut}</span></p>
+          </div>
+          <Pengelola p={pengelola} className="text-xs sm:col-span-2 xl:col-span-1" />
         </div>
-        {galat && <p role="alert" className="rounded-2xl bg-[#fde3dc] px-4 py-3 text-sm font-semibold text-merah sm:col-span-2 xl:col-span-1">{galat}</p>}
-        <div className="grid grid-cols-2 items-end gap-2 pt-1 text-xs text-abu sm:col-span-2 xl:col-span-1">
-          <p>{k.checkInOut.masuk}<span className="block text-sm font-semibold text-laut">{checkIn}</span></p>
-          <p>{k.checkInOut.keluar}<span className="block text-sm font-semibold text-laut">{checkOut}</span></p>
-        </div>
-        <Pengelola p={pengelola} className="text-xs sm:col-span-2 xl:col-span-1" />
       </div>
     </form>
   );

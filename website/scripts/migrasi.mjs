@@ -34,9 +34,9 @@ if (r.affectedRows === 1) {
     for (const k of KAMAR_AWAL) {
       await db.query(
         `INSERT INTO kamar (slug, nama, nama_en, ringkas, ringkas_en, deskripsi, deskripsi_en, fasilitas, fasilitas_en,
-          harga, harga_anak, skema_harga, harga_sendiri, kapasitas, jumlah_unit, min_malam, urutan) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+          harga, harga_anak, skema_harga, harga_sendiri, harga_tambah, kapasitas, jumlah_unit, min_malam, urutan) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
         [k.slug, k.nama, k.nama_en, k.ringkas, k.ringkas_en, k.deskripsi, k.deskripsi_en, k.fasilitas.join('\n'), k.fasilitas_en.join('\n'),
-          k.harga, k.harga_anak, k.skema_harga, k.harga_sendiri ?? 0, k.kapasitas, k.jumlah_unit, k.min_malam, k.urutan],
+          k.harga, k.harga_anak, k.skema_harga, k.harga_sendiri ?? 0, k.harga_tambah ?? 0, k.kapasitas, k.jumlah_unit, k.min_malam, k.urutan],
       );
     }
   }

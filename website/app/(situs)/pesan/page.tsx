@@ -35,6 +35,7 @@ export default async function Pesan({ searchParams }: { searchParams: Promise<Re
       q.set('dampier_pulang', sp.keluar);
       q.set('dampier_tamu', String(angka(sp.tamu, 1, 20, 2)));
       if (angka(sp.anak, 0, 8, 0)) q.set('dampier_anak', String(angka(sp.anak, 0, 8, 0)));
+      if (angka(sp.pondok, 0, 20, 0) > 1) q.set('dampier_pondok', String(angka(sp.pondok, 0, 20, 0)));
     }
     redirect(`/kamar/${dampier.kamar}${q.size ? `?${q}` : ''}#rencana`);
   }
@@ -54,7 +55,8 @@ export default async function Pesan({ searchParams }: { searchParams: Promise<Re
   const tamu = angka(sp.tamu, 1, 20, 2);
   const anakTautan = angka(sp.anak, 0, 8, 0);
   // without a bungalow count, enough bungalows for the guests from the home page
-  const jumlahKamar = !km ? 1 : sp.pondok ? angka(sp.pondok, 1, km.jumlah_unit, 1) : Math.min(km.jumlah_unit, pondokUntuk(tamu, anakTautan, km.kapasitas, situs.anakPerPondok));
+  const cukup = km ? Math.min(km.jumlah_unit, pondokUntuk(tamu, anakTautan, km.kapasitas, situs.anakPerPondok)) : 1;
+  const jumlahKamar = !km ? 1 : sp.pondok ? Math.max(cukup, angka(sp.pondok, 1, km.jumlah_unit, 1)) : cukup;
   const kap = km ? km.kapasitas * jumlahKamar : 2;
   if (km && masuk && keluar) {
     const p = sisa[km.id] ?? {};
@@ -69,7 +71,7 @@ export default async function Pesan({ searchParams }: { searchParams: Promise<Re
     : null;
 
   const daftar: KamarForm[] = kamar.map((x, i) => ({
-    id: x.id, slug: x.slug, nama: x.nama, nama_en: x.nama_en, harga: x.harga, harga_anak: x.harga_anak, skema_harga: x.skema_harga, harga_sendiri: x.harga_sendiri,
+    id: x.id, slug: x.slug, nama: x.nama, nama_en: x.nama_en, harga: x.harga, harga_anak: x.harga_anak, skema_harga: x.skema_harga, harga_sendiri: x.harga_sendiri, harga_tambah: x.harga_tambah,
     kapasitas: x.kapasitas, jumlah_unit: x.jumlah_unit, min_malam: x.min_malam, gambar: x.foto[0]?.url ?? gambarCadangan(i),
   }));
 

@@ -29,7 +29,7 @@ const id = {
   cekKetersediaan: 'Cek ketersediaan',
   bayarSekarang: 'Bayar sekarang',
   bungalowUmum: 'bungalow',
-  rencanaTanggal: { diKalender: 'Ketuk di kalender', dulu: 'Pilih tanggal tiba dan pulang dulu.', tidakMuat: (n: number) => `Tanggal tadi tidak cukup untuk ${n} tamu. Pilih tanggal lain.`, kurangTamu: 'Kurangi tamu', tambahTamu: 'Tambah tamu', tamuN: (n: number) => `${n} tamu`, danAnak: (n: number, u: number) => ` dan ${n} anak di bawah ${u} tahun`, kurangAnak: 'Kurangi anak', tambahAnak: 'Tambah anak', waBaru: 'Cek ketersediaan lewat WhatsApp, terbuka di jendela baru', hargaMalam: 'Harga per malam', totalMalam: (n: number) => `Total ${n} malam`, pilihUntukTotal: 'Pilih tanggal tiba dan pulang untuk melihat total harga.', isiPondok: (p: number, o: number) => `${p} bungalow untuk ${o} orang`, anakGratis: (n: number) => `${n} anak gratis` },
+  rencanaTanggal: { diKalender: 'Ketuk di kalender', dulu: 'Pilih tanggal tiba dan pulang dulu.', tidakMuat: (n: number) => `Tanggal tadi tidak cukup untuk ${n} tamu. Pilih tanggal lain.`, kurangTamu: 'Kurangi tamu', tambahTamu: 'Tambah tamu', tamuN: (n: number) => `${n} tamu`, danAnak: (n: number, u: number) => ` dan ${n} anak di bawah ${u} tahun`, kurangAnak: 'Kurangi anak', tambahAnak: 'Tambah anak', waBaru: 'Cek ketersediaan lewat WhatsApp, terbuka di jendela baru', hargaMalam: 'Harga per malam', totalMalam: (n: number) => `Total ${n} malam`, pilihUntukTotal: 'Pilih tanggal tiba dan pulang untuk melihat total harga.', isiPondok: (p: number, o: number) => `${p} bungalow untuk ${o} orang`, anakGratis: (n: number) => `${n} anak gratis`, pilihPondok: 'Pilihan bungalow, harga per malam', bertiga: 'Bertiga sekamar', tambahPondok: 'Tambah satu bungalow', tambahPenuh: 'Tanggal itu tidak cukup untuk satu bungalow lagi. Pilih tanggal lain.', bungalowN: (n: number) => `${n} bungalow` },
   lembarDampier: {
     judul: 'Pembayaran DAMPIER', membuka: 'Membuka pembayaran', dikelola: 'Pemesanan online dikelola oleh thedampier.com',
     lambat: 'Pembayaran belum terbuka. Sinyal mungkin sedang lemah.', ulang: 'Coba lagi', tutup: 'Tutup',
@@ -62,6 +62,7 @@ const id = {
   hargaAnakKamar: (u: number) => `Anak di bawah ${u} tahun gratis, sejak ${u} tahun dihitung sebagai tamu`,
   untukOrang: (n: number) => (n <= 2 ? `Untuk ${n} orang` : `Untuk 2–${n} orang`),
   hargaSendiri: (h: string) => `1 orang ${h} per malam`,
+  hargaOrang: (n: number, h: string) => `${n} orang ${h} per malam`,
   semuaPondok: 'Semua bungalow',
   tidakAdaPondok: 'Belum ada bungalow yang bisa dipesan. Hubungi kami lewat WhatsApp.',
   kalender: {
@@ -118,8 +119,7 @@ const id = {
     belumAktif: 'Pemesanan online belum dibuka. Hubungi kami lewat WhatsApp untuk memesan.',
     tanpaLayanan: 'Tidak ada kegiatan tambahan saat ini.',
     kali: (n: number, satuan: string) => `${n} × ${satuan}`,
-    isiPenuh: (n: number, h: string) => `${n} bungalow, ${h} per malam`,
-    isiSendiri: (n: number, h: string) => `${n} bungalow untuk 1 orang, ${h} per malam`,
+    isiBaris: (n: number, o: number, h: string) => `${n} bungalow untuk ${o} orang, ${h} per malam`,
     tambah: 'Tambah',
     kurang: 'Kurangi',
     gantiTanggal: 'Ganti tanggal',
@@ -275,7 +275,7 @@ const en: Kamus = {
   cekKetersediaan: 'Check availability',
   bayarSekarang: 'Pay now',
   bungalowUmum: 'a bungalow',
-  rencanaTanggal: { diKalender: 'Tap it on the calendar', dulu: 'Pick your arrival and departure dates first.', tidakMuat: (n) => `Those dates no longer fit ${n} guests. Please pick other dates.`, kurangTamu: 'Fewer guests', tambahTamu: 'More guests', tamuN: (n) => (n === 1 ? '1 guest' : `${n} guests`), danAnak: (n, u) => ` and ${n} ${n === 1 ? 'child' : 'children'} under ${u}`, kurangAnak: 'Fewer children', tambahAnak: 'More children', waBaru: 'Check availability on WhatsApp, opens in a new window', hargaMalam: 'Price per night', totalMalam: (n) => (n === 1 ? 'Total for 1 night' : `Total for ${n} nights`), pilihUntukTotal: 'Pick your arrival and departure dates to see the total.', isiPondok: (p, o) => `${p} ${p === 1 ? 'bungalow' : 'bungalows'} for ${o} ${o === 1 ? 'guest' : 'guests'}`, anakGratis: (n) => `${n} ${n === 1 ? 'child' : 'children'} free` },
+  rencanaTanggal: { diKalender: 'Tap it on the calendar', dulu: 'Pick your arrival and departure dates first.', tidakMuat: (n) => `Those dates no longer fit ${n} guests. Please pick other dates.`, kurangTamu: 'Fewer guests', tambahTamu: 'More guests', tamuN: (n) => (n === 1 ? '1 guest' : `${n} guests`), danAnak: (n, u) => ` and ${n} ${n === 1 ? 'child' : 'children'} under ${u}`, kurangAnak: 'Fewer children', tambahAnak: 'More children', waBaru: 'Check availability on WhatsApp, opens in a new window', hargaMalam: 'Price per night', totalMalam: (n) => (n === 1 ? 'Total for 1 night' : `Total for ${n} nights`), pilihUntukTotal: 'Pick your arrival and departure dates to see the total.', isiPondok: (p, o) => `${p} ${p === 1 ? 'bungalow' : 'bungalows'} for ${o} ${o === 1 ? 'guest' : 'guests'}`, anakGratis: (n) => `${n} ${n === 1 ? 'child' : 'children'} free`, pilihPondok: 'Bungalow choice, price per night', bertiga: 'Three to a bungalow', tambahPondok: 'One more bungalow', tambahPenuh: 'Those dates have no room for one more bungalow. Please pick other dates.', bungalowN: (n) => `${n} ${n === 1 ? 'bungalow' : 'bungalows'}` },
   lembarDampier: {
     judul: 'DAMPIER payment', membuka: 'Opening payment', dikelola: 'Online bookings managed by thedampier.com',
     lambat: 'The payment has not opened yet. The connection may be weak.', ulang: 'Try again', tutup: 'Close',
@@ -308,6 +308,7 @@ const en: Kamus = {
   hargaAnakKamar: (u) => `Children under ${u} stay free, from ${u} they count as a guest`,
   untukOrang: (n) => (n <= 2 ? `For ${n} ${n === 1 ? 'guest' : 'guests'}` : `For 2–${n} guests`),
   hargaSendiri: (h) => `1 guest ${h} a night`,
+  hargaOrang: (n, h) => `${n} guests ${h} a night`,
   semuaPondok: 'All bungalows',
   tidakAdaPondok: 'No bungalows are open for booking yet. Message us on WhatsApp.',
   kalender: {
@@ -364,8 +365,7 @@ const en: Kamus = {
     belumAktif: 'Online booking is not open yet. Message us on WhatsApp to book.',
     tanpaLayanan: 'No add-ons are offered right now.',
     kali: (n, satuan) => `${n} × ${satuan}`,
-    isiPenuh: (n, h) => `${n} ${n === 1 ? 'bungalow' : 'bungalows'} at ${h} a night`,
-    isiSendiri: (n, h) => `${n} ${n === 1 ? 'bungalow' : 'bungalows'} for one guest at ${h} a night`,
+    isiBaris: (n, o, h) => `${n} ${n === 1 ? 'bungalow' : 'bungalows'} for ${o === 1 ? 'one guest' : `${o} guests`} at ${h} a night`,
     tambah: 'Add',
     kurang: 'Remove',
     gantiTanggal: 'Change dates',

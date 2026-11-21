@@ -95,7 +95,7 @@ export default async function RincianPesanan({ params, searchParams }: {
             <div className="mt-4 grid gap-3">
               <div className="flex justify-between gap-3">
                 <span>{p.kamar_nama}<span className="block text-sm text-abu">{rupiah(p.harga_satuan)} {KAMUS.id.perSkema[p.skema_harga]}, {p.malam} malam{p.paket ? `, paket ${p.paket.nama.id}${p.paket.persen ? ` +${p.paket.persen}%` : ''}` : ''}</span>
-                  {isiPesanan(p)?.sendiri ? <span className="block text-sm text-abu" data-isi-pondok>{barisIsi('id', isiPesanan(p)).join('. ')}</span> : null}</span>
+                  {isiPesanan(p)?.baris.some((x) => x.orang !== 2) ? <span className="block text-sm text-abu" data-isi-pondok>{barisIsi('id', isiPesanan(p)).join('. ')}</span> : null}</span>
                 <span className="font-semibold tabular-nums">{rupiah(p.biaya_kamar)}</span>
               </div>
               {p.rincian.map((r) => (

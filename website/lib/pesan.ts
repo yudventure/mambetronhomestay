@@ -4,7 +4,7 @@ import crypto from 'crypto';
 import { transaksi, type Baris, type Hasil } from './db';
 import { sisaKamar } from './data';
 import { pastikanSegar } from './sinkron';
-import { hargaSendiriSimpan, hitungHarga } from './harga';
+import { hargaSendiriSimpan, hargaTambahSimpan, hitungHarga } from './harga';
 import { daftarPaket, type Paket } from './paket';
 import type { Bahasa, Kamar, Layanan, Situs, StatusPesanan } from './jenis';
 import { daftarMalam, hariIni, sahTanggal, selisihHari, tambahHari } from './tanggal';
@@ -115,12 +115,12 @@ export async function simpanPesanan(m: MasukanPesan, kamar: Kamar, layananAda: L
       try {
         const [r] = await c.query<Hasil>(
           `INSERT INTO pesanan (kode, token, kamar_id, kamar_nama, jumlah_kamar, check_in, check_out, malam, dewasa, anak,
-            nama, email, telepon, negara, kedatangan, catatan, harga_satuan, skema_harga, harga_sendiri, biaya_kamar, biaya_layanan,
+            nama, email, telepon, negara, kedatangan, catatan, harga_satuan, skema_harga, harga_sendiri, harga_tambah, biaya_kamar, biaya_layanan,
             total, dp, rincian, paket, bahasa, status, sumber, catatan_admin)
-           VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+           VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
           [kode, token, kamar.id, kamar.nama, m.jumlahKamar, m.masuk, m.keluar, malam, m.dewasa, m.anak,
             potong(m.nama, 120), potong(m.email, 160), potong(m.telepon, 40), potong(m.negara, 80), potong(m.kedatangan, 200),
-            potong(m.catatan, 2000), kamar.harga, kamar.skema_harga, hargaSendiriSimpan(kamar), h.biayaKamar, h.biayaLayanan, h.total, h.dp,
+            potong(m.catatan, 2000), kamar.harga, kamar.skema_harga, hargaSendiriSimpan(kamar), hargaTambahSimpan(kamar), h.biayaKamar, h.biayaLayanan, h.total, h.dp,
             JSON.stringify(h.rincian), paket ? JSON.stringify(paket) : null, m.bahasa, m.status ?? 'menunggu', m.sumber, potong(m.catatanAdmin ?? '', 2000)],
         );
         return { id: r.insertId, kode, token };

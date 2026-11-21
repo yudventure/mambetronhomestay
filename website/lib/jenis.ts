@@ -23,6 +23,8 @@ export type Kamar = {
   skema_harga: SkemaHarga;
   // per bungalow only: the price of a bungalow holding one paying guest, 0 for the usual price
   harga_sendiri: number;
+  // per bungalow only: what each guest past the second adds, 0 for none
+  harga_tambah: number;
   kapasitas: number;
   jumlah_unit: number;
   min_malam: number;
@@ -109,6 +111,7 @@ export type Pesanan = {
   // for bookings made with it.
   harga_sendiri: number;
   persen_sendiri: number;
+  harga_tambah: number;
   biaya_kamar: number;
   biaya_layanan: number;
   total: number;

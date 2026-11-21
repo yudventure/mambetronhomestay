@@ -39,19 +39,39 @@ export function hargaSendiri(k: Pick<Kamar, 'harga' | 'skema_harga' | 'harga_sen
   return k.skema_harga === 'kamar' && k.kapasitas >= 2 && h > 0 && h < k.harga ? h : k.harga;
 }
 
-// Paying guests spread evenly over the bungalows booked. `sendiri` are the
-// bungalows holding one paying guest or none (a second bungalow for a
-// parent with two children under the free age), which take the solo price,
-// the others the usual price. Only for bungalows priced per bungalow.
-export type IsiPondok = { penuh: number; sendiri: number; harga: number; hargaSendiri: number };
-export function isiPondok(kamar: Pick<Kamar, 'harga' | 'skema_harga' | 'harga_sendiri' | 'kapasitas'>, jumlahKamar: number, dewasa: number): IsiPondok | null {
+type HargaPondok = Pick<Kamar, 'harga' | 'skema_harga' | 'harga_sendiri' | 'harga_tambah' | 'kapasitas'>;
+
+// Price of one bungalow per night with `n` paying guests in it. The owner's
+// prices, November 2026: one guest Rp850.000, two Rp1.200.000, and with a
+// king bed and a single bed a third guest adds Rp600.000 like the others,
+// Rp1.800.000 for three. A bungalow with no paying guest in it (a second
+// one for a parent with two children under the free age) is priced as one.
+export function hargaIsiPondok(k: HargaPondok, n: number) {
+  if (n <= 1) return hargaSendiri(k);
+  const tambah = k.skema_harga === 'kamar' ? Math.max(0, Math.round(k.harga_tambah) || 0) : 0;
+  return k.harga + Math.max(0, n - 2) * tambah;
+}
+
+// Paying guests spread evenly over the bungalows booked, grouped by how
+// many sit in each, the fullest first, with the price per night of each
+// group. Only for bungalows priced per bungalow.
+export type BarisIsi = { orang: number; bungalow: number; harga: number };
+export type IsiPondok = { baris: BarisIsi[]; perMalam: number };
+export function isiPondok(kamar: HargaPondok, jumlahKamar: number, dewasa: number): IsiPondok | null {
   if (kamar.skema_harga !== 'kamar') return null;
   const r = Math.max(1, Math.round(jumlahKamar) || 1), t = Math.max(0, Math.round(dewasa) || 0);
-  const hs = hargaSendiri(kamar);
-  // fewer guests than bungalows leaves none with two
-  const q = Math.floor(t / r);
-  const sendiri = hs >= kamar.harga ? 0 : q === 0 ? r : q === 1 ? r - (t % r) : 0;
-  return { penuh: r - sendiri, sendiri, harga: kamar.harga, hargaSendiri: hs };
+  const q = Math.floor(t / r), lebih = t % r;
+  const baris: BarisIsi[] = [];
+  const tambah = (orang: number, bungalow: number) => {
+    if (bungalow <= 0) return;
+    const n = Math.max(1, orang);
+    const ada = baris.find((x) => x.orang === n);
+    if (ada) ada.bungalow += bungalow;
+    else baris.push({ orang: n, bungalow, harga: hargaIsiPondok(kamar, n) });
+  };
+  tambah(q + 1, lebih);
+  tambah(q, r - lebih);
+  return { baris, perMalam: baris.reduce((a, x) => a + x.bungalow * x.harga, 0) };
 }
 
 // `dewasa` are the paying guests, adults and children from the free age
@@ -59,14 +79,12 @@ export function isiPondok(kamar: Pick<Kamar, 'harga' | 'skema_harga' | 'harga_se
 // it, free and not counted for extras per person or in a bungalow's guests.
 // The owner's rule, November 2026: under 5 free, from 5 the full price.
 export function hitungHarga(
-  kamar: Pick<Kamar, 'harga' | 'skema_harga' | 'harga_sendiri' | 'kapasitas'>,
+  kamar: HargaPondok,
   o: { malam: number; jumlahKamar: number; dewasa: number; anak: number; layanan: Layanan[]; dpPersen: number; persenPaket?: number },
 ) {
   const malam = Math.max(0, o.malam);
   const isi = isiPondok(kamar, o.jumlahKamar, o.dewasa);
-  const dasar = isi
-    ? (isi.penuh * isi.harga + isi.sendiri * isi.hargaSendiri) * malam
-    : kamar.harga * o.dewasa * malam;
+  const dasar = isi ? isi.perMalam * malam : kamar.harga * o.dewasa * malam;
   // a rate tier adds its percentage to the bungalow part only, rounded to whole thousands
   const persen = o.persenPaket ?? 0;
   const biayaKamar = persen > 0 ? Math.round((dasar * (100 + persen)) / 100 / 1000) * 1000 : dasar;
@@ -81,27 +99,26 @@ export function hitungHarga(
   return { biayaKamar, rincian, biayaLayanan, total, dp, isi };
 }
 
-// The solo price to keep on a booking, 0 when the bungalow gives none.
+// The solo price and the third guest's price to keep on a booking, 0 when
+// the bungalow gives none.
 export const hargaSendiriSimpan = (k: Pick<Kamar, 'harga' | 'skema_harga' | 'harga_sendiri' | 'kapasitas'>) => {
   const h = hargaSendiri(k);
   return h < k.harga ? h : 0;
 };
+export const hargaTambahSimpan = (k: Pick<Kamar, 'skema_harga' | 'harga_tambah'>) => (k.skema_harga === 'kamar' ? Math.max(0, Math.round(k.harga_tambah) || 0) : 0);
 
 // The same split for a saved booking, from the prices it was booked with.
 // Bookings from the first release kept a percentage instead (30% less).
-export function isiPesanan(p: Pick<Pesanan, 'harga_satuan' | 'skema_harga' | 'harga_sendiri' | 'persen_sendiri' | 'jumlah_kamar' | 'dewasa'>) {
+export function isiPesanan(p: Pick<Pesanan, 'harga_satuan' | 'skema_harga' | 'harga_sendiri' | 'persen_sendiri' | 'harga_tambah' | 'jumlah_kamar' | 'dewasa'>) {
   const persen = Math.min(90, Math.max(0, p.persen_sendiri || 0));
   const sendiri = p.harga_sendiri || (persen ? Math.round((p.harga_satuan * (100 - persen)) / 100 / 1000) * 1000 : 0);
-  return isiPondok({ harga: p.harga_satuan, skema_harga: p.skema_harga, harga_sendiri: sendiri, kapasitas: 2 }, p.jumlah_kamar, p.dewasa);
+  return isiPondok({ harga: p.harga_satuan, skema_harga: p.skema_harga, harga_sendiri: sendiri, harga_tambah: p.harga_tambah || 0, kapasitas: 3 }, p.jumlah_kamar, p.dewasa);
 }
 
-// Lines under the bungalow in a price summary, one for bungalows at the
-// usual price and one for bungalows holding one guest.
+// One line per group under the bungalow in a price summary, for example
+// "1 bungalow untuk 3 orang, Rp 1.800.000 per malam".
 export function barisIsi(b: Bahasa, isi: IsiPondok | null) {
   if (!isi) return [];
   const f = KAMUS[b].form;
-  return [
-    isi.penuh > 0 ? f.isiPenuh(isi.penuh, rupiah(isi.harga, b)) : '',
-    isi.sendiri > 0 ? f.isiSendiri(isi.sendiri, rupiah(isi.hargaSendiri, b)) : '',
-  ].filter(Boolean);
+  return isi.baris.map((x) => f.isiBaris(x.bungalow, x.orang, rupiah(x.harga, b)));
 }

@@ -123,9 +123,9 @@ async function pindahKamarLama(pool: mysql.Pool) {
   const k = KAMAR_AWAL[0];
   await pool.query(
     `UPDATE kamar SET slug = ?, nama = ?, nama_en = ?, ringkas = ?, ringkas_en = ?, deskripsi = ?, deskripsi_en = ?, fasilitas = ?,
-      fasilitas_en = ?, harga = ?, harga_anak = ?, skema_harga = ?, harga_sendiri = ?, kapasitas = ?, jumlah_unit = ?, min_malam = ?, urutan = ? WHERE id = ?`,
+      fasilitas_en = ?, harga = ?, harga_anak = ?, skema_harga = ?, harga_sendiri = ?, harga_tambah = ?, kapasitas = ?, jumlah_unit = ?, min_malam = ?, urutan = ? WHERE id = ?`,
     [k.slug, k.nama, k.nama_en, k.ringkas, k.ringkas_en, k.deskripsi, k.deskripsi_en, k.fasilitas.join('\n'), k.fasilitas_en.join('\n'),
-      utama.harga === KAMAR_LAMA[0].harga ? k.harga : utama.harga, k.harga_anak, k.skema_harga, k.harga_sendiri, k.kapasitas, k.jumlah_unit, k.min_malam,
+      utama.harga === KAMAR_LAMA[0].harga ? k.harga : utama.harga, k.harga_anak, k.skema_harga, k.harga_sendiri, k.harga_tambah, k.kapasitas, k.jumlah_unit, k.min_malam,
       k.urutan, utama.id],
   );
   await pool.query('DELETE FROM tutup WHERE kamar_id IN (?)', [ids]);
@@ -193,6 +193,29 @@ async function hargaBungalow(pool: mysql.Pool) {
   await pool.query('UPDATE kamar SET harga = ?, skema_harga = ?, harga_sendiri = ? WHERE id IN (?)', [k.harga, k.skema_harga, k.harga_sendiri, ids]);
 }
 
+// The owner's beds, November 2026: each bungalow has a king bed and a
+// single bed, so it sleeps three, and the third guest pays Rp600.000 like
+// the other two (Rp1.800.000 for three). Done once on the beachfront
+// bungalow or the only one. The texts that still say "for two" are fixed
+// phrase by phrase, so a text the owner rewrote is left as it is.
+async function tigaOrang(pool: mysql.Pool) {
+  const [r] = await pool.query<mysql.ResultSetHeader>("INSERT IGNORE INTO pengaturan (kunci, nilai) VALUES ('bungalow-tiga-orang', '1')");
+  if (r.affectedRows !== 1) return;
+  const k = KAMAR_AWAL[0];
+  const [ada] = await pool.query<(mysql.RowDataPacket & { id: number; slug: string })[]>('SELECT id, slug FROM kamar');
+  const ids = ada.length === 1 ? [ada[0].id] : ada.filter((x) => x.slug === k.slug || x.slug === 'pondok-tepi-pantai').map((x) => x.id);
+  if (!ids.length) return;
+  await pool.query('UPDATE kamar SET kapasitas = ?, harga_tambah = ? WHERE id IN (?)', [k.kapasitas, k.harga_tambah, ids]);
+  for (const [kolom, lama, baru] of [
+    ['ringkas', 'masing-masing untuk dua orang, dengan kamar mandi dalam dan beranda', 'masing-masing dengan kasur king dan kasur single untuk sampai tiga orang, kamar mandi dalam, dan beranda'],
+    ['deskripsi', 'masing-masing untuk dua orang, dengan kamar mandi dalam', 'masing-masing dengan kasur king dan kasur single untuk sampai tiga orang, kamar mandi dalam,'],
+    ['ringkas_en', 'each sleeping two, with a private bathroom and', 'each with a king bed and a single bed for up to three, a private bathroom and'],
+    ['deskripsi_en', 'each sleeping two, with a private bathroom', 'each with a king bed and a single bed for up to three, a private bathroom'],
+  ]) {
+    await pool.query(`UPDATE kamar SET ${kolom} = REPLACE(${kolom}, ?, ?) WHERE id IN (?)`, [lama, baru, ids]);
+  }
+}
+
 // The owner's trips and transfers, November 2026: the Waisai transfer
 // becomes a small longboat for up to 5 people (Rp1.250.000 per boat, 15 PK)
 // with a faster speedboat beside it for up to 6 (Rp1.750.000, 2 × 40 PK),
@@ -244,6 +267,7 @@ async function siapkan(pool: mysql.Pool) {
   await namaBungalow(pool);
   await hargaBungalow(pool);
   await layananBaru(pool);
+  await tigaOrang(pool);
   await videoAwal(pool);
   // the first process to claim this row fills the empty database
   const [r] = await pool.query<mysql.ResultSetHeader>(
@@ -256,10 +280,10 @@ async function siapkan(pool: mysql.Pool) {
     for (const k of KAMAR_AWAL) {
       await pool.query(
         `INSERT INTO kamar (slug, nama, nama_en, ringkas, ringkas_en, deskripsi, deskripsi_en, fasilitas, fasilitas_en,
-          harga, harga_anak, skema_harga, harga_sendiri, kapasitas, jumlah_unit, min_malam, urutan)
-         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+          harga, harga_anak, skema_harga, harga_sendiri, harga_tambah, kapasitas, jumlah_unit, min_malam, urutan)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
         [k.slug, k.nama, k.nama_en, k.ringkas, k.ringkas_en, k.deskripsi, k.deskripsi_en,
-          k.fasilitas.join('\n'), k.fasilitas_en.join('\n'), k.harga, k.harga_anak, k.skema_harga, k.harga_sendiri,
+          k.fasilitas.join('\n'), k.fasilitas_en.join('\n'), k.harga, k.harga_anak, k.skema_harga, k.harga_sendiri, k.harga_tambah,
           k.kapasitas, k.jumlah_unit, k.min_malam, k.urutan],
       );
     }
