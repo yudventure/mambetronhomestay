@@ -32,7 +32,8 @@ type Props = {
   aktif: boolean;
   wa: string;
   kurs: Kurs;
-  mula: { kamarId: number; masuk: string; keluar: string; dewasa: number; anak: number; jumlahKamar: number };
+  // layanan: extras ticked from the link, the boat transfer picked in the date card
+  mula: { kamarId: number; masuk: string; keluar: string; dewasa: number; anak: number; jumlahKamar: number; layanan?: number[] };
   // dates that came in the link and could not be kept, null when none came
   ditolak: { masuk: string; keluar: string } | null;
   dariTautan: boolean;
@@ -87,7 +88,7 @@ export default function FormPesan({ b, kamar, layanan, sisa, awal, akhir, dpPers
   const [jumlahKamar, setJumlahKamar] = useState(mula.jumlahKamar);
   const [dewasa, setDewasa] = useState(mula.dewasa);
   const [anak, setAnak] = useState(mula.anak);
-  const [pilihan, setPilihan] = useState<number[]>([]);
+  const [pilihan, setPilihan] = useState<number[]>(mula.layanan ?? []);
   const [data, setData] = useState({ nama: '', telepon: '', email: '', negara: '', kedatangan: '', catatan: '' });
   const [setuju, setSetuju] = useState(false);
   const [paketI, setPaketI] = useState(0);

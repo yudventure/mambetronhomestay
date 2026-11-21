@@ -1,9 +1,9 @@
 // Trips and transfers on the home page. Deep sea cards, unlike the light
 // highlight cards above them, each with its icon drawn large and faint in
-// a corner, the price picked out in the light sea colour and an arrow to the
-// booking form, where the trip is ticked. A card alone on the last row of
-// three lies flat across the width.
-import Link from 'next/link';
+// a corner and the price picked out in the light sea colour. They only
+// inform: no link and no arrow (the owner's request, November 2026). The
+// boat transfers are picked in the date card and the booking form. A card
+// alone on the last row of three lies flat across the width.
 import Ikon from './Ikon';
 import Perkiraan from './Perkiraan';
 import type { Bahasa, Layanan } from '@/lib/jenis';
@@ -14,15 +14,15 @@ import type { Kurs } from '@/lib/uang';
 
 const LAUT = ['from-laut to-laut-2', 'from-biru-tua to-laut', 'from-laut-2 to-laut-3'];
 
-export default function KartuKegiatan({ b, l, i, mendatar, kurs, label, className = '' }: {
-  b: Bahasa; l: Layanan; i: number; mendatar: boolean; kurs: Kurs; label: string; className?: string;
+export default function KartuKegiatan({ b, l, i, mendatar, kurs, className = '' }: {
+  b: Bahasa; l: Layanan; i: number; mendatar: boolean; kurs: Kurs; className?: string;
 }) {
   const nama = pilih(b, l.nama, l.nama_en);
   return (
-    <Link href="/pesan" aria-label={`${label}, ${nama}`}
-      className={`group relative isolate flex flex-col overflow-hidden rounded-[1.75rem] bg-linear-to-br p-6 text-white shadow-lembut transition-[translate,box-shadow] duration-300 hover:-translate-y-1 hover:shadow-angkat sm:p-7 ${LAUT[i % LAUT.length]} ${mendatar ? 'lg:grid lg:grid-cols-[auto_minmax(0,1fr)_auto] lg:items-center lg:gap-x-8' : ''} ${className}`}>
+    <article
+      className={`relative isolate flex flex-col overflow-hidden rounded-[1.75rem] bg-linear-to-br p-6 text-white shadow-lembut sm:p-7 ${LAUT[i % LAUT.length]} ${mendatar ? 'lg:grid lg:grid-cols-[auto_minmax(0,1fr)_auto] lg:items-center lg:gap-x-8' : ''} ${className}`}>
       <Ikon nama={l.ikon} tebal={1.1}
-        className="pointer-events-none absolute -right-8 -bottom-10 -z-10 size-52 text-white/[0.07] transition-transform duration-500 group-hover:-rotate-6 group-hover:scale-110" />
+        className="pointer-events-none absolute -right-8 -bottom-10 -z-10 size-52 text-white/[0.07]" />
       <span aria-hidden className="pointer-events-none absolute -top-20 -left-16 -z-10 size-56 rounded-full bg-sorot/10" />
 
       <span aria-hidden className="flex size-14 items-center justify-center rounded-2xl bg-white/10 text-sorot ring-1 ring-white/15">
@@ -41,10 +41,7 @@ export default function KartuKegiatan({ b, l, i, mendatar, kurs, label, classNam
           <p className="mt-1.5 text-sm font-semibold text-white/80">{satuanLayanan(l, b)}</p>
           <Perkiraan idr={l.harga} kurs={kurs} b={b} className="mt-0.5 text-white/55" />
         </div>
-        <span aria-hidden className="inline-flex size-12 shrink-0 items-center justify-center rounded-full bg-white text-laut transition-transform duration-300 group-hover:translate-x-1">
-          <Ikon nama="panah" className="size-5" />
-        </span>
       </div>
-    </Link>
+    </article>
   );
 }

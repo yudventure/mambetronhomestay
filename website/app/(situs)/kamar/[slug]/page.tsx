@@ -9,7 +9,7 @@ import CariCepat from '@/components/CariCepat';
 import KartuKamar from '@/components/KartuKamar';
 import { daftarPaket } from '@/lib/paket';
 import { bahasaAktif } from '@/lib/bahasa';
-import { ambilSitus, daftarKamar, gambarCadangan, kamarDariSlug, pemesananAktif, sisaKamar } from '@/lib/data';
+import { ambilSitus, daftarKamar, daftarLayanan, gambarCadangan, kamarDariSlug, pemesananAktif, sisaKamar } from '@/lib/data';
 import { pastikanSegar } from '@/lib/sinkron';
 import { kamus } from '@/lib/kamus';
 import { dataPengelola, dwi, pilih, tautanWa } from '@/lib/format';
@@ -33,7 +33,7 @@ export async function generateMetadata({ params }: P): Promise<Metadata> {
 
 export default async function HalamanPondok({ params }: P) {
   const { slug } = await params;
-  const [b, situs, semua, aktif, kurs] = await Promise.all([bahasaAktif(), ambilSitus(), daftarKamar(), pemesananAktif(), kursAktif()]);
+  const [b, situs, semua, aktif, kurs, layanan] = await Promise.all([bahasaAktif(), ambilSitus(), daftarKamar(), pemesananAktif(), kursAktif(), daftarLayanan()]);
   if (aktif) pastikanSegar().catch(() => {});
   const i = semua.findIndex((x) => x.slug === slug);
   if (i < 0) notFound();
@@ -116,7 +116,7 @@ export default async function HalamanPondok({ params }: P) {
           <CariCepat b={b} awal={awal} akhir={akhir} checkIn={situs.checkIn} checkOut={situs.checkOut} sisa={sisa} unit={km.jumlah_unit}
             kapasitas={km.kapasitas} minMalam={km.min_malam} maksTamu={Math.min(20, km.kapasitas * km.jumlah_unit)}
             kamar={km.slug} judul={k.pilihTanggal} pengelola={dataPengelola(situs, b)} usiaGratis={situs.usiaGratis} anakPerPondok={situs.anakPerPondok}
-            harga={{ kamar: km, persenPaket: daftarPaket(situs)[0]?.persen ?? 0, kurs }}
+            harga={{ kamar: km, persenPaket: daftarPaket(situs)[0]?.persen ?? 0, kurs }} perahu={layanan.filter((l) => l.satuan === 'perahu')}
             wa={{ tautan: tautanWa(situs.whatsapp), pesan: dwi(situs.pesanCekWa, b), bungalow: pilih(b, km.nama, km.nama_en) }} />
         </Bagian>
       )}

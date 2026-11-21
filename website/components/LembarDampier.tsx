@@ -22,7 +22,8 @@ import { useKunciGulir } from '@/lib/kait';
 type Data = { asal: string; jalur: string; kamar: string; satu: boolean };
 // tamu pay (adults and children from the free age), anak are the children under it
 // pondok is the number of bungalows picked, one more than needed when the guest chose it
-type Pesan = { masuk: string; keluar: string; tamu: number; anak?: number; kamar?: string; pondok?: number };
+// tambahan is the name of the boat transfer picked, DAMPIER ticks its add-on of that name
+type Pesan = { masuk: string; keluar: string; tamu: number; anak?: number; kamar?: string; pondok?: number; tambahan?: string };
 
 // The booking page DAMPIER sends the guest back to, nothing else.
 const JALUR_PESANAN = /^\/(id|en|zh|ru|fr|es)\/bayar-mitra\/pesanan\/[A-Za-z0-9_-]{32,64}(\?paypal=(kembali|batal))?$/;
@@ -58,6 +59,8 @@ export default function LembarDampier({ b, d }: { b: Bahasa; d: Data }) {
     // the rooms the guest picked, DAMPIER keeps at least what the party needs
     const pondok = Math.max(0, Math.min(20, Math.round(p.pondok ?? 0) || 0));
     if (pondok > 1) q.set('kamar', String(pondok));
+    const tambahan = (p.tambahan ?? '').trim().slice(0, 80);
+    if (tambahan) q.set('tambahan', tambahan);
     buka(`/${b}${d.jalur}${d.jalur.includes('?') ? '&' : '?'}${q}`);
     return true;
   }, [b, d.jalur, d.kamar, d.satu, buka]);
@@ -80,9 +83,9 @@ export default function LembarDampier({ b, d }: { b: Bahasa; d: Data }) {
     let hash = '';
     try { hash = u.hash.startsWith('#dampier=') ? decodeURIComponent(u.hash.slice(9)) : ''; } catch { /* not ours */ }
     const q = u.searchParams;
-    const pesan = { masuk: q.get('dampier_tiba') ?? '', keluar: q.get('dampier_pulang') ?? '', tamu: Number(q.get('dampier_tamu')) || 2, anak: Number(q.get('dampier_anak')) || 0, pondok: Number(q.get('dampier_pondok')) || 0 };
+    const pesan = { masuk: q.get('dampier_tiba') ?? '', keluar: q.get('dampier_pulang') ?? '', tamu: Number(q.get('dampier_tamu')) || 2, anak: Number(q.get('dampier_anak')) || 0, pondok: Number(q.get('dampier_pondok')) || 0, tambahan: q.get('dampier_tambahan') ?? '' };
     if (!hash && !pesan.masuk) return;
-    for (const k of ['dampier_tiba', 'dampier_pulang', 'dampier_tamu', 'dampier_anak', 'dampier_pondok']) q.delete(k);
+    for (const k of ['dampier_tiba', 'dampier_pulang', 'dampier_tamu', 'dampier_anak', 'dampier_pondok', 'dampier_tambahan']) q.delete(k);
     window.history.replaceState(window.history.state, '', u.pathname + (q.size ? `?${q}` : ''));
     if (JALUR_PESANAN.test(hash)) buka(hash);
     else if (pesan.masuk) bukaPesan(pesan);

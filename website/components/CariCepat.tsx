@@ -11,11 +11,12 @@ import KotakTanggal from './KotakTanggal';
 import Pengelola from './Pengelola';
 import Perkiraan from './Perkiraan';
 import { rupiah, tanggal, type DataPengelola } from '@/lib/format';
-import type { Bahasa, Kamar } from '@/lib/jenis';
+import type { Bahasa, Kamar, Layanan } from '@/lib/jenis';
 import { kamus } from '@/lib/kamus';
 import { bacaRencana, simpanRencana } from '@/lib/rencana';
 import { daftarMalam, selisihHari } from '@/lib/tanggal';
-import { barisIsi, hitungHarga, isiPondok, pondokUntuk } from '@/lib/harga';
+import { barisIsi, hitungHarga, isiPondok, jumlahSatuan, pondokUntuk, satuanLayanan } from '@/lib/harga';
+import { pilih as pilihBahasa } from '@/lib/format';
 import type { Kurs } from '@/lib/uang';
 
 type Props = {
@@ -47,12 +48,16 @@ type Props = {
   // the first rate tier's percentage, and the rates for the estimate. The
   // owner's request, November 2026: the price and the total in the card.
   harga?: { kamar: Pick<Kamar, 'harga' | 'skema_harga' | 'harga_sendiri' | 'harga_tambah' | 'kapasitas'>; persenPaket: number; kurs: Kurs } | null;
+  // boat transfers priced per boat (Kegiatan, Dihitung per perahu), picked
+  // here with the stay: the owner's request, November 2026, "masukan dalam
+  // add on pesanan kamar untuk boat transfernya"
+  perahu?: Pick<Layanan, 'id' | 'nama' | 'nama_en' | 'harga' | 'satuan' | 'muat'>[];
 };
 type Rentang = { masuk: string; keluar: string };
 
 const KOSONG: Rentang = { masuk: '', keluar: '' };
 
-export default function CariCepat({ b, awal, akhir, checkIn, checkOut, sisa, unit, kapasitas, minMalam, maksTamu, kamar, judul, tombol, pengelola, wa, usiaGratis, anakPerPondok, harga }: Props) {
+export default function CariCepat({ b, awal, akhir, checkIn, checkOut, sisa, unit, kapasitas, minMalam, maksTamu, kamar, judul, tombol, pengelola, wa, usiaGratis, anakPerPondok, harga, perahu = [] }: Props) {
   const k = kamus(b);
   const t = k.rencanaTanggal;
   const [{ masuk, keluar }, setRentang] = useState<Rentang>(KOSONG);
@@ -68,6 +73,8 @@ export default function CariCepat({ b, awal, akhir, checkIn, checkOut, sisa, uni
   // would hold three: the owner's request, November 2026, "Rp600.000 untuk
   // satu kamar 3 orang, jika ingin kamar sendiri tambahan 850.000".
   const [tambahPondok, setTambahPondok] = useState(false);
+  // the boat transfer picked, a Kegiatan id, 0 for none
+  const [perahuId, setPerahuId] = useState(0);
   const bisaTambah = useCallback((n: number, a: number) => {
     const min = pondokUntuk(n, a, kapasitas, anakPerPondok);
     const isi = harga ? isiPondok(harga.kamar, min, n) : null;
@@ -137,7 +144,7 @@ export default function CariCepat({ b, awal, akhir, checkIn, checkOut, sisa, uni
     }
     // DAMPIER's payment sheet takes the stay when it is on (LembarDampier),
     // otherwise the form goes on to /pesan.
-    const tanya = new CustomEvent('mambetron:pesan', { cancelable: true, detail: { masuk, keluar, tamu, anak, kamar, pondok: butuh } });
+    const tanya = new CustomEvent('mambetron:pesan', { cancelable: true, detail: { masuk, keluar, tamu, anak, kamar, pondok: butuh, tambahan: perahuPilih ? perahuPilih.l.nama : '' } });
     if (!window.dispatchEvent(tanya)) e.preventDefault();
   }
 
@@ -162,6 +169,12 @@ export default function CariCepat({ b, awal, akhir, checkIn, checkOut, sisa, uni
   const ketHarga = isi && isi.baris.length > 1
     ? barisIsi(b, isi)
     : [t.isiPondok(butuh, tamu) + (anak ? `, ${t.anakGratis(anak)}` : '')];
+  // each boat transfer with the boats this party needs; children under the free age sit on a lap
+  const perahuHarga = perahu.map((l) => {
+    const n = jumlahSatuan(l.satuan, tamu, 1, tamu, l.muat);
+    return { l, n, total: l.harga * n };
+  });
+  const perahuPilih = perahuHarga.find((x) => x.l.id === perahuId) ?? null;
   // the two choices, each with its bungalows and price per night
   const pilihan = pilihanPondok && harga ? [false, true].map((v) => {
     const n = butuhMin + (v ? 1 : 0);
@@ -179,6 +192,7 @@ export default function CariCepat({ b, awal, akhir, checkIn, checkOut, sisa, uni
       <input type="hidden" name="tamu" value={tamu} />
       {anak > 0 && <input type="hidden" name="anak" value={anak} />}
       {butuh > butuhMin && <input type="hidden" name="pondok" value={butuh} />}
+      {perahuPilih && <input type="hidden" name="layanan" value={perahuPilih.l.id} />}
       {kamar && <input type="hidden" name="kamar" value={kamar} />}
 
       {/* Two columns on wide screens that fill on their own: the calendar with
@@ -245,6 +259,24 @@ export default function CariCepat({ b, awal, akhir, checkIn, checkOut, sisa, uni
               })}
             </fieldset>
           )}
+          {perahuHarga.length > 0 && (
+            <fieldset className="order-3 grid gap-2 rounded-2xl bg-embun p-3 sm:grid-cols-3 xl:order-none" data-pilih-perahu>
+              <legend className="float-left mb-1 w-full text-sm text-abu sm:col-span-3">{t.perahuJudul}</legend>
+              {[null, ...perahuHarga].map((x) => {
+                const on = (x?.l.id ?? 0) === perahuId;
+                return (
+                  <label key={x?.l.id ?? 0} className={`flex cursor-pointer items-start gap-2.5 rounded-xl bg-white px-3 py-2.5 transition-shadow ${on ? 'ring-2 ring-biru' : 'ring-1 ring-buih-2'}`}>
+                    <input type="radio" name="pilih_perahu" form="rencana-pilihan" checked={on} onChange={() => setPerahuId(x?.l.id ?? 0)} className="mt-0.5 size-4 shrink-0 accent-[#036f87]" />
+                    <span className="min-w-0 flex-1">
+                      <span className="block text-sm font-semibold leading-tight text-laut">{x ? pilihBahasa(b, x.l.nama, x.l.nama_en) : t.perahuTidak}</span>
+                      {x && <span className="block text-xs leading-snug text-abu">{satuanLayanan(x.l, b)}</span>}
+                      {x && <span className="mt-0.5 block text-sm font-semibold tabular-nums text-laut">{x.n > 1 ? `${t.perahuN(x.n)}, ` : ''}{rupiah(x.total, b)}</span>}
+                    </span>
+                  </label>
+                );
+              })}
+            </fieldset>
+          )}
       </div>
 
       <div className="contents xl:flex xl:flex-col xl:gap-6">
@@ -268,13 +300,19 @@ export default function CariCepat({ b, awal, akhir, checkIn, checkOut, sisa, uni
                 <span className="whitespace-nowrap font-semibold tabular-nums text-laut" data-harga-malam>{rupiah(satuMalam.biayaKamar, b)}</span>
               </div>
               {ketHarga.map((x) => <p key={x} className="text-xs leading-snug text-abu">{x}</p>)}
+              {perahuPilih && (
+                <div className="mt-1 flex items-baseline justify-between gap-3" data-harga-perahu>
+                  <span className="text-sm text-abu">{pilihBahasa(b, perahuPilih.l.nama, perahuPilih.l.nama_en)}, {t.perahuN(perahuPilih.n)}</span>
+                  <span className="whitespace-nowrap text-sm font-semibold tabular-nums text-laut">{rupiah(perahuPilih.total, b)}</span>
+                </div>
+              )}
               {semua ? (
                 <>
                   <div className="mt-2 flex items-baseline justify-between gap-3">
-                    <span className="font-semibold text-laut">{t.totalMalam(malam)}</span>
-                    <span className="whitespace-nowrap font-judul text-2xl font-semibold tabular-nums text-laut" data-total-rencana>{rupiah(semua.biayaKamar, b)}</span>
+                    <span className="font-semibold text-laut">{perahuPilih ? t.totalSemua(malam) : t.totalMalam(malam)}</span>
+                    <span className="whitespace-nowrap font-judul text-2xl font-semibold tabular-nums text-laut" data-total-rencana>{rupiah(semua.biayaKamar + (perahuPilih?.total ?? 0), b)}</span>
                   </div>
-                  <Perkiraan idr={semua.biayaKamar} kurs={harga!.kurs} b={b} className="text-right text-abu" />
+                  <Perkiraan idr={semua.biayaKamar + (perahuPilih?.total ?? 0)} kurs={harga!.kurs} b={b} className="text-right text-abu" />
                 </>
               ) : (
                 <p className="mt-1 text-xs font-semibold text-biru-tua">{t.pilihUntukTotal}</p>

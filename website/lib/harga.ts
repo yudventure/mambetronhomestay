@@ -11,8 +11,8 @@ export function satuanLayanan(l: Pick<Layanan, 'satuan' | 'muat'>, b: Bahasa) {
   return l.satuan === 'perahu' && l.muat > 0 ? `${s}, ${KAMUS[b].muatPerahu(l.muat)}` : s;
 }
 
-// `orang` is everyone on board for a boat, children under the free age
-// included, and `muat` how many one boat takes.
+// `orang` is everyone on a boat seat, the paying guests (children under the
+// free age sit on a lap, as at DAMPIER), and `muat` how many one boat takes.
 export function jumlahSatuan(satuan: Satuan, tamu: number, malam: number, orang = tamu, muat = 0) {
   switch (satuan) {
     case 'pesanan': return 1;
@@ -90,7 +90,7 @@ export function hitungHarga(
   const biayaKamar = persen > 0 ? Math.round((dasar * (100 + persen)) / 100 / 1000) * 1000 : dasar;
   const tamu = o.dewasa;
   const rincian: BarisLayanan[] = o.layanan.map((l) => {
-    const jumlah = jumlahSatuan(l.satuan, tamu, malam, o.dewasa + Math.max(0, o.anak), l.muat);
+    const jumlah = jumlahSatuan(l.satuan, tamu, malam, o.dewasa, l.muat);
     return { id: l.id, nama: l.nama, nama_en: l.nama_en, harga: l.harga, satuan: l.satuan, jumlah, subtotal: l.harga * jumlah };
   });
   const biayaLayanan = rincian.reduce((a, r) => a + r.subtotal, 0);

@@ -169,7 +169,7 @@ export default async function Beranda() {
             kapasitas={Math.max(1, ...kamar.map((x) => x.kapasitas))} minMalam={kamar.length ? Math.max(1, Math.min(...kamar.map((x) => x.min_malam))) : 1}
             maksTamu={kamar.length ? Math.min(20, kamar.reduce((n, x) => n + x.kapasitas * x.jumlah_unit, 0)) : 6}
             pengelola={dataPengelola(s, b)} usiaGratis={s.usiaGratis} anakPerPondok={s.anakPerPondok}
-            harga={kamar.length === 1 ? { kamar: kamar[0], persenPaket: daftarPaket(s)[0]?.persen ?? 0, kurs } : null}
+            harga={kamar.length === 1 ? { kamar: kamar[0], persenPaket: daftarPaket(s)[0]?.persen ?? 0, kurs } : null} perahu={layanan.filter((l) => l.satuan === 'perahu')}
             wa={{ tautan: tautanWa(s.whatsapp), pesan: dwi(s.pesanCekWa, b), bungalow: kamar.length === 1 ? pilih(b, kamar[0].nama, kamar[0].nama_en) : k.bungalowUmum }} />
         </div>
       </section>
@@ -179,7 +179,7 @@ export default async function Beranda() {
           <JudulBagian judul={dwi(s.layananJudul, b)} teks={dwi(s.layananTeks, b)} />
           <div className={`${KISI} gap-4 md:gap-5`}>
             {layanan.map((l, i) => (
-              <KartuKegiatan key={l.id} b={b} l={l} i={i} kurs={kurs} label={k.pesanKegiatan}
+              <KartuKegiatan key={l.id} b={b} l={l} i={i} kurs={kurs}
                 mendatar={layanan.length % 3 === 1 && i === layanan.length - 1} className={rentang(layanan.length, i)} />
             ))}
           </div>
