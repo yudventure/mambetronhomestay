@@ -11,6 +11,7 @@ import Pahlawan from '@/components/Pahlawan';
 import PetaRute from '@/components/PetaRute';
 import { koordinat } from '@/components/Peta';
 import { bahasaAktif } from '@/lib/bahasa';
+import { daftarPaket } from '@/lib/paket';
 import { ambilSitus, daftarKamar, daftarLayanan, daftarUlasan, fotoSitus, gambarCadangan, pemesananAktif, sisaKamar } from '@/lib/data';
 import { kamus } from '@/lib/kamus';
 import { dataPengelola, dwi, paragraf, pilih, rapatRentang, tautanLuar, tautanWa } from '@/lib/format';
@@ -40,6 +41,7 @@ export default async function Beranda() {
   for (const x of kamar) for (const d of Object.keys(peta.get(x.id) ?? {})) sisa[d] = 0;
   for (const d of Object.keys(sisa)) sisa[d] = kamar.reduce((n, x) => n + (peta.get(x.id)?.[d] ?? x.jumlah_unit), 0);
   const tentangFoto = foto.tentang[0];
+  const galeri = foto.galeri.length ? foto.galeri : kamar.flatMap((x) => x.foto);
   const video = await siapkanVideo(s.tentangVideo.slice(0, 3));
   const titik = koordinat(s.petaKoordinat);
   const tautanPeta = s.petaTautan || (titik ? `https://www.google.com/maps?q=${titik.lat},${titik.lng}` : '');
@@ -155,12 +157,19 @@ export default async function Beranda() {
               className="aspect-[4/3] w-full rounded-[1.75rem] object-cover lg:aspect-[16/11]" />
           )}
         </div>
+        {/* the gallery between the about text and the date card, the bungalow photos while the panel gallery is empty */}
+        {galeri.length > 0 && (
+          <div className="mx-auto mt-12 max-w-6xl px-4 sm:px-6 md:mt-16">
+            <GaleriBeranda b={b} foto={galeri} judul={dwi(s.galeriJudul, b)} />
+          </div>
+        )}
         {/* stay planner with the calendar open, under the about text and photo */}
         <div className="mx-auto mt-12 max-w-6xl px-4 sm:px-6 md:mt-16">
           <CariCepat b={b} awal={awal} akhir={akhir} checkIn={s.checkIn} checkOut={s.checkOut} sisa={sisa} unit={Math.max(1, unit)}
             kapasitas={Math.max(1, ...kamar.map((x) => x.kapasitas))} minMalam={kamar.length ? Math.max(1, Math.min(...kamar.map((x) => x.min_malam))) : 1}
             maksTamu={kamar.length ? Math.min(20, kamar.reduce((n, x) => n + x.kapasitas * x.jumlah_unit, 0)) : 6}
             pengelola={dataPengelola(s, b)} usiaGratis={s.usiaGratis} anakPerPondok={s.anakPerPondok}
+            harga={kamar.length === 1 ? { kamar: kamar[0], persenPaket: daftarPaket(s)[0]?.persen ?? 0, kurs } : null}
             wa={{ tautan: tautanWa(s.whatsapp), pesan: dwi(s.pesanCekWa, b), bungalow: kamar.length === 1 ? pilih(b, kamar[0].nama, kamar[0].nama_en) : k.bungalowUmum }} />
         </div>
       </section>
@@ -174,13 +183,6 @@ export default async function Beranda() {
                 mendatar={layanan.length % 3 === 1 && i === layanan.length - 1} className={rentang(layanan.length, i)} />
             ))}
           </div>
-        </Bagian>
-      )}
-
-      {foto.galeri.length > 0 && (
-        <Bagian className="!pt-0">
-          <JudulBagian judul={dwi(s.galeriJudul, b)} />
-          <GaleriBeranda b={b} foto={foto.galeri} />
         </Bagian>
       )}
 

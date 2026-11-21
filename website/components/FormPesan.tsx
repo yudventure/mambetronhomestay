@@ -19,7 +19,7 @@ import Perkiraan from './Perkiraan';
 import type { Kurs } from '@/lib/uang';
 import { daftarMalam, selisihHari } from '@/lib/tanggal';
 
-export type KamarForm = Pick<Kamar, 'id' | 'slug' | 'nama' | 'nama_en' | 'harga' | 'harga_anak' | 'skema_harga' | 'persen_sendiri' | 'kapasitas' | 'jumlah_unit' | 'min_malam'> & { gambar: string };
+export type KamarForm = Pick<Kamar, 'id' | 'slug' | 'nama' | 'nama_en' | 'harga' | 'harga_anak' | 'skema_harga' | 'harga_sendiri' | 'kapasitas' | 'jumlah_unit' | 'min_malam'> & { gambar: string };
 
 type Props = {
   b: Bahasa;

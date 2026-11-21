@@ -9,12 +9,14 @@ import Ikon from './Ikon';
 import Kalender from './Kalender';
 import KotakTanggal from './KotakTanggal';
 import Pengelola from './Pengelola';
-import { tanggal, type DataPengelola } from '@/lib/format';
-import type { Bahasa } from '@/lib/jenis';
+import Perkiraan from './Perkiraan';
+import { rupiah, tanggal, type DataPengelola } from '@/lib/format';
+import type { Bahasa, Kamar } from '@/lib/jenis';
 import { kamus } from '@/lib/kamus';
 import { bacaRencana, simpanRencana } from '@/lib/rencana';
 import { daftarMalam, selisihHari } from '@/lib/tanggal';
-import { pondokUntuk } from '@/lib/harga';
+import { barisIsi, hitungHarga, pondokUntuk } from '@/lib/harga';
+import type { Kurs } from '@/lib/uang';
 
 type Props = {
   b: Bahasa;
@@ -41,12 +43,16 @@ type Props = {
   // children under this age stay free and share their parents' bed, a few per bungalow
   usiaGratis: number;
   anakPerPondok: number;
+  // the bungalow priced on this card (none when the site has several types),
+  // the first rate tier's percentage, and the rates for the estimate. The
+  // owner's request, November 2026: the price and the total in the card.
+  harga?: { kamar: Pick<Kamar, 'harga' | 'skema_harga' | 'harga_sendiri' | 'kapasitas'>; persenPaket: number; kurs: Kurs } | null;
 };
 type Rentang = { masuk: string; keluar: string };
 
 const KOSONG: Rentang = { masuk: '', keluar: '' };
 
-export default function CariCepat({ b, awal, akhir, checkIn, checkOut, sisa, unit, kapasitas, minMalam, maksTamu, kamar, judul, tombol, pengelola, wa, usiaGratis, anakPerPondok }: Props) {
+export default function CariCepat({ b, awal, akhir, checkIn, checkOut, sisa, unit, kapasitas, minMalam, maksTamu, kamar, judul, tombol, pengelola, wa, usiaGratis, anakPerPondok, harga }: Props) {
   const k = kamus(b);
   const t = k.rencanaTanggal;
   const [{ masuk, keluar }, setRentang] = useState<Rentang>(KOSONG);
@@ -123,6 +129,15 @@ export default function CariCepat({ b, awal, akhir, checkIn, checkOut, sisa, uni
     setGalat(t.dulu);
   }
 
+  // the price of the chosen guests per night, and the total once both dates are in
+  const malam = masuk && keluar ? selisihHari(masuk, keluar) : 0;
+  const hitung = (n: number) => (harga ? hitungHarga(harga.kamar, { malam: n, jumlahKamar: butuh, dewasa: tamu, anak, layanan: [], dpPersen: 0, persenPaket: harga.persenPaket }) : null);
+  const satuMalam = hitung(1), semua = malam > 0 ? hitung(malam) : null;
+  const isi = satuMalam?.isi ?? null;
+  const ketHarga = isi && isi.penuh > 0 && isi.sendiri > 0
+    ? barisIsi(b, isi)
+    : [t.isiPondok(butuh, tamu) + (anak ? `, ${t.anakGratis(anak)}` : '')];
+
   const bulat = 'inline-flex size-9 items-center justify-center rounded-full bg-white text-laut shadow-tipis transition-colors hover:bg-buih disabled:opacity-35 disabled:shadow-none';
 
   return (
@@ -187,6 +202,26 @@ export default function CariCepat({ b, awal, akhir, checkIn, checkOut, sisa, uni
             </button>
           </div>
         </div>
+        {satuMalam && (
+          <div className="grid gap-1 rounded-2xl bg-embun px-4 py-3 sm:col-span-2 xl:col-span-1" data-harga-rencana aria-live="polite">
+            <div className="flex items-baseline justify-between gap-3">
+              <span className="text-sm text-abu">{t.hargaMalam}</span>
+              <span className="whitespace-nowrap font-semibold tabular-nums text-laut" data-harga-malam>{rupiah(satuMalam.biayaKamar, b)}</span>
+            </div>
+            {ketHarga.map((x) => <p key={x} className="text-xs leading-snug text-abu">{x}</p>)}
+            {semua ? (
+              <>
+                <div className="mt-2 flex items-baseline justify-between gap-3">
+                  <span className="font-semibold text-laut">{t.totalMalam(malam)}</span>
+                  <span className="whitespace-nowrap font-judul text-2xl font-semibold tabular-nums text-laut" data-total-rencana>{rupiah(semua.biayaKamar, b)}</span>
+                </div>
+                <Perkiraan idr={semua.biayaKamar} kurs={harga!.kurs} b={b} className="text-right text-abu" />
+              </>
+            ) : (
+              <p className="mt-1 text-xs font-semibold text-biru-tua">{t.pilihUntukTotal}</p>
+            )}
+          </div>
+        )}
         {/* Pay goes straight to payment, DAMPIER's sheet or the booking form.
             Check availability asks on WhatsApp with the chosen stay. */}
         <div className={`grid gap-3 sm:col-span-2 xl:col-span-1 ${wa?.tautan ? 'sm:grid-cols-2 xl:grid-cols-1' : ''}`}>

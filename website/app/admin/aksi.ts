@@ -6,7 +6,7 @@ import { redirect } from 'next/navigation';
 import { PENGATURAN, gabungSitus, rapikan } from '@/lib/bawaan.mjs';
 import { jalankan, satu, transaksi, type Baris } from '@/lib/db';
 import { ambilSitus, daftarKamar, daftarLayanan, kamarDariId, pesananDariId, sisaKamar } from '@/lib/data';
-import { hitungHarga, persenSendiri } from '@/lib/harga';
+import { hargaSendiriSimpan, hitungHarga } from '@/lib/harga';
 import type { StatusPesanan } from '@/lib/jenis';
 import { GalatPesan, simpanPesanan, surelSah } from '@/lib/pesan';
 import { pesanGalat } from '@/lib/kamus';
@@ -111,7 +111,7 @@ export async function simpanKamar(fd: FormData) {
   const nilai = [
     slug, nama, teks(fd, 'nama_en', 120), teks(fd, 'ringkas', 400), teks(fd, 'ringkas_en', 400),
     teks(fd, 'deskripsi', 8000), teks(fd, 'deskripsi_en', 8000), teks(fd, 'fasilitas', 4000), teks(fd, 'fasilitas_en', 4000),
-    rupiahKe(fd, 'harga'), hargaAnak, fd.get('skema_harga') === 'kamar' ? 'kamar' : 'orang', Math.min(90, Math.max(0, bulat(fd, 'persen_sendiri'))),
+    rupiahKe(fd, 'harga'), hargaAnak, fd.get('skema_harga') === 'kamar' ? 'kamar' : 'orang', rupiahKe(fd, 'harga_sendiri'),
     Math.min(50, Math.max(1, bulat(fd, 'kapasitas'))), Math.min(50, Math.max(1, bulat(fd, 'jumlah_unit'))),
     Math.min(30, Math.max(1, bulat(fd, 'min_malam'))), centang(fd, 'aktif') ? 1 : 0, bulat(fd, 'urutan'),
   ];
@@ -119,14 +119,14 @@ export async function simpanKamar(fd: FormData) {
   if (id) {
     await jalankan(
       `UPDATE kamar SET slug = ?, nama = ?, nama_en = ?, ringkas = ?, ringkas_en = ?, deskripsi = ?, deskripsi_en = ?, fasilitas = ?,
-        fasilitas_en = ?, harga = ?, harga_anak = ?, skema_harga = ?, persen_sendiri = ?, kapasitas = ?, jumlah_unit = ?, min_malam = ?,
+        fasilitas_en = ?, harga = ?, harga_anak = ?, skema_harga = ?, harga_sendiri = ?, kapasitas = ?, jumlah_unit = ?, min_malam = ?,
         aktif = ?, urutan = ? WHERE id = ?`,
       [...nilai, id],
     );
   } else {
     const r = await jalankan(
       `INSERT INTO kamar (slug, nama, nama_en, ringkas, ringkas_en, deskripsi, deskripsi_en, fasilitas, fasilitas_en, harga, harga_anak,
-        skema_harga, persen_sendiri, kapasitas, jumlah_unit, min_malam, aktif, urutan) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        skema_harga, harga_sendiri, kapasitas, jumlah_unit, min_malam, aktif, urutan) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       nilai,
     );
     tujuan = r.insertId;
@@ -478,8 +478,8 @@ export async function ubahJadwal(fd: FormData) {
     }
     await c.query(
       `UPDATE pesanan SET kamar_id = ?, kamar_nama = ?, jumlah_kamar = ?, check_in = ?, check_out = ?, malam = ?, dewasa = ?, anak = ?,
-        harga_satuan = ?, skema_harga = ?, persen_sendiri = ?, biaya_kamar = ?, biaya_layanan = ?, total = ?, dp = ?, rincian = ? WHERE id = ?`,
-      [km!.id, km!.nama, jumlahKamar, masuk, keluar, malam, dewasa, anak, km!.harga, km!.skema_harga, persenSendiri(km!), h.biayaKamar, h.biayaLayanan,
+        harga_satuan = ?, skema_harga = ?, harga_sendiri = ?, persen_sendiri = 0, biaya_kamar = ?, biaya_layanan = ?, total = ?, dp = ?, rincian = ? WHERE id = ?`,
+      [km!.id, km!.nama, jumlahKamar, masuk, keluar, malam, dewasa, anak, km!.harga, km!.skema_harga, hargaSendiriSimpan(km!), h.biayaKamar, h.biayaLayanan,
         h.total, h.dp, JSON.stringify(h.rincian), id],
     );
   });

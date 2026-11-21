@@ -69,7 +69,7 @@ export default async function Pesan({ searchParams }: { searchParams: Promise<Re
     : null;
 
   const daftar: KamarForm[] = kamar.map((x, i) => ({
-    id: x.id, slug: x.slug, nama: x.nama, nama_en: x.nama_en, harga: x.harga, harga_anak: x.harga_anak, skema_harga: x.skema_harga, persen_sendiri: x.persen_sendiri,
+    id: x.id, slug: x.slug, nama: x.nama, nama_en: x.nama_en, harga: x.harga, harga_anak: x.harga_anak, skema_harga: x.skema_harga, harga_sendiri: x.harga_sendiri,
     kapasitas: x.kapasitas, jumlah_unit: x.jumlah_unit, min_malam: x.min_malam, gambar: x.foto[0]?.url ?? gambarCadangan(i),
   }));
 

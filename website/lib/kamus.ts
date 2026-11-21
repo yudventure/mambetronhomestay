@@ -29,7 +29,7 @@ const id = {
   cekKetersediaan: 'Cek ketersediaan',
   bayarSekarang: 'Bayar sekarang',
   bungalowUmum: 'bungalow',
-  rencanaTanggal: { diKalender: 'Ketuk di kalender', dulu: 'Pilih tanggal tiba dan pulang dulu.', tidakMuat: (n: number) => `Tanggal tadi tidak cukup untuk ${n} tamu. Pilih tanggal lain.`, kurangTamu: 'Kurangi tamu', tambahTamu: 'Tambah tamu', tamuN: (n: number) => `${n} tamu`, danAnak: (n: number, u: number) => ` dan ${n} anak di bawah ${u} tahun`, kurangAnak: 'Kurangi anak', tambahAnak: 'Tambah anak', waBaru: 'Cek ketersediaan lewat WhatsApp, terbuka di jendela baru' },
+  rencanaTanggal: { diKalender: 'Ketuk di kalender', dulu: 'Pilih tanggal tiba dan pulang dulu.', tidakMuat: (n: number) => `Tanggal tadi tidak cukup untuk ${n} tamu. Pilih tanggal lain.`, kurangTamu: 'Kurangi tamu', tambahTamu: 'Tambah tamu', tamuN: (n: number) => `${n} tamu`, danAnak: (n: number, u: number) => ` dan ${n} anak di bawah ${u} tahun`, kurangAnak: 'Kurangi anak', tambahAnak: 'Tambah anak', waBaru: 'Cek ketersediaan lewat WhatsApp, terbuka di jendela baru', hargaMalam: 'Harga per malam', totalMalam: (n: number) => `Total ${n} malam`, pilihUntukTotal: 'Pilih tanggal tiba dan pulang untuk melihat total harga.', isiPondok: (p: number, o: number) => `${p} bungalow untuk ${o} orang`, anakGratis: (n: number) => `${n} anak gratis` },
   lembarDampier: {
     judul: 'Pembayaran DAMPIER', membuka: 'Membuka pembayaran', dikelola: 'Pemesanan online dikelola oleh thedampier.com',
     lambat: 'Pembayaran belum terbuka. Sinyal mungkin sedang lemah.', ulang: 'Coba lagi', tutup: 'Tutup',
@@ -44,6 +44,7 @@ const id = {
     perbesar: 'Perbesar foto', jendela: 'Foto ukuran besar', tutup: 'Tutup foto', sebelum: 'Foto sebelumnya', berikut: 'Foto berikutnya',
     ukuranAsli: 'Ukuran asli', pasLayar: 'Pas layar', urutan: (i: number, n: number) => `${i} dari ${n}`,
   },
+  galeriSemua: (n: number) => `Lihat semua ${n} foto`,
   sudahPesan: 'Sudah memesan? Cek pesananmu',
   situsTutup: 'Situs sedang ditutup sementara. Hubungi kami lewat WhatsApp untuk memesan.',
   mulai: 'Mulai',
@@ -273,7 +274,7 @@ const en: Kamus = {
   cekKetersediaan: 'Check availability',
   bayarSekarang: 'Pay now',
   bungalowUmum: 'a bungalow',
-  rencanaTanggal: { diKalender: 'Tap it on the calendar', dulu: 'Pick your arrival and departure dates first.', tidakMuat: (n) => `Those dates no longer fit ${n} guests. Please pick other dates.`, kurangTamu: 'Fewer guests', tambahTamu: 'More guests', tamuN: (n) => (n === 1 ? '1 guest' : `${n} guests`), danAnak: (n, u) => ` and ${n} ${n === 1 ? 'child' : 'children'} under ${u}`, kurangAnak: 'Fewer children', tambahAnak: 'More children', waBaru: 'Check availability on WhatsApp, opens in a new window' },
+  rencanaTanggal: { diKalender: 'Tap it on the calendar', dulu: 'Pick your arrival and departure dates first.', tidakMuat: (n) => `Those dates no longer fit ${n} guests. Please pick other dates.`, kurangTamu: 'Fewer guests', tambahTamu: 'More guests', tamuN: (n) => (n === 1 ? '1 guest' : `${n} guests`), danAnak: (n, u) => ` and ${n} ${n === 1 ? 'child' : 'children'} under ${u}`, kurangAnak: 'Fewer children', tambahAnak: 'More children', waBaru: 'Check availability on WhatsApp, opens in a new window', hargaMalam: 'Price per night', totalMalam: (n) => (n === 1 ? 'Total for 1 night' : `Total for ${n} nights`), pilihUntukTotal: 'Pick your arrival and departure dates to see the total.', isiPondok: (p, o) => `${p} ${p === 1 ? 'bungalow' : 'bungalows'} for ${o} ${o === 1 ? 'guest' : 'guests'}`, anakGratis: (n) => `${n} ${n === 1 ? 'child' : 'children'} free` },
   lembarDampier: {
     judul: 'DAMPIER payment', membuka: 'Opening payment', dikelola: 'Online bookings managed by thedampier.com',
     lambat: 'The payment has not opened yet. The connection may be weak.', ulang: 'Try again', tutup: 'Close',
@@ -288,6 +289,7 @@ const en: Kamus = {
     perbesar: 'Enlarge photo', jendela: 'Large photo', tutup: 'Close photo', sebelum: 'Previous photo', berikut: 'Next photo',
     ukuranAsli: 'Actual size', pasLayar: 'Fit to screen', urutan: (i: number, n: number) => `${i} of ${n}`,
   },
+  galeriSemua: (n) => `See all ${n} photos`,
   sudahPesan: 'Already booked? Check your booking',
   situsTutup: 'The site is closed for now. Message us on WhatsApp to book.',
   mulai: 'From',

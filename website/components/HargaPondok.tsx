@@ -1,17 +1,18 @@
 // The price block of a bungalow, on its page and on its card. A bungalow
-// priced per bungalow with a solo discount (Isi situs, Bungalow) reads
-// "For 2 guests", the price, and the price for one guest under it. The
-// owner's price, November 2026: Rp1.200.000 for two, one guest 30% less.
+// priced per bungalow with a price for one guest (Bungalow, Harga untuk 1
+// orang) reads "For 2 guests", the price, and the price for one guest
+// under it. The owner's price, November 2026: Rp1.200.000 for two, one
+// guest Rp850.000.
 import type { Bahasa, Kamar } from '@/lib/jenis';
 import { kamus } from '@/lib/kamus';
 import { rupiah } from '@/lib/format';
-import { hargaSendiri, persenSendiri } from '@/lib/harga';
+import { hargaSendiri } from '@/lib/harga';
 import type { Kurs } from '@/lib/uang';
 import Perkiraan from './Perkiraan';
 
 type Props = {
   b: Bahasa;
-  kamar: Pick<Kamar, 'harga' | 'skema_harga' | 'persen_sendiri' | 'kapasitas'>;
+  kamar: Pick<Kamar, 'harga' | 'skema_harga' | 'harga_sendiri' | 'kapasitas'>;
   kurs: Kurs;
   // the price's own type size
   ukuran: string;
@@ -21,7 +22,7 @@ type Props = {
 export default function HargaPondok({ b, kamar, kurs, ukuran, usiaGratis }: Props) {
   const k = kamus(b);
   const perPondok = kamar.skema_harga === 'kamar';
-  const sendiri = hargaSendiri(kamar.harga, persenSendiri(kamar));
+  const sendiri = hargaSendiri(kamar);
   const adaSendiri = sendiri < kamar.harga;
   return (
     <div data-harga-pondok>

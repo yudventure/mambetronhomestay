@@ -36,7 +36,7 @@ export default async function FotoAdmin() {
         </section>
         <section className="kartu p-5 sm:p-6">
           <h2 className="mb-1 text-2xl">Galeri</h2>
-          <KelolaFoto wadah="galeri" foto={foto.galeri} catatan="Kumpulan foto suasana, makanan, laut, dan kegiatan. Bagian galeri tampil bila ada minimal satu foto." />
+          <KelolaFoto wadah="galeri" foto={foto.galeri} catatan="Kumpulan foto suasana, makanan, laut, dan kegiatan. Tampil di beranda di antara Tentang dan kartu pilih tanggal, lima foto di layar lebar dan semuanya bisa digeser di HP. Selama kosong, foto bungalow yang tampil." />
         </section>
       </div>
     </>

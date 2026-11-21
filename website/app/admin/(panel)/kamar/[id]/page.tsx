@@ -8,13 +8,13 @@ import { hapusKamar, simpanKamar } from '@/app/admin/aksi';
 import { kamarDariId } from '@/lib/data';
 import type { Kamar } from '@/lib/jenis';
 import { rupiah } from '@/lib/format';
-import { hargaSendiri, persenSendiri } from '@/lib/harga';
+import { hargaSendiri } from '@/lib/harga';
 
 export const metadata = { title: 'Ubah bungalow' };
 
 const KOSONG: Kamar = {
   id: 0, slug: '', nama: '', nama_en: '', ringkas: '', ringkas_en: '', deskripsi: '', deskripsi_en: '', fasilitas: [], fasilitas_en: [],
-  harga: 0, harga_anak: null, skema_harga: 'kamar', persen_sendiri: 30, kapasitas: 2, jumlah_unit: 1, min_malam: 1, aktif: true, urutan: 0, foto: [],
+  harga: 0, harga_anak: null, skema_harga: 'kamar', harga_sendiri: 0, kapasitas: 2, jumlah_unit: 1, min_malam: 1, aktif: true, urutan: 0, foto: [],
 };
 
 function Dua({ label, nama, k, panjang = false, bantuan, wajib = false }: { label: string; nama: string; k: Kamar; panjang?: boolean; bantuan?: string; wajib?: boolean }) {
@@ -77,14 +77,11 @@ export default async function UbahKamar({ params, searchParams }: { params: Prom
               </select>
             </div>
             <div>
-              <label className="label-isian" htmlFor="persen_sendiri">Potongan untuk tamu sendiri</label>
-              <div className="flex items-center gap-2">
-                <input id="persen_sendiri" name="persen_sendiri" type="number" min={0} max={90} defaultValue={k.persen_sendiri} className="isian" />
-                <span className="font-semibold text-laut">%</span>
-              </div>
+              <label className="label-isian" htmlFor="harga_sendiri">Harga untuk 1 orang</label>
+              <input id="harga_sendiri" name="harga_sendiri" inputMode="numeric" defaultValue={k.harga_sendiri || ''} placeholder="850000" className="isian" />
               <p className="bantuan">
-                Hanya untuk harga per bungalow yang muat dua orang atau lebih. Bungalow yang diisi satu orang membayar sekian persen lebih murah, dibulatkan ke ribuan. Anak di bawah usia gratis tidak dihitung. Isi 0 bila tamu sendiri membayar harga penuh.
-                {persenSendiri(k) > 0 && k.harga > 0 && <> Sekarang <b data-panel-harga-sendiri>{rupiah(hargaSendiri(k.harga, persenSendiri(k)))}</b> per malam untuk satu orang.</>}
+                Hanya untuk harga per bungalow yang muat dua orang atau lebih. Bungalow yang diisi satu orang membayar harga ini per malam. Anak di bawah usia gratis tidak dihitung. Kosongkan bila tamu sendiri membayar harga penuh.
+                {hargaSendiri(k) < k.harga && <> Sekarang <b data-panel-harga-sendiri>{rupiah(hargaSendiri(k))}</b> untuk satu orang.</>}
               </p>
             </div>
             <div>
