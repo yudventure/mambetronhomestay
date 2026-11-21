@@ -9,8 +9,7 @@ import { kirimTanpaReset } from '@/lib/kait';
 import { kirimPesanan, type HasilKirim } from '@/app/(situs)/pesan/aksi';
 import type { Bahasa, Kamar, Layanan } from '@/lib/jenis';
 import { KAMUS } from '@/lib/kamus';
-import { SATUAN } from '@/lib/satuan.mjs';
-import { barisIsi, hitungHarga } from '@/lib/harga';
+import { barisIsi, hitungHarga, satuanLayanan } from '@/lib/harga';
 import { dwi, pilih, rentangTanggal, rupiah, tanggal, type DataPengelola } from '@/lib/format';
 import type { Paket } from '@/lib/paket';
 import { bacaRencana, simpanRencana } from '@/lib/rencana';
@@ -298,8 +297,8 @@ export default function FormPesan({ b, kamar, layanan, sisa, awal, akhir, dpPers
                       <span className="block text-sm text-abu">{pilih(b, l.keterangan, l.keterangan_en)}</span>
                     </span>
                     <span className="col-start-2 text-sm sm:col-start-3 sm:text-right">
-                      <span className="block font-bold text-laut">{rupiah(l.harga, b)}</span>
-                      <span className="block text-abu">{SATUAN[l.satuan][b]}</span>
+                      <span className="block font-bold text-laut">{l.mulai ? `${k.mulai} ` : ''}{rupiah(l.harga, b)}</span>
+                      <span className="block text-abu">{satuanLayanan(l, b)}</span>
                     </span>
                   </label>
                 );

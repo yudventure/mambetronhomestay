@@ -58,6 +58,8 @@ export const SKEMA = [
   keterangan_en VARCHAR(400) NOT NULL DEFAULT '',
   harga INT UNSIGNED NOT NULL DEFAULT 0,
   satuan VARCHAR(16) NOT NULL DEFAULT 'orang',
+  muat TINYINT UNSIGNED NOT NULL DEFAULT 0,
+  mulai TINYINT(1) NOT NULL DEFAULT 0,
   ikon VARCHAR(20) NOT NULL DEFAULT 'perahu',
   aktif TINYINT(1) NOT NULL DEFAULT 1,
   urutan INT NOT NULL DEFAULT 0
@@ -207,6 +209,8 @@ export const KOLOM_TAMBAHAN = [
   ['kamar', 'harga_sendiri', 'INT UNSIGNED NOT NULL DEFAULT 0 AFTER skema_harga'],
   ['pesanan', 'persen_sendiri', 'TINYINT UNSIGNED NOT NULL DEFAULT 0 AFTER skema_harga'],
   ['pesanan', 'harga_sendiri', 'INT UNSIGNED NOT NULL DEFAULT 0 AFTER persen_sendiri'],
+  ['layanan', 'muat', 'TINYINT UNSIGNED NOT NULL DEFAULT 0 AFTER satuan'],
+  ['layanan', 'mulai', 'TINYINT(1) NOT NULL DEFAULT 0 AFTER muat'],
 ];
 
 // query(sql, values) resolves to the rows of a SELECT.

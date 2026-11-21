@@ -43,8 +43,8 @@ if (r.affectedRows === 1) {
   const [[{ m }]] = await db.query('SELECT COUNT(*) AS m FROM layanan');
   if (m === 0) {
     for (const l of LAYANAN_AWAL) {
-      await db.query('INSERT INTO layanan (nama, nama_en, keterangan, keterangan_en, harga, satuan, ikon, urutan) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
-        [l.nama, l.nama_en, l.keterangan, l.keterangan_en, l.harga, l.satuan, l.ikon, l.urutan]);
+      await db.query('INSERT INTO layanan (nama, nama_en, keterangan, keterangan_en, harga, satuan, muat, mulai, ikon, urutan) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+        [l.nama, l.nama_en, l.keterangan, l.keterangan_en, l.harga, l.satuan, l.muat, l.mulai ? 1 : 0, l.ikon, l.urutan]);
     }
   }
   console.log('Tabel dibuat dan isi awal dimasukkan.');

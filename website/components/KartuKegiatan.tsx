@@ -8,7 +8,8 @@ import Ikon from './Ikon';
 import Perkiraan from './Perkiraan';
 import type { Bahasa, Layanan } from '@/lib/jenis';
 import { pilih, rupiah } from '@/lib/format';
-import { SATUAN } from '@/lib/satuan.mjs';
+import { kamus } from '@/lib/kamus';
+import { satuanLayanan } from '@/lib/harga';
 import type { Kurs } from '@/lib/uang';
 
 const LAUT = ['from-laut to-laut-2', 'from-biru-tua to-laut', 'from-laut-2 to-laut-3'];
@@ -35,8 +36,9 @@ export default function KartuKegiatan({ b, l, i, mendatar, kurs, label, classNam
 
       <div className={`flex items-end justify-between gap-4 pt-6 ${mendatar ? 'mt-auto lg:mt-0 lg:gap-8 lg:pt-0' : 'mt-auto'}`}>
         <div>
+          {l.mulai && <p className="mb-1 text-sm font-semibold text-white/80" data-harga-mulai>{kamus(b).mulai}</p>}
           <p className="font-judul text-3xl leading-none text-sorot tabular-nums">{rupiah(l.harga, b)}</p>
-          <p className="mt-1.5 text-sm font-semibold text-white/80">{SATUAN[l.satuan][b]}</p>
+          <p className="mt-1.5 text-sm font-semibold text-white/80">{satuanLayanan(l, b)}</p>
           <Perkiraan idr={l.harga} kurs={kurs} b={b} className="mt-0.5 text-white/55" />
         </div>
         <span aria-hidden className="inline-flex size-12 shrink-0 items-center justify-center rounded-full bg-white text-laut transition-transform duration-300 group-hover:translate-x-1">

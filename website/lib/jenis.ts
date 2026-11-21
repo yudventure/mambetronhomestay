@@ -31,7 +31,7 @@ export type Kamar = {
   foto: Foto[];
 };
 
-export type Satuan = 'pesanan' | 'orang' | 'malam' | 'orang_malam';
+export type Satuan = 'pesanan' | 'orang' | 'malam' | 'orang_malam' | 'perahu';
 
 export type Layanan = {
   id: number;
@@ -41,6 +41,10 @@ export type Layanan = {
   keterangan_en: string;
   harga: number;
   satuan: Satuan;
+  // per boat: people one boat takes, a bigger party needs more boats (0 for one boat)
+  muat: number;
+  // the price is a starting price, written "From" before it
+  mulai: boolean;
   ikon: string;
   aktif: boolean;
   urutan: number;

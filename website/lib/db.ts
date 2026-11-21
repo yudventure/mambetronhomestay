@@ -193,6 +193,34 @@ async function hargaBungalow(pool: mysql.Pool) {
   await pool.query('UPDATE kamar SET harga = ?, skema_harga = ?, harga_sendiri = ? WHERE id IN (?)', [k.harga, k.skema_harga, k.harga_sendiri, ids]);
 }
 
+// The owner's trips and transfers, November 2026: the Waisai transfer
+// becomes a small longboat for up to 5 people (Rp1.250.000 per boat, 15 PK)
+// with a faster speedboat beside it for up to 6 (Rp1.750.000, 2 × 40 PK),
+// snorkelling from Rp400.000, bird watching Rp2.500.000. Done once on the
+// rows that still carry the first names, so extras the owner renamed or
+// added are left alone, and later panel changes stick.
+async function layananBaru(pool: mysql.Pool) {
+  const [r] = await pool.query<mysql.ResultSetHeader>("INSERT IGNORE INTO pengaturan (kunci, nilai) VALUES ('layanan-2026-11', '1')");
+  if (r.affectedRows !== 1) return;
+  const [ada] = await pool.query<(mysql.RowDataPacket & { id: number; nama: string; nama_en: string; urutan: number })[]>('SELECT id, nama, nama_en, urutan FROM layanan');
+  const cari = (nama: string, en: string) => ada.find((x) => x.nama === nama || x.nama_en === en);
+  const [longboat, speedboat, snorkel, burung] = LAYANAN_AWAL;
+  const jemput = cari('Antar jemput Waisai', 'Waisai transfer');
+  if (jemput) {
+    await pool.query('UPDATE layanan SET nama = ?, nama_en = ?, keterangan = ?, keterangan_en = ?, harga = ?, satuan = ?, muat = ?, ikon = ? WHERE id = ?',
+      [longboat.nama, longboat.nama_en, longboat.keterangan, longboat.keterangan_en, longboat.harga, longboat.satuan, longboat.muat, longboat.ikon, jemput.id]);
+    if (!cari(speedboat.nama, speedboat.nama_en)) {
+      // the same place in the list, right after the longboat
+      await pool.query('INSERT INTO layanan (nama, nama_en, keterangan, keterangan_en, harga, satuan, muat, mulai, ikon, urutan) VALUES (?, ?, ?, ?, ?, ?, ?, 0, ?, ?)',
+        [speedboat.nama, speedboat.nama_en, speedboat.keterangan, speedboat.keterangan_en, speedboat.harga, speedboat.satuan, speedboat.muat, speedboat.ikon, jemput.urutan]);
+    }
+  }
+  const s = cari(snorkel.nama, snorkel.nama_en);
+  if (s) await pool.query('UPDATE layanan SET harga = ?, mulai = 1 WHERE id = ?', [snorkel.harga, s.id]);
+  const c = cari(burung.nama, burung.nama_en);
+  if (c) await pool.query('UPDATE layanan SET harga = ?, satuan = ? WHERE id = ?', [burung.harga, burung.satuan, c.id]);
+}
+
 // The about video the owner sent, put in once when the site has no video
 // link yet. Removing it in the panel afterwards sticks.
 async function videoAwal(pool: mysql.Pool) {
@@ -215,6 +243,7 @@ async function siapkan(pool: mysql.Pool) {
   await perbaruiTeksKamarCrlf(pool);
   await namaBungalow(pool);
   await hargaBungalow(pool);
+  await layananBaru(pool);
   await videoAwal(pool);
   // the first process to claim this row fills the empty database
   const [r] = await pool.query<mysql.ResultSetHeader>(
@@ -239,8 +268,8 @@ async function siapkan(pool: mysql.Pool) {
   if (m === 0) {
     for (const l of LAYANAN_AWAL) {
       await pool.query(
-        'INSERT INTO layanan (nama, nama_en, keterangan, keterangan_en, harga, satuan, ikon, urutan) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
-        [l.nama, l.nama_en, l.keterangan, l.keterangan_en, l.harga, l.satuan, l.ikon, l.urutan],
+        'INSERT INTO layanan (nama, nama_en, keterangan, keterangan_en, harga, satuan, muat, mulai, ikon, urutan) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+        [l.nama, l.nama_en, l.keterangan, l.keterangan_en, l.harga, l.satuan, l.muat, l.mulai ? 1 : 0, l.ikon, l.urutan],
       );
     }
   }

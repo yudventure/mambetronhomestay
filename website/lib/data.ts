@@ -119,7 +119,7 @@ export const daftarLayanan = cache(async (semua = false): Promise<Layanan[]> => 
   if (!dbDiatur()) return LAYANAN_AWAL.map((l, i) => ({ ...l, id: i + 1, aktif: true } as Layanan));
   try {
     const r = await baris<BarisLayanan>(`SELECT * FROM layanan ${semua ? '' : 'WHERE aktif = 1'} ORDER BY urutan, id`);
-    return r.map((l) => ({ ...l, aktif: Boolean(l.aktif) }));
+    return r.map((l) => ({ ...l, muat: Number(l.muat) || 0, mulai: Boolean(l.mulai), aktif: Boolean(l.aktif) }));
   } catch (e) {
     catat(e, 'layanan');
     return [];

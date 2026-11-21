@@ -4,4 +4,5 @@ export const SATUAN = {
   orang: { id: 'per orang', en: 'per person' },
   malam: { id: 'per malam', en: 'per night' },
   orang_malam: { id: 'per orang per malam', en: 'per person per night' },
+  perahu: { id: 'per perahu', en: 'per boat' },
 };

@@ -210,14 +210,15 @@ export async function ubahKeteranganFoto(fd: FormData) {
 export async function simpanLayanan(fd: FormData) {
   await wajibMasuk();
   const id = bulat(fd, 'id');
-  const satuan = ['pesanan', 'orang', 'malam', 'orang_malam'].includes(String(fd.get('satuan'))) ? String(fd.get('satuan')) : 'orang';
+  const satuan = ['pesanan', 'orang', 'malam', 'orang_malam', 'perahu'].includes(String(fd.get('satuan'))) ? String(fd.get('satuan')) : 'orang';
   const nilai = [teks(fd, 'nama', 120), teks(fd, 'nama_en', 120), teks(fd, 'keterangan', 400), teks(fd, 'keterangan_en', 400),
-    rupiahKe(fd, 'harga'), satuan, teks(fd, 'ikon', 20) || 'perahu', centang(fd, 'aktif') ? 1 : 0, bulat(fd, 'urutan')];
+    rupiahKe(fd, 'harga'), satuan, satuan === 'perahu' ? Math.min(50, Math.max(0, bulat(fd, 'muat'))) : 0, centang(fd, 'mulai') ? 1 : 0,
+    teks(fd, 'ikon', 20) || 'perahu', centang(fd, 'aktif') ? 1 : 0, bulat(fd, 'urutan')];
   if (!nilai[0]) redirect('/admin/layanan?galat=nama');
   if (id) {
-    await jalankan('UPDATE layanan SET nama = ?, nama_en = ?, keterangan = ?, keterangan_en = ?, harga = ?, satuan = ?, ikon = ?, aktif = ?, urutan = ? WHERE id = ?', [...nilai, id]);
+    await jalankan('UPDATE layanan SET nama = ?, nama_en = ?, keterangan = ?, keterangan_en = ?, harga = ?, satuan = ?, muat = ?, mulai = ?, ikon = ?, aktif = ?, urutan = ? WHERE id = ?', [...nilai, id]);
   } else {
-    await jalankan('INSERT INTO layanan (nama, nama_en, keterangan, keterangan_en, harga, satuan, ikon, aktif, urutan) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)', nilai);
+    await jalankan('INSERT INTO layanan (nama, nama_en, keterangan, keterangan_en, harga, satuan, muat, mulai, ikon, aktif, urutan) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', nilai);
   }
   segarkan();
   redirect('/admin/layanan?ok=1');

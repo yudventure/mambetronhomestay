@@ -15,7 +15,7 @@ const dua = (id, en) => ({ id, en });
 export const IKON_LABEL = {
   snorkel: 'Snorkel', makan: 'Makanan', perahu: 'Perahu', hati: 'Hati', kamar: 'Kasur', karang: 'Karang',
   ikan: 'Ikan', burung: 'Burung', matahari: 'Matahari', lokasi: 'Lokasi', bintang: 'Bintang', daun: 'Daun',
-  air: 'Air', kamera: 'Kamera', wifi: 'Wifi', bulan: 'Bulan', jam: 'Jam', globe: 'Bola dunia',
+  air: 'Air', kamera: 'Kamera', wifi: 'Wifi', bulan: 'Bulan', jam: 'Jam', globe: 'Bola dunia', speedboat: 'Speedboat',
 };
 export const IKON_PILIHAN = Object.keys(IKON_LABEL);
 
@@ -443,11 +443,15 @@ export const KAMAR_LAMA = [
   { slug: 'pondok-keluarga', nama: 'Pondok Keluarga', harga: 500000 },
 ];
 
+// Prices from the owner, November 2026: a small longboat for up to 5 people
+// Rp1.250.000, a faster speedboat for up to 6 Rp1.750.000, snorkelling from
+// Rp400.000, bird watching Rp2.500.000.
 export const LAYANAN_AWAL = [
-  { nama: 'Antar jemput Waisai', nama_en: 'Waisai transfer', keterangan: 'Perahu pulang pergi dari Pelabuhan Waisai ke homestay.', keterangan_en: 'Return boat between Waisai harbour and the homestay.', harga: 1500000, satuan: 'pesanan', ikon: 'perahu', urutan: 1 },
-  { nama: 'Snorkeling keliling pulau', nama_en: 'Island snorkelling trip', keterangan: 'Setengah hari ke tiga titik karang terbaik di sekitar kami, ditemani pemandu.', keterangan_en: 'Half a day at three of the best reefs nearby, with a guide.', harga: 350000, satuan: 'orang', ikon: 'snorkel', urutan: 2 },
-  { nama: 'Melihat cenderawasih', nama_en: 'Bird of paradise walk', keterangan: 'Berangkat subuh ke hutan untuk melihat cenderawasih menari.', keterangan_en: 'A dawn walk into the forest to watch birds of paradise dance.', harga: 400000, satuan: 'orang', ikon: 'burung', urutan: 3 },
-  { nama: 'Sewa alat snorkel', nama_en: 'Snorkel gear', keterangan: 'Masker, snorkel, dan kaki katak selama menginap.', keterangan_en: 'Mask, snorkel and fins for your whole stay.', harga: 50000, satuan: 'orang_malam', ikon: 'karang', urutan: 4 },
+  { nama: 'Longboat Waisai', nama_en: 'Waisai longboat', keterangan: 'Longboat kecil bermesin 15 PK antara Pelabuhan Waisai dan homestay.', keterangan_en: 'A small longboat with a 15 HP engine between Waisai harbour and the homestay.', harga: 1250000, satuan: 'perahu', muat: 5, mulai: false, ikon: 'perahu', urutan: 1 },
+  { nama: 'Speedboat Waisai', nama_en: 'Waisai speedboat', keterangan: 'Lebih cepat, speedboat bermesin 2 × 40 PK antara Pelabuhan Waisai dan homestay.', keterangan_en: 'Faster, a speedboat with two 40 HP engines between Waisai harbour and the homestay.', harga: 1750000, satuan: 'perahu', muat: 6, mulai: false, ikon: 'speedboat', urutan: 2 },
+  { nama: 'Snorkeling keliling pulau', nama_en: 'Island snorkelling trip', keterangan: 'Setengah hari ke tiga titik karang terbaik di sekitar kami, ditemani pemandu.', keterangan_en: 'Half a day at three of the best reefs nearby, with a guide.', harga: 400000, satuan: 'orang', muat: 0, mulai: true, ikon: 'snorkel', urutan: 3 },
+  { nama: 'Melihat cenderawasih', nama_en: 'Bird of paradise walk', keterangan: 'Berangkat subuh ke hutan untuk melihat cenderawasih menari.', keterangan_en: 'A dawn walk into the forest to watch birds of paradise dance.', harga: 2500000, satuan: 'pesanan', muat: 0, mulai: false, ikon: 'burung', urutan: 4 },
+  { nama: 'Sewa alat snorkel', nama_en: 'Snorkel gear', keterangan: 'Masker, snorkel, dan kaki katak selama menginap.', keterangan_en: 'Mask, snorkel and fins for your whole stay.', harga: 50000, satuan: 'orang_malam', muat: 0, mulai: false, ikon: 'karang', urutan: 5 },
 ];
 
 export { SATUAN } from './satuan.mjs';

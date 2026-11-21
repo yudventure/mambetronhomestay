@@ -258,6 +258,8 @@ Foto bungalow dan foto galeri di halaman utama bisa diketuk untuk dibuka layar p
 
 Tombol berikon bola dunia di kepala halaman membuka pilihan bahasa, Indonesia atau Inggris. Pilihan disimpan di kuki peramban pengunjung. Kaki halaman tidak punya tombol bahasa lagi.
 
+Kegiatan dan antar jemput (permintaan pemilik, November 2026). Longboat Waisai Rp 1.250.000 per perahu untuk paling banyak 5 orang (mesin 15 PK), Speedboat Waisai Rp 1.750.000 per perahu untuk paling banyak 6 orang (mesin 2 × 40 PK), snorkeling mulai Rp 400.000 per orang, dan melihat cenderawasih Rp 2.500.000 per pesanan. Kegiatan bisa dihitung per perahu (menu Kegiatan, Dihitung per perahu, isian Muat berapa orang per perahu). Semua orang di rombongan ikut dihitung, termasuk anak di bawah usia gratis, jadi 7 orang memakai 2 speedboat. Centang Harga mulai menulis Mulai di depan harga di kartu dan formulir. Situs yang sudah jalan mendapat harga ini sekali setelah pembaruan, hanya di kegiatan yang namanya masih bawaan (`layananBaru` di `lib/db.ts`).
+
 Harga selalu diisi, ditampilkan, dan dibayar dalam rupiah. Di bawah harga bungalow, harga kegiatan, total di formulir pesan, serta total yang dibayar di halaman pesanan ada satu baris kecil berisi perkiraannya dalam satu mata uang saja, misalnya ≈ $1,429.
 
 Mata uang itu dipilih lewat tombol berikon uang kertas di samping tombol bahasa. Pilihannya dolar Amerika, euro, yen, yuan, atau rupiah saja. Bila rupiah yang dipilih, baris perkiraan tidak tampil. Pilihan pengunjung disimpan di kuki perangkatnya selama setahun. Pengunjung yang belum memilih melihat mata uang bawaan dari Isi situs, bagian Mata uang (bawaannya dolar Amerika). Di HP tombol itu hanya menampilkan kodenya, misalnya USD, supaya muat di samping logo.
