@@ -40,6 +40,15 @@ export default function FormManual({ kamar, layanan, hari }: { kamar: Pick<Kamar
                 </label>
               ))}
             </div>
+            {layanan.some((l) => l.satuan === 'perahu') && (
+              <div className="mt-3">
+                <label className="label-isian" htmlFor="arah">Perjalanan perahu</label>
+                <select id="arah" name="arah" defaultValue="pp" className="isian">
+                  <option value="pp">Pulang pergi, harga sekali jalan dihitung dua kali</option>
+                  <option value="sekali">Sekali jalan</option>
+                </select>
+              </div>
+            )}
           </fieldset>
         )}
       </section>

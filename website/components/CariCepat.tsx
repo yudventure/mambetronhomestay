@@ -73,8 +73,10 @@ export default function CariCepat({ b, awal, akhir, checkIn, checkOut, sisa, uni
   // would hold three: the owner's request, November 2026, "Rp600.000 untuk
   // satu kamar 3 orang, jika ingin kamar sendiri tambahan 850.000".
   const [tambahPondok, setTambahPondok] = useState(false);
-  // the boat transfer picked, a Kegiatan id, 0 for none
+  // the boat transfer picked, a Kegiatan id, 0 for none, priced one way and
+  // going there and back unless the guest picks one way (the owner, November 2026)
   const [perahuId, setPerahuId] = useState(0);
+  const [pulangPergi, setPulangPergi] = useState(true);
   const bisaTambah = useCallback((n: number, a: number) => {
     const min = pondokUntuk(n, a, kapasitas, anakPerPondok);
     const isi = harga ? isiPondok(harga.kamar, min, n) : null;
@@ -144,7 +146,7 @@ export default function CariCepat({ b, awal, akhir, checkIn, checkOut, sisa, uni
     }
     // DAMPIER's payment sheet takes the stay when it is on (LembarDampier),
     // otherwise the form goes on to /pesan.
-    const tanya = new CustomEvent('mambetron:pesan', { cancelable: true, detail: { masuk, keluar, tamu, anak, kamar, pondok: butuh, tambahan: perahuPilih ? perahuPilih.l.nama : '' } });
+    const tanya = new CustomEvent('mambetron:pesan', { cancelable: true, detail: { masuk, keluar, tamu, anak, kamar, pondok: butuh, tambahan: perahuPilih ? perahuPilih.l.nama : '', sekali: !!perahuPilih && !pulangPergi } });
     if (!window.dispatchEvent(tanya)) e.preventDefault();
   }
 
@@ -171,8 +173,9 @@ export default function CariCepat({ b, awal, akhir, checkIn, checkOut, sisa, uni
     : [t.isiPondok(butuh, tamu) + (anak ? `, ${t.anakGratis(anak)}` : '')];
   // each boat transfer with the boats this party needs; children under the free age sit on a lap
   const perahuHarga = perahu.map((l) => {
-    const n = jumlahSatuan(l.satuan, tamu, 1, tamu, l.muat);
-    return { l, n, total: l.harga * n };
+    const kapal = jumlahSatuan(l.satuan, tamu, 1, tamu, l.muat);
+    const n = jumlahSatuan(l.satuan, tamu, 1, tamu, l.muat, pulangPergi);
+    return { l, kapal, n, total: l.harga * n };
   });
   const perahuPilih = perahuHarga.find((x) => x.l.id === perahuId) ?? null;
   // the two choices, each with its bungalows and price per night
@@ -193,6 +196,7 @@ export default function CariCepat({ b, awal, akhir, checkIn, checkOut, sisa, uni
       {anak > 0 && <input type="hidden" name="anak" value={anak} />}
       {butuh > butuhMin && <input type="hidden" name="pondok" value={butuh} />}
       {perahuPilih && <input type="hidden" name="layanan" value={perahuPilih.l.id} />}
+      {perahuPilih && !pulangPergi && <input type="hidden" name="arah" value="sekali" />}
       {kamar && <input type="hidden" name="kamar" value={kamar} />}
 
       {/* Two columns on wide screens that fill on their own: the calendar with
@@ -270,11 +274,22 @@ export default function CariCepat({ b, awal, akhir, checkIn, checkOut, sisa, uni
                     <span className="min-w-0 flex-1">
                       <span className="block text-sm font-semibold leading-tight text-laut">{x ? pilihBahasa(b, x.l.nama, x.l.nama_en) : t.perahuTidak}</span>
                       {x && <span className="block text-xs leading-snug text-abu">{satuanLayanan(x.l, b)}</span>}
-                      {x && <span className="mt-0.5 block text-sm font-semibold tabular-nums text-laut">{x.n > 1 ? `${t.perahuN(x.n)}, ` : ''}{rupiah(x.total, b)}</span>}
+                      {x && <span className="mt-0.5 block text-sm font-semibold tabular-nums text-laut">{t.perahuArah(x.kapal, pulangPergi)}, {rupiah(x.total, b)}</span>}
                     </span>
                   </label>
                 );
               })}
+              {perahuPilih && (
+                <div className="flex flex-wrap items-center gap-2 sm:col-span-3" role="radiogroup" aria-label={t.arahJudul} data-arah-perahu>
+                  <span className="text-sm text-abu">{t.arahJudul}</span>
+                  {([true, false] as const).map((v) => (
+                    <label key={String(v)} className={`cursor-pointer rounded-full px-3.5 py-1.5 text-sm font-semibold transition-colors has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-biru ${pulangPergi === v ? 'bg-laut text-white' : 'bg-white text-laut ring-1 ring-buih-2 hover:bg-buih'}`}>
+                      <input type="radio" name="pilih_arah" form="rencana-pilihan" className="sr-only" checked={pulangPergi === v} onChange={() => setPulangPergi(v)} />
+                      {v ? t.pulangPergi : t.sekaliJalan}
+                    </label>
+                  ))}
+                </div>
+              )}
             </fieldset>
           )}
       </div>
@@ -302,7 +317,7 @@ export default function CariCepat({ b, awal, akhir, checkIn, checkOut, sisa, uni
               {ketHarga.map((x) => <p key={x} className="text-xs leading-snug text-abu">{x}</p>)}
               {perahuPilih && (
                 <div className="mt-1 flex items-baseline justify-between gap-3" data-harga-perahu>
-                  <span className="text-sm text-abu">{pilihBahasa(b, perahuPilih.l.nama, perahuPilih.l.nama_en)}, {t.perahuN(perahuPilih.n)}</span>
+                  <span className="text-sm text-abu">{pilihBahasa(b, perahuPilih.l.nama, perahuPilih.l.nama_en)}, {t.perahuArah(perahuPilih.kapal, pulangPergi)}</span>
                   <span className="whitespace-nowrap text-sm font-semibold tabular-nums text-laut">{rupiah(perahuPilih.total, b)}</span>
                 </div>
               )}

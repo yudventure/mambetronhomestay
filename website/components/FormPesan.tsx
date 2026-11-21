@@ -9,7 +9,7 @@ import { kirimTanpaReset } from '@/lib/kait';
 import { kirimPesanan, type HasilKirim } from '@/app/(situs)/pesan/aksi';
 import type { Bahasa, Kamar, Layanan } from '@/lib/jenis';
 import { KAMUS } from '@/lib/kamus';
-import { barisIsi, hitungHarga, satuanLayanan } from '@/lib/harga';
+import { barisIsi, hitungHarga, namaBaris, satuanLayanan } from '@/lib/harga';
 import { dwi, pilih, rentangTanggal, rupiah, tanggal, type DataPengelola } from '@/lib/format';
 import type { Paket } from '@/lib/paket';
 import { bacaRencana, simpanRencana } from '@/lib/rencana';
@@ -33,7 +33,8 @@ type Props = {
   wa: string;
   kurs: Kurs;
   // layanan: extras ticked from the link, the boat transfer picked in the date card
-  mula: { kamarId: number; masuk: string; keluar: string; dewasa: number; anak: number; jumlahKamar: number; layanan?: number[] };
+  // arah: the boat's way from the date card, there and back unless 'sekali'
+  mula: { kamarId: number; masuk: string; keluar: string; dewasa: number; anak: number; jumlahKamar: number; layanan?: number[]; arah?: 'pp' | 'sekali' };
   // dates that came in the link and could not be kept, null when none came
   ditolak: { masuk: string; keluar: string } | null;
   dariTautan: boolean;
@@ -89,6 +90,7 @@ export default function FormPesan({ b, kamar, layanan, sisa, awal, akhir, dpPers
   const [dewasa, setDewasa] = useState(mula.dewasa);
   const [anak, setAnak] = useState(mula.anak);
   const [pilihan, setPilihan] = useState<number[]>(mula.layanan ?? []);
+  const [pulangPergi, setPulangPergi] = useState(mula.arah !== 'sekali');
   const [data, setData] = useState({ nama: '', telepon: '', email: '', negara: '', kedatangan: '', catatan: '' });
   const [setuju, setSetuju] = useState(false);
   const [paketI, setPaketI] = useState(0);
@@ -152,7 +154,8 @@ export default function FormPesan({ b, kamar, layanan, sisa, awal, akhir, dpPers
   const kapasitas = km ? km.kapasitas * jumlahKamar : 0;
   const malam = masuk && keluar ? selisihHari(masuk, keluar) : 0;
   const terpilih = layanan.filter((l) => pilihan.includes(l.id));
-  const harga = km ? hitungHarga(km, { malam, jumlahKamar, dewasa, anak, layanan: terpilih, dpPersen, persenPaket: pk?.persen }) : null;
+  const harga = km ? hitungHarga(km, { malam, jumlahKamar, dewasa, anak, layanan: terpilih, dpPersen, persenPaket: pk?.persen, pulangPergi }) : null;
+  const adaPerahu = terpilih.some((l) => l.satuan === 'perahu');
   // the bungalow part of the stay under each rate, for the rate cards
   const hargaPaket = (p: Paket) => (km && malam > 0 ? hitungHarga(km, { malam, jumlahKamar, dewasa, anak, layanan: [], dpPersen, persenPaket: p.persen }).biayaKamar : 0);
   const siap = aktif && Boolean(km && masuk && keluar && malam > 0);
@@ -190,6 +193,7 @@ export default function FormPesan({ b, kamar, layanan, sisa, awal, akhir, dpPers
       {pk && <input type="hidden" name="paket" value={paketI} />}
       {pk && <input type="hidden" name="paket_nama" value={pk.nama.id} />}
       {pilihan.map((id) => <input key={id} type="hidden" name="layanan" value={id} />)}
+      {adaPerahu && <input type="hidden" name="arah" value={pulangPergi ? 'pp' : 'sekali'} />}
       <div className="hidden" aria-hidden>
         <label>Situs web<input name="situs_web" tabIndex={-1} autoComplete="off" defaultValue="" /></label>
       </div>
@@ -304,6 +308,21 @@ export default function FormPesan({ b, kamar, layanan, sisa, awal, akhir, dpPers
                   </label>
                 );
               })}
+              {/* Boats are priced one way (the owner, November 2026): there and back counts twice. */}
+              {adaPerahu && (
+                <fieldset className="grid gap-2 rounded-2xl bg-embun p-4" data-arah-perahu>
+                  <legend className="float-left mb-1 w-full text-sm font-semibold text-laut">{f.arahJudul}</legend>
+                  <div className="flex flex-wrap gap-2">
+                    {([true, false] as const).map((v) => (
+                      <label key={String(v)} className={`cursor-pointer rounded-full px-4 py-2 text-sm font-semibold transition-colors has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-biru ${pulangPergi === v ? 'bg-laut text-white' : 'bg-white text-laut ring-1 ring-buih-2 hover:bg-buih'}`}>
+                        <input type="radio" name="pilih_arah" form="pesan-pilihan" className="sr-only" checked={pulangPergi === v} onChange={() => setPulangPergi(v)} />
+                        {v ? f.pulangPergi : f.sekaliJalan}
+                      </label>
+                    ))}
+                  </div>
+                  <p className="text-sm text-abu">{pulangPergi ? f.arahKetPp : f.arahKetSekali}</p>
+                </fieldset>
+              )}
             </div>
           </Kotak>
         )}
@@ -362,7 +381,7 @@ export default function FormPesan({ b, kamar, layanan, sisa, awal, akhir, dpPers
             </div>
             {harga.rincian.map((r) => (
               <div key={r.id} className="flex justify-between gap-3">
-                <span>{pilih(b, r.nama, r.nama_en)}<span className="block text-sm text-abu">{f.kali(r.jumlah, rupiah(r.harga, b))}</span></span>
+                <span>{namaBaris(r, b)}<span className="block text-sm text-abu">{f.kali(r.jumlah, rupiah(r.harga, b))}</span></span>
                 <span className="font-semibold tabular-nums">{rupiah(r.subtotal, b)}</span>
               </div>
             ))}

@@ -5,21 +5,28 @@ import { KAMUS } from './kamus';
 import { rupiah } from './format';
 import { SATUAN } from './satuan.mjs';
 
-// The unit of an extra as shown, with how many one boat takes.
+// Extras counted by how many one boat or one group takes (Kegiatan, muat).
+export const satuanMuat = (s: Satuan) => s === 'perahu' || s === 'rombongan';
+
+// The unit of an extra as shown, with how many one boat or group takes.
 export function satuanLayanan(l: Pick<Layanan, 'satuan' | 'muat'>, b: Bahasa) {
   const s = SATUAN[l.satuan]?.[b] ?? '';
-  return l.satuan === 'perahu' && l.muat > 0 ? `${s}, ${KAMUS[b].muatPerahu(l.muat)}` : s;
+  return satuanMuat(l.satuan) && l.muat > 0 ? `${s}, ${KAMUS[b].muatPerahu(l.muat)}` : s;
 }
 
-// `orang` is everyone on a boat seat, the paying guests (children under the
-// free age sit on a lap, as at DAMPIER), and `muat` how many one boat takes.
-export function jumlahSatuan(satuan: Satuan, tamu: number, malam: number, orang = tamu, muat = 0) {
+// `orang` is everyone on a boat seat or in the group, the paying guests
+// (children under the free age sit on a lap, as at DAMPIER), and `muat` how
+// many one boat or group takes. Boats are priced one way (the owner,
+// November 2026), so a boat there and back (`pp`) counts twice.
+export function jumlahSatuan(satuan: Satuan, tamu: number, malam: number, orang = tamu, muat = 0, pp = false) {
+  const muatan = muat > 0 ? Math.max(1, Math.ceil(Math.max(1, orang) / muat)) : 1;
   switch (satuan) {
     case 'pesanan': return 1;
     case 'orang': return tamu;
     case 'malam': return malam;
     case 'orang_malam': return tamu * malam;
-    case 'perahu': return muat > 0 ? Math.max(1, Math.ceil(Math.max(1, orang) / muat)) : 1;
+    case 'perahu': return muatan * (pp ? 2 : 1);
+    case 'rombongan': return muatan;
   }
 }
 
@@ -80,7 +87,7 @@ export function isiPondok(kamar: HargaPondok, jumlahKamar: number, dewasa: numbe
 // The owner's rule, November 2026: under 5 free, from 5 the full price.
 export function hitungHarga(
   kamar: HargaPondok,
-  o: { malam: number; jumlahKamar: number; dewasa: number; anak: number; layanan: Layanan[]; dpPersen: number; persenPaket?: number },
+  o: { malam: number; jumlahKamar: number; dewasa: number; anak: number; layanan: Layanan[]; dpPersen: number; persenPaket?: number; pulangPergi?: boolean },
 ) {
   const malam = Math.max(0, o.malam);
   const isi = isiPondok(kamar, o.jumlahKamar, o.dewasa);
@@ -89,9 +96,15 @@ export function hitungHarga(
   const persen = o.persenPaket ?? 0;
   const biayaKamar = persen > 0 ? Math.round((dasar * (100 + persen)) / 100 / 1000) * 1000 : dasar;
   const tamu = o.dewasa;
+  // boats go there and back unless the guest picked one way (pulangPergi false)
+  const pp = o.pulangPergi !== false;
   const rincian: BarisLayanan[] = o.layanan.map((l) => {
-    const jumlah = jumlahSatuan(l.satuan, tamu, malam, o.dewasa, l.muat);
-    return { id: l.id, nama: l.nama, nama_en: l.nama_en, harga: l.harga, satuan: l.satuan, jumlah, subtotal: l.harga * jumlah };
+    const perahuPp = l.satuan === 'perahu' && pp;
+    const jumlah = jumlahSatuan(l.satuan, tamu, malam, o.dewasa, l.muat, perahuPp);
+    return {
+      id: l.id, nama: l.nama, nama_en: l.nama_en, harga: l.harga, satuan: l.satuan, jumlah, subtotal: l.harga * jumlah,
+      ...(perahuPp ? { pp: true as const, perahu: jumlah / 2 } : {}),
+    };
   });
   const biayaLayanan = rincian.reduce((a, r) => a + r.subtotal, 0);
   const total = biayaKamar + biayaLayanan;
@@ -121,4 +134,10 @@ export function barisIsi(b: Bahasa, isi: IsiPondok | null) {
   if (!isi) return [];
   const f = KAMUS[b].form;
   return isi.baris.map((x) => f.isiBaris(x.bungalow, x.orang, rupiah(x.harga, b)));
+}
+
+// The name of an extra on a booking, with the boat's way when it goes there and back.
+export function namaBaris(r: Pick<BarisLayanan, 'nama' | 'nama_en' | 'pp'>, b: Bahasa) {
+  const nama = b === 'en' && r.nama_en ? r.nama_en : r.nama;
+  return r.pp ? `${nama}, ${KAMUS[b].form.arahPp}` : nama;
 }

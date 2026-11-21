@@ -33,9 +33,9 @@ function FormLayanan({ l }: { l?: Layanan }) {
         </select>
       </div>
       <div>
-        <label className="label-isian" htmlFor={k('muat')}>Muat berapa orang per perahu</label>
+        <label className="label-isian" htmlFor={k('muat')}>Muat berapa orang per perahu atau rombongan</label>
         <input id={k('muat')} name="muat" type="number" min={0} max={50} defaultValue={l?.muat || ''} className="isian" />
-        <p className="bantuan">Hanya untuk harga per perahu. Rombongan yang lebih besar memakai lebih dari satu perahu. Anak di bawah usia gratis dipangku, tidak dihitung. Kosongkan untuk satu perahu berapa pun orangnya.</p>
+        <p className="bantuan">Hanya untuk harga per perahu sekali jalan dan per rombongan. Rombongan yang lebih besar memakai lebih dari satu perahu atau dihitung lebih dari satu rombongan. Anak di bawah usia gratis dipangku, tidak dihitung. Kosongkan untuk satu perahu atau satu rombongan berapa pun orangnya. Harga per perahu adalah sekali jalan, dan tamu memilih pulang pergi atau sekali jalan saat memesan.</p>
       </div>
       <label className="flex items-center gap-3 self-start rounded-2xl bg-buih px-4 py-3 font-semibold text-laut">
         <input type="checkbox" name="mulai" value="ya" defaultChecked={l?.mulai ?? false} className="size-5 accent-[#036f87]" /> Harga mulai, ditulis Mulai di depan harga

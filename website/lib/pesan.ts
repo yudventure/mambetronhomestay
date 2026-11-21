@@ -27,6 +27,8 @@ export type MasukanPesan = {
   dewasa: number;
   anak: number;
   layanan: number[];
+  // boats priced one way go there and back unless the guest picked one way
+  pulangPergi?: boolean;
   // index in the rate tier list and its Indonesian name, which must still match
   paket?: number;
   paketNama?: string;
@@ -98,7 +100,7 @@ export async function simpanPesanan(m: MasukanPesan, kamar: Kamar, layananAda: L
   const malam = periksa(m, kamar, situs);
   const paket = paketPilihan(m, situs);
   const pilihan = layananAda.filter((l) => m.layanan.includes(l.id));
-  const h = hitungHarga(kamar, { malam, jumlahKamar: m.jumlahKamar, dewasa: m.dewasa, anak: m.anak, layanan: pilihan, dpPersen: situs.dpPersen, persenPaket: paket?.persen });
+  const h = hitungHarga(kamar, { malam, jumlahKamar: m.jumlahKamar, dewasa: m.dewasa, anak: m.anak, layanan: pilihan, dpPersen: situs.dpPersen, persenPaket: paket?.persen, pulangPergi: m.pulangPergi });
   const token = crypto.randomBytes(16).toString('hex');
   // nights sold on a booking site a moment ago should already count, but a
   // slow site never holds the guest for more than a few seconds

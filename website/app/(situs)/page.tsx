@@ -74,7 +74,7 @@ export default async function Beranda() {
       <Pahlawan b={b} s={s} foto={foto.beranda[0]} fotoHp={foto.berandaHp[0]} />
 
       {kartuUnggulan.length > 0 && (
-        <section id="pondok" className="relative z-10 mx-auto -mt-10 max-w-6xl scroll-mt-28 px-4 sm:-mt-14 sm:px-6">
+        <section id="pondok" className="relative z-10 mx-auto -mt-10 max-w-6xl scroll-mt-28 px-4 sm:-mt-14 sm:px-6" data-muncul>
           <h2 className="sr-only">{k.unggulanJudul}</h2>
           <GeserPondok
             kartu={kartuUnggulan}
@@ -142,20 +142,22 @@ export default async function Beranda() {
 
       <section id="tentang" className="scroll-mt-24 py-16 md:py-24">
         <div className="mx-auto grid max-w-6xl gap-10 px-4 sm:px-6 lg:grid-cols-[minmax(0,0.82fr)_minmax(0,1.6fr)] lg:items-center lg:gap-12">
-          <div>
+          <div className="min-w-0" data-muncul>
             <h2 className={JUDUL}>{dwi(s.tentangJudul, b)}</h2>
             <div className="prosa mt-5 text-laut/80">
               {paragraf(dwi(s.tentangTeks, b)).map((p, i) => <p key={i}>{p}</p>)}
             </div>
           </div>
-          {video.length > 0 ? (
-            <VideoTentang b={b} video={video} sampulCadangan={tentangFoto?.url ?? '/merek/adegan-siang.svg'} />
-          ) : (
-            /* eslint-disable-next-line @next/next/no-img-element */
-            <img src={tentangFoto?.url ?? '/merek/adegan-siang.svg'} alt={tentangFoto?.keterangan ?? ''} aria-hidden={tentangFoto ? undefined : true}
-              width={tentangFoto?.lebar || 1600} height={tentangFoto?.tinggi || 1200} loading="lazy"
-              className="aspect-[4/3] w-full rounded-[1.75rem] object-cover lg:aspect-[16/11]" />
-          )}
+          <div className="min-w-0" data-muncul style={{ '--muncul-urut': 1 } as React.CSSProperties}>
+            {video.length > 0 ? (
+              <VideoTentang b={b} video={video} sampulCadangan={tentangFoto?.url ?? '/merek/adegan-siang.svg'} />
+            ) : (
+              /* eslint-disable-next-line @next/next/no-img-element */
+              <img src={tentangFoto?.url ?? '/merek/adegan-siang.svg'} alt={tentangFoto?.keterangan ?? ''} aria-hidden={tentangFoto ? undefined : true}
+                width={tentangFoto?.lebar || 1600} height={tentangFoto?.tinggi || 1200} loading="lazy"
+                className="aspect-[4/3] w-full rounded-[1.75rem] object-cover lg:aspect-[16/11]" />
+            )}
+          </div>
         </div>
         {/* the gallery as part of the about section, between its text and the date card, the bungalow photos while the panel gallery is empty */}
         {galeri.length > 0 && (
@@ -164,7 +166,7 @@ export default async function Beranda() {
           </div>
         )}
         {/* stay planner with the calendar open, under the about text and photo */}
-        <div className="mx-auto mt-12 max-w-6xl px-4 sm:px-6 md:mt-16">
+        <div className="mx-auto mt-12 max-w-6xl px-4 sm:px-6 md:mt-16" data-muncul>
           <CariCepat b={b} awal={awal} akhir={akhir} checkIn={s.checkIn} checkOut={s.checkOut} sisa={sisa} unit={Math.max(1, unit)}
             kapasitas={Math.max(1, ...kamar.map((x) => x.kapasitas))} minMalam={kamar.length ? Math.max(1, Math.min(...kamar.map((x) => x.min_malam))) : 1}
             maksTamu={kamar.length ? Math.min(20, kamar.reduce((n, x) => n + x.kapasitas * x.jumlah_unit, 0)) : 6}
@@ -177,7 +179,7 @@ export default async function Beranda() {
       {layanan.length > 0 && (
         <Bagian id="kegiatan" className="!pt-0">
           <JudulBagian judul={dwi(s.layananJudul, b)} teks={dwi(s.layananTeks, b)} />
-          <div className={`${KISI} gap-4 md:gap-5`}>
+          <div className={`${KISI} gap-4 md:gap-5`} data-muncul-anak>
             {layanan.map((l, i) => (
               <KartuKegiatan key={l.id} b={b} l={l} i={i} kurs={kurs}
                 mendatar={layanan.length % 3 === 1 && i === layanan.length - 1} className={rentang(layanan.length, i)} />
@@ -189,7 +191,7 @@ export default async function Beranda() {
       {ulasan.length > 0 && (
         <Bagian className="!pt-0">
           <JudulBagian judul={dwi(s.ulasanJudul, b)} />
-          <div className={`${KISI} gap-4`}>
+          <div className={`${KISI} gap-4`} data-muncul-anak>
             {ulasan.map((u, i) => (
               <figure key={u.id} className={`flex flex-col rounded-3xl bg-embun p-6 ${rentang(ulasan.length, i)}`}>
                 <div className="flex gap-0.5 text-biru" role="img" aria-label={`${u.bintang}/5`}>
@@ -216,7 +218,7 @@ export default async function Beranda() {
       )}
 
       <Bagian id="lokasi" latar="buih">
-        <div className="grid gap-x-6 gap-y-5 lg:grid-cols-[minmax(0,1.45fr)_minmax(0,1fr)] lg:items-end">
+        <div className="grid gap-x-6 gap-y-5 lg:grid-cols-[minmax(0,1.45fr)_minmax(0,1fr)] lg:items-end" data-muncul>
           <div>
             {dwi(s.lokasiLabel, b) && <p className="label-kecil">{dwi(s.lokasiLabel, b)}</p>}
             <h2 className={`mt-2 ${JUDUL}`}>{dwi(s.lokasiJudul, b)}</h2>
@@ -229,7 +231,7 @@ export default async function Beranda() {
         </div>
 
         {/* map and steps side by side from xl, below that the steps line up under the map */}
-        <div className="mt-10 grid gap-4 xl:grid-cols-[minmax(0,1.45fr)_minmax(0,1fr)] xl:gap-5">
+        <div className="mt-10 grid gap-4 xl:grid-cols-[minmax(0,1.45fr)_minmax(0,1fr)] xl:gap-5" data-muncul-anak>
           <PetaRute b={b} n={s.rute.length} className={s.rute.length ? '' : 'xl:col-span-2'} />
           {s.rute.length > 0 && (
             <ol className={`${KISI} gap-4 xl:grid-cols-1 xl:auto-rows-fr`}>
@@ -252,7 +254,7 @@ export default async function Beranda() {
         {(info.length > 0 || catatanLokasi || wa || tautanPeta || dwi(s.alamat, b)) && (
           <div className="mt-4 grid gap-4 xl:grid-cols-[minmax(0,1.45fr)_minmax(0,1fr)] xl:gap-5">
             {info.length > 0 && (
-              <ul className={`${KISI2} gap-4 ${catatanLokasi || wa || tautanPeta || dwi(s.alamat, b) ? '' : 'xl:col-span-2'}`}>
+              <ul className={`${KISI2} gap-4 ${catatanLokasi || wa || tautanPeta || dwi(s.alamat, b) ? '' : 'xl:col-span-2'}`} data-muncul-anak>
                 {info.map((x, i) => (
                   <li key={i} className={`flex items-center gap-4 rounded-3xl bg-white/65 p-5 ${rentang2(info.length, i)}`}>
                     <span aria-hidden className="flex size-11 shrink-0 items-center justify-center rounded-full bg-white text-biru-tua shadow-tipis">
@@ -291,7 +293,7 @@ export default async function Beranda() {
       {s.faq.length > 0 && (
         <Bagian id="tanya" lebar="max-w-3xl">
           <JudulBagian judul={dwi(s.faqJudul, b)} />
-          <div className="grid gap-3">
+          <div className="grid gap-3" data-muncul-anak>
             {s.faq.map((f, i) => (
               <details key={i} className="group rounded-2xl bg-embun px-5 py-4">
                 <summary className="flex cursor-pointer list-none items-center justify-between gap-4 font-semibold text-laut [&::-webkit-details-marker]:hidden">

@@ -33,7 +33,7 @@ export type Kamar = {
   foto: Foto[];
 };
 
-export type Satuan = 'pesanan' | 'orang' | 'malam' | 'orang_malam' | 'perahu';
+export type Satuan = 'pesanan' | 'orang' | 'malam' | 'orang_malam' | 'perahu' | 'rombongan';
 
 export type Layanan = {
   id: number;
@@ -64,7 +64,8 @@ export type Ulasan = {
 
 export type StatusPesanan = 'menunggu' | 'dikonfirmasi' | 'lunas' | 'selesai' | 'batal';
 
-export type BarisLayanan = { id: number; nama: string; nama_en: string; harga: number; satuan: Satuan; jumlah: number; subtotal: number };
+// `pp` a boat priced one way and booked there and back: `jumlah` is twice the boats in `perahu`.
+export type BarisLayanan = { id: number; nama: string; nama_en: string; harga: number; satuan: Satuan; jumlah: number; subtotal: number; pp?: true; perahu?: number };
 
 // One Midtrans transaction for a booking. The order id is the booking code
 // with a running number, a new one only when the last could not be paid.

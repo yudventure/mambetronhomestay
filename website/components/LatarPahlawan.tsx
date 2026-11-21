@@ -18,12 +18,12 @@ export default function LatarPahlawan({ foto, fotoHp }: { foto?: Foto; fotoHp?: 
       {foto
         ? (
           // eslint-disable-next-line @next/next/no-img-element
-          <img src={foto.url} alt={foto.keterangan} width={foto.lebar} height={foto.tinggi} fetchPriority="high" className="absolute inset-0 -z-10 size-full object-cover" />
+          <img src={foto.url} alt={foto.keterangan} width={foto.lebar} height={foto.tinggi} fetchPriority="high" data-gulir-lambat className="pahlawan-foto absolute inset-0 -z-10 size-full object-cover" />
         ) : (
           // eslint-disable-next-line @next/next/no-img-element
           <img src="/foto/pondok-tepi-air.jpg" srcSet="/foto/pondok-tepi-air-1000.jpg 1000w, /foto/pondok-tepi-air.jpg 1890w" sizes="100vw" alt="" aria-hidden
-            width={1890} height={906} fetchPriority="high"
-            className="absolute inset-0 -z-10 size-full object-cover md:object-[50%_55%]" />
+            width={1890} height={906} fetchPriority="high" data-gulir-lambat
+            className="pahlawan-foto absolute inset-0 -z-10 size-full object-cover md:object-[50%_55%]" />
         )}
     </picture>
   );

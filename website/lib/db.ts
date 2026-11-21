@@ -193,6 +193,17 @@ async function hargaBungalow(pool: mysql.Pool) {
   await pool.query('UPDATE kamar SET harga = ?, skema_harga = ?, harga_sendiri = ? WHERE id IN (?)', [k.harga, k.skema_harga, k.harga_sendiri, ids]);
 }
 
+// The owner, November 2026: "bir watching per rombongan maksimal 4 orang".
+// Bird watching was priced once per booking, now per group of up to four.
+// Done once, and only while the owner has not set its own group size.
+async function burungRombongan(pool: mysql.Pool) {
+  const [r] = await pool.query<mysql.ResultSetHeader>("INSERT IGNORE INTO pengaturan (kunci, nilai) VALUES ('cenderawasih-rombongan', '1')");
+  if (r.affectedRows !== 1) return;
+  const burung = LAYANAN_AWAL.find((l) => l.ikon === 'burung');
+  if (!burung) return;
+  await pool.query("UPDATE layanan SET satuan = ?, muat = ? WHERE ikon = 'burung' AND satuan IN ('pesanan', 'rombongan') AND muat = 0", [burung.satuan, burung.muat]);
+}
+
 // The owner's beds, November 2026: each bungalow has a king bed and a
 // single bed, so it sleeps three, and the third guest pays Rp600.000 like
 // the other two (Rp1.800.000 for three). Done once on the beachfront
@@ -268,6 +279,7 @@ async function siapkan(pool: mysql.Pool) {
   await hargaBungalow(pool);
   await layananBaru(pool);
   await tigaOrang(pool);
+  await burungRombongan(pool);
   await videoAwal(pool);
   // the first process to claim this row fills the empty database
   const [r] = await pool.query<mysql.ResultSetHeader>(

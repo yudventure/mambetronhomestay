@@ -80,13 +80,13 @@ export default async function HalamanPondok({ params }: P) {
         </div>
 
         <div className="mt-14 grid grid-cols-1 gap-10 lg:grid-cols-[minmax(0,1.25fr)_minmax(0,1fr)] lg:gap-12 md:mt-20">
-          <div>
+          <div data-muncul>
             <h2 className="text-[clamp(1.75rem,1.4rem+1.4vw,2.4rem)]">{k.tentangPondok}</h2>
             <div className="prosa mt-5 text-lg text-laut/85">
               <TeksPanjang teks={pilih(b, km.deskripsi, km.deskripsi_en)} />
             </div>
           </div>
-          <aside className="lg:sticky lg:top-28 lg:self-start">
+          <aside className="lg:sticky lg:top-28 lg:self-start" data-muncul style={{ '--muncul-urut': 1 } as React.CSSProperties}>
             <div className="rounded-3xl bg-embun p-6 sm:p-7">
               {fasilitas.length > 0 && (
                 <>
@@ -113,11 +113,13 @@ export default async function HalamanPondok({ params }: P) {
       {/* the same planner as on the home page, for this bungalow */}
       {aktif && (
         <Bagian latar="buih" id="tanggal">
+          <div data-muncul>
           <CariCepat b={b} awal={awal} akhir={akhir} checkIn={situs.checkIn} checkOut={situs.checkOut} sisa={sisa} unit={km.jumlah_unit}
             kapasitas={km.kapasitas} minMalam={km.min_malam} maksTamu={Math.min(20, km.kapasitas * km.jumlah_unit)}
             kamar={km.slug} judul={k.pilihTanggal} pengelola={dataPengelola(situs, b)} usiaGratis={situs.usiaGratis} anakPerPondok={situs.anakPerPondok}
             harga={{ kamar: km, persenPaket: daftarPaket(situs)[0]?.persen ?? 0, kurs }} perahu={layanan.filter((l) => l.satuan === 'perahu')}
             wa={{ tautan: tautanWa(situs.whatsapp), pesan: dwi(situs.pesanCekWa, b), bungalow: pilih(b, km.nama, km.nama_en) }} />
+          </div>
         </Bagian>
       )}
 

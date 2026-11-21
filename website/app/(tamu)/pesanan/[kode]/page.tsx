@@ -18,7 +18,7 @@ import { kursAktif } from '@/lib/uang-server';
 import { SATUAN } from '@/lib/satuan.mjs';
 import type { StatusPesanan } from '@/lib/jenis';
 import { KISI2, rentang2 } from '@/lib/kisi';
-import { barisIsi, isiPesanan } from '@/lib/harga';
+import { barisIsi, isiPesanan, namaBaris } from '@/lib/harga';
 
 export const metadata: Metadata = { robots: { index: false, follow: false } };
 
@@ -168,7 +168,7 @@ export default async function HalamanPesanan({ params, searchParams }: {
             </div>
             {p.rincian.map((r) => (
               <div key={r.id} className="flex justify-between gap-3">
-                <span>{b === 'en' && r.nama_en ? r.nama_en : r.nama}<span className="block text-sm text-abu">{k.form.kali(r.jumlah, rupiah(r.harga, b))}, {SATUAN[r.satuan][b]}</span></span>
+                <span>{namaBaris(r, b)}<span className="block text-sm text-abu">{k.form.kali(r.jumlah, rupiah(r.harga, b))}, {SATUAN[r.satuan][b]}</span></span>
                 <span className="font-semibold tabular-nums">{rupiah(r.subtotal, b)}</span>
               </div>
             ))}

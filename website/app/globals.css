@@ -175,6 +175,30 @@
    browser toolbar, vh is the fallback for older browsers. */
 .tinggi-lembar { max-height: 88vh; max-height: 88svh; }
 
+/* Scroll motion (components/GerakGulir.tsx). A block waiting below the
+   screen sits a little lower and clear, then rises in, the children of a
+   list one after another. Only while the classes are on, so a block that
+   came in keeps no transform. */
+@media (prefers-reduced-motion: no-preference) {
+  .siap-muncul {
+    transition: opacity 0.8s cubic-bezier(0.22, 0.61, 0.36, 1), transform 0.8s cubic-bezier(0.22, 0.61, 0.36, 1) !important;
+    transition-delay: calc(var(--muncul-urut, 0) * 90ms) !important;
+  }
+  .siap-muncul:not(.tampak) { opacity: 0; transform: translate3d(0, 28px, 0); }
+
+  /* The hero comes in when the page opens: the photo settles from a slight
+     zoom, the words rise one after another. The animations fill only
+     backwards, so once over they leave no transform behind. */
+  .pahlawan-foto { animation: pahlawan-foto 1.8s cubic-bezier(0.22, 0.61, 0.36, 1) backwards; }
+  .pahlawan-isi > * { animation: muncul-naik 0.9s cubic-bezier(0.22, 0.61, 0.36, 1) backwards; }
+  .pahlawan-isi > :nth-child(2) { animation-delay: 0.08s; }
+  .pahlawan-isi > :nth-child(3) { animation-delay: 0.18s; }
+  .pahlawan-isi > :nth-child(4) { animation-delay: 0.28s; }
+  .pahlawan-isi > :nth-child(5) { animation-delay: 0.4s; }
+  @keyframes pahlawan-foto { from { scale: 1.07; } to { scale: 1; } }
+  @keyframes muncul-naik { from { opacity: 0; transform: translate3d(0, 18px, 0); } to { opacity: 1; transform: none; } }
+}
+
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { transition: none !important; animation: none !important; }
 }

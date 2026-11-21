@@ -210,9 +210,9 @@ export async function ubahKeteranganFoto(fd: FormData) {
 export async function simpanLayanan(fd: FormData) {
   await wajibMasuk();
   const id = bulat(fd, 'id');
-  const satuan = ['pesanan', 'orang', 'malam', 'orang_malam', 'perahu'].includes(String(fd.get('satuan'))) ? String(fd.get('satuan')) : 'orang';
+  const satuan = ['pesanan', 'orang', 'malam', 'orang_malam', 'perahu', 'rombongan'].includes(String(fd.get('satuan'))) ? String(fd.get('satuan')) : 'orang';
   const nilai = [teks(fd, 'nama', 120), teks(fd, 'nama_en', 120), teks(fd, 'keterangan', 400), teks(fd, 'keterangan_en', 400),
-    rupiahKe(fd, 'harga'), satuan, satuan === 'perahu' ? Math.min(50, Math.max(0, bulat(fd, 'muat'))) : 0, centang(fd, 'mulai') ? 1 : 0,
+    rupiahKe(fd, 'harga'), satuan, satuan === 'perahu' || satuan === 'rombongan' ? Math.min(50, Math.max(0, bulat(fd, 'muat'))) : 0, centang(fd, 'mulai') ? 1 : 0,
     teks(fd, 'ikon', 20) || 'perahu', centang(fd, 'aktif') ? 1 : 0, bulat(fd, 'urutan')];
   if (!nilai[0]) redirect('/admin/layanan?galat=nama');
   if (id) {
@@ -468,7 +468,8 @@ export async function ubahJadwal(fd: FormData) {
   const malam = selisihHari(masuk, keluar);
   const [situs, layanan] = await Promise.all([ambilSitus(), daftarLayanan(true)]);
   const dipilih = layanan.filter((l) => p.rincian.some((r) => r.id === l.id));
-  const h = hitungHarga(km!, { malam, jumlahKamar, dewasa, anak, layanan: dipilih, dpPersen: situs.dpPersen, persenPaket: p.paket?.persen });
+  // the boat keeps the way it was booked; bookings from before return trips went one way
+  const h = hitungHarga(km!, { malam, jumlahKamar, dewasa, anak, layanan: dipilih, dpPersen: situs.dpPersen, persenPaket: p.paket?.persen, pulangPergi: p.rincian.some((r) => r.pp) });
   let penuh = false;
   await transaksi(async (c) => {
     await c.query('SELECT id FROM kamar WHERE id = ? FOR UPDATE', [km!.id]);
@@ -513,7 +514,7 @@ export async function pesananManual(_: { galat: string }, fd: FormData): Promise
     if (!km) throw new GalatPesan('kamar');
     hasil = await simpanPesanan({
       kamarId: km.id, masuk: teks(fd, 'masuk', 10), keluar: teks(fd, 'keluar', 10), jumlahKamar: bulat(fd, 'jumlahKamar') || 1,
-      dewasa: bulat(fd, 'dewasa') || 1, anak: Math.max(0, bulat(fd, 'anak')), layanan: fd.getAll('layanan').map(Number),
+      dewasa: bulat(fd, 'dewasa') || 1, anak: Math.max(0, bulat(fd, 'anak')), layanan: fd.getAll('layanan').map(Number), pulangPergi: fd.get('arah') !== 'sekali',
       nama: teks(fd, 'nama', 120), email, telepon: teks(fd, 'telepon', 40), negara: teks(fd, 'negara', 80), kedatangan: teks(fd, 'kedatangan', 200),
       catatan: teks(fd, 'catatan'), bahasa: fd.get('bahasa') === 'en' ? 'en' : 'id', sumber: 'admin', status, catatanAdmin: teks(fd, 'catatan_admin'),
     }, km, layanan, situs);

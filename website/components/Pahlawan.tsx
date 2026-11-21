@@ -21,7 +21,7 @@ export default function Pahlawan({ b, s, foto, fotoHp }: { b: Bahasa; s: Situs; 
         <div aria-hidden className="absolute inset-0 -z-10 bg-gradient-to-r from-black/65 via-black/45 via-45% to-black/10 lg:from-black/85 lg:via-black/65 lg:via-35% lg:to-transparent lg:to-65%" />
         {kata.length > 0 && <div aria-hidden className="absolute inset-0 -z-10 bg-gradient-to-t from-black/35 to-transparent to-30%" />}
 
-        <div className="mx-auto flex min-h-[34rem] max-w-6xl flex-col px-5 pt-14 pb-24 sm:min-h-[40rem] sm:px-8 sm:pt-20 sm:pb-36 lg:min-h-[42.5rem]">
+        <div className="pahlawan-isi mx-auto flex min-h-[34rem] max-w-6xl flex-col px-5 pt-14 pb-24 sm:min-h-[40rem] sm:px-8 sm:pt-20 sm:pb-36 lg:min-h-[42.5rem]">
           {dwi(s.heroLabel, b) && <p className="label-kecil !text-sorot">{dwi(s.heroLabel, b)}</p>}
           <h1 className="mt-4 text-[clamp(3.4rem,2.2rem+5.6vw,6.75rem)] leading-[0.94] !text-white">
             {baris.map((x, i) => (

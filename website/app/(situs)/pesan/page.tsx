@@ -38,6 +38,7 @@ export default async function Pesan({ searchParams }: { searchParams: Promise<Re
       if (angka(sp.pondok, 0, 20, 0) > 1) q.set('dampier_pondok', String(angka(sp.pondok, 0, 20, 0)));
       const perahu = sp.layanan ? (await daftarLayanan()).find((l) => String(l.id) === sp.layanan && l.satuan === 'perahu') : undefined;
       if (perahu) q.set('dampier_tambahan', perahu.nama);
+      if (perahu && sp.arah === 'sekali') q.set('dampier_arah', 'sekali');
     }
     redirect(`/kamar/${dampier.kamar}${q.size ? `?${q}` : ''}#rencana`);
   }
@@ -99,7 +100,7 @@ export default async function Pesan({ searchParams }: { searchParams: Promise<Re
         paket={daftarPaket(situs)}
         aktif={aktif}
         wa={tautanWa(situs.whatsapp, k.pesanWaUmum)}
-        mula={{ kamarId: km?.id ?? 0, masuk, keluar, dewasa: Math.min(tamu, kap), anak: Math.min(anakTautan, situs.anakPerPondok * jumlahKamar), jumlahKamar, layanan: layanan.filter((l) => String(l.id) === sp.layanan).map((l) => l.id) }}
+        mula={{ kamarId: km?.id ?? 0, masuk, keluar, dewasa: Math.min(tamu, kap), anak: Math.min(anakTautan, situs.anakPerPondok * jumlahKamar), jumlahKamar, layanan: layanan.filter((l) => String(l.id) === sp.layanan).map((l) => l.id), arah: sp.arah === 'sekali' ? 'sekali' : 'pp' }}
         ditolak={ditolak}
         dariTautan={dariTautan}
         pengelola={dataPengelola(situs, b)}

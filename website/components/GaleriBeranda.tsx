@@ -31,7 +31,7 @@ export default function GaleriBeranda({ b, foto, judul }: { b: Bahasa; foto: Fot
   return (
     <div role="group" aria-label={judul || undefined}>
       <div className="flex snap-x snap-mandatory gap-3 overflow-x-auto overflow-y-hidden pb-1 md:grid md:h-[min(30rem,48vw)] md:grid-cols-4 md:grid-rows-2 md:overflow-visible md:pb-0"
-        data-galeri-beranda={foto.length}>
+        data-galeri-beranda={foto.length} data-muncul-anak>
         {foto.map((f, i) => (
           <button key={f.id} type="button" onClick={() => setBuka(i)} aria-label={`${k.foto.perbesar}${f.keterangan ? `, ${f.keterangan}` : ''}`}
             className={`group relative aspect-[4/3] w-[80%] shrink-0 snap-start overflow-hidden rounded-3xl bg-buih md:aspect-auto md:w-auto ${i >= n ? 'md:hidden' : tempat(n, i)}`}>
