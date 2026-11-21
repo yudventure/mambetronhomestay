@@ -1,7 +1,10 @@
 'use client';
 // Photo gallery on the home page, between the about text and the date card.
 // The owner's request, November 2026: "tambahkan foto galeri diantara
-// tanggal dan about". From md up five photos in a grid, one large and the
+// tanggal dan about", then "tidak perlu diberi judul, galery seksinya gabung
+// dengan" the about section, so it has no heading of its own and sits close
+// under the about text, named only for screen readers. From md up five
+// photos in a grid, one large and the
 // rest small, with no empty cell whatever the count, and the fifth opens all
 // of them. On phones every photo in a row to swipe sideways. Every photo
 // opens the full screen viewer.
@@ -26,8 +29,7 @@ export default function GaleriBeranda({ b, foto, judul }: { b: Bahasa; foto: Fot
   const n = Math.min(5, foto.length);
   const lebih = foto.length - n;
   return (
-    <section aria-label={judul || undefined}>
-      {judul && <h2 className="mb-5 text-[clamp(1.6rem,1.3rem+1.2vw,2.2rem)]">{judul}</h2>}
+    <div role="group" aria-label={judul || undefined}>
       <div className="flex snap-x snap-mandatory gap-3 overflow-x-auto overflow-y-hidden pb-1 md:grid md:h-[min(30rem,48vw)] md:grid-cols-4 md:grid-rows-2 md:overflow-visible md:pb-0"
         data-galeri-beranda={foto.length}>
         {foto.map((f, i) => (
@@ -45,6 +47,6 @@ export default function GaleriBeranda({ b, foto, judul }: { b: Bahasa; foto: Fot
         ))}
       </div>
       {buka >= 0 && <PerbesarFoto b={b} foto={foto} awal={buka} tutup={() => setBuka(-1)} />}
-    </section>
+    </div>
   );
 }

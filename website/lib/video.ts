@@ -3,7 +3,9 @@
 // a key, a cover image. Safe to use in client components.
 export type JenisVideo = 'youtube' | 'tiktok' | 'instagram';
 // embed plays with sound after a tap, otomatis plays muted on its own and
-// loops, empty where the platform has no such player (Instagram)
+// loops with every control off, empty where the platform has no such player
+// (Instagram). The owner's request, November 2026: the about videos loop
+// smoothly with no player showing.
 export type Video = { jenis: JenisVideo; id: string; url: string; embed: string; otomatis: string; sampul: string; judul: string };
 
 export const NAMA_PLATFORM: Record<JenisVideo, string> = { youtube: 'YouTube', tiktok: 'TikTok', instagram: 'Instagram' };
@@ -38,7 +40,7 @@ export function bacaVideo(tautan: string, judul = ''): Video | null {
     return {
       jenis: 'youtube', id, url: tautan, judul,
       embed: `https://www.youtube-nocookie.com/embed/${id}?autoplay=1&playsinline=1&rel=0`,
-      otomatis: `https://www.youtube-nocookie.com/embed/${id}?autoplay=1&mute=1&loop=1&playlist=${id}&playsinline=1&rel=0&modestbranding=1&iv_load_policy=3&enablejsapi=1`,
+      otomatis: `https://www.youtube-nocookie.com/embed/${id}?autoplay=1&mute=1&loop=1&playlist=${id}&controls=0&disablekb=1&fs=0&playsinline=1&rel=0&modestbranding=1&iv_load_policy=3&cc_load_policy=0&enablejsapi=1`,
       sampul: `https://i.ytimg.com/vi/${id}/hqdefault.jpg`,
     };
   }
@@ -49,7 +51,7 @@ export function bacaVideo(tautan: string, judul = ''): Video | null {
     return {
       jenis: 'tiktok', id, url: tautan, judul, sampul: '',
       embed: `https://www.tiktok.com/player/v1/${id}?autoplay=1&description=0&music_info=0&rel=0`,
-      otomatis: `https://www.tiktok.com/player/v1/${id}?autoplay=1&loop=1&controls=1&progress_bar=0&play_button=0&fullscreen_button=0&timestamp=0&volume_control=1&description=0&music_info=0&rel=0&native_context_menu=0&closed_caption=0`,
+      otomatis: `https://www.tiktok.com/player/v1/${id}?autoplay=1&loop=1&controls=0&progress_bar=0&play_button=0&fullscreen_button=0&timestamp=0&volume_control=0&description=0&music_info=0&rel=0&native_context_menu=0&closed_caption=0`,
     };
   }
   if (host === 'instagram.com') {

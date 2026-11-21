@@ -129,7 +129,7 @@ export const PENGATURAN = [
       },
       { k: 'layananJudul', label: 'Judul bagian kegiatan', jenis: 'dua', bawaan: dua('Kegiatan dan antar jemput', 'Trips and transfers') },
       { k: 'layananTeks', label: 'Teks bagian kegiatan', jenis: 'duaPanjang', bawaan: dua('Tambahkan saat memesan atau tanyakan langsung ke kami.', 'Add them when you book or just ask us.') },
-      { k: 'galeriJudul', label: 'Judul bagian galeri foto', jenis: 'dua', bawaan: dua('Sehari di Mambetron', 'A day at Mambetron') },
+      { k: 'galeriJudul', label: 'Nama galeri foto, tidak tampil dan hanya dibacakan pembaca layar', jenis: 'dua', bawaan: dua('Sehari di Mambetron', 'A day at Mambetron') },
       { k: 'ulasanJudul', label: 'Judul bagian ulasan', jenis: 'dua', bawaan: dua('Kata tamu', 'What guests say') },
       { k: 'lokasiLabel', label: 'Label kecil bagian lokasi', jenis: 'dua', bawaan: dua('Menuju Pulau Kri', 'Getting to Kri Island') },
       { k: 'lokasiJudul', label: 'Judul bagian lokasi', jenis: 'dua', bawaan: dua('Cara ke sini', 'How to get here') },

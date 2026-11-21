@@ -157,9 +157,9 @@ export default async function Beranda() {
               className="aspect-[4/3] w-full rounded-[1.75rem] object-cover lg:aspect-[16/11]" />
           )}
         </div>
-        {/* the gallery between the about text and the date card, the bungalow photos while the panel gallery is empty */}
+        {/* the gallery as part of the about section, between its text and the date card, the bungalow photos while the panel gallery is empty */}
         {galeri.length > 0 && (
-          <div className="mx-auto mt-12 max-w-6xl px-4 sm:px-6 md:mt-16">
+          <div className="mx-auto mt-8 max-w-6xl px-4 sm:px-6 md:mt-10">
             <GaleriBeranda b={b} foto={galeri} judul={dwi(s.galeriJudul, b)} />
           </div>
         )}

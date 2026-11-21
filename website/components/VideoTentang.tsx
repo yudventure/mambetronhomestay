@@ -8,7 +8,11 @@
 // YouTube and TikTok videos start on their own, muted and looping, once the
 // section scrolls into view, and pause again when it scrolls away. On a
 // phone only the video in the middle plays. The cover stays until the
-// player has loaded, then the video fades in over it. Instagram has no
+// player has loaded, then the video fades in over it. They loop with no
+// player showing (the owner's request, November 2026): every control is
+// off, the frame is enlarged so the platform's own bars (account name,
+// likes, the Shorts header) fall outside the rounded card, and it takes no
+// taps or hovers, so nothing of the player comes up. Instagram has no
 // player that starts on its own, so it keeps a cover with a play button,
 // as do all videos for visitors who asked for less motion or to save data.
 import { useCallback, useEffect, useRef, useState } from 'react';
@@ -165,7 +169,7 @@ export default function VideoTentang({ b, video, sampulCadangan }: { b: Bahasa; 
           const besar = i === aktif;
           const sampul = !gagal.has(i) && v.sampul ? v.sampul : sampulCadangan;
           const nama = v.judul || `${NAMA_PLATFORM[v.jenis]} ${i + 1}`;
-          const auto = otomatis(i) && diputar !== i;
+          const auto = otomatis(i);
           const sampulGambar = (
             /* eslint-disable-next-line @next/next/no-img-element */
             <img src={sampul} alt="" loading="lazy" onError={() => setGagal((g) => new Set(g).add(i))}
@@ -181,10 +185,12 @@ export default function VideoTentang({ b, video, sampulCadangan }: { b: Bahasa; 
                 <>
                   {sampulGambar}
                   {dimuat.has(i) && (
-                    <iframe src={v.otomatis} title={nama} allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowFullScreen
-                      ref={(f) => { if (f) bingkai.current.set(i, f); else bingkai.current.delete(i); }}
-                      onLoad={(e) => muat(i, e.currentTarget)} data-jalan={harusJalan(i) ? '1' : '0'}
-                      className={`absolute inset-0 size-full border-0 transition-opacity duration-700 ${siap.has(i) ? 'opacity-100' : 'opacity-0'}`} />
+                    <span aria-hidden className="pointer-events-none absolute inset-0 overflow-hidden" data-video-loop>
+                      <iframe src={v.otomatis} title={nama} allow="autoplay; encrypted-media" tabIndex={-1}
+                        ref={(f) => { if (f) bingkai.current.set(i, f); else bingkai.current.delete(i); }}
+                        onLoad={(e) => muat(i, e.currentTarget)} data-jalan={harusJalan(i) ? '1' : '0'}
+                        className={`absolute top-1/2 left-1/2 h-[140%] w-[140%] max-w-none -translate-x-1/2 -translate-y-1/2 border-0 transition-opacity duration-700 ${siap.has(i) ? 'opacity-100' : 'opacity-0'}`} />
+                    </span>
                   )}
                   {/* on a phone a side video is tapped to come to the middle, not to work its player */}
                   {!lebarLayar && !besar && (
