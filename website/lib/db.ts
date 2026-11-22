@@ -4,7 +4,7 @@
 import fs from 'fs';
 import mysql from 'mysql2/promise';
 import { SKEMA, tambahKolom } from './skema.mjs';
-import { KAMAR_AWAL, KAMAR_LAMA, KAMAR_NAMA_LAMA, KAMAR_TEKS_LAMA, LAYANAN_AWAL, VIDEO_AWAL, situsBawaan } from './bawaan.mjs';
+import { KALIMAT_LISTRIK, KAMAR_AWAL, KAMAR_FASILITAS_LAMA, KAMAR_LAMA, KAMAR_NAMA_LAMA, KAMAR_TEKS_LAMA, LAYANAN_AWAL, VIDEO_AWAL, situsBawaan } from './bawaan.mjs';
 import { dbDiatur, envDb } from './env';
 
 export class DbBelumDiatur extends Error {
@@ -204,6 +204,22 @@ async function burungRombongan(pool: mysql.Pool) {
   await pool.query("UPDATE layanan SET satuan = ?, muat = ? WHERE ikon = 'burung' AND satuan IN ('pesanan', 'rombongan') AND muat = 0", [burung.satuan, burung.muat]);
 }
 
+// The owner's facilities, November 2026: private bathroom, three meals a
+// day, free Starlink Wi-Fi while the power is on, and power for 12 hours
+// from 18.00 to 06.00. Done once. The list changes only where it is still
+// the previous default, the power sentence of the description is replaced
+// phrase by phrase, so whatever the owner wrote in the panel stays.
+async function fasilitasPemilik(pool: mysql.Pool) {
+  const [r] = await pool.query<mysql.ResultSetHeader>("INSERT IGNORE INTO pengaturan (kunci, nilai) VALUES ('fasilitas-pemilik-2026-11', '1')");
+  if (r.affectedRows !== 1) return;
+  const k = KAMAR_AWAL[0];
+  for (const [kolom, baru] of [['fasilitas', k.fasilitas.join('\n')], ['fasilitas_en', k.fasilitas_en.join('\n')]] as const) {
+    await pool.query(`UPDATE kamar SET ${kolom} = ? WHERE REPLACE(${kolom}, ?, ?) = ?`, [baru, '\r\n', '\n', KAMAR_FASILITAS_LAMA[kolom]]);
+  }
+  await pool.query('UPDATE kamar SET deskripsi = REPLACE(deskripsi, ?, ?), deskripsi_en = REPLACE(deskripsi_en, ?, ?)',
+    [KAMAR_FASILITAS_LAMA.deskripsi, KALIMAT_LISTRIK.deskripsi, KAMAR_FASILITAS_LAMA.deskripsi_en, KALIMAT_LISTRIK.deskripsi_en]);
+}
+
 // The owner's beds, November 2026: each bungalow has a king bed and a
 // single bed, so it sleeps three, and the third guest pays Rp600.000 like
 // the other two (Rp1.800.000 for three). Done once on the beachfront
@@ -280,6 +296,7 @@ async function siapkan(pool: mysql.Pool) {
   await layananBaru(pool);
   await tigaOrang(pool);
   await burungRombongan(pool);
+  await fasilitasPemilik(pool);
   await videoAwal(pool);
   // the first process to claim this row fills the empty database
   const [r] = await pool.query<mysql.ResultSetHeader>(

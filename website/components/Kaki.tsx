@@ -6,7 +6,9 @@ import { dataPengelola, dwi, tampilWa, tautanLuar, tautanWa } from '@/lib/format
 
 // Footer. Brand on the left, booking links in the middle, contact on the
 // right with WhatsApp, email and the social accounts set in Isi situs. The
-// bottom bar names the site that manages this one, linked to it.
+// bottom bar holds the copyright, the privacy policy and the terms (the
+// owner's request, November 2026, "seperti layaknya website profesional"),
+// and names the site that manages this one, linked to it.
 export default function Kaki({ b, situs }: { b: Bahasa; situs: Situs }) {
   const k = kamus(b);
   const wa = tautanWa(situs.whatsapp, k.pesanWaUmum);
@@ -90,6 +92,10 @@ export default function Kaki({ b, situs }: { b: Bahasa; situs: Situs }) {
           <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-3 px-5 py-4 text-sm text-white/65 sm:px-8">
             <div className="flex flex-wrap items-center gap-x-6 gap-y-1">
               <p>© {tahun} {situs.nama}</p>
+              <nav aria-label={`${k.kaki.privasi}, ${k.kaki.syarat}`} className="flex flex-wrap gap-x-5 gap-y-1" data-tautan-kebijakan>
+                <Link href="/kebijakan-privasi" className="font-semibold text-white/85 underline-offset-4 transition-colors hover:text-sorot hover:underline">{k.kaki.privasi}</Link>
+                <Link href="/syarat-ketentuan" className="font-semibold text-white/85 underline-offset-4 transition-colors hover:text-sorot hover:underline">{k.kaki.syarat}</Link>
+              </nav>
               {pengelola && (
                 <p>
                   {pengelola.teks}{' '}

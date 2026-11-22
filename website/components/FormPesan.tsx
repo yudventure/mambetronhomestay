@@ -412,7 +412,7 @@ export default function FormPesan({ b, kamar, layanan, sisa, awal, akhir, dpPers
 
         <label className="mt-5 flex cursor-pointer items-start gap-3 text-[0.9375rem]">
           <input type="checkbox" name="setuju" value="ya" checked={setuju} onChange={(e) => setSetuju(e.target.checked)} className="mt-1 size-5 shrink-0 accent-[#036f87]" />
-          <span>{f.setuju} <Link href="/ketentuan" target="_blank" className="font-semibold text-biru-tua underline underline-offset-4">{f.ketentuan}</Link></span>
+          <span>{f.setuju} <Link href="/ketentuan" target="_blank" className="font-semibold text-biru-tua underline underline-offset-4">{f.ketentuan}</Link>{f.setujuSyarat[1]}<Link href="/syarat-ketentuan" target="_blank" className="font-semibold text-biru-tua underline underline-offset-4">{f.syarat}</Link>{f.setujuSyarat[2]}<Link href="/kebijakan-privasi" target="_blank" className="font-semibold text-biru-tua underline underline-offset-4">{f.privasi}</Link></span>
         </label>
 
         {hasil.galat && (

@@ -203,4 +203,7 @@ export type Situs = {
   catatanBayar: Dua;
   pesanTerima: Dua;
   ketentuan: Dua;
+  kebijakanTanggal: string;
+  privasiTeks: Dua;
+  syaratTeks: Dua;
 };
