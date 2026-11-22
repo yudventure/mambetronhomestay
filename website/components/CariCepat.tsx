@@ -203,18 +203,89 @@ export default function CariCepat({ b, awal, akhir, checkIn, checkOut, sisa, uni
       {perahuPilih && !pulangPergi && <input type="hidden" name="arah" value="sekali" />}
       {kamar && <input type="hidden" name="kamar" value={kamar} />}
 
-      {/* Two columns on wide screens that fill on their own: the calendar with
-          the guests under it, so no empty space is left below the calendar
-          (the owner's request, November 2026), and the stay, the price and the
-          buttons beside it. Below that one column: heading, calendar, guests,
-          price, buttons. */}
+      {/* Two columns on wide screens: the calendar with the bungalow choice,
+          what a stay includes and the boat transfer under it, and beside it
+          the stay, the guests, the price and the buttons. Below that one
+          column: heading, calendar, guests, choices, facilities, boat, price,
+          buttons. */}
       <div className="contents xl:flex xl:min-w-0 xl:flex-col xl:gap-5">
         <div className="order-2 min-w-0 xl:order-none">
           <Kalender key={pulih} b={b} sisa={sisa} unit={unit} butuh={butuh} minMalam={minMalam}
             awal={awal} akhir={akhir} masuk={masuk} keluar={keluar} onPilih={pilih} />
         </div>
+          {/* the bungalow choice belongs with the guests, under them */}
+          {pilihan.length > 0 && (
+            <fieldset className="order-4 grid gap-2 rounded-2xl bg-embun p-3 sm:grid-cols-2 xl:order-none" data-pilih-pondok>
+              <legend className="float-left mb-1 w-full text-sm text-abu sm:col-span-2">{t.pilihPondok}</legend>
+              {pilihan.map((x) => {
+                const on = x.v === (butuh > butuhMin);
+                return (
+                  <label key={String(x.v)} className={`flex cursor-pointer items-start gap-2.5 rounded-xl bg-white px-3 py-2.5 transition-shadow ${on ? 'ring-2 ring-biru' : 'ring-1 ring-buih-2'}`}>
+                    <input type="radio" name="pilih_pondok" form="rencana-pilihan" checked={on} onChange={() => pilihTambah(x.v)} className="mt-0.5 size-4 shrink-0 accent-[#036f87]" />
+                    <span className="min-w-0 flex-1">
+                      <span className="block text-sm font-semibold leading-tight text-laut">{x.judul}</span>
+                      <span className="block text-xs leading-snug text-abu">{x.isi}</span>
+                    </span>
+                    <span className="whitespace-nowrap text-sm font-semibold tabular-nums text-laut">{rupiah(x.harga, b)}</span>
+                  </label>
+                );
+              })}
+            </fieldset>
+          )}
+          {/* what a stay includes, just above the boat transfer */}
+          {fasilitas.length > 0 && (
+            <div className="order-4 xl:order-none">
+              <FasilitasBeranda b={b} fasilitas={fasilitas} />
+            </div>
+          )}
+          {perahuHarga.length > 0 && (
+            <fieldset className="order-4 grid gap-2 rounded-2xl bg-embun p-3 sm:grid-cols-3 xl:order-none" data-pilih-perahu>
+              <legend className="float-left mb-1 w-full text-sm text-abu sm:col-span-3">{t.perahuJudul}</legend>
+              {[null, ...perahuHarga].map((x) => {
+                const on = (x?.l.id ?? 0) === perahuId;
+                return (
+                  <label key={x?.l.id ?? 0} className={`flex cursor-pointer items-start gap-2.5 rounded-xl bg-white px-3 py-2.5 transition-shadow ${on ? 'ring-2 ring-biru' : 'ring-1 ring-buih-2'}`}>
+                    <input type="radio" name="pilih_perahu" form="rencana-pilihan" checked={on} onChange={() => setPerahuId(x?.l.id ?? 0)} className="mt-0.5 size-4 shrink-0 accent-[#036f87]" />
+                    <span className="min-w-0 flex-1">
+                      <span className="block text-sm font-semibold leading-tight text-laut">{x ? pilihBahasa(b, x.l.nama, x.l.nama_en) : t.perahuTidak}</span>
+                      {x && <span className="block text-xs leading-snug text-abu">{satuanLayanan(x.l, b)}</span>}
+                      {x && <span className="mt-0.5 block text-sm font-semibold tabular-nums text-laut">{t.perahuArah(x.kapal, pulangPergi)}, {rupiah(x.total, b)}</span>}
+                    </span>
+                  </label>
+                );
+              })}
+              {perahuPilih && (
+                <div className="flex flex-wrap items-center gap-2 sm:col-span-3" role="radiogroup" aria-label={t.arahJudul} data-arah-perahu>
+                  <span className="text-sm text-abu">{t.arahJudul}</span>
+                  {([true, false] as const).map((v) => (
+                    <label key={String(v)} className={`cursor-pointer rounded-full px-3.5 py-1.5 text-sm font-semibold transition-colors has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-biru ${pulangPergi === v ? 'bg-laut text-white' : 'bg-white text-laut ring-1 ring-buih-2 hover:bg-buih'}`}>
+                      <input type="radio" name="pilih_arah" form="rencana-pilihan" className="sr-only" checked={pulangPergi === v} onChange={() => setPulangPergi(v)} />
+                      {v ? t.pulangPergi : t.sekaliJalan}
+                    </label>
+                  ))}
+                </div>
+              )}
+            </fieldset>
+          )}
+      </div>
+
+      <div className="contents xl:flex xl:flex-col xl:gap-4">
+        <div className="order-1 flex items-center gap-3 xl:order-none">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="/merek/ikon.svg" alt="" aria-hidden width={64} height={64} className="size-16 shrink-0 rounded-2xl bg-buih object-contain p-1" />
+          <h3 className="text-[1.65rem] leading-[1.02]">{judul ?? k.rencana}</h3>
+        </div>
+
+        {/* The stay beside the calendar: check-in and check-out on wide
+            screens, then the guests under them and above the price (the
+            owner's request, November 2026). */}
+        <div className="contents xl:grid xl:gap-2">
+          <div className="hidden gap-2 xl:grid">
+            <KotakTanggal b={b} label={k.tiba} d={masuk} kosong={t.diKalender} />
+            <KotakTanggal b={b} label={k.pulang} d={keluar} kosong={t.diKalender} catatan={masuk && keluar ? k.form.malam(selisihHari(masuk, keluar)) : undefined} />
+          </div>
           {/* paying guests, then the children under the free age who stay free */}
-          <div className="order-3 grid gap-1 rounded-2xl bg-embun p-2 pr-2.5 xl:order-none xl:grid-cols-2 xl:gap-3" data-rincian-tamu>
+          <div className="order-3 grid gap-1 rounded-2xl bg-embun p-2 pr-2.5 xl:order-none xl:gap-2" data-rincian-tamu>
             <div className="flex items-center gap-3">
               <span aria-hidden className="flex size-12 shrink-0 items-center justify-center rounded-xl bg-white text-biru-tua shadow-tipis">
                 <Ikon nama="orang" className="size-5" />
@@ -248,77 +319,9 @@ export default function CariCepat({ b, awal, akhir, checkIn, checkOut, sisa, uni
               </button>
             </div>
           </div>
-          {/* the bungalow choice belongs with the guests, under them */}
-          {pilihan.length > 0 && (
-            <fieldset className="order-3 grid gap-2 rounded-2xl bg-embun p-3 sm:grid-cols-2 xl:order-none" data-pilih-pondok>
-              <legend className="float-left mb-1 w-full text-sm text-abu sm:col-span-2">{t.pilihPondok}</legend>
-              {pilihan.map((x) => {
-                const on = x.v === (butuh > butuhMin);
-                return (
-                  <label key={String(x.v)} className={`flex cursor-pointer items-start gap-2.5 rounded-xl bg-white px-3 py-2.5 transition-shadow ${on ? 'ring-2 ring-biru' : 'ring-1 ring-buih-2'}`}>
-                    <input type="radio" name="pilih_pondok" form="rencana-pilihan" checked={on} onChange={() => pilihTambah(x.v)} className="mt-0.5 size-4 shrink-0 accent-[#036f87]" />
-                    <span className="min-w-0 flex-1">
-                      <span className="block text-sm font-semibold leading-tight text-laut">{x.judul}</span>
-                      <span className="block text-xs leading-snug text-abu">{x.isi}</span>
-                    </span>
-                    <span className="whitespace-nowrap text-sm font-semibold tabular-nums text-laut">{rupiah(x.harga, b)}</span>
-                  </label>
-                );
-              })}
-            </fieldset>
-          )}
-          {/* what a stay includes, just above the boat transfer */}
-          {fasilitas.length > 0 && (
-            <div className="order-3 xl:order-none">
-              <FasilitasBeranda b={b} fasilitas={fasilitas} />
-            </div>
-          )}
-          {perahuHarga.length > 0 && (
-            <fieldset className="order-3 grid gap-2 rounded-2xl bg-embun p-3 sm:grid-cols-3 xl:order-none" data-pilih-perahu>
-              <legend className="float-left mb-1 w-full text-sm text-abu sm:col-span-3">{t.perahuJudul}</legend>
-              {[null, ...perahuHarga].map((x) => {
-                const on = (x?.l.id ?? 0) === perahuId;
-                return (
-                  <label key={x?.l.id ?? 0} className={`flex cursor-pointer items-start gap-2.5 rounded-xl bg-white px-3 py-2.5 transition-shadow ${on ? 'ring-2 ring-biru' : 'ring-1 ring-buih-2'}`}>
-                    <input type="radio" name="pilih_perahu" form="rencana-pilihan" checked={on} onChange={() => setPerahuId(x?.l.id ?? 0)} className="mt-0.5 size-4 shrink-0 accent-[#036f87]" />
-                    <span className="min-w-0 flex-1">
-                      <span className="block text-sm font-semibold leading-tight text-laut">{x ? pilihBahasa(b, x.l.nama, x.l.nama_en) : t.perahuTidak}</span>
-                      {x && <span className="block text-xs leading-snug text-abu">{satuanLayanan(x.l, b)}</span>}
-                      {x && <span className="mt-0.5 block text-sm font-semibold tabular-nums text-laut">{t.perahuArah(x.kapal, pulangPergi)}, {rupiah(x.total, b)}</span>}
-                    </span>
-                  </label>
-                );
-              })}
-              {perahuPilih && (
-                <div className="flex flex-wrap items-center gap-2 sm:col-span-3" role="radiogroup" aria-label={t.arahJudul} data-arah-perahu>
-                  <span className="text-sm text-abu">{t.arahJudul}</span>
-                  {([true, false] as const).map((v) => (
-                    <label key={String(v)} className={`cursor-pointer rounded-full px-3.5 py-1.5 text-sm font-semibold transition-colors has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-biru ${pulangPergi === v ? 'bg-laut text-white' : 'bg-white text-laut ring-1 ring-buih-2 hover:bg-buih'}`}>
-                      <input type="radio" name="pilih_arah" form="rencana-pilihan" className="sr-only" checked={pulangPergi === v} onChange={() => setPulangPergi(v)} />
-                      {v ? t.pulangPergi : t.sekaliJalan}
-                    </label>
-                  ))}
-                </div>
-              )}
-            </fieldset>
-          )}
-      </div>
-
-      {/* the price column stays in view beside the longer calendar column */}
-      <div className="contents xl:sticky xl:top-28 xl:flex xl:flex-col xl:gap-6 xl:self-start">
-        <div className="order-1 flex items-center gap-3 xl:order-none">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/merek/ikon.svg" alt="" aria-hidden width={64} height={64} className="size-16 shrink-0 rounded-2xl bg-buih object-contain p-1" />
-          <h3 className="text-[1.65rem] leading-[1.02]">{judul ?? k.rencana}</h3>
         </div>
 
-        {/* on wide screens the chosen stay is spelled out beside the calendar */}
-        <div className="hidden gap-2 xl:grid">
-          <KotakTanggal b={b} label={k.tiba} d={masuk} kosong={t.diKalender} />
-          <KotakTanggal b={b} label={k.pulang} d={keluar} kosong={t.diKalender} catatan={masuk && keluar ? k.form.malam(selisihHari(masuk, keluar)) : undefined} />
-        </div>
-
-        <div className="order-4 grid gap-3 sm:grid-cols-2 xl:order-none xl:grid-cols-1">
+        <div className="order-5 grid gap-3 sm:grid-cols-2 xl:order-none xl:grid-cols-1">
           {satuMalam && (
             <div className="grid gap-1 rounded-2xl bg-embun px-4 py-3 sm:col-span-2 xl:col-span-1" data-harga-rencana aria-live="polite">
               <div className="flex items-baseline justify-between gap-3">
