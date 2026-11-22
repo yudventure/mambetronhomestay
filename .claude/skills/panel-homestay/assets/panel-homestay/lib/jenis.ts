@@ -21,6 +21,10 @@ export type Kamar = {
   harga: number;
   harga_anak: number | null;
   skema_harga: SkemaHarga;
+  // per bungalow only: the price of a bungalow holding one paying guest, 0 for the usual price
+  harga_sendiri: number;
+  // per bungalow only: what each guest past the second adds, 0 for none
+  harga_tambah: number;
   kapasitas: number;
   jumlah_unit: number;
   min_malam: number;
@@ -29,7 +33,7 @@ export type Kamar = {
   foto: Foto[];
 };
 
-export type Satuan = 'pesanan' | 'orang' | 'malam' | 'orang_malam';
+export type Satuan = 'pesanan' | 'orang' | 'malam' | 'orang_malam' | 'perahu' | 'rombongan';
 
 export type Layanan = {
   id: number;
@@ -39,6 +43,10 @@ export type Layanan = {
   keterangan_en: string;
   harga: number;
   satuan: Satuan;
+  // per boat: people one boat takes, a bigger party needs more boats (0 for one boat)
+  muat: number;
+  // the price is a starting price, written "From" before it
+  mulai: boolean;
   ikon: string;
   aktif: boolean;
   urutan: number;
@@ -56,7 +64,8 @@ export type Ulasan = {
 
 export type StatusPesanan = 'menunggu' | 'dikonfirmasi' | 'lunas' | 'selesai' | 'batal';
 
-export type BarisLayanan = { id: number; nama: string; nama_en: string; harga: number; satuan: Satuan; jumlah: number; subtotal: number };
+// `pp` a boat priced one way and booked there and back: `jumlah` is twice the boats in `perahu`.
+export type BarisLayanan = { id: number; nama: string; nama_en: string; harga: number; satuan: Satuan; jumlah: number; subtotal: number; pp?: true; perahu?: number };
 
 // One Midtrans transaction for a booking. The order id is the booking code
 // with a running number, a new one only when the last could not be paid.
@@ -98,6 +107,12 @@ export type Pesanan = {
   catatan: string;
   harga_satuan: number;
   skema_harga: SkemaHarga;
+  // the solo price as booked, so the price lines can be told again, 0
+  // for none. persen_sendiri is the 30% rule of the first release, kept
+  // for bookings made with it.
+  harga_sendiri: number;
+  persen_sendiri: number;
+  harga_tambah: number;
   biaya_kamar: number;
   biaya_layanan: number;
   total: number;
@@ -127,10 +142,13 @@ export type Situs = {
   lokasi: Dua;
   seoJudul: Dua;
   seoDeskripsi: Dua;
+  // Search Console HTML tag method (lib/seo.ts)
+  googleVerifikasi: string;
   kakiTeks: Dua;
   pengelolaTeks: Dua;
   pengelola: string;
   whatsapp: string;
+  pesanCekWa: Dua;
   email: string;
   instagram: string;
   facebook: string;
@@ -181,8 +199,13 @@ export type Situs = {
   paketHarga: { nama: Dua; syarat: Dua; persen: number | string }[];
   batasHari: number;
   jedaHari: number;
+  usiaGratis: number;
+  anakPerPondok: number;
   bank: Rekening[];
   catatanBayar: Dua;
   pesanTerima: Dua;
   ketentuan: Dua;
+  kebijakanTanggal: string;
+  privasiTeks: Dua;
+  syaratTeks: Dua;
 };

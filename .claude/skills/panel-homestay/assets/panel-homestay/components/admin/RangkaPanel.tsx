@@ -31,7 +31,7 @@ function menu(menunggu: number): Butir[] {
     { href: '/admin/kamar', label: 'Bungalow', ikon: 'kamar' },
     { href: '/admin/layanan', label: 'Kegiatan', ikon: 'perahu' },
     { href: '/admin/ulasan', label: 'Ulasan', ikon: 'bintang' },
-    { grup: 'Situs web', ikon: 'globe', isi: [{ href: '/admin/pengaturan', label: 'Isi situs' }, { href: '/admin/foto', label: 'Foto situs' }] },
+    { grup: 'Situs web', ikon: 'globe', isi: [{ href: '/admin/pengaturan', label: 'Isi situs' }, { href: '/admin/foto', label: 'Foto situs' }, { href: '/admin/google', label: 'Google Search Console' }] },
     { href: '/admin/sandi', label: 'Akun & kata sandi', ikon: 'orang' },
   ];
 }

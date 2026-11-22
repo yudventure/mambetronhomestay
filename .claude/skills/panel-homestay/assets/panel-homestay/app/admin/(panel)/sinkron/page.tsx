@@ -134,7 +134,15 @@ function LembarBayar({ d }: { d: StatusDampier }) {
       {!d.bayarMitra ? (
         <p className="mt-1 text-sm text-abu">DAMPIER belum menawarkan lembar bayar untuk listing ini. Begitu DAMPIER menawarkannya, tamu yang memilih tanggal di situs ini langsung melihat lembar Pembayaran DAMPIER tanpa pindah halaman.</p>
       ) : nyala ? (
-        <p className="mt-1 text-sm text-abu">Setelah tamu memilih tanggal dan jumlah tamu, lembar Pembayaran DAMPIER terbuka langsung di {situs || 'situs ini'}. DAMPIER yang menerima pesanan dan pembayarannya, lalu tamu kembali ke situs ini dan melihat status pesanannya di lembar yang sama. Formulir pesan situs ini tidak dipakai selama menyala.</p>
+        <>
+          <p className="mt-1 text-sm text-abu">Setelah tamu memilih tanggal dan jumlah tamu, lembar Pembayaran DAMPIER terbuka langsung di {situs || 'situs ini'}. DAMPIER yang menerima pesanan dan pembayarannya, lalu tamu kembali ke situs ini dan melihat status pesanannya di lembar yang sama. Formulir pesan situs ini tidak dipakai selama menyala.</p>
+          {/* lib/harga-dampier.ts: the bungalow price and the boats go with every sync */}
+          <p className="mt-2 text-sm text-abu" data-harga-dampier={d.harga === true ? 'dipakai' : 'belum'}>
+            {d.harga === true
+              ? 'Lembar bayar memakai harga bungalow dan transport perahu situs ini, dikirim setiap sinkron. Harga yang diubah di menu Bungalow, Kegiatan, atau Paket harga ikut terkirim beberapa detik kemudian.'
+              : 'DAMPIER belum memakai harga situs ini, jadi lembar bayar masih memakai harga dan tambahan listing di DAMPIER. Harga situs ini terkirim begitu DAMPIER versi baru tayang.'}
+          </p>
+        </>
       ) : (
         <p className="mt-1 text-sm text-abu">Tamu memesan lewat formulir situs ini dan membayar lewat Midtrans situs ini.</p>
       )}

@@ -6,7 +6,7 @@ import { redirect } from 'next/navigation';
 import { PENGATURAN, gabungSitus, rapikan } from '@/lib/bawaan.mjs';
 import { jalankan, satu, transaksi, type Baris } from '@/lib/db';
 import { ambilSitus, daftarKamar, daftarLayanan, kamarDariId, pesananDariId, sisaKamar } from '@/lib/data';
-import { hitungHarga } from '@/lib/harga';
+import { hargaSendiriSimpan, hargaTambahSimpan, hitungHarga } from '@/lib/harga';
 import type { StatusPesanan } from '@/lib/jenis';
 import { GalatPesan, simpanPesanan, surelSah } from '@/lib/pesan';
 import { pesanGalat } from '@/lib/kamus';
@@ -15,6 +15,7 @@ import { alamatPengunjung, bolehMencoba, buatSesi, catatGagal, hapusSesi, lupaka
 import { daftarMalam, sahTanggal, selisihHari } from '@/lib/tanggal';
 import { GalatSinkron, buatToken, rapikanUrl, sinkronSatu, sinkronSemua, type Sambungan } from '@/lib/sinkron';
 import { GalatDampier, apiDariTautan, aturLembarDampier, kabariDampier, putuskanDampier, rapikanAlamatDampier, simpanAlamatDampier, ujiAlamatDampier } from '@/lib/dampier';
+import { kodeVerifikasiGoogle } from '@/lib/seo';
 import { GalatMidtrans, aturTampilMidtrans, bentukClient, bentukServer, hapusKunciMidtrans, simpanKunciMidtrans, ujiKunciMidtrans } from '@/lib/midtrans';
 
 // line breaks from a textarea arrive as CRLF, kept as plain LF
@@ -74,6 +75,8 @@ export async function simpanPengaturan(_: { pesan: string; ok: boolean }, fd: Fo
     [JSON.stringify(baru)],
   );
   segarkan();
+  // the first rate tier is part of the price DAMPIER's sheet here charges
+  if (g.kunci === 'pemesanan') kabariDampier();
   return { pesan: 'Tersimpan. Perubahan langsung tampil di situs.', ok: true };
 }
 
@@ -111,7 +114,7 @@ export async function simpanKamar(fd: FormData) {
   const nilai = [
     slug, nama, teks(fd, 'nama_en', 120), teks(fd, 'ringkas', 400), teks(fd, 'ringkas_en', 400),
     teks(fd, 'deskripsi', 8000), teks(fd, 'deskripsi_en', 8000), teks(fd, 'fasilitas', 4000), teks(fd, 'fasilitas_en', 4000),
-    rupiahKe(fd, 'harga'), hargaAnak, fd.get('skema_harga') === 'kamar' ? 'kamar' : 'orang',
+    rupiahKe(fd, 'harga'), hargaAnak, fd.get('skema_harga') === 'kamar' ? 'kamar' : 'orang', rupiahKe(fd, 'harga_sendiri'), rupiahKe(fd, 'harga_tambah'),
     Math.min(50, Math.max(1, bulat(fd, 'kapasitas'))), Math.min(50, Math.max(1, bulat(fd, 'jumlah_unit'))),
     Math.min(30, Math.max(1, bulat(fd, 'min_malam'))), centang(fd, 'aktif') ? 1 : 0, bulat(fd, 'urutan'),
   ];
@@ -119,19 +122,21 @@ export async function simpanKamar(fd: FormData) {
   if (id) {
     await jalankan(
       `UPDATE kamar SET slug = ?, nama = ?, nama_en = ?, ringkas = ?, ringkas_en = ?, deskripsi = ?, deskripsi_en = ?, fasilitas = ?,
-        fasilitas_en = ?, harga = ?, harga_anak = ?, skema_harga = ?, kapasitas = ?, jumlah_unit = ?, min_malam = ?, aktif = ?, urutan = ?
-       WHERE id = ?`,
+        fasilitas_en = ?, harga = ?, harga_anak = ?, skema_harga = ?, harga_sendiri = ?, harga_tambah = ?, kapasitas = ?, jumlah_unit = ?, min_malam = ?,
+        aktif = ?, urutan = ? WHERE id = ?`,
       [...nilai, id],
     );
   } else {
     const r = await jalankan(
       `INSERT INTO kamar (slug, nama, nama_en, ringkas, ringkas_en, deskripsi, deskripsi_en, fasilitas, fasilitas_en, harga, harga_anak,
-        skema_harga, kapasitas, jumlah_unit, min_malam, aktif, urutan) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        skema_harga, harga_sendiri, harga_tambah, kapasitas, jumlah_unit, min_malam, aktif, urutan) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       nilai,
     );
     tujuan = r.insertId;
   }
   segarkan();
+  // DAMPIER's sheet here charges this site's prices (lib/harga-dampier.ts)
+  kabariDampier();
   redirect(`/admin/kamar/${tujuan}?ok=1`);
 }
 
@@ -210,16 +215,18 @@ export async function ubahKeteranganFoto(fd: FormData) {
 export async function simpanLayanan(fd: FormData) {
   await wajibMasuk();
   const id = bulat(fd, 'id');
-  const satuan = ['pesanan', 'orang', 'malam', 'orang_malam'].includes(String(fd.get('satuan'))) ? String(fd.get('satuan')) : 'orang';
+  const satuan = ['pesanan', 'orang', 'malam', 'orang_malam', 'perahu', 'rombongan'].includes(String(fd.get('satuan'))) ? String(fd.get('satuan')) : 'orang';
   const nilai = [teks(fd, 'nama', 120), teks(fd, 'nama_en', 120), teks(fd, 'keterangan', 400), teks(fd, 'keterangan_en', 400),
-    rupiahKe(fd, 'harga'), satuan, teks(fd, 'ikon', 20) || 'perahu', centang(fd, 'aktif') ? 1 : 0, bulat(fd, 'urutan')];
+    rupiahKe(fd, 'harga'), satuan, satuan === 'perahu' || satuan === 'rombongan' ? Math.min(50, Math.max(0, bulat(fd, 'muat'))) : 0, centang(fd, 'mulai') ? 1 : 0,
+    teks(fd, 'ikon', 20) || 'perahu', centang(fd, 'aktif') ? 1 : 0, bulat(fd, 'urutan')];
   if (!nilai[0]) redirect('/admin/layanan?galat=nama');
   if (id) {
-    await jalankan('UPDATE layanan SET nama = ?, nama_en = ?, keterangan = ?, keterangan_en = ?, harga = ?, satuan = ?, ikon = ?, aktif = ?, urutan = ? WHERE id = ?', [...nilai, id]);
+    await jalankan('UPDATE layanan SET nama = ?, nama_en = ?, keterangan = ?, keterangan_en = ?, harga = ?, satuan = ?, muat = ?, mulai = ?, ikon = ?, aktif = ?, urutan = ? WHERE id = ?', [...nilai, id]);
   } else {
-    await jalankan('INSERT INTO layanan (nama, nama_en, keterangan, keterangan_en, harga, satuan, ikon, aktif, urutan) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)', nilai);
+    await jalankan('INSERT INTO layanan (nama, nama_en, keterangan, keterangan_en, harga, satuan, muat, mulai, ikon, aktif, urutan) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', nilai);
   }
   segarkan();
+  kabariDampier();
   redirect('/admin/layanan?ok=1');
 }
 
@@ -227,6 +234,7 @@ export async function hapusLayanan(fd: FormData) {
   await wajibMasuk();
   await jalankan('DELETE FROM layanan WHERE id = ?', [bulat(fd, 'id')]);
   segarkan();
+  kabariDampier();
   redirect('/admin/layanan?hapus=1');
 }
 
@@ -467,7 +475,8 @@ export async function ubahJadwal(fd: FormData) {
   const malam = selisihHari(masuk, keluar);
   const [situs, layanan] = await Promise.all([ambilSitus(), daftarLayanan(true)]);
   const dipilih = layanan.filter((l) => p.rincian.some((r) => r.id === l.id));
-  const h = hitungHarga(km!, { malam, jumlahKamar, dewasa, anak, layanan: dipilih, dpPersen: situs.dpPersen, persenPaket: p.paket?.persen });
+  // the boat keeps the way it was booked; bookings from before return trips went one way
+  const h = hitungHarga(km!, { malam, jumlahKamar, dewasa, anak, layanan: dipilih, dpPersen: situs.dpPersen, persenPaket: p.paket?.persen, pulangPergi: p.rincian.some((r) => r.pp) });
   let penuh = false;
   await transaksi(async (c) => {
     await c.query('SELECT id FROM kamar WHERE id = ? FOR UPDATE', [km!.id]);
@@ -478,8 +487,8 @@ export async function ubahJadwal(fd: FormData) {
     }
     await c.query(
       `UPDATE pesanan SET kamar_id = ?, kamar_nama = ?, jumlah_kamar = ?, check_in = ?, check_out = ?, malam = ?, dewasa = ?, anak = ?,
-        harga_satuan = ?, skema_harga = ?, biaya_kamar = ?, biaya_layanan = ?, total = ?, dp = ?, rincian = ? WHERE id = ?`,
-      [km!.id, km!.nama, jumlahKamar, masuk, keluar, malam, dewasa, anak, km!.harga, km!.skema_harga, h.biayaKamar, h.biayaLayanan,
+        harga_satuan = ?, skema_harga = ?, harga_sendiri = ?, persen_sendiri = 0, harga_tambah = ?, biaya_kamar = ?, biaya_layanan = ?, total = ?, dp = ?, rincian = ? WHERE id = ?`,
+      [km!.id, km!.nama, jumlahKamar, masuk, keluar, malam, dewasa, anak, km!.harga, km!.skema_harga, hargaSendiriSimpan(km!), hargaTambahSimpan(km!), h.biayaKamar, h.biayaLayanan,
         h.total, h.dp, JSON.stringify(h.rincian), id],
     );
   });
@@ -512,7 +521,7 @@ export async function pesananManual(_: { galat: string }, fd: FormData): Promise
     if (!km) throw new GalatPesan('kamar');
     hasil = await simpanPesanan({
       kamarId: km.id, masuk: teks(fd, 'masuk', 10), keluar: teks(fd, 'keluar', 10), jumlahKamar: bulat(fd, 'jumlahKamar') || 1,
-      dewasa: bulat(fd, 'dewasa') || 1, anak: Math.max(0, bulat(fd, 'anak')), layanan: fd.getAll('layanan').map(Number),
+      dewasa: bulat(fd, 'dewasa') || 1, anak: Math.max(0, bulat(fd, 'anak')), layanan: fd.getAll('layanan').map(Number), pulangPergi: fd.get('arah') !== 'sekali',
       nama: teks(fd, 'nama', 120), email, telepon: teks(fd, 'telepon', 40), negara: teks(fd, 'negara', 80), kedatangan: teks(fd, 'kedatangan', 200),
       catatan: teks(fd, 'catatan'), bahasa: fd.get('bahasa') === 'en' ? 'en' : 'id', sumber: 'admin', status, catatanAdmin: teks(fd, 'catatan_admin'),
     }, km, layanan, situs);
@@ -564,4 +573,23 @@ export async function tampilMidtrans(fd: FormData) {
   await aturTampilMidtrans(tampil);
   segarkan();
   redirect(`/admin/pembayaran?ok=${tampil ? 'tampil' : 'sembunyi'}`);
+}
+
+// Google Search Console, the HTML tag method (lib/seo.ts), from the guide page.
+// Only this field of the site settings changes. The whole <meta> tag or the
+// code alone is taken, and an empty field takes the tag off the site.
+export async function simpanVerifikasiGoogle(fd: FormData) {
+  await wajibMasuk();
+  const mentah = teks(fd, 'kode', 400);
+  const kode = kodeVerifikasiGoogle(mentah);
+  if (mentah && !kode) redirect('/admin/google?galat=bentuk');
+  const r = await satu<{ nilai: string }>("SELECT nilai FROM pengaturan WHERE kunci = 'situs'");
+  const baru = gabungSitus(r ? JSON.parse(r.nilai) : {}) as Record<string, unknown>;
+  baru.googleVerifikasi = kode;
+  await jalankan(
+    "INSERT INTO pengaturan (kunci, nilai) VALUES ('situs', ?) ON DUPLICATE KEY UPDATE nilai = VALUES(nilai)",
+    [JSON.stringify(baru)],
+  );
+  segarkan();
+  redirect(`/admin/google?ok=${kode ? 'kode' : 'hapus'}`);
 }

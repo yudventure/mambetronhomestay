@@ -40,7 +40,7 @@ export const PENGATURAN = [
       },
       {
         k: 'googleVerifikasi', label: 'Kode verifikasi Google Search Console', jenis: 'teks', bawaan: '',
-        bantuan: 'Di Search Console pilih properti Awalan URL dengan alamat situs ini, lalu metode Tag HTML. Tempel tag meta itu utuh atau isinya saja, simpan, lalu tekan Verifikasi di Search Console. Tidak perlu diisi bila situs diverifikasi lewat DNS. Peta situs untuk Search Console ada di alamat situs ditambah /sitemap.xml.',
+        bantuan: 'Di Search Console pilih properti Awalan URL dengan alamat situs ini, lalu metode Tag HTML. Tempel tag meta itu utuh atau isinya saja, simpan, lalu tekan Verifikasi di Search Console. Tidak perlu diisi bila situs diverifikasi lewat DNS. Panduan lengkapnya ada di menu Situs web, Google Search Console.',
       },
       { k: 'kakiTeks', label: 'Teks di kaki halaman', jenis: 'duaPanjang', bawaan: dua('Homestay keluarga di Raja Ampat. Dikelola dengan sepenuh hati, untuk laut yang tetap biru.', 'A family homestay in Raja Ampat. Run with heart, for a sea that stays blue.') },
       { k: 'pengelolaTeks', label: 'Tulisan pengelola', jenis: 'dua', bawaan: dua('Dikelola oleh', 'Managed by'), bantuan: 'Tampil di baris paling bawah kaki halaman, di bawah kartu pilih tanggal, tombol kirim pesanan, dan bagian bayar halaman pesanan, serta di kaki surel, diikuti alamat situs pengelola.' },

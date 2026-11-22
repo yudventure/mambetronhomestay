@@ -15,6 +15,7 @@ import { alamatPengunjung, bolehMencoba, buatSesi, catatGagal, hapusSesi, lupaka
 import { daftarMalam, sahTanggal, selisihHari } from '@/lib/tanggal';
 import { GalatSinkron, buatToken, rapikanUrl, sinkronSatu, sinkronSemua, type Sambungan } from '@/lib/sinkron';
 import { GalatDampier, apiDariTautan, aturLembarDampier, kabariDampier, putuskanDampier, rapikanAlamatDampier, simpanAlamatDampier, ujiAlamatDampier } from '@/lib/dampier';
+import { kodeVerifikasiGoogle } from '@/lib/seo';
 import { GalatMidtrans, aturTampilMidtrans, bentukClient, bentukServer, hapusKunciMidtrans, simpanKunciMidtrans, ujiKunciMidtrans } from '@/lib/midtrans';
 
 // line breaks from a textarea arrive as CRLF, kept as plain LF
@@ -572,4 +573,23 @@ export async function tampilMidtrans(fd: FormData) {
   await aturTampilMidtrans(tampil);
   segarkan();
   redirect(`/admin/pembayaran?ok=${tampil ? 'tampil' : 'sembunyi'}`);
+}
+
+// Google Search Console, the HTML tag method (lib/seo.ts), from the guide page.
+// Only this field of the site settings changes. The whole <meta> tag or the
+// code alone is taken, and an empty field takes the tag off the site.
+export async function simpanVerifikasiGoogle(fd: FormData) {
+  await wajibMasuk();
+  const mentah = teks(fd, 'kode', 400);
+  const kode = kodeVerifikasiGoogle(mentah);
+  if (mentah && !kode) redirect('/admin/google?galat=bentuk');
+  const r = await satu<{ nilai: string }>("SELECT nilai FROM pengaturan WHERE kunci = 'situs'");
+  const baru = gabungSitus(r ? JSON.parse(r.nilai) : {}) as Record<string, unknown>;
+  baru.googleVerifikasi = kode;
+  await jalankan(
+    "INSERT INTO pengaturan (kunci, nilai) VALUES ('situs', ?) ON DUPLICATE KEY UPDATE nilai = VALUES(nilai)",
+    [JSON.stringify(baru)],
+  );
+  segarkan();
+  redirect(`/admin/google?ok=${kode ? 'kode' : 'hapus'}`);
 }

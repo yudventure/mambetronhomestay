@@ -48,8 +48,9 @@ kartu **HARI INI** `bg-panel-lembut` berisi satu kalimat utuh, misalnya
 "2 tamu tiba dan 1 pulang hari ini. 1 pesanan menunggu konfirmasi uang
 muka."
 
-Menu Mambetron. Ringkasan, Pesanan, Kalender, Sinkron OTA, Bungalow, Kegiatan, Ulasan,
-Situs web (Isi situs, Foto situs), Akun & kata sandi. Homestay lain
+Menu Mambetron. Ringkasan, Pesanan, Pembayaran, Kalender, Channel manager, Bungalow,
+Kegiatan, Ulasan, Situs web (Isi situs, Foto situs, Google Search Console), Akun & kata
+sandi. Homestay lain
 mengganti isi `menu()` sesuai halaman yang ia punya.
 
 **Lembar ponsel.** Di bawah `lg` menu samping menjadi lembar dari bawah
@@ -199,7 +200,19 @@ dari OTA, dan bentrok masuk kotak Perlu perhatian.
 ## 8. Halaman lain
 
 Halaman Pondok, Kegiatan, Ulasan, Isi situs, Foto situs, detail pesanan,
-pesanan manual, dan ganti sandi tidak perlu ditulis ulang. Mereka memakai
+pesanan manual, dan ganti sandi tidak perlu ditulis ulang.
+
+**Google Search Console** (`/admin/google`, permintaan pemilik November
+2026, "bisa buatkan panduan setting google search consolenya di admin")
+mengikuti pola halaman Pembayaran. Kiri kartu Keadaan sekarang (baris
+`bg-embun` dengan lencana hijau, pasir, atau abu-abu) dan Langkah memasang
+bernomor tanpa ikon. Kanan isian Kode verifikasi, Yang sudah disiapkan situs
+(butir bercentang tanpa nomor), dan catatan bahasa. Alamat yang perlu
+ditempel di Search Console tampil utuh (`break-all`) dengan tombol Salin,
+selebar penuh di ponsel. Kisi memakai `grid-cols-1` dan `min-w-0` supaya
+alamat panjang tidak membuat halaman meluber. Rekaman TXT dibaca server
+lewat `node:dns/promises` dengan batas 3 detik, dan alamat lokal tidak
+diperiksa. Mereka memakai
 `JudulAdmin`, `.kartu`, `.tombol`, `.isian`, dan nama warna situs (`laut`,
 `buih`, `biru-tua`). Di dalam `.panel` nama-nama itu diarahkan ke token
 panel oleh `panel.css`, jadi mereka ikut tema tanpa disentuh.

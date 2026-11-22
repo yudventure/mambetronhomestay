@@ -51,6 +51,8 @@ function keKamar(r: BarisKamar, foto: Foto[]): Kamar {
     fasilitas_en: baris2(r.fasilitas_en),
     harga_anak: r.harga_anak == null ? null : Number(r.harga_anak),
     skema_harga: r.skema_harga === 'kamar' ? 'kamar' : 'orang',
+    harga_sendiri: Number(r.harga_sendiri) || 0,
+    harga_tambah: Number(r.harga_tambah) || 0,
     aktif: Boolean(r.aktif),
     foto,
   };
@@ -62,6 +64,8 @@ function kamarBawaan(): Kamar[] {
     id: i + 1,
     harga_anak: k.harga_anak ?? null,
     skema_harga: k.skema_harga === 'kamar' ? 'kamar' : 'orang',
+    harga_sendiri: k.harga_sendiri ?? 0,
+    harga_tambah: k.harga_tambah ?? 0,
     aktif: true,
     foto: [],
   }));
@@ -117,7 +121,7 @@ export const daftarLayanan = cache(async (semua = false): Promise<Layanan[]> => 
   if (!dbDiatur()) return LAYANAN_AWAL.map((l, i) => ({ ...l, id: i + 1, aktif: true } as Layanan));
   try {
     const r = await baris<BarisLayanan>(`SELECT * FROM layanan ${semua ? '' : 'WHERE aktif = 1'} ORDER BY urutan, id`);
-    return r.map((l) => ({ ...l, aktif: Boolean(l.aktif) }));
+    return r.map((l) => ({ ...l, muat: Number(l.muat) || 0, mulai: Boolean(l.mulai), aktif: Boolean(l.aktif) }));
   } catch (e) {
     catat(e, 'layanan');
     return [];
@@ -242,6 +246,9 @@ export function kePesanan(r: BarisPesanan): Pesanan {
     rincian,
     paket: bacaPaket(r.paket),
     bayar_online: bacaBayarOnline(r.bayar_online),
+    persen_sendiri: Number(r.persen_sendiri) || 0,
+    harga_sendiri: Number(r.harga_sendiri) || 0,
+    harga_tambah: Number(r.harga_tambah) || 0,
     catatan: r.catatan ?? '',
     catatan_admin: r.catatan_admin ?? '',
     bahasa: r.bahasa === 'en' ? 'en' : 'id',

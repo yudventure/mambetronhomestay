@@ -97,6 +97,8 @@ Permintaan pemilik, November 2026: "okee sekarang siapkan googlesearch consoleny
 - Beranda membawa data penginapan (schema.org LodgingBusiness) dari isian panel, yaitu nama, deskripsi Google, foto, WhatsApp, surel, lokasi, alamat, titik peta, jam check-in dan check-out, rentang harga per bungalow, jumlah bungalow, fasilitas, dan media sosial.
 - Isian Kode verifikasi Google Search Console di Isi situs, bagian Identitas. Tag meta itu tampil di semua halaman, juga di halaman tutup Mode pengembang, jadi situs bisa diverifikasi sebelum dibuka.
 
+Panduannya juga ada di panel, menu Situs web, Google Search Console (`app/admin/(panel)/google/page.tsx`, permintaan pemilik, November 2026, "bisa buatkan panduan setting google search consolenya di admin"). Halaman itu menunjukkan keadaan sekarang (Mode pengembang, SITE_URL, rekaman TXT Google di DNS domain, tag verifikasi, peta situs), tujuh langkah bernomor dengan setiap alamat yang perlu ditempel di samping tombol Salin, dan isian kode verifikasi yang hanya mengubah kode itu tanpa menyentuh isian Identitas lain. Rekaman TXT dibaca server lewat DNS dengan batas 3 detik, dan tidak diperiksa saat panel dibuka dari alamat lokal.
+
 Langkah pemilik di Search Console (search.google.com/search-console).
 1. Tambahkan properti. Pilihan yang disarankan Domain, `mambetronhomestay.com`, yang mencakup www dan http. Salin data TXT dari Google ke hPanel, Domain, DNS, tambah rekaman TXT dengan nama `@`, lalu tekan Verifikasi (bisa butuh beberapa jam). Pilihan lain Awalan URL, `https://mambetronhomestay.com`, metode Tag HTML, tempel tagnya di isian panel tadi, simpan, lalu tekan Verifikasi.
 2. Di menu Sitemap, kirim `sitemap.xml`.
