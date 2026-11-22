@@ -2,8 +2,9 @@ import Ikon from './Ikon';
 import type { Bahasa, Kamar } from '@/lib/jenis';
 import { kamus } from '@/lib/kamus';
 
-// What a stay includes, on the home page between the gallery and the date
-// card (the owner's request, November 2026). The list comes from the
+// What a stay includes, at the bottom of the home page's date card, under
+// the calendar and the price (the owner's request, November 2026, "masih
+// masuk di seksi kalender bukan terpisah"). The list comes from the
 // bungalows' facilities in the panel (Bungalow, Fasilitas), each shown once.
 // The icon follows the words, a tick when none fits.
 function ikonUntuk(teks: string) {
@@ -36,11 +37,11 @@ export default function FasilitasBeranda({ b, fasilitas }: { b: Bahasa; fasilita
   if (!fasilitas.length) return null;
   const k = kamus(b);
   return (
-    <section aria-label={k.fasilitas} data-fasilitas-beranda={fasilitas.length}>
-      <p className="label-kecil">{k.fasilitas}</p>
-      <ul className="mt-3 grid gap-3 sm:grid-cols-2 lg:grid-cols-12">
+    <section aria-label={k.fasilitas} className="rounded-2xl bg-embun px-4 py-4 sm:px-5" data-fasilitas-beranda={fasilitas.length}>
+      <p className="text-sm text-abu">{k.fasilitas}</p>
+      <ul className="mt-3 grid gap-x-5 gap-y-3 sm:grid-cols-2 lg:grid-cols-12">
         {fasilitas.map((f, i) => (
-          <li key={f} className={`flex items-center gap-3 rounded-2xl bg-embun px-4 py-3.5 ${tempat(fasilitas.length, i)}`}>
+          <li key={f} className={`flex items-center gap-3 ${tempat(fasilitas.length, i)}`}>
             <span aria-hidden className="inline-flex size-10 shrink-0 items-center justify-center rounded-full bg-white text-biru-tua shadow-tipis">
               <Ikon nama={ikonUntuk(f)} className="size-5" />
             </span>

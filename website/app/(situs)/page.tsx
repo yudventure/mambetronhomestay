@@ -7,7 +7,7 @@ import Wajah from '@/components/Wajah';
 import VideoTentang from '@/components/VideoTentang';
 import KartuKegiatan from '@/components/KartuKegiatan';
 import GaleriBeranda from '@/components/GaleriBeranda';
-import FasilitasBeranda, { fasilitasSemua } from '@/components/FasilitasBeranda';
+import { fasilitasSemua } from '@/components/FasilitasBeranda';
 import Pahlawan from '@/components/Pahlawan';
 import PetaRute from '@/components/PetaRute';
 import { koordinat } from '@/components/Peta';
@@ -166,12 +166,6 @@ export default async function Beranda() {
             <GaleriBeranda b={b} foto={galeri} judul={dwi(s.galeriJudul, b)} />
           </div>
         )}
-        {/* what a stay includes, between the gallery and the date card (the owner, November 2026) */}
-        {kamar.length > 0 && fasilitasSemua(kamar, b).length > 0 && (
-          <div className="mx-auto mt-8 max-w-6xl px-4 sm:px-6 md:mt-10" data-muncul>
-            <FasilitasBeranda b={b} fasilitas={fasilitasSemua(kamar, b)} />
-          </div>
-        )}
         {/* stay planner with the calendar open, under the about text and photo */}
         <div className="mx-auto mt-12 max-w-6xl px-4 sm:px-6 md:mt-16" data-muncul>
           <CariCepat b={b} awal={awal} akhir={akhir} checkIn={s.checkIn} checkOut={s.checkOut} sisa={sisa} unit={Math.max(1, unit)}
@@ -179,6 +173,7 @@ export default async function Beranda() {
             maksTamu={kamar.length ? Math.min(20, kamar.reduce((n, x) => n + x.kapasitas * x.jumlah_unit, 0)) : 6}
             pengelola={dataPengelola(s, b)} usiaGratis={s.usiaGratis} anakPerPondok={s.anakPerPondok}
             harga={kamar.length === 1 ? { kamar: kamar[0], persenPaket: daftarPaket(s)[0]?.persen ?? 0, kurs } : null} perahu={layanan.filter((l) => l.satuan === 'perahu')}
+            fasilitas={fasilitasSemua(kamar, b)}
             wa={{ tautan: tautanWa(s.whatsapp), pesan: dwi(s.pesanCekWa, b), bungalow: kamar.length === 1 ? pilih(b, kamar[0].nama, kamar[0].nama_en) : k.bungalowUmum }} />
         </div>
       </section>

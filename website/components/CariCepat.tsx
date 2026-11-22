@@ -6,6 +6,7 @@
 // required, and the choice is remembered in this browser for the next pages.
 import { useCallback, useEffect, useState, type FormEvent, type MouseEvent } from 'react';
 import Ikon from './Ikon';
+import FasilitasBeranda from './FasilitasBeranda';
 import Kalender from './Kalender';
 import KotakTanggal from './KotakTanggal';
 import Pengelola from './Pengelola';
@@ -52,12 +53,15 @@ type Props = {
   // here with the stay: the owner's request, November 2026, "masukan dalam
   // add on pesanan kamar untuk boat transfernya"
   perahu?: Pick<Layanan, 'id' | 'nama' | 'nama_en' | 'harga' | 'satuan' | 'muat'>[];
+  // what a stay includes, a row across the bottom of the card (home page only,
+  // the bungalow page lists it beside the description)
+  fasilitas?: string[];
 };
 type Rentang = { masuk: string; keluar: string };
 
 const KOSONG: Rentang = { masuk: '', keluar: '' };
 
-export default function CariCepat({ b, awal, akhir, checkIn, checkOut, sisa, unit, kapasitas, minMalam, maksTamu, kamar, judul, tombol, pengelola, wa, usiaGratis, anakPerPondok, harga, perahu = [] }: Props) {
+export default function CariCepat({ b, awal, akhir, checkIn, checkOut, sisa, unit, kapasitas, minMalam, maksTamu, kamar, judul, tombol, pengelola, wa, usiaGratis, anakPerPondok, harga, perahu = [], fasilitas = [] }: Props) {
   const k = kamus(b);
   const t = k.rencanaTanggal;
   const [{ masuk, keluar }, setRentang] = useState<Rentang>(KOSONG);
@@ -353,6 +357,13 @@ export default function CariCepat({ b, awal, akhir, checkIn, checkOut, sisa, uni
           <Pengelola p={pengelola} className="text-xs sm:col-span-2 xl:col-span-1" />
         </div>
       </div>
+
+      {/* under the calendar and the price, across the card, last on phones */}
+      {fasilitas.length > 0 && (
+        <div className="order-5 xl:order-none xl:col-span-2">
+          <FasilitasBeranda b={b} fasilitas={fasilitas} />
+        </div>
+      )}
     </form>
   );
 }
