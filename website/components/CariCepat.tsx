@@ -53,8 +53,8 @@ type Props = {
   // here with the stay: the owner's request, November 2026, "masukan dalam
   // add on pesanan kamar untuk boat transfernya"
   perahu?: Pick<Layanan, 'id' | 'nama' | 'nama_en' | 'harga' | 'satuan' | 'muat'>[];
-  // what a stay includes, a row across the bottom of the card (home page only,
-  // the bungalow page lists it beside the description)
+  // what a stay includes, above the boat transfer (home page only, the
+  // bungalow page lists it beside the description)
   fasilitas?: string[];
 };
 type Rentang = { masuk: string; keluar: string };
@@ -267,6 +267,12 @@ export default function CariCepat({ b, awal, akhir, checkIn, checkOut, sisa, uni
               })}
             </fieldset>
           )}
+          {/* what a stay includes, just above the boat transfer */}
+          {fasilitas.length > 0 && (
+            <div className="order-3 xl:order-none">
+              <FasilitasBeranda b={b} fasilitas={fasilitas} />
+            </div>
+          )}
           {perahuHarga.length > 0 && (
             <fieldset className="order-3 grid gap-2 rounded-2xl bg-embun p-3 sm:grid-cols-3 xl:order-none" data-pilih-perahu>
               <legend className="float-left mb-1 w-full text-sm text-abu sm:col-span-3">{t.perahuJudul}</legend>
@@ -298,7 +304,8 @@ export default function CariCepat({ b, awal, akhir, checkIn, checkOut, sisa, uni
           )}
       </div>
 
-      <div className="contents xl:flex xl:flex-col xl:gap-6">
+      {/* the price column stays in view beside the longer calendar column */}
+      <div className="contents xl:sticky xl:top-28 xl:flex xl:flex-col xl:gap-6 xl:self-start">
         <div className="order-1 flex items-center gap-3 xl:order-none">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src="/merek/ikon.svg" alt="" aria-hidden width={64} height={64} className="size-16 shrink-0 rounded-2xl bg-buih object-contain p-1" />
@@ -358,12 +365,6 @@ export default function CariCepat({ b, awal, akhir, checkIn, checkOut, sisa, uni
         </div>
       </div>
 
-      {/* under the calendar and the price, across the card, last on phones */}
-      {fasilitas.length > 0 && (
-        <div className="order-5 xl:order-none xl:col-span-2">
-          <FasilitasBeranda b={b} fasilitas={fasilitas} />
-        </div>
-      )}
     </form>
   );
 }
