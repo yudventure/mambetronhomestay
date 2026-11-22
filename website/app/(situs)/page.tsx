@@ -7,6 +7,7 @@ import Wajah from '@/components/Wajah';
 import VideoTentang from '@/components/VideoTentang';
 import KartuKegiatan from '@/components/KartuKegiatan';
 import GaleriBeranda from '@/components/GaleriBeranda';
+import FasilitasBeranda, { fasilitasSemua } from '@/components/FasilitasBeranda';
 import Pahlawan from '@/components/Pahlawan';
 import PetaRute from '@/components/PetaRute';
 import { koordinat } from '@/components/Peta';
@@ -163,6 +164,12 @@ export default async function Beranda() {
         {galeri.length > 0 && (
           <div className="mx-auto mt-8 max-w-6xl px-4 sm:px-6 md:mt-10">
             <GaleriBeranda b={b} foto={galeri} judul={dwi(s.galeriJudul, b)} />
+          </div>
+        )}
+        {/* what a stay includes, between the gallery and the date card (the owner, November 2026) */}
+        {kamar.length > 0 && fasilitasSemua(kamar, b).length > 0 && (
+          <div className="mx-auto mt-8 max-w-6xl px-4 sm:px-6 md:mt-10" data-muncul>
+            <FasilitasBeranda b={b} fasilitas={fasilitasSemua(kamar, b)} />
           </div>
         )}
         {/* stay planner with the calendar open, under the about text and photo */}
