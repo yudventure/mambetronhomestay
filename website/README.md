@@ -88,6 +88,10 @@ Variabel database juga terbaca dengan nama lain yang sering dipakai, yaitu `DB_D
 
 Berkas `.env` berisi kata sandi tidak boleh masuk GitHub. Berkas itu sudah ada di `.gitignore`.
 
+### Keamanan dependensi
+
+Pemindai hPanel (Hosting Security, Vulnerabilities) membaca paket yang terpasang di server. Laporan 22 November 2026 berisi 21 temuan di next 16.2.12, sharp 0.34.5, postcss 8.4.31, dan nodemailer 10.1.0. Semuanya ditambal dengan next 16.4.6 (rilis 16.x terbaru, tidak ada tambalan untuk jalur 16.2), nodemailer 10.6.1, dan `overrides` di `package.json` yang menjaga postcss minimal 8.5.23 dan sharp minimal 0.35.5, supaya keduanya tidak bisa turun ke versi rentan lewat paket lain. `npm audit` harus bersih sebelum dikirim, lalu Redeploy di hPanel supaya server memasang ulang paketnya dari `package-lock.json`. Pengoptimal gambar Next tetap aktif walau situs memakai `<img>` biasa, dan hanya menyajikan WebP atau gambar aslinya (AVIF tidak dinyalakan).
+
 ## Mencoba di komputer sendiri
 
 Butuh Node.js 20.9 atau lebih baru dan MySQL atau MariaDB.
