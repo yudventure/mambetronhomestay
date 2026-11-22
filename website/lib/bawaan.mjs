@@ -38,6 +38,10 @@ export const PENGATURAN = [
           'Homestay keluarga di Raja Ampat. Bungalow kayu di tepi laut, makan tiga kali sehari, jemputan dari Waisai, dan karang di depan dermaga. Pesan langsung dari situs resmi.',
           'A family homestay in Raja Ampat. Wooden bungalows by the sea, three meals a day, pickup from Waisai and a reef right off the jetty. Book direct on the official site.'),
       },
+      {
+        k: 'googleVerifikasi', label: 'Kode verifikasi Google Search Console', jenis: 'teks', bawaan: '',
+        bantuan: 'Di Search Console pilih properti Awalan URL dengan alamat situs ini, lalu metode Tag HTML. Tempel tag meta itu utuh atau isinya saja, simpan, lalu tekan Verifikasi di Search Console. Tidak perlu diisi bila situs diverifikasi lewat DNS. Peta situs untuk Search Console ada di alamat situs ditambah /sitemap.xml.',
+      },
       { k: 'kakiTeks', label: 'Teks di kaki halaman', jenis: 'duaPanjang', bawaan: dua('Homestay keluarga di Raja Ampat. Dikelola dengan sepenuh hati, untuk laut yang tetap biru.', 'A family homestay in Raja Ampat. Run with heart, for a sea that stays blue.') },
       { k: 'pengelolaTeks', label: 'Tulisan pengelola', jenis: 'dua', bawaan: dua('Dikelola oleh', 'Managed by'), bantuan: 'Tampil di baris paling bawah kaki halaman, di bawah kartu pilih tanggal, tombol kirim pesanan, dan bagian bayar halaman pesanan, serta di kaki surel, diikuti alamat situs pengelola.' },
       { k: 'pengelola', label: 'Situs pengelola', jenis: 'teks', bawaan: 'thedampier.com', bantuan: 'Alamat situs yang tampil dan bisa diketuk, misalnya thedampier.com. Kosongkan bila baris pengelola tidak ingin ditampilkan di mana pun.' },

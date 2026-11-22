@@ -5,7 +5,7 @@ import { ambilSitus } from '@/lib/data';
 import { kamus } from '@/lib/kamus';
 
 export async function generateMetadata(): Promise<Metadata> {
-  return { title: kamus(await bahasaAktif()).kaki.syarat };
+  return { title: kamus(await bahasaAktif()).kaki.syarat, alternates: { canonical: '/syarat-ketentuan' } };
 }
 
 export default async function Halaman() {

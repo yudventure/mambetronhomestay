@@ -142,6 +142,8 @@ export type Situs = {
   lokasi: Dua;
   seoJudul: Dua;
   seoDeskripsi: Dua;
+  // Search Console HTML tag method (lib/seo.ts)
+  googleVerifikasi: string;
   kakiTeks: Dua;
   pengelolaTeks: Dua;
   pengelola: string;

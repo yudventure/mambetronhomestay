@@ -88,6 +88,21 @@ Variabel database juga terbaca dengan nama lain yang sering dipakai, yaitu `DB_D
 
 Berkas `.env` berisi kata sandi tidak boleh masuk GitHub. Berkas itu sudah ada di `.gitignore`.
 
+### Google Search Console
+
+Permintaan pemilik, November 2026: "okee sekarang siapkan googlesearch consolenya". Yang sudah disiapkan situs (`lib/seo.ts`):
+- `/sitemap.xml` berisi beranda, halaman bungalow, Ketentuan menginap, Syarat dan ketentuan, dan Kebijakan privasi. Daftar bungalow ikut begitu bungalownya lebih dari satu.
+- `/robots.txt` membolehkan semua halaman dan menunjuk sitemap. Panel, halaman pesanan tamu, dan formulir pesan tidak diblokir di sana, tapi memakai noindex, supaya Google benar-benar membaca larangannya.
+- Tiap halaman punya alamat canonical tanpa tanggal dan jumlah tamu di alamatnya. Bahasanya dari kuki, jadi Google membaca versi bahasa Inggris.
+- Beranda membawa data penginapan (schema.org LodgingBusiness) dari isian panel, yaitu nama, deskripsi Google, foto, WhatsApp, surel, lokasi, alamat, titik peta, jam check-in dan check-out, rentang harga per bungalow, jumlah bungalow, fasilitas, dan media sosial.
+- Isian Kode verifikasi Google Search Console di Isi situs, bagian Identitas. Tag meta itu tampil di semua halaman, juga di halaman tutup Mode pengembang, jadi situs bisa diverifikasi sebelum dibuka.
+
+Langkah pemilik di Search Console (search.google.com/search-console).
+1. Tambahkan properti. Pilihan yang disarankan Domain, `mambetronhomestay.com`, yang mencakup www dan http. Salin data TXT dari Google ke hPanel, Domain, DNS, tambah rekaman TXT dengan nama `@`, lalu tekan Verifikasi (bisa butuh beberapa jam). Pilihan lain Awalan URL, `https://mambetronhomestay.com`, metode Tag HTML, tempel tagnya di isian panel tadi, simpan, lalu tekan Verifikasi.
+2. Di menu Sitemap, kirim `sitemap.xml`.
+3. Selama Mode pengembang menyala, semua halaman bertanda noindex dan tidak akan masuk Google. Setelah dimatikan, buka Inspeksi URL untuk beranda dan halaman bungalow, lalu tekan Minta pengindeksan.
+4. Isi `SITE_URL` di hPanel dengan `https://mambetronhomestay.com`, supaya alamat di sitemap dan canonical selalu alamat utama.
+
 ### Keamanan dependensi
 
 Pemindai hPanel (Hosting Security, Vulnerabilities) membaca paket yang terpasang di server. Laporan 22 November 2026 berisi 21 temuan di next 16.2.12, sharp 0.34.5, postcss 8.4.31, dan nodemailer 10.1.0. Semuanya ditambal dengan next 16.4.6 (rilis 16.x terbaru, tidak ada tambalan untuk jalur 16.2), nodemailer 10.6.1, dan `overrides` di `package.json` yang menjaga postcss minimal 8.5.23 dan sharp minimal 0.35.5, supaya keduanya tidak bisa turun ke versi rentan lewat paket lain. `npm audit` harus bersih sebelum dikirim, lalu Redeploy di hPanel supaya server memasang ulang paketnya dari `package-lock.json`. Pengoptimal gambar Next tetap aktif walau situs memakai `<img>` biasa, dan hanya menyajikan WebP atau gambar aslinya (AVIF tidak dinyalakan).

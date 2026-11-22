@@ -2,7 +2,8 @@ import type { Metadata, Viewport } from 'next';
 import localFont from 'next/font/local';
 import { bahasaAktif } from '@/lib/bahasa';
 import { ambilSitus } from '@/lib/data';
-import { alamatSitus } from '@/lib/env';
+import { asalHalaman } from '@/lib/asal';
+import { kodeVerifikasiGoogle } from '@/lib/seo';
 import './globals.css';
 
 // Londrina Solid for headings, it shares the tall, heavy, hand cut letters
@@ -29,9 +30,13 @@ export async function generateMetadata(): Promise<Metadata> {
   const [s, b] = await Promise.all([ambilSitus(), bahasaAktif()]);
   const judul = s.seoJudul[b] || s.nama;
   const deskripsi = s.seoDeskripsi[b];
-  const dasar = alamatSitus();
+  // SITE_URL, or the address the visitor came in on, for canonical and image addresses
+  const dasar = await asalHalaman();
+  const google = kodeVerifikasiGoogle(s.googleVerifikasi);
   return {
     ...(dasar ? { metadataBase: new URL(dasar) } : {}),
+    // Search Console, also on the closed page so the site can be verified before it opens
+    ...(google ? { verification: { google } } : {}),
     title: { default: judul, template: `%s | ${s.nama}` },
     description: deskripsi,
     applicationName: s.nama,

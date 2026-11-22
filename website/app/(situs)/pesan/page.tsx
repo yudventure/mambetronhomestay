@@ -15,7 +15,8 @@ import { kursAktif } from '@/lib/uang-server';
 import { daftarMalam, hariIni, sahTanggal, selisihHari, tambahHari } from '@/lib/tanggal';
 
 export async function generateMetadata(): Promise<Metadata> {
-  return { title: kamus(await bahasaAktif()).form.judul };
+  // reached from the date card with the stay in the address, not a page to land on from Google
+  return { title: kamus(await bahasaAktif()).form.judul, robots: { index: false, follow: true } };
 }
 
 const angka = (v: unknown, min: number, maks: number, cadangan: number) => {

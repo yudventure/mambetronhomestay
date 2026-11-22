@@ -10,7 +10,7 @@ import { KISI, rentang } from '@/lib/kisi';
 import { kursAktif } from '@/lib/uang-server';
 
 export async function generateMetadata(): Promise<Metadata> {
-  return { title: kamus(await bahasaAktif()).semuaPondok };
+  return { title: kamus(await bahasaAktif()).semuaPondok, alternates: { canonical: '/kamar' } };
 }
 
 export default async function DaftarPondok() {

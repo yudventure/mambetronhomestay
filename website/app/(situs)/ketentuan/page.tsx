@@ -7,7 +7,7 @@ import { dwi, paragraf } from '@/lib/format';
 import { daftarPaket } from '@/lib/paket';
 
 export async function generateMetadata(): Promise<Metadata> {
-  return { title: kamus(await bahasaAktif()).kaki.ketentuan };
+  return { title: kamus(await bahasaAktif()).kaki.ketentuan, alternates: { canonical: '/ketentuan' } };
 }
 
 export default async function Ketentuan() {

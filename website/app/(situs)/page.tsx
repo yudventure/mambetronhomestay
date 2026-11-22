@@ -1,3 +1,4 @@
+import type { Metadata } from 'next';
 import Link from 'next/link';
 import Bagian, { JudulBagian } from '@/components/Bagian';
 import CariCepat from '@/components/CariCepat';
@@ -8,6 +9,8 @@ import VideoTentang from '@/components/VideoTentang';
 import KartuKegiatan from '@/components/KartuKegiatan';
 import GaleriBeranda from '@/components/GaleriBeranda';
 import { fasilitasSemua } from '@/components/FasilitasBeranda';
+import { asalHalaman } from '@/lib/asal';
+import { dataPenginapan, jsonSkrip } from '@/lib/seo';
 import Pahlawan from '@/components/Pahlawan';
 import PetaRute from '@/components/PetaRute';
 import { koordinat } from '@/components/Peta';
@@ -23,6 +26,9 @@ import { siapkanVideo } from '@/lib/video-server';
 
 const JUDUL = 'text-[clamp(2.1rem,1.5rem+2.4vw,3.25rem)]';
 const WARNA_INISIAL = ['bg-biru-tua', 'bg-laut', 'bg-aksen', 'bg-laut-2'];
+
+// one address per page for Google, the language comes from a cookie and never from the address
+export const metadata: Metadata = { alternates: { canonical: '/' } };
 
 export default async function Beranda() {
   const [b, s, layanan, ulasan, foto, kurs, kamar, aktif] = await Promise.all([
@@ -70,8 +76,12 @@ export default async function Beranda() {
   const sumber = s.ulasanSumber.trim();
   const tautanUlasan = tautanLuar(s.ulasanTautan);
 
+  // the lodging for Google (lib/seo.ts), from the same panel fields as the page
+  const penginapan = dataPenginapan({ situs: s, b, dasar: await asalHalaman(), kamar, foto: [...foto.beranda, ...galeri].slice(0, 5), fasilitas: fasilitasSemua(kamar, b), titik });
+
   return (
     <>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonSkrip(penginapan) }} />
       <Pahlawan b={b} s={s} foto={foto.beranda[0]} fotoHp={foto.berandaHp[0]} />
 
       {kartuUnggulan.length > 0 && (

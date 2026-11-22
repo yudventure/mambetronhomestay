@@ -27,6 +27,8 @@ export async function generateMetadata({ params }: P): Promise<Metadata> {
   return {
     title: pilih(b, km.nama, km.nama_en),
     description: pilih(b, km.ringkas, km.ringkas_en),
+    // the dates and guests in the address are the same page for Google
+    alternates: { canonical: `/kamar/${km.slug}` },
     ...(km.foto[0] ? { openGraph: { images: [{ url: km.foto[0].url }] } } : {}),
   };
 }
