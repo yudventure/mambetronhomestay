@@ -4,7 +4,8 @@ import { kamus } from '@/lib/kamus';
 
 // What a stay includes, at the bottom of the home page's date card, under
 // the calendar and the price (the owner's request, November 2026, "masih
-// masuk di seksi kalender bukan terpisah"). The list comes from the
+// masuk di seksi kalender bukan terpisah"), without a heading of its own
+// ("hapus tulisan what you get"), named only for screen readers. The list comes from the
 // bungalows' facilities in the panel (Bungalow, Fasilitas), each shown once.
 // The icon follows the words, a tick when none fits.
 function ikonUntuk(teks: string) {
@@ -38,8 +39,7 @@ export default function FasilitasBeranda({ b, fasilitas }: { b: Bahasa; fasilita
   const k = kamus(b);
   return (
     <section aria-label={k.fasilitas} className="rounded-2xl bg-embun px-4 py-4 sm:px-5" data-fasilitas-beranda={fasilitas.length}>
-      <p className="text-sm text-abu">{k.fasilitas}</p>
-      <ul className="mt-3 grid gap-x-5 gap-y-3 sm:grid-cols-2 lg:grid-cols-12">
+      <ul className="grid gap-x-5 gap-y-3 sm:grid-cols-2 lg:grid-cols-12">
         {fasilitas.map((f, i) => (
           <li key={f} className={`flex items-center gap-3 ${tempat(fasilitas.length, i)}`}>
             <span aria-hidden className="inline-flex size-10 shrink-0 items-center justify-center rounded-full bg-white text-biru-tua shadow-tipis">
