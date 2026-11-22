@@ -27,7 +27,8 @@ type Data = { asal: string; jalur: string; kamar: string; satu: boolean };
 type Pesan = { masuk: string; keluar: string; tamu: number; anak?: number; kamar?: string; pondok?: number; tambahan?: string; sekali?: boolean };
 
 // The booking page DAMPIER sends the guest back to, nothing else.
-const JALUR_PESANAN = /^\/(id|en|zh|ru|fr|es)\/bayar-mitra\/pesanan\/[A-Za-z0-9_-]{32,64}(\?paypal=(kembali|batal))?$/;
+// with a language in front, or none for English (DAMPIER serves its plain addresses in English)
+const JALUR_PESANAN = /^(\/(id|en|zh|ru|fr|es))?\/bayar-mitra\/pesanan\/[A-Za-z0-9_-]{32,64}(\?paypal=(kembali|batal))?$/;
 const TGL = /^\d{4}-\d{2}-\d{2}$/;
 // How long the sheet may take on a weak connection before a retry is offered.
 const LAMBAT_MS = 25_000;
@@ -63,7 +64,8 @@ export default function LembarDampier({ b, d }: { b: Bahasa; d: Data }) {
     const tambahan = (p.tambahan ?? '').trim().slice(0, 80);
     if (tambahan) q.set('tambahan', tambahan);
     if (tambahan && p.sekali) q.set('arah', 'sekali');
-    buka(`/${b}${d.jalur}${d.jalur.includes('?') ? '&' : '?'}${q}`);
+    // English is DAMPIER's plain address, without /en, as on thedampier.com
+    buka(`${b === 'en' ? '' : `/${b}`}${d.jalur}${d.jalur.includes('?') ? '&' : '?'}${q}`);
     return true;
   }, [b, d.jalur, d.kamar, d.satu, buka]);
 
