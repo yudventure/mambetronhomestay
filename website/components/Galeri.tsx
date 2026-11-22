@@ -30,7 +30,7 @@ export default function Galeri({ b, foto, cadangan, nama }: { b: Bahasa; foto: F
       )}
       {utama?.keterangan && <p className="mt-2 text-sm text-abu">{utama.keterangan}</p>}
       {foto.length > 1 && (
-        <div className="mt-3 flex gap-2 overflow-x-auto pb-1">
+        <div className="mt-3 flex gap-2 overflow-x-auto overflow-y-hidden pb-1">
           {foto.map((f, i) => (
             <button key={f.id} type="button" onClick={() => setAktif(i)} aria-label={f.keterangan || `${nama} ${i + 1}`} aria-pressed={i === aktif}
               className={`h-16 w-20 shrink-0 overflow-hidden rounded-xl transition-opacity sm:h-20 sm:w-28 ${i === aktif ? 'ring-3 ring-biru' : 'opacity-70 hover:opacity-100'}`}>
