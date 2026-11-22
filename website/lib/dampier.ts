@@ -25,6 +25,9 @@ import { alamatSitus, dbDiatur } from './env';
 import { alamatDalam, izinkanLokal } from './jaringan';
 import type { Kamar, StatusPesanan } from './jenis';
 import { daftarMalam, hariIni, tambahHari } from './tanggal';
+import { gabungSitus } from './bawaan.mjs';
+import { daftarPaket } from './paket';
+import { hargaUntukDampier, type HargaDampier } from './harga-dampier';
 
 export type KamarDampier = { nomor: number; nama: string };
 export type BentrokDampier = { id: string; mulai: string; selesai: string };
@@ -49,6 +52,9 @@ type Simpanan = {
   asal?: string;
   // false once the owner turns the sheet off on the channel manager page
   lembar?: boolean;
+  // DAMPIER took this site's price list for its sheet here (lib/harga-dampier.ts).
+  // Older DAMPIER versions do not answer it.
+  harga?: boolean;
 };
 export type StatusDampier = Omit<Simpanan, 'api'> & { host: string; akhiran: string };
 
@@ -231,7 +237,19 @@ async function daftarKiriman(kamarId: number, kamarDampier: number, hari: string
   return hasil.sort((a, b) => a.masuk.localeCompare(b.masuk)).slice(0, MAKS_KIRIM);
 }
 
-const sidikDari = (k: Kiriman[]) => crypto.createHash('sha256').update(JSON.stringify(k)).digest('hex').slice(0, 32);
+// the price list is part of what is sent, so a price changed in the panel goes at the next round
+const sidikDari = (k: Kiriman[], harga: HargaDampier | null) => crypto.createHash('sha256').update(JSON.stringify({ k, harga })).digest('hex').slice(0, 32);
+
+// The connected bungalow, the boat transfers and the first rate tier, for DAMPIER's sheet here.
+async function hargaKirim(kamarId: number): Promise<HargaDampier | null> {
+  const [k, perahu, s] = await Promise.all([
+    satu<Pick<Kamar, 'harga' | 'skema_harga' | 'harga_sendiri' | 'harga_tambah' | 'kapasitas'>>('SELECT harga, skema_harga, harga_sendiri, harga_tambah, kapasitas FROM kamar WHERE id = ?', [kamarId]),
+    baris<{ nama: string; nama_en: string; harga: number; satuan: 'perahu'; muat: number }>("SELECT nama, nama_en, harga, satuan, muat FROM layanan WHERE aktif = 1 AND satuan = 'perahu' ORDER BY urutan, id"),
+    satu<{ nilai: string }>("SELECT nilai FROM pengaturan WHERE kunci = 'situs'"),
+  ]);
+  const situs = gabungSitus(s ? JSON.parse(s.nilai) : null) as Parameters<typeof daftarPaket>[0];
+  return hargaUntukDampier(k ? { ...k, skema_harga: k.skema_harga === 'kamar' ? 'kamar' : 'orang' } : null, perahu, daftarPaket(situs)[0]?.persen ?? 0);
+}
 
 // Rooms this site sent, per night.
 function malamKita(k: Kiriman[]) {
@@ -260,10 +278,13 @@ async function satuPutaran(o: { paksa?: boolean; segera?: boolean }) {
     const asal = asalSitusIni(k);
     let baca = bacaJawaban(await panggil(k.api, undefined, asal));
     const kiriman = await daftarKiriman(km.id, baca.kamar.length, hari);
-    const sidik = sidikDari(kiriman);
+    const harga = await hargaKirim(km.id);
+    const sidik = sidikDari(kiriman, harga);
+    let hargaDiterima = k.harga;
     const kirimSemua = async () => {
-      const j = await panggil(k.api, { pesanan: kiriman, ganti: true }, asal);
+      const j = await panggil(k.api, { pesanan: kiriman, ganti: true, harga }, asal);
       kirim = { sidik, waktu: new Date().toISOString(), jumlah: kiriman.length };
+      hargaDiterima = typeof j.harga === 'boolean' ? j.harga : undefined;
       bentrok = (Array.isArray(j.bentrok) ? (j.bentrok as Record<string, unknown>[]) : [])
         .filter((b) => b && typeof b.id === 'string' && typeof b.mulai === 'string' && typeof b.selesai === 'string')
         .slice(0, 50).map((b) => ({ id: String(b.id).slice(0, 80), mulai: String(b.mulai), selesai: String(b.selesai) }));
@@ -292,6 +313,7 @@ async function satuPutaran(o: { paksa?: boolean; segera?: boolean }) {
     await tulisSimpanan({
       ...k, lembar: kini.lembar, asal: kini.asal, dicoba, berhasil: new Date().toISOString(), galat: '',
       nama: baca.nama, kamar: baca.kamar, pesananWebsite: baca.pesananWebsite, kirim, bentrok, listing: baca.listing, bayarMitra: baca.bayarMitra,
+      harga: hargaDiterima,
     });
   } catch (e) {
     const pesan = e instanceof GalatDampier ? e.message : 'Sinkron DAMPIER gagal disimpan.';

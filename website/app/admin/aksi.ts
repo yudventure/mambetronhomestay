@@ -74,6 +74,8 @@ export async function simpanPengaturan(_: { pesan: string; ok: boolean }, fd: Fo
     [JSON.stringify(baru)],
   );
   segarkan();
+  // the first rate tier is part of the price DAMPIER's sheet here charges
+  if (g.kunci === 'pemesanan') kabariDampier();
   return { pesan: 'Tersimpan. Perubahan langsung tampil di situs.', ok: true };
 }
 
@@ -132,6 +134,8 @@ export async function simpanKamar(fd: FormData) {
     tujuan = r.insertId;
   }
   segarkan();
+  // DAMPIER's sheet here charges this site's prices (lib/harga-dampier.ts)
+  kabariDampier();
   redirect(`/admin/kamar/${tujuan}?ok=1`);
 }
 
@@ -221,6 +225,7 @@ export async function simpanLayanan(fd: FormData) {
     await jalankan('INSERT INTO layanan (nama, nama_en, keterangan, keterangan_en, harga, satuan, muat, mulai, ikon, aktif, urutan) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', nilai);
   }
   segarkan();
+  kabariDampier();
   redirect('/admin/layanan?ok=1');
 }
 
@@ -228,6 +233,7 @@ export async function hapusLayanan(fd: FormData) {
   await wajibMasuk();
   await jalankan('DELETE FROM layanan WHERE id = ?', [bulat(fd, 'id')]);
   segarkan();
+  kabariDampier();
   redirect('/admin/layanan?hapus=1');
 }
 

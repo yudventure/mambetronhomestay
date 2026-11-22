@@ -230,6 +230,7 @@ Di panel, menu Channel manager, kartu Kalender mitra DAMPIER, bagian Lembar baya
 
 Isi `SITE_URL` di hPanel dengan alamat situs, `https://mambetronhomestay.com`, supaya alamat yang dikirim ke DAMPIER pasti benar.
 
+Lembar bayar memakai harga situs ini, bukan harga listing di thedampier.com (permintaan pemilik, November 2026, saat longboat yang dicentang tidak ikut di lembar bayar, keterangan perahu belum termasuk tetap tampil, "dan untuk harga juga masih ngikut yang the dampier"). Setiap sinkron, situs mengirim daftar harganya bersama pesanannya (`lib/harga-dampier.ts`). Isinya harga per orang untuk 1, 2, dan 3 tamu sebungalow dari harga bungalow, harga sendiri, dan harga orang ketiga, ditambah persen paket harga pertama seperti di kartu, serta setiap kegiatan per perahu yang aktif (Longboat Waisai, Speedboat Waisai) dengan muat per perahu, harganya sekali jalan dan bisa pulang pergi. DAMPIER menyimpannya dan memakainya hanya untuk lembar yang terbuka di situs ini, jadi perahu yang dicentang di kartu ikut tercentang dengan nama yang sama, keterangan perahu belum termasuk hilang, dan total di lembar sama dengan total di kartu. Daftar harga ikut sidik kiriman, dan menyimpan bungalow, kegiatan, atau Paket harga langsung memicu sinkron, jadi harga baru sampai ke DAMPIER beberapa detik kemudian. Kartu Kalender mitra DAMPIER di panel menulis apakah DAMPIER sudah memakai harga situs ini. DAMPIER versi lama mengabaikan daftar harga dan lembarnya tetap memakai harga listing di DAMPIER, jadi pembaruan DAMPIER harus tayang juga.
 
 ## Video tentang kami
 
