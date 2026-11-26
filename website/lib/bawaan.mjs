@@ -54,10 +54,10 @@ export const PENGATURAN = [
     isian: [
       { k: 'whatsapp', label: 'Nomor WhatsApp', jenis: 'teks', bawaan: '6281390849237', bantuan: 'Tulis dengan kode negara tanpa tanda plus, misalnya 6281234567890.' },
       {
-        k: 'pesanCekWa', label: 'Pesan WhatsApp tombol Cek ketersediaan', jenis: 'duaPanjang', bawaan: dua(
+        k: 'pesanCekWa', label: 'Pesan WhatsApp tombol Hubungi kami', jenis: 'duaPanjang', bawaan: dua(
           'Halo Mambetron Homestay, apakah {bungalow} masih tersedia untuk {tamu}, tiba {tiba} dan pulang {pulang} ({malam})? Terima kasih.',
           'Hi Mambetron Homestay, is {bungalow} available for {tamu}, arriving {tiba} and leaving {pulang} ({malam})? Thank you.'),
-        bantuan: 'Terkirim lewat WhatsApp saat tamu mengetuk Cek ketersediaan di kartu pilih tanggal. {tiba} dan {pulang} diganti tanggal yang dipilih, {malam} jumlah malamnya, {tamu} jumlah tamunya, dan {bungalow} nama bungalownya.',
+        bantuan: 'Terkirim lewat WhatsApp saat tamu mengetuk Hubungi kami di kartu pilih tanggal setelah memilih tanggal tiba dan pulang. {tiba} dan {pulang} diganti tanggal yang dipilih, {malam} jumlah malamnya, {tamu} jumlah tamunya, dan {bungalow} nama bungalownya. Sebelum tanggal dipilih, tombol itu membuka WhatsApp dengan sapaan biasa.',
       },
       { k: 'email', label: 'Surel', jenis: 'teks', bawaan: 'halo@mambetronhomestay.com' },
       { k: 'instagram', label: 'Akun Instagram', jenis: 'teks', bawaan: 'mambetronhomestay', bantuan: 'Tanpa tanda @. Kosongkan bila ikon Instagram tidak ingin ditampilkan.' },

@@ -4,14 +4,14 @@
 // availability calendar, the same one as the booking page, is shown open
 // right away, so full nights show before the visitor commits. Both dates are
 // required, and the choice is remembered in this browser for the next pages.
-import { useCallback, useEffect, useState, type FormEvent, type MouseEvent } from 'react';
+import { useCallback, useEffect, useState, type FormEvent } from 'react';
 import Ikon from './Ikon';
 import FasilitasBeranda from './FasilitasBeranda';
 import Kalender from './Kalender';
 import KotakTanggal from './KotakTanggal';
 import Pengelola from './Pengelola';
 import Perkiraan from './Perkiraan';
-import { rupiah, tanggal, type DataPengelola } from '@/lib/format';
+import { rentangTanggal, rupiah, tanggal, type DataPengelola } from '@/lib/format';
 import type { Bahasa, Kamar, Layanan } from '@/lib/jenis';
 import { kamus } from '@/lib/kamus';
 import { bacaRencana, simpanRencana } from '@/lib/rencana';
@@ -38,9 +38,9 @@ type Props = {
   tombol?: string;
   // "Managed by thedampier.com" under the card
   pengelola?: DataPengelola | null;
-  // Check availability on WhatsApp: the wa.me link without text, the
-  // message from the panel with {tiba} {pulang} {malam} {tamu} {bungalow},
-  // and the bungalow's name for {bungalow}
+  // Contact us on WhatsApp: the wa.me link without text, the message from
+  // the panel with {tiba} {pulang} {malam} {tamu} {bungalow} once dates are
+  // picked, and the bungalow's name for {bungalow}
   wa?: { tautan: string; pesan: string; bungalow: string } | null;
   // children under this age stay free and share their parents' bed, a few per bungalow
   usiaGratis: number;
@@ -154,18 +154,23 @@ export default function CariCepat({ b, awal, akhir, checkIn, checkOut, sisa, uni
     if (!window.dispatchEvent(tanya)) e.preventDefault();
   }
 
-  // the WhatsApp message with the chosen stay filled in
-  const tautanCek = wa?.tautan && masuk && keluar
-    ? `${wa.tautan}?text=${encodeURIComponent(wa.pesan
-      .replaceAll('{tiba}', tanggal(masuk, b, 'polos')).replaceAll('{pulang}', tanggal(keluar, b, 'polos'))
-      .replaceAll('{malam}', k.form.malam(selisihHari(masuk, keluar))).replaceAll('{tamu}', t.tamuN(tamu) + (anak ? t.danAnak(anak, usiaGratis) : '') + (butuh > 1 ? `, ${t.bungalowN(butuh)}` : ''))
-      .replaceAll('{bungalow}', wa.bungalow))}`
-    : '';
-  function cekWa(e: MouseEvent<HTMLAnchorElement>) {
-    if (tautanCek) return;
-    e.preventDefault();
-    setGalat(t.dulu);
-  }
+  // Contact us opens WhatsApp with the chosen stay filled in, or with a plain
+  // greeting before the dates are picked (the owner's request, November
+  // 2026, "tombol cek availibilty ganti dengan hubungi kami saja").
+  const tautanHubungi = !wa?.tautan ? ''
+    : masuk && keluar
+      ? `${wa.tautan}?text=${encodeURIComponent(wa.pesan
+        .replaceAll('{tiba}', tanggal(masuk, b, 'polos')).replaceAll('{pulang}', tanggal(keluar, b, 'polos'))
+        .replaceAll('{malam}', k.form.malam(selisihHari(masuk, keluar))).replaceAll('{tamu}', t.tamuN(tamu) + (anak ? t.danAnak(anak, usiaGratis) : '') + (butuh > 1 ? `, ${t.bungalowN(butuh)}` : ''))
+        .replaceAll('{bungalow}', wa.bungalow))}`
+      : `${wa.tautan}?text=${encodeURIComponent(k.pesanWaUmum)}`;
+
+  // Bungalows still free for the picked stay, the fewest over its nights, or
+  // on the arrival night while the check-out is not picked yet (the owner's
+  // request, November 2026, "tambahkan ketersediaan pada hari yang dipilih
+  // sisa kamar berapa"). A night missing from sisa has every bungalow free.
+  const malamPilih = masuk ? (keluar ? daftarMalam(masuk, keluar) : [masuk]) : [];
+  const tersedia = malamPilih.length ? Math.min(...malamPilih.map((d) => sisa[d] ?? unit)) : null;
 
   // the price of the chosen guests per night, and the total once both dates are in
   const malam = masuk && keluar ? selisihHari(masuk, keluar) : 0;
@@ -284,6 +289,21 @@ export default function CariCepat({ b, awal, akhir, checkIn, checkOut, sisa, uni
             <KotakTanggal b={b} label={k.tiba} d={masuk} kosong={t.diKalender} />
             <KotakTanggal b={b} label={k.pulang} d={keluar} kosong={t.diKalender} catatan={masuk && keluar ? k.form.malam(selisihHari(masuk, keluar)) : undefined} />
           </div>
+          {/* bungalows left for the picked dates, under the dates and above the guests */}
+          <div className="order-3 empty:hidden xl:order-none" aria-live="polite" data-sisa-pondok>
+            {tersedia !== null && (
+              <div className="flex items-center gap-3 rounded-2xl bg-buih p-2.5 pr-4">
+                <span aria-hidden className="flex size-14 shrink-0 items-center justify-center rounded-xl bg-white text-biru-tua shadow-tipis">
+                  <Ikon nama="kamar" className="size-5" />
+                </span>
+                <span className="min-w-0 flex-1">
+                  <span className="block text-sm text-abu">{t.sisaJudul}</span>
+                  <span className={`block text-lg font-semibold tabular-nums ${tersedia <= 2 && unit > 2 ? 'text-merah' : 'text-laut'}`} data-sisa-angka={tersedia}>{t.sisaN(tersedia, unit)}</span>
+                  <span className="block text-xs leading-snug text-abu">{keluar ? t.sisaRentang(rentangTanggal(masuk, keluar, b)) : t.sisaMalam(tanggal(masuk, b))}</span>
+                </span>
+              </div>
+            )}
+          </div>
           {/* paying guests, then the children under the free age who stay free */}
           <div className="order-3 grid gap-1 rounded-2xl bg-embun p-2 pr-2.5 xl:order-none xl:gap-2" data-rincian-tamu>
             <div className="flex items-center gap-3">
@@ -349,13 +369,13 @@ export default function CariCepat({ b, awal, akhir, checkIn, checkOut, sisa, uni
             </div>
           )}
           {/* Pay goes straight to payment, DAMPIER's sheet or the booking form.
-              Check availability asks on WhatsApp with the chosen stay. */}
+              Contact us opens WhatsApp, with the chosen stay once it is picked. */}
           <div className={`grid gap-3 sm:col-span-2 xl:col-span-1 ${wa?.tautan ? 'sm:grid-cols-2 xl:grid-cols-1' : ''}`}>
             <button className="tombol min-h-14 w-full" data-bayar>{tombol ?? k.bayarSekarang}</button>
             {wa?.tautan && (
-              <a href={tautanCek || wa.tautan} onClick={cekWa} target="_blank" rel="noopener noreferrer" aria-label={t.waBaru}
+              <a href={tautanHubungi} target="_blank" rel="noopener noreferrer" aria-label={t.waBaru}
                 className="tombol tombol-putih min-h-14 w-full" data-cek-wa>
-                <Ikon nama="chat" className="size-5" /> {k.cekKetersediaan}
+                <Ikon nama="chat" className="size-5" /> {k.hubungiKami}
               </a>
             )}
           </div>
